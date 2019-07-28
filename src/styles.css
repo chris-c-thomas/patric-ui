@@ -1,0 +1,68 @@
+
+
+
+.green-icon {
+    color: #76a72d;
+}
+
+
+/**
+ * handsontable overrides
+ */
+
+.handsontable th {
+    font-weight: 500;
+}
+
+.handsontable .htDimmed,
+.handsontable td {
+    color: #333;
+}
+
+
+/**
+ * material overrides
+ */
+.MuiToolbar-dense {
+    min-height: 30px !important;
+}
+
+.MuiTabs-root {
+    background: #fff !important;
+}
+
+.MuiTab-root {
+    text-transform: none !important;
+}
+
+.MuiButtonBase-root {
+    padding-bottom: 2px !important;
+}
+
+.MuiButtonBase-root.Mui-selected {
+    color: #2e75a3; /* secondar primary color */
+}
+
+.MuiTabs-indicator {
+    background-color: #2e75a3 !important; /* primary */
+    transform: translateY(-45px);
+}
+
+body {
+    font-family: 'Roboto';
+}
+
+.MuiCard-root {
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05) !important;
+}
+
+
+
+/*
+.MuiTabs-indicator {
+    background: #2e76a3 !important;
+}*/
