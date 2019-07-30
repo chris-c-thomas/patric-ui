@@ -7,7 +7,7 @@ export default [
     {type: 'text', data: 'isolation_country', label: 'Isolation Country'},
     {type: 'text', data: 'host_name', label: 'Host Name'},
     {type: 'numeric', data: 'collection_year', label: 'Collection Year'},
-    {type: 'text', data: 'completion_date', label: 'Completion Date'},
+    {type: 'date', data: 'completion_date', label: 'Completion Date', dateFormat: 'MM/DD/YYYY', correctFormat: true},
 
     // hide the following
     {type: 'numeric', data: 'plasmids', hide: true},

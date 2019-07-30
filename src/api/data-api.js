@@ -12,15 +12,14 @@ export function listGenomes({query, start, limit = 200}) {
   let q =
     `?http_accept=application/solr+json` +
     `&eq(taxon_lineage_ids,234)&sort(-score)` +
-    `${start ? `&limit(${limit},${start})` : `&limit(${limit})`}` +
-    `${query ? `&keyword(${query})` : ''}`
-
+    `${start ? `&limit(${limit},${start-1})` : `&limit(${limit})`}` +
+    `${query ? `&keyword(*${query}*)` : ''}`
 
 
   return axios.get(`${api}/genome/${q}`, getOpts)
     .then((res) => {
       let data = res.data.response.docs
       console.log('data', data)
-      return res
+      return res;
     })
 }

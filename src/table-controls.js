@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -20,6 +20,8 @@ import FilterIcon from '@material-ui/icons/FilterListRounded';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+import useDebounce from './utils/use-debounce';
+
 import ColumnMenu from './column-menu';
 
 const useStyles = makeStyles(theme => ({
@@ -30,7 +32,6 @@ const useStyles = makeStyles(theme => ({
   container: {
     margin: theme.spacing(1)
   },
-
   menuBtn: {
     position: 'relative',
     zIndex: 1000
@@ -45,48 +46,34 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function TableControls(props) {
-  let styles = useStyles();
-  let {onPrev, onNext, onSearch, total, columns, onColumnChange} = props;
+  const styles = useStyles();
+  const {onChange, total, columns, onColumnChange} = props;
 
-  // query state
-  const [query, setQuery] = useState(null);
-  const [start, setPageStart] = useState(1);
   const [isLoading, loading] = useState(false);
-
-  // menu state
-  const [open, setOpen] = useState(false);
-
   const limit = 200;
 
-  const handleSearch = (evt) => {
-    let query = evt.target.value
-    setQuery(query);
-    onSearch({query, start, limit})
-  }
+  let started = false;
+  const [query, setQuery] = useState(null);
+  const [start, setPage] = useState(1);
+  const debounceQuery = useDebounce(query, 300);
 
-  const handlePrev = (done) => {
+  useEffect(() => {
+    if (!started) return;
+
     loading(true);
-    setPageStart(start - limit);
-    onPrev({query, start: start - limit, limit}).then(() => {
+    onChange({query, start, limit}).then(() => {
       loading(false);
     })
-  }
+  }, [debounceQuery, start]);
 
-  const handleNext = () => {
-    loading(true);
-    setPageStart(start + limit)
-    onNext({query, start: start + limit, limit}).then(() => {
-      loading(false);
-    })
-  }
+  started = true;
 
   return (
     <Grid container className={styles.container}>
       <Grid item xs={4}>
         <Input
-          id="search"
           placeholder="Search genomes"
-          onChange={handleSearch}
+          onChange={e => { setQuery(e.target.value); setPage(1); }}
           fullWidth
           startAdornment={<InputAdornment position="start"><SearchIcon/></InputAdornment>}
         />
@@ -104,24 +91,23 @@ export default function TableControls(props) {
           </IconButton>
         </Tooltip>
 
-        {isLoading && <CircularProgress size={22}/>}
+        {isLoading && <CircularProgress size={22} disableShrink={true} />}
       </Grid>
 
       <Grid item container xs={6} justify="flex-end" alignItems="center" spacing={3}>
         <div>
-          {start} - {start + limit - 1} of {total}
+          {start} - {start + limit - 1 > total ? total : start + limit - 1} of {total}
         </div>
 
         <ButtonGroup size="small" aria-label="table paging" color="primary"
           className={styles.btnGroup} disableRipple>
-          <Button onClick={handlePrev} disabled={start - limit < 1}>
+          <Button onClick={() => setPage(start - limit)} disabled={start - limit < 1}>
             <NavigatBeforeIcon /> prev
           </Button>
-          <Button onClick={handleNext} disabled={start + limit > total}>
+          <Button onClick={() => setPage(start + limit)} disabled={start + limit > total}>
             next <NavigateNextIcon />
           </Button>
         </ButtonGroup>
-
 
         <ColumnMenu columns={columns} onColumnChange={onColumnChange} />
 

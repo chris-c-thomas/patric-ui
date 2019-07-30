@@ -48,6 +48,10 @@
     transform: translateY(-45px);
 }
 
+.MuiCircularProgress-indeterminate {
+    animation-duration: 0.8s !important;
+}
+
 body {
     font-family: 'Roboto';
 }
