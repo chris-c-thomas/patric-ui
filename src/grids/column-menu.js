@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Button, Paper, Checkbox,
-  ClickAwayListener, FormControlLabel
+  Button, Paper, Checkbox, ClickAwayListener, FormControlLabel
 } from '@material-ui/core';
 
 import { grey } from '@material-ui/core/colors';

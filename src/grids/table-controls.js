@@ -10,18 +10,17 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 // icons
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import NavigatBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
+import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
+import SkipNextIcon from '@material-ui/icons/SkipPreviousRounded';
+import SkipPrevIcon from '@material-ui/icons/SkipNextRounded';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
 import DownloadIcon from '@material-ui/icons/CloudDownloadOutlined';
 import FilterIcon from '@material-ui/icons/FilterListRounded';
-
-
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
-import useDebounce from './utils/use-debounce';
-
+import useDebounce from '../utils/use-debounce';
 import ColumnMenu from './column-menu';
 
 const useStyles = makeStyles(theme => ({
@@ -102,10 +101,10 @@ export default function TableControls(props) {
         <ButtonGroup size="small" aria-label="table paging" color="primary"
           className={styles.btnGroup} disableRipple>
           <Button onClick={() => setPage(start - limit)} disabled={start - limit < 1}>
-            <NavigatBeforeIcon /> prev
+            <NavBeforeIcon /> prev
           </Button>
           <Button onClick={() => setPage(start + limit)} disabled={start + limit > total}>
-            next <NavigateNextIcon />
+            next <NavNextIcon />
           </Button>
         </ButtonGroup>
 

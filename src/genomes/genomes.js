@@ -3,10 +3,11 @@ import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TableControls from '../table-controls'
-import Drawer from '@material-ui/core/Drawer';
 
 import columns from './columns'
+
+import Actions from './actions';
+import TableControls from '../grids/table-controls'
 import SolrGrid from '../grids/solr-grid'
 import { listGenomes } from '../api/data-api';
 
@@ -69,37 +70,35 @@ export function Genomes() {
   }
 
   return (
-    <div className={styles.root}>
-
-      <TableControls
-        columns={columns}
-        onChange={onTableCtrlChange}
-        onColumnChange={onColumnChange}
-        total={total} />
-
-      {!data &&
-        <div>
-          <CircularProgress className={styles.progress}/>
-          Loading...
-        </div>
-      }
-
-      {data &&
-        <SolrGrid
-          data={data}
+    <div>
+      <div className={styles.root}>
+        <TableControls
           columns={columns}
-          hidden={hidden}
-          colHeaders={colHeaders}
-          onRowSelect={() => setShowActions(true)}
-          />
-      }
+          onChange={onTableCtrlChange}
+          onColumnChange={onColumnChange}
+          total={total} />
 
-      {/*
-      <Drawer anchor="right" open={showActions} onClose={() => setShowActions(false)}>
-        foo<br/>
-        bar<br/>
-      </Drawer>
-      */}
+
+
+        {!data &&
+          <div>
+            <CircularProgress className={styles.progress}/>
+            Loading...
+          </div>
+        }
+
+        {data &&
+          <SolrGrid
+            data={data}
+            columns={columns}
+            hidden={hidden}
+            colHeaders={colHeaders}
+            onRowSelect={() => setShowActions(true)}
+            />
+        }
+      </div>
+      {/*<Actions open={showActions}/> */}
     </div>
+
   );
 };
