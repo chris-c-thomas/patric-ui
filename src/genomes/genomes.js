@@ -78,8 +78,6 @@ export function Genomes() {
           onColumnChange={onColumnChange}
           total={total} />
 
-
-
         {!data &&
           <div>
             <CircularProgress className={styles.progress}/>

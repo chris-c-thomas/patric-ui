@@ -101,10 +101,10 @@ export default function TableControls(props) {
         <ButtonGroup size="small" aria-label="table paging" color="primary"
           className={styles.btnGroup} disableRipple>
           <Button onClick={() => setPage(start - limit)} disabled={start - limit < 1}>
-            <NavBeforeIcon /> prev
+            <NavBeforeIcon />
           </Button>
           <Button onClick={() => setPage(start + limit)} disabled={start + limit > total}>
-            next <NavNextIcon />
+            <NavNextIcon />
           </Button>
         </ButtonGroup>
 
