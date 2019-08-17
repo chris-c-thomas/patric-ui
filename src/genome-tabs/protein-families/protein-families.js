@@ -3,7 +3,7 @@ import React from 'react';
 import { HotTable } from '@handsontable/react';
 import axios from 'axios';
 
-import config from '../config';
+import config from '../../config';
 const { api } = config;
 
 const licenseKey = 'non-commercial-and-evaluation'
@@ -63,7 +63,6 @@ export class PFContainer extends React.Component {
     axios.post(`${api}/`, params)
       .then((res) => {
         let objs = res.data.result;
-        console.log('objects', objs);
 
         let data = objs.map(o => [
           o.family_id,

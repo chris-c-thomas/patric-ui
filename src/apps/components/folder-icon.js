@@ -10,11 +10,69 @@ import { useTheme } from '@material-ui/core/styles';
 
 import FolderIcon  from '@material-ui/icons/FolderOpen';
 
+import { makeStyles } from '@material-ui/core/styles';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
+import WSGrid from './ws-grid';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`vertical-tabpanel-${index}`}
+      aria-labelledby={`vertical-tab-${index}`}
+      {...other}
+    >
+      <Box p={3}>{children}</Box>
+    </Typography>
+  );
+}
+
+
+function a11yProps(index) {
+  return {
+    id: `vertical-tab-${index}`,
+    'aria-controls': `vertical-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles(theme => ({
+  dialog: {
+    minHeight: '80vh',
+    maxHeight: '80vh',
+  },
+  tabRoot: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+  },
+  tabs: {
+    borderRight: `1px solid ${theme.palette.divider}`,
+  },
+  tab: {
+    overflow: 'scroll',
+    width: '100%'
+  }
+}));
+
+
 
 export default function ObjectSelectorDialog() {
+  const styles = useStyles();
+
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+
+  const [tab, setTab] = useState(0);
 
   function handleClickOpen() {
     setOpen(true);
@@ -24,29 +82,62 @@ export default function ObjectSelectorDialog() {
     setOpen(false);
   }
 
+  function onTabChange(event, newValue) {
+    setTab(newValue);
+  }
+
   return (
     <div>
       <Button color="primary" onClick={handleClickOpen} disableRipple>
         <FolderIcon />
       </Button>
       <Dialog
+        className={styles.dialog}
+        fullWidth
+        maxWidth={"xl"}
         fullScreen={fullScreen}
-        open={open}
+        open={true}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">{"Select a contig"}</DialogTitle>
-        <DialogContent>
-            blah blah
+        <DialogTitle id="responsive-dialog-title">
+          {"Select a contig"}
+        </DialogTitle>
+
+        <DialogContent className={styles.tabRoot}>
+          <Tabs
+            orientation="vertical"
+            value={tab}
+            onChange={onTabChange}
+            aria-label="Vertical tabs example"
+            className={styles.tabs}
+          >
+            <Tab label="My Files" {...a11yProps(0)} disableRipple/>
+            <Tab label="Shared with me" {...a11yProps(1)} disableRipple/>
+            <Tab label="Public" {...a11yProps(2)} disableRipple />
+            <Tab label="Sample Data" {...a11yProps(3)} disableRipple/>
+          </Tabs>
+
+          <TabPanel value={tab} index={0} className={styles.tab}>
+            <WSGrid />
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            Shared with me
+          </TabPanel>
+          <TabPanel value={tab} index={2}>
+            Public
+          </TabPanel>
+          <TabPanel value={tab} index={3}>
+            Sample Data
+          </TabPanel>
         </DialogContent>
 
-
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Disagree
+          <Button onClick={handleClose} color="primary" disableRipple>
+            Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
+          <Button onClick={handleClose} color="primary" disableRipple autoFocus>
+            OK
           </Button>
         </DialogActions>
       </Dialog>

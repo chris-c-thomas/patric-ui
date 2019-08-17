@@ -15,8 +15,8 @@ import Tab from '@material-ui/core/Tab';
 import { NavBar } from './nav-bar';
 import { ActionBar } from './action-bar';
 import { Annotate } from './apps/annotate';
-import { Genomes } from './genomes/genomes';
-import { PFContainer } from './protein-families/protein-families';
+import { Genomes } from './genome-tabs/genomes/genomes';
+import { PFContainer } from './genome-tabs/protein-families/protein-families';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
