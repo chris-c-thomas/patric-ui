@@ -43,8 +43,6 @@ export function Annotate() {
       ...oldVals,
       [event.target.name]: event.target.value,
     }));
-
-    console.log('new values', values)
   }
 
   return (

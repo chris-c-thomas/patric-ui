@@ -7,9 +7,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import columns from './columns'
 
 import Actions from './actions';
-import TableControls from '../grids/table-controls'
-import SolrGrid from '../grids/solr-grid'
-import { listGenomes } from '../api/data-api';
+import TableControls from '../../grids/table-controls'
+import SolrGrid from '../../grids/solr-grid'
+import { listGenomes } from '../../api/data-api';
 
 const useStyles = makeStyles(theme => ({
   root: {

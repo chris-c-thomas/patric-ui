@@ -240,7 +240,6 @@ export default function ObjectSelector() {
 
     WS.list({path, type, recursive: true})
       .then(data => {
-        console.log('paths', data.map(obj => obj.path))
         const items = data.map(obj => {
           return {
             label: obj.parent,
