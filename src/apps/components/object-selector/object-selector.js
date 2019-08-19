@@ -9,9 +9,9 @@ import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 // import CancelIcon from '@material-ui/icons/Cancel';
 
-import FolderIcon from './folder-icon';
+import FolderIcon from './object-selector-dialog';
 
-import * as WS from '../../api/workspace-api';
+import * as WS from '../../../api/workspace-api';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -227,11 +227,13 @@ const components = {
   ValueContainer,
 };
 
-export default function ObjectSelector() {
+export default function ObjectSelector(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [single, setSingle] = useState(null);
 
+  const {type} = props;
+
+  const [single, setSingle] = useState(null);
   const [items, setItems] = useState(null);
 
   useEffect(() => {
@@ -287,7 +289,7 @@ export default function ObjectSelector() {
           onChange={handleChangeSingle}
         />
 
-        <FolderIcon />
+        <FolderIcon type={type} />
 
       </NoSsr>
     </div>
