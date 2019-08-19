@@ -5,7 +5,7 @@ import { Paper } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { TextField } from '@material-ui/core';
 
-import ObjectSelector from './components/object-selector';
+import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -57,7 +57,7 @@ export function Annotate() {
 
       <br/>
 
-      <ObjectSelector label="Select a contig" id="contig" />
+      <ObjectSelector label="Select a contig" id="contig" type="contig" />
 
       <Selector label="Domain" id="domain" default="Bacteria"
         options={[

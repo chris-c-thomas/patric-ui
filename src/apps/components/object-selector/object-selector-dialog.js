@@ -7,16 +7,19 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-
-import FolderIcon  from '@material-ui/icons/FolderOpen';
-
 import { makeStyles } from '@material-ui/core/styles';
+
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import WSGrid from './ws-grid';
+import FolderIcon  from '@material-ui/icons/FolderOpen';
+import MyIcon from '@material-ui/icons/AccountCircleOutlined';
+import SharedIcon from '@material-ui/icons/PeopleOutline';
+import PublicIcon from '@material-ui/icons/PublicOutlined';
+
+import WSGrid from './object-selector-grid';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -64,8 +67,10 @@ const useStyles = makeStyles(theme => ({
 
 
 
-export default function ObjectSelectorDialog() {
+export default function ObjectSelectorDialog(props) {
   const styles = useStyles();
+
+  const {type} = props;
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -112,14 +117,26 @@ export default function ObjectSelectorDialog() {
             aria-label="Vertical tabs example"
             className={styles.tabs}
           >
-            <Tab label="My Files" {...a11yProps(0)} disableRipple/>
-            <Tab label="Shared with me" {...a11yProps(1)} disableRipple/>
-            <Tab label="Public" {...a11yProps(2)} disableRipple />
+            <Tab
+              label={<span><MyIcon/>My files</span>}
+              {...a11yProps(0)}
+              disableRipple
+            />
+            <Tab
+              label={<span><SharedIcon/>Shared with me</span>}
+              {...a11yProps(1)}
+              disableRipple
+            />
+            <Tab
+              label={<span><PublicIcon/>Public</span>}
+              {...a11yProps(2)}
+              disableRipple
+            />
             <Tab label="Sample Data" {...a11yProps(3)} disableRipple/>
           </Tabs>
 
           <TabPanel value={tab} index={0} className={styles.tab}>
-            <WSGrid />
+            <WSGrid type={type}/>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             Shared with me

@@ -82,9 +82,9 @@ export function NavBar() {
         <div className={style.menu}>
           <span><SearchIcon /> Search <Caret /></span>
           <span><StorageIcon /> Browse <Caret /></span>
-          <span onMouseOver={() => { setShow(true) }} onMouseLeave={() => setShow(false)}>
+          {/*<span onMouseOver={() => { setShow(true) }} onMouseLeave={() => setShow(false)}>*/}
             <ServiceIcon /> Services <Caret />
-          </span>
+          {/*</span>*/}
 
           <div className="dropdown-menu" style={{display: show ? 'block' : 'none'}}>
               <div className="container my-3">
