@@ -1,11 +1,13 @@
 import axios from 'axios';
 import config from '../config';
-const { ws } = config;
+const { wsAPI } = config;
+
+import auth from '../../token.js';
 
 
 const workspace = axios.create({
   headers: {
-    Authorization: TOKEN
+    Authorization: auth.token
   }
 });
 
@@ -18,7 +20,7 @@ const rpc = (cmd, params) => {
     "jsonrpc": "2.0"
   }
 
-  return workspace.post(ws, req)
+  return workspace.post(wsAPI, req)
     .then(res => {
       console.log('server response', res.data)
       return res.data.result[0];

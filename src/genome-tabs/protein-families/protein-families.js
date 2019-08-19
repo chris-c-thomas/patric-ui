@@ -4,7 +4,7 @@ import { HotTable } from '@handsontable/react';
 import axios from 'axios';
 
 import config from '../../config';
-const { api } = config;
+const { dataAPI } = config;
 
 const licenseKey = 'non-commercial-and-evaluation'
 
@@ -60,7 +60,7 @@ export class PFContainer extends React.Component {
   }
 
   componentDidMount() {
-    axios.post(`${api}/`, params)
+    axios.post(`${dataAPI}/`, params)
       .then((res) => {
         let objs = res.data.result;
 

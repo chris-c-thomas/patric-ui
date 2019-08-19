@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import config from '../config';
-const { api } = config;
+const { dataAPI } = config;
 
 
 const getOpts =  {
@@ -16,7 +16,7 @@ export function listGenomes({query, start, limit = 200}) {
     `${query ? `&keyword(*${query}*)` : ''}`
 
 
-  return axios.get(`${api}/genome/${q}`, getOpts)
+  return axios.get(`${dataAPI}/genome/${q}`, getOpts)
     .then((res) => {
       let data = res.data.response.docs
       console.log('data', data)
