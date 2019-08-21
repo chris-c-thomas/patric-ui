@@ -57,7 +57,7 @@ export function Annotate() {
 
       <br/>
 
-      <ObjectSelector label="Select a contig" id="contig" type="contig" />
+      <ObjectSelector label="Select a contig" dialogTitle="Select a contig" id="contig" type="contigs" />
 
       <Selector label="Domain" id="domain" default="Bacteria"
         options={[

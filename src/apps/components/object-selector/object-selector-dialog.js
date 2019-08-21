@@ -19,7 +19,12 @@ import MyIcon from '@material-ui/icons/AccountCircleOutlined';
 import SharedIcon from '@material-ui/icons/PeopleOutline';
 import PublicIcon from '@material-ui/icons/PublicOutlined';
 
-import WSGrid from './object-selector-grid';
+import { ButtonGroup } from '@material-ui/core';
+import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
+import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
+
+
+import ObjectSelectorGrid from './object-selector-grid';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,8 +53,6 @@ function a11yProps(index) {
 
 const useStyles = makeStyles(theme => ({
   dialog: {
-    minHeight: '80vh',
-    maxHeight: '80vh',
   },
   tabRoot: {
     flexGrow: 1,
@@ -70,7 +73,7 @@ const useStyles = makeStyles(theme => ({
 export default function ObjectSelectorDialog(props) {
   const styles = useStyles();
 
-  const {type} = props;
+  const {title, type} = props;
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -88,7 +91,17 @@ export default function ObjectSelectorDialog(props) {
   }
 
   function onTabChange(event, newValue) {
+    console.log('new value', newValue)
     setTab(newValue);
+  }
+
+
+  function prev() {
+
+  }
+
+  function next() {
+
   }
 
   return (
@@ -106,7 +119,11 @@ export default function ObjectSelectorDialog(props) {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {"Select a contig"}
+          {/*<ButtonGroup size="small" aria-label="table paging" disableRipple>
+            <Button onClick={() => back} disabled={!prev.length}><NavBeforeIcon /></Button>
+            <Button disabled={!next.length}><NavNextIcon /></Button>
+            </ButtonGroup>  {' '} */}
+          {title}
         </DialogTitle>
 
         <DialogContent className={styles.tabRoot}>
@@ -136,13 +153,13 @@ export default function ObjectSelectorDialog(props) {
           </Tabs>
 
           <TabPanel value={tab} index={0} className={styles.tab}>
-            <WSGrid type={type}/>
+            <ObjectSelectorGrid type={type}/>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             Shared with me
           </TabPanel>
           <TabPanel value={tab} index={2}>
-            Public
+            {/*<ObjectSelectorGrid path="/public/" type={type}/>*/}
           </TabPanel>
           <TabPanel value={tab} index={3}>
             Sample Data

@@ -11,6 +11,47 @@ a:hover {
     color: #215b81;
 }
 
+
+/**
+ * basic table
+ */
+
+ table.basic {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+table.basic thead th  {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+table.basic th {
+    padding: .5em;
+}
+
+table.basic td:not(.icon) {
+    padding: .5rem;
+}
+table.basic td {
+    border-top: 1px solid #dee2e6;
+}
+
+table.basic.hover tr:not(.no-hover):not(.selected):hover {
+    background: #f5f5f5;
+}
+
+
+table.basic tr.selected:hover,
+table.basic tr.selected,
+table.basic tr.selected a {
+    background: #2e75a3;
+    color: #fff;
+}
+
+
+
 .not-found{
     background-color: rgb(14, 51, 83);
     background-image: url('../assets/imgs/header-bg2.png');
@@ -79,40 +120,6 @@ a:hover {
     box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12);
 }
 
-
-/**
- * basic table
- */
-
-
-table.basic {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-table.basic thead th  {
-    vertical-align: bottom;
-    border-bottom: 2px solid #dee2e6;
-}
-
-table.basic th,
-table.basic td {
-    padding: .75rem;
-    border-top: 1px solid #dee2e6;
-}
-
-table.basic.hover tr:hover {
-    background: #f5f5f5;
-}
-
-
-table.basic tr.selected:hover,
-table.basic tr.selected,
-table.basic tr.selected a {
-    background: #2e75a3;
-    color: #fff;
-}
 
 
 /**

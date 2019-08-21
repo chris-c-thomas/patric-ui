@@ -231,14 +231,13 @@ export default function ObjectSelector(props) {
   const classes = useStyles();
   const theme = useTheme();
 
-  const {type} = props;
+  const {type, dialogTitle} = props;
 
   const [single, setSingle] = useState(null);
   const [items, setItems] = useState(null);
 
   useEffect(() => {
-    let path = '/nconrad@patricbrc.org/home',
-        type = 'contigs';
+    let path = '/nconrad@patricbrc.org/home';
 
     WS.list({path, type, recursive: true})
       .then(data => {
@@ -275,7 +274,7 @@ export default function ObjectSelector(props) {
           styles={selectStyles}
           inputId="react-select-single"
           TextFieldProps={{
-            label: 'Contig',
+            label: 'Contigs',
             variant: "outlined",
             InputLabelProps: {
               htmlFor: 'react-select-single',
@@ -289,7 +288,7 @@ export default function ObjectSelector(props) {
           onChange={handleChangeSingle}
         />
 
-        <FolderIcon type={type} />
+        <FolderIcon title={dialogTitle} type={type} />
 
       </NoSsr>
     </div>

@@ -88,7 +88,6 @@ const App = () => {
               <Paper className={styles.home}>This is the home page</Paper>
             }/>
             <Route path="/apps/annotate" exact render={() => <Annotate />} />
-            <Route path='*' component={NotFound404} />
 
             {/* START genome tabs */}
             <div className={styles.content}>
@@ -131,7 +130,7 @@ const App = () => {
               </Paper>
             </div>
             {/* END genome tabs */}
-
+            <Route path='*' component={NotFound404} />
           </Switch>
         </div>
       </ThemeProvider>

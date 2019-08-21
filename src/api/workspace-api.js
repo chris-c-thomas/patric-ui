@@ -22,13 +22,17 @@ const rpc = (cmd, params) => {
 
   return workspace.post(wsAPI, req)
     .then(res => {
-      console.log('server response', res.data)
       return res.data.result[0];
     });
 }
 
 
-export function list({path, type, recursive = false, showHidden = false}) {
+export function list(args) {
+  const {path, type, recursive = false, showHidden = false} = args;
+
+  if (path == '/public/')
+    return listPublic(args);
+
   const params = {
     "paths": [path],
     "recursive": recursive
@@ -46,12 +50,38 @@ export function list({path, type, recursive = false, showHidden = false}) {
       }
 
       // we want to return folders followed by files
-      const folders = objects.filter(obj => obj.type == 'folder');
-      const files = objects.filter(obj => obj.type != 'folder');
+      const folders = objects.filter(obj => obj.type == 'folder').reverse();
+      const files = objects.filter(obj => obj.type != 'folder'). reverse();
       return [...folders, ...files];
     })
 }
 
+
+export function listPublic({type, recursive = false, showHidden = false}) {
+  const params = {
+    "paths": ['/']
+  };
+
+  if (type) params.query = {type};
+
+  return rpc('ls', params)
+    .then(data => {
+      const meta = data[path];
+      let objects = meta ? meta.map(m => metaToObj(m)) : [];
+
+      if (!showHidden) {
+        objects = objects.filter(obj => obj.name[0] != '.');
+      }
+
+      // we only want truely public files (the ws api doesn't not provide this option)
+      objects = objects.filter(obj => obj.owner != auth.user)
+
+      // we want to return folders followed by files
+      const folders = objects.filter(obj => obj.type == 'folder').reverse();
+      const files = objects.filter(obj => obj.type != 'folder'). reverse();
+      return [...folders, ...files];
+    })
+}
 
 function metaToObj(m) {
   return {
