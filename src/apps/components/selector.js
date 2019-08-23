@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     display: 'block'
   },
   label: {
-    // possibly a bug with material-ui
+    // Fixme(nc): likely a bug with material-ui
     background: '#fff',
     padding: '0 3px'
   }

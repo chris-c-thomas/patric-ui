@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     width: '24px' // size of caret button
   },
   icon: {
-
+    marginTop: '10px'
   },
   disabled: {
     color: '#aaa'
@@ -112,8 +112,8 @@ function FileList(props) {
     return (
       <Fragment key={i}>
         <tr
-          onClick={() => {if (type != 'folder' && type == allowedType) selectPath(path);}}
-          onDoubleClick={() => {if (type == 'folder') onNav(path)}}
+          onClick={() => (type != 'folder' && type == allowedType) && selectPath(path)}
+          onDoubleClick={() => type == 'folder' && onNav(path)}
           className={clsx(disabled && styles.disabled, {selected: path == selectedPath}, disabled && 'no-hover')}
         >
           <td colSpan="3">
@@ -126,7 +126,8 @@ function FileList(props) {
               }
 
               {
-                type == 'folder' ? <Folder /> :
+                type == 'folder' ?
+                <span className="icon"><Folder /></span> :
                 <span style={{paddingLeft: `${24}px`}}><File /></span>
               }
 
@@ -158,43 +159,41 @@ function FileList(props) {
 
 function getParentPath(path) {
   const parts = path.split('/');
-  console.log('parts', parts, parts.slice(0, path.length - 1))
   return parts.slice(0, parts.length - 1).join('/')
 }
 
 export default function ObjectSelectorGrid(props) {
   const styles = useStyles();
-  const {type} = props;
+  const {type, onSelect} = props;
 
   const [path, setPath] = useState(props.path || '/nconrad@patricbrc.org/home');
   const [objs, setObjs] = useState(null);
 
-  const [prev, setPrev] = useState([]);
-  const [next, setNext] = useState([]);
-
   useEffect(() => {
-    console.log('listing new path', path)
     setObjs(null)
     WS.list({path})
       .then((data) => {
-        console.log('new objects', data)
         setObjs(data)
       })
   }, [path])
 
   function navigate(path) {
-    console.log('setting path', path)
     setPath(path);
   }
 
+  function select(path) {
+    if (onSelect) onSelect(path);
+  }
+
   function backDir() {
-    console.log('parent', getParentPath(path))
     setPath(getParentPath(path))
   }
 
   function getLevel() {
     return path.split('/').length - 1;
   }
+
+
 
   return (
     <div>
@@ -214,9 +213,11 @@ export default function ObjectSelectorGrid(props) {
         <tbody>
           {/* if not top level, include parent folder button,  */
              getLevel() > 1 &&
-            <tr>
+            <tr onDoubleClick={backDir}>
               <td colSpan="100%">
-                <IconButton onClick={backDir} size="small"><ArrowBack/></IconButton>
+                <IconButton onClick={backDir} size="small">
+                  <ArrowBack/>
+                </IconButton>
                 {' '}<a onClick={backDir}>Parent</a>
               </td>
             </tr>
@@ -224,7 +225,12 @@ export default function ObjectSelectorGrid(props) {
 
           {
             objs &&
-            <FileList objects={objs} onNavigate={navigate} allowedType={type}/>
+            <FileList
+              objects={objs}
+              onNavigate={navigate}
+              allowedType={type}
+              onSelect={select}
+            />
           }
 
           {/* if folder is emtpy */

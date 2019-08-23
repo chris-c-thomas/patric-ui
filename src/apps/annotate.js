@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { Paper } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import { TextField } from '@material-ui/core';
 
 import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
@@ -30,20 +29,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export function Annotate() {
+export default function Annotate() {
   const styles = useStyles();
-
-  const [values, setValues] = useState({
-    domain: 'Bacteria'
-  })
-
-
-  function handleChange(event) {
-    setValues(oldVals => ({
-      ...oldVals,
-      [event.target.name]: event.target.value,
-    }));
-  }
 
   return (
     <Paper className={styles.root}>

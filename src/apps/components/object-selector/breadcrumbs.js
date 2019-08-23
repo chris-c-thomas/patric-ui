@@ -2,7 +2,12 @@
 import React from 'react';
 
 
-
+/**
+ * Basic breadcrumbs.
+ * Should consider using material-ui for this?
+ *
+ * @param {*} props
+ */
 export default function BreadCrumbs(props) {
   const {path} = props;
 

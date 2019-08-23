@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import PT from 'prop-types';
 import Select from 'react-select';
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -9,14 +9,13 @@ import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 // import CancelIcon from '@material-ui/icons/Cancel';
 
-import FolderIcon from './object-selector-dialog';
+import ObjectSelectorDialog from './object-selector-dialog';
 
 import * as WS from '../../../api/workspace-api';
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    height: 250,
     minWidth: 290,
   },
   input: {
@@ -53,7 +52,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
 function NoOptionsMessage(props) {
   return (
     <Typography
@@ -66,21 +64,21 @@ function NoOptionsMessage(props) {
   );
 }
 
-NoOptionsMessage.propTypes = {
-  children: PropTypes.node,
-  innerProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
+NoOptionsMessage.PT = {
+  children: PT.node,
+  innerProps: PT.object.isRequired,
+  selectProps: PT.object.isRequired,
 };
 
 function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
 
-inputComponent.propTypes = {
-  inputRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
+inputComponent.PT = {
+  inputRef: PT.oneOfType([
+    PT.func,
+    PT.shape({
+      current: PT.any.isRequired,
     }),
   ]),
 };
@@ -110,25 +108,26 @@ function Control(props) {
   );
 }
 
-Control.propTypes = {
-  children: PropTypes.node,
+Control.PT = {
+  children: PT.node,
 
-  innerProps: PropTypes.shape({
-    onMouseDown: PropTypes.func.isRequired,
+  innerProps: PT.shape({
+    onMouseDown: PT.func.isRequired,
   }).isRequired,
-  innerRef: PropTypes.oneOfType([
-    PropTypes.oneOf([null]),
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
+  innerRef: PT.oneOfType([
+    PT.oneOf([null]),
+    PT.func,
+    PT.shape({
+      current: PT.any.isRequired,
     }),
   ]).isRequired,
-  selectProps: PropTypes.object.isRequired,
+  selectProps: PT.object.isRequired,
 };
 
 function Option(props) {
   return (
     <MenuItem
+      title={props.children}
       ref={props.innerRef}
       selected={props.isFocused}
       component="div"
@@ -142,27 +141,17 @@ function Option(props) {
   );
 }
 
-Option.propTypes = {
-  children: PropTypes.node,
-  innerProps: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    key: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
-    onMouseMove: PropTypes.func.isRequired,
-    onMouseOver: PropTypes.func.isRequired,
-    tabIndex: PropTypes.number.isRequired,
+Option.PT = {
+  children: PT.node,
+  innerProps: PT.shape({
+    id: PT.string.isRequired,
+    onClick: PT.func.isRequired,
+    onMouseMove: PT.func.isRequired,
+    onMouseOver: PT.func.isRequired,
+    tabIndex: PT.number.isRequired,
   }).isRequired,
-
-  innerRef: PropTypes.oneOfType([
-    PropTypes.oneOf([null]),
-    PropTypes.func,
-    PropTypes.shape({
-      current: PropTypes.any.isRequired,
-    }),
-  ]).isRequired,
-
-  isFocused: PropTypes.bool.isRequired,
-  isSelected: PropTypes.bool.isRequired,
+  isFocused: PT.bool.isRequired,
+  isSelected: PT.bool.isRequired,
 };
 
 function Placeholder(props) {
@@ -174,10 +163,10 @@ function Placeholder(props) {
   );
 }
 
-Placeholder.propTypes = {
-  children: PropTypes.node,
-  innerProps: PropTypes.object,
-  selectProps: PropTypes.object.isRequired,
+Placeholder.PT = {
+  children: PT.node,
+  innerProps: PT.object,
+  selectProps: PT.object.isRequired,
 };
 
 function SingleValue(props) {
@@ -188,19 +177,19 @@ function SingleValue(props) {
   );
 }
 
-SingleValue.propTypes = {
-  children: PropTypes.node,
-  innerProps: PropTypes.any.isRequired,
-  selectProps: PropTypes.object.isRequired,
+SingleValue.PT = {
+  children: PT.node,
+  innerProps: PT.any.isRequired,
+  selectProps: PT.object.isRequired,
 };
 
 function ValueContainer(props) {
   return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
 }
 
-ValueContainer.propTypes = {
-  children: PropTypes.node,
-  selectProps: PropTypes.object.isRequired,
+ValueContainer.PT = {
+  children: PT.node,
+  selectProps: PT.object.isRequired,
 };
 
 function Menu(props) {
@@ -211,10 +200,10 @@ function Menu(props) {
   );
 }
 
-Menu.propTypes = {
-  children: PropTypes.element.isRequired,
-  innerProps: PropTypes.object.isRequired,
-  selectProps: PropTypes.object.isRequired,
+Menu.PT = {
+  children: PT.element.isRequired,
+  innerProps: PT.object.isRequired,
+  selectProps: PT.object.isRequired,
 };
 
 const components = {
@@ -233,17 +222,17 @@ export default function ObjectSelector(props) {
 
   const {type, dialogTitle} = props;
 
-  const [single, setSingle] = useState(null);
   const [items, setItems] = useState(null);
+  const [selectedPath, setSelectedPath] = useState(null);
 
   useEffect(() => {
     let path = '/nconrad@patricbrc.org/home';
 
-    WS.list({path, type, recursive: true})
+    WS.list({path, type, recursive: true, showHidden: false})
       .then(data => {
-        const items = data.map(obj => {
+        const items = data.map((obj, i) => {
           return {
-            label: obj.parent,
+            label: obj.path,
             value: obj.value
           };
         });
@@ -252,8 +241,13 @@ export default function ObjectSelector(props) {
   }, [])
 
 
-  function handleChangeSingle(value) {
-    setSingle(value);
+  function setPath(path) {
+    setSelectedPath(path);
+  }
+
+  function onDialogSelect(path) {
+    console.log('setting path', path)
+    setPath(path)
   }
 
   const selectStyles = {
@@ -284,11 +278,11 @@ export default function ObjectSelector(props) {
           placeholder="Select a contig"
           options={items}
           components={components}
-          value={single}
-          onChange={handleChangeSingle}
+          value={selectedPath}
+          onChange={setPath}
         />
 
-        <FolderIcon title={dialogTitle} type={type} />
+        <ObjectSelectorDialog title={dialogTitle} type={type} onSelect={onDialogSelect}/>
 
       </NoSsr>
     </div>

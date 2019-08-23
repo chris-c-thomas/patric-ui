@@ -178,6 +178,10 @@ div.MuiToolbar-dense {
     box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05) !important;
 }
 
+.MuiPaper-elevation1 {
+    /* Fixme(nc): hack to make paper above selector label hack */
+    z-index: 2 !important;
+}
 
 /* Fixme(nc): hack to fix vertical tab bug */
 .MuiTabs-root[orientation="vertical"] .MuiTabs-flexContainer {

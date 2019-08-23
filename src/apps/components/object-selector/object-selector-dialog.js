@@ -72,15 +72,15 @@ const useStyles = makeStyles(theme => ({
 
 export default function ObjectSelectorDialog(props) {
   const styles = useStyles();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {title, type} = props;
 
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-
   const [tab, setTab] = useState(0);
+  const [selectedPath, setSelectedPath] = useState(null);
+
 
   function handleClickOpen() {
     setOpen(true);
@@ -91,18 +91,19 @@ export default function ObjectSelectorDialog(props) {
   }
 
   function onTabChange(event, newValue) {
-    console.log('new value', newValue)
     setTab(newValue);
   }
 
+  function onSelect(path) {
+    setSelectedPath(path);
 
-  function prev() {
-
+    // callback for setting input box
+    props.onSelect(path);
   }
 
-  function next() {
-
-  }
+  // could implment history here, if desired.
+  function prev() {}
+  function next() {}
 
   return (
     <div>
@@ -114,7 +115,7 @@ export default function ObjectSelectorDialog(props) {
         fullWidth
         maxWidth={"xl"}
         fullScreen={fullScreen}
-        open={true}
+        open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
@@ -153,7 +154,7 @@ export default function ObjectSelectorDialog(props) {
           </Tabs>
 
           <TabPanel value={tab} index={0} className={styles.tab}>
-            <ObjectSelectorGrid type={type}/>
+            <ObjectSelectorGrid type={type} onSelect={onSelect}/>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             Shared with me
@@ -167,10 +168,10 @@ export default function ObjectSelectorDialog(props) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} color="primary" disableRipple>
+          <Button onClick={handleClose} color="primary" disableRipple autoFocus>
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" disableRipple autoFocus>
+          <Button onClick={handleClose} color="primary" disableRipple disabled={!selectedPath}>
             OK
           </Button>
         </DialogActions>
