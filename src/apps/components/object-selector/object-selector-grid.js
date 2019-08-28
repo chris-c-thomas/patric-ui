@@ -1,17 +1,13 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import clsx from 'clsx';
 
-import {  IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Folder from '@material-ui/icons/FolderOutlined';
 import ArrowRight from '@material-ui/icons/ArrowRight';
 import ArrowDown from '@material-ui/icons/ArrowDropDown';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-
-
 import File from '@material-ui/icons/InsertDriveFileOutlined';
-
-
 
 import BreadCrumbs from './breadcrumbs';
 import {bytesToSize, toDateTimeStr} from '../../../utils/units';

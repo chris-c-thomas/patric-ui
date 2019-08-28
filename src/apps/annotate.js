@@ -7,8 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
-// import clsx from 'clsx';
 
 import config from '../config.js'
 const userGuideURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
