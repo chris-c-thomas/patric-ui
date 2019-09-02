@@ -20,6 +20,7 @@ import { PFContainer } from './genome-tabs/protein-families/protein-families';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
+import './styles/styles.scss'
 import NotFound404 from './404';
 
 // lazy load apps
@@ -142,4 +143,4 @@ const App = () => {
   )
 };
 
-render(<App />, document.getElementById('test'));
+render(<App />, document.getElementById('app'));

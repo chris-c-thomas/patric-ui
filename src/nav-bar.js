@@ -80,11 +80,13 @@ export function NavBar() {
         </Typography>
 
         <div className={style.menu}>
-          <span><SearchIcon /> Search <Caret /></span>
-          <span><StorageIcon /> Browse <Caret /></span>
-          {/*<span onMouseOver={() => { setShow(true) }} onMouseLeave={() => setShow(false)}>*/}
-            <ServiceIcon /> Services <Caret />
-          {/*</span>*/}
+          <span><SearchIcon /> Search</span>
+          <span><StorageIcon /> Browse</span>
+          {/*<span onMouseOver={() => { setShow(true) }} onMouseLeave={() => setShow(false)}>
+            <ServiceIcon /> Services
+          </span>*/}
+          <span><ServiceIcon /> Services</span>
+          <span><DocsIcon /> Docs </span>
 
           <div className="dropdown-menu" style={{display: show ? 'block' : 'none'}}>
               <div className="container my-3">
@@ -135,9 +137,6 @@ export function NavBar() {
                 </div>{/* end row */}
               </div>
           </div>
-
-
-          <span><DocsIcon /> Docs <Caret /></span>
         </div>
 
         <div className={style.account}>
