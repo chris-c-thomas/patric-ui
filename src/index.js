@@ -93,7 +93,7 @@ const App = () => {
               }/>
 
               <Route path="/apps/annotate" exact render={() => <Annotate />} />
-
+              <Route path='*' component={NotFound404} />
               {/* START genome tabs */}
               <div className={styles.content}>
                 <ActionBar />
@@ -136,7 +136,7 @@ const App = () => {
               </div>
               {/* END genome tabs */}
 
-              <Route path='*' component={NotFound404} />
+
             </Switch>
           </Suspense>
         </div>

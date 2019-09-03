@@ -8,8 +8,7 @@ import ArrowRight from '@material-ui/icons/ArrowRight';
 import ArrowDown from '@material-ui/icons/ArrowDropDown';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import File from '@material-ui/icons/InsertDriveFileOutlined';
-
-import Contigs from '../../../../assets/icons/ws/contigs.svg';
+// import Contigs from '../../../../assets/icons/ws/contigs.svg';
 
 import BreadCrumbs from './breadcrumbs';
 import {bytesToSize, toDateTimeStr} from '../../../utils/units';
@@ -41,7 +40,8 @@ function getIcon(type) {
   if (type == 'folder')
     return <span className="icon"><Folder /></span>;
   else if (type == 'contigs') {
-    <span style={{paddingLeft: `${24}px`}}><img src={Contigs} style={{height: '10px'}}/></span>;
+    //<span style={{paddingLeft: `${24}px`}}><img src={Contigs} style={{height: '10px'}}/></span>;
+    return <span style={{paddingLeft: `${24}px`}}><File /></span>
   } else {
     return <span style={{paddingLeft: `${24}px`}}><File /></span>
   }
