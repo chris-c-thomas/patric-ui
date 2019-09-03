@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import AsyncSelect from 'react-select/async';
-import highlightText from '../../../utils/text'
-import ObjectSelectorDialog from './object-selector-dialog';
+import highlightText from '../../utils/text'
 
-import * as WS from '../../../api/workspace-api';
+import { queryTaxon } from '../../api/data-api';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,22 +21,18 @@ const inputStyles = {
   }),
   input: styles => ({
     ...styles,
-    minWidth: '450px'
+    minWidth: '100px'
   })
 }
 
-export default function ObjectSelector(props) {
+export default function TaxonIDInput(props) {
   const styles = useStyles();
 
-  const {type, dialogTitle, placeholder, label} = props;
+  const {placeholder, label} = props;
 
   const [items, setItems] = useState(null);
   const [selectedPath, setSelectedPath] = useState(null);
   const [query, setQuery] = useState(null);
-
-  function onDialogSelect(path) {
-    _setPath(path)
-  }
 
   const filterItems = () => {
     return items.filter(i =>
@@ -45,25 +40,14 @@ export default function ObjectSelector(props) {
     );
   };
 
-  const loadOptions = (inputValue, callback) => {
-    if (items) {
-      callback(filterItems(items))
-      return;
-    }
+  const loadOptions = (query, callback) => {
+    if (!query) return;
 
-    let path = '/nconrad@patricbrc.org/home';
-    WS.list({path, type, recursive: true, showHidden: false})
+    console.log('query', query)
+    queryTaxon({query})
       .then(data => {
-        const items = data.map((obj, i) => {
-          const parts = obj.path.split('/');
-
-          return {
-            label: '/' + parts.slice(2).join('/'),
-            value: obj.path
-          };
-        });
-        setItems(items)
-        callback(items)
+        setItems(data)
+        callback(data)
       })
   };
 
@@ -73,23 +57,15 @@ export default function ObjectSelector(props) {
       path = label.slice(0, i)
       name = label.slice(i);
 
-    return <div>
-      <small>
-        {query ?  highlightText(path, query) : path}
-      </small><br/>
-      <b>{query ?  highlightText(name, query) : name}</b>
-    </div>
+    return (
+      <div>
+        <small>
+          {query ?  highlightText(path, query) : path}
+        </small><br/>
+        <b>{query ?  highlightText(name, query) : name}</b>
+      </div>
+    );
   }
-
-  const _setPath = (path) => {
-    const parts = path.split('/');
-
-    setSelectedPath({
-      label: '/' + parts.slice(2).join('/'),
-      value: path
-    });
-  }
-
 
 
   return (
@@ -111,11 +87,7 @@ export default function ObjectSelector(props) {
         </Grid>
 
         <Grid item>
-          <ObjectSelectorDialog
-            title={dialogTitle}
-            type={type}
-            onSelect={onDialogSelect}
-          />
+
         </Grid>
       </Grid>
     </div>

@@ -1,18 +1,17 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background
   },
   home: {
-    marginTop: '40px',
+    margin: '40px',
     padding: '20px'
   }
 }));
-
-
 
 
 export default function Home() {

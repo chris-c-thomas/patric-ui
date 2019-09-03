@@ -76,7 +76,7 @@ export function NavBar() {
       <Toolbar variant="dense" className={style.toolbar}>
         <Typography variant="h5" className={style.brand}>
           <img src={logo} className={style.logoImg} />
-          <span className={style.version}>3.5.41</span>
+          <span className={style.version}>demo</span>
         </Typography>
 
         <div className={style.menu}>

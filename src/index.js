@@ -20,6 +20,8 @@ import { PFContainer } from './genome-tabs/protein-families/protein-families';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
+
+import Home from './home';
 import './styles/styles.scss'
 import NotFound404 from './404';
 
@@ -87,7 +89,7 @@ const App = () => {
           <Suspense fallback={<div>loading...</div>}>
             <Switch>
               <Route path="/" exact render={() =>
-                <Paper className={styles.home}>This is the home page</Paper>
+                <Home />
               }/>
 
               <Route path="/apps/annotate" exact render={() => <Annotate />} />
@@ -126,7 +128,6 @@ const App = () => {
                         <Route path="/overview"         render={() => <div>Overview goes here</div>}/>
                         <Route path="/genomes"          render={() => <Genomes />}/>
                         <Route path="/protein-families" render={() => <PFContainer />}/>
-
                       </Switch>
                     </Fragment>
                   )}
@@ -134,6 +135,7 @@ const App = () => {
                 </Paper>
               </div>
               {/* END genome tabs */}
+
               <Route path='*' component={NotFound404} />
             </Switch>
           </Suspense>

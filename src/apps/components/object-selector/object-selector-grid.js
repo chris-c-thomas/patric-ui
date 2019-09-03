@@ -9,6 +9,8 @@ import ArrowDown from '@material-ui/icons/ArrowDropDown';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import File from '@material-ui/icons/InsertDriveFileOutlined';
 
+import Contigs from '../../../../assets/icons/ws/contigs.svg';
+
 import BreadCrumbs from './breadcrumbs';
 import {bytesToSize, toDateTimeStr} from '../../../utils/units';
 import * as WS from '../../../api/workspace-api';
@@ -34,6 +36,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
+function getIcon(type) {
+  if (type == 'folder')
+    return <span className="icon"><Folder /></span>;
+  else if (type == 'contigs') {
+    <span style={{paddingLeft: `${24}px`}}><img src={Contigs} style={{height: '10px'}}/></span>;
+  } else {
+    return <span style={{paddingLeft: `${24}px`}}><File /></span>
+  }
+}
 
 /**
  * Recursive helper to build a file list view
@@ -121,11 +133,7 @@ function FileList(props) {
                 </IconButton>
               }
 
-              {
-                type == 'folder' ?
-                <span className="icon"><Folder /></span> :
-                <span style={{paddingLeft: `${24}px`}}><File /></span>
-              }
+              {getIcon(type)}
 
               {' '}
 

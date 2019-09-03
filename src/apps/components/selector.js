@@ -23,23 +23,23 @@ const useStyles = makeStyles(theme => ({
 export default function Selector(props) {
   const styles = useStyles()
 
-  const {options, label, id} = props;
+  const {options, label, name} = props;
 
   if (!options) throw ('Selector component must have prop: options');
   if (!label) throw ('Selector component must have prop: label');
-  if (!id) throw ('Selector component must have prop: id');
+  if (!name) throw ('Selector component must have prop: name');
 
   const [value, setValue] = useState(props.default);
 
   return (
     <FormControl variant="outlined" margin="dense" notched="true" className={styles.formControl}>
-      <InputLabel htmlFor={id} className={styles.label}>
+      <InputLabel htmlFor={name} className={styles.label}>
         {label}
       </InputLabel>
       <Select
         value={value}
         onChange={(evt) => setValue(evt.target.value)}
-        input={<OutlinedInput name="domain" id={id} />}
+        input={<OutlinedInput name={name} id={name} />}
       >
         <MenuItem value="">
           <em>None</em>
