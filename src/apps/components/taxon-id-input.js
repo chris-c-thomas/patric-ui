@@ -43,7 +43,6 @@ export default function TaxonIDInput(props) {
   const loadOptions = (query, callback) => {
     if (!query) return;
 
-    console.log('query', query)
     queryTaxon({query})
       .then(data => {
         setItems(data)

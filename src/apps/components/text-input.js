@@ -25,20 +25,9 @@ export default function TextInput(props) {
   const styles = useStyles()
 
   const {label, name} = props;
-  const {onChange} = props;
 
   if (!label) throw ('TextInput component must have prop: label');
   if (!name) throw ('TextInput component must have prop: name');
-
-  const [adornment, setAdornment] = useState(props.adornment || '' );
-
-
-  function handleChange(val) {
-    if (!onChange) return;
-
-    let newText = onChange(val);
-    setAdornment(newText);
-  }
 
   return (
     <FormControl variant="outlined" margin="dense" notched="true" className={styles.formControl}>
@@ -48,9 +37,8 @@ export default function TextInput(props) {
         label={label}
         className={clsx(styles.textField, styles.dense)}
         margin="dense"
-        onChange={(e) => handleChange(e.target.value)}
         InputProps={{
-          startAdornment: <InputAdornment position="start">{adornment}</InputAdornment>,
+          startAdornment: <InputAdornment position="start">{props.adornment}</InputAdornment>,
         }}
       />
     </FormControl>

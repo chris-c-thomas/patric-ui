@@ -254,7 +254,6 @@ export default function ObjectSelector(props) {
   }
 
   function onDialogSelect(path) {
-    console.log('setting path', path)
     setPath(path)
   }
 

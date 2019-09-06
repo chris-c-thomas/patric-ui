@@ -41,9 +41,6 @@ export default function Selector(props) {
         onChange={(evt) => setValue(evt.target.value)}
         input={<OutlinedInput name={name} id={name} />}
       >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
         {
           options.map((obj, i) => <MenuItem key={i} value={obj.value}>{obj.label}</MenuItem>)
         }

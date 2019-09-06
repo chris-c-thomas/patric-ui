@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
+import { InputLabel } from '@material-ui/core';
+
 import AsyncSelect from 'react-select/async';
 import highlightText from '../../../utils/text'
 import ObjectSelectorDialog from './object-selector-dialog';
@@ -29,11 +31,18 @@ const inputStyles = {
 export default function ObjectSelector(props) {
   const styles = useStyles();
 
-  const {type, dialogTitle, placeholder, label} = props;
+  const {type, dialogTitle, placeholder, label, value} = props;
 
   const [items, setItems] = useState(null);
-  const [selectedPath, setSelectedPath] = useState(null);
+  const [selectedPath, setSelectedPath] = useState();
   const [query, setQuery] = useState(null);
+
+  // here allow the value to be set from outside this component
+  useEffect(() => {
+    if (!value) return;
+
+    _setPath(value)
+  }, [value])
 
   function onDialogSelect(path) {
     _setPath(path)
@@ -47,7 +56,7 @@ export default function ObjectSelector(props) {
 
   const loadOptions = (inputValue, callback) => {
     if (items) {
-      callback(filterItems(items))
+      callback(filterItems())
       return;
     }
 
@@ -90,13 +99,15 @@ export default function ObjectSelector(props) {
     });
   }
 
-
-
   return (
     <div className={styles.root}>
       <Grid container spacing={1} alignItems="flex-end">
         <Grid item>
+          <InputLabel shrink htmlFor={label}>
+            {label}
+          </InputLabel>
           <AsyncSelect
+            id={label}
             cacheOptions
             defaultOptions
             placeholder={placeholder}

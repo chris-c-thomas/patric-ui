@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Paper } from '@material-ui/core';
+import { Paper, Grid, Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
-import Grid from '@material-ui/core/Grid';
 import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
 import TextInput from './components/text-input';
 import TaxonNameInput from './components/taxon-name-input';
 import TaxonIDInput from './components/taxon-id-input';
-
 
 import config from '../config.js'
 const userGuideURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
@@ -19,7 +17,7 @@ const tutorialURL = `${config.docsURL}/user_guides/services/genome_annotation_se
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: theme.spacing(4, 12),
+    margin: theme.spacing(4, 30),
     padding: theme.spacing(3, 2),
   },
   progress: {
@@ -30,20 +28,41 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const exampleParams = {
+  contigs: '/PATRIC@patricbrc.org/PATRIC Workshop/Annotation/Staphylococcus_aureus_VB4283.fna',
+  taxon_name: 'Staphylococcus auresus',
+
+}
+
 
 export default function Annotate() {
   const styles = useStyles();
 
-  function handleFileName(text) {
-    return 'taxname+';
+  const [contigs, setContigs] = useState(null)
+  const [filePrefix, setFilePrefix] = useState('')
+
+
+  function useExample() {
+    setContigs
   }
 
+  function onTaxonNameChange({taxon_name}) {
+    setFilePrefix(taxon_name);
+  }
 
   return (
     <Paper className={styles.root}>
-      <Typography variant="h5" component="h3">
-        Genome Annotation
-      </Typography>
+      <Grid container spacing={1}>
+        <Grid item>
+          <Typography variant="h5" component="h3">
+            Genome Annotation
+          </Typography>
+        </Grid>
+        <Grid item>
+          <a onClick={useExample}>use example</a>
+        </Grid>
+      </Grid>
+
       <Typography className={styles.p}>
         The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.<br/>
         For further explanation, please see the Genome Annotation <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
@@ -52,10 +71,11 @@ export default function Annotate() {
       <br/>
 
       <ObjectSelector
-        placeholder="Select a contig"
+        placeholder="Select a contigs file..."
         name="contig"
         type="contigs"
-        dialogTitle="Select a contig"
+        value={contigs}
+        dialogTitle="Select a contigs file"
       />
 
       <Selector label="Domain" name="domain" default="Bacteria"
@@ -71,7 +91,9 @@ export default function Annotate() {
           <TaxonNameInput
             label="TaxonomyName"
             name="tax_name"
-            placeholder="e.g. Brucella"
+            placeholder="e.g. Brucella Cereus"
+            noQueryText="Type to search for a taxonomy name..."
+            onChange={onTaxonNameChange}
             />
         </Grid>
         <Grid item>
@@ -109,13 +131,15 @@ export default function Annotate() {
       />
 
       <TextInput
-        label="My Label"
+        label="Output Name"
         name="output_name"
-        onChange={handleFileName}
+        adornment={filePrefix}
       />
 
 
+      <Button variant="outlined" disableRipple>Reset</Button>
+      <Button variant="outlined" color="primary" disableRipple>Submit</Button>
+
     </Paper>
   )
-
 };
