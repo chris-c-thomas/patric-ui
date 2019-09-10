@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { Paper, Grid, Button } from '@material-ui/core';
@@ -7,8 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
 import TextInput from './components/text-input';
-import TaxonNameInput from './components/taxon-name-input';
-import TaxonIDInput from './components/taxon-id-input';
+import TaxonNameInput from './components/taxon-name';
+import TaxonIDInput from './components/taxon-id';
+import { Step, StepIcon, StepLabel } from '@material-ui/core';
+
+import '../styles/apps.scss';
 
 import config from '../config.js'
 const userGuideURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
@@ -31,7 +34,6 @@ const useStyles = makeStyles(theme => ({
 const exampleParams = {
   contigs: '/PATRIC@patricbrc.org/PATRIC Workshop/Annotation/Staphylococcus_aureus_VB4283.fna',
   taxon_name: 'Staphylococcus auresus',
-
 }
 
 
@@ -43,103 +45,146 @@ export default function Annotate() {
 
 
   function useExample() {
-    setContigs
+    setContigs(exampleParams.contigs);
   }
 
-  function onTaxonNameChange({taxon_name}) {
-    setFilePrefix(taxon_name);
+  function onSubmit() {
+
   }
 
   return (
     <Paper className={styles.root}>
       <Grid container spacing={1}>
-        <Grid item>
+        <Grid container justify="space-between" alignItems="center">
+          <Grid item>
           <Typography variant="h5" component="h3">
             Genome Annotation
           </Typography>
+          </Grid>
+          <Grid item>
+            <small><a onClick={useExample}>use example</a></small>
+          </Grid>
+
         </Grid>
+
         <Grid item>
-          <a onClick={useExample}>use example</a>
+          <Typography className={styles.p}>
+            The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
+            For further explanation, please see the Genome Annotation <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
+          </Typography>
         </Grid>
       </Grid>
-
-      <Typography className={styles.p}>
-        The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.<br/>
-        For further explanation, please see the Genome Annotation <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
-      </Typography>
-
       <br/>
 
-      <ObjectSelector
-        placeholder="Select a contigs file..."
-        name="contig"
-        type="contigs"
-        value={contigs}
-        dialogTitle="Select a contigs file"
-      />
 
-      <Selector label="Domain" name="domain" default="Bacteria"
-        options={[
-          {value: 'Bacteria', label: 'Bacteria'},
-          {value: 'Archea', label: 'Archea'},
-          {value: 'Viruses', label: 'Viruses'}
-        ]}
-      />
+      <Step active={true} completed={false}>
+        <StepIcon icon={1} />
+        <StepLabel>Set Parameters</StepLabel>
+      </Step>
 
-      <Grid container spacing={1} alignItems="flex-end">
-        <Grid item>
-          <TaxonNameInput
-            label="TaxonomyName"
-            name="tax_name"
-            placeholder="e.g. Brucella Cereus"
-            noQueryText="Type to search for a taxonomy name..."
-            onChange={onTaxonNameChange}
-            />
+      <Grid container className="app-section">
+        <Grid item xs={12}>
+          <ObjectSelector
+            placeholder="Select a contigs file..."
+            label="Contigs"
+            type="contigs"
+            value={contigs}
+            dialogTitle="Select a contigs file"
+          />
         </Grid>
-        <Grid item>
-          <TaxonIDInput
-            label="Taxonomy ID"
-            name="tax_id"
-            placeholder=""
+
+        <Grid container item>
+          <Selector label="Domain" name="domain" default="Bacteria"
+            options={[
+              {value: 'Bacteria', label: 'Bacteria'},
+              {value: 'Archea', label: 'Archea'},
+              {value: 'Viruses', label: 'Viruses'}
+            ]}
+          />
+        </Grid>
+
+
+        <Grid container item spacing={1} xs={12} alignItems="flex-end" >
+          <Grid item xs={8}>
+            <TaxonNameInput
+              label="TaxonomyName"
+              name="tax_name"
+              placeholder="e.g. Brucella Cereus"
+              noQueryText="Type to search for a taxonomy name..."
+              onChange={({taxon_name}) => setFilePrefix(taxon_name)}
+              />
+          </Grid>
+          <Grid item xs={4}>
+            <TaxonIDInput
+              label="Taxonomy ID"
+              name="tax_id"
+              placeholder=""
+              noQueryText="Type to search by taxonomy ID..."
             />
+          </Grid>
+        </Grid>
+
+
+        <Grid container item>
+          <Selector label="Genetic Code" name="genetic-code" default="11"
+            options={[
+              {value: '11', label: '11 (Archaea & most bacteria)'},
+              {value: '4', label: '4 (Mycoplasma, Spiroplasma & Ureaplasma)'},
+              {value: '25', label: '25 (Candidate Divsion SR1 & Gracilibacteria)'},
+            ]}
+          />
+        </Grid>
+
+        <Grid container item>
+          <Selector label="Annotation Recipe" name="annotation-recipe" default="default"
+            width="200px"
+            options={[
+              {value: 'default', label: 'Default'},
+              {value: 'phage', label: 'Phage'},
+            ]}
+          />
         </Grid>
       </Grid>
 
-      <Selector label="Genetic Code" name="genetic-code" default="11"
-        options={[
-          {value: '11', label: '11 (Archaea & most bacteria'},
-          {value: '4', label: '4 (Mycoplasma, Spiroplasma & Ureaplasma'},
-          {value: '25', label: '25 (Candidate Divsion SR1 & Gracilibacteria'},
-        ]}
-      />
+      <Step active={true} completed={false}>
+        <StepIcon icon={2} />
+        <StepLabel>Select Output</StepLabel>
+      </Step>
 
-      <Selector label="Annotation Recipe" name="annotation-recipe" default="default"
-        options={[
-          {value: 'default', label: 'Default'},
-          {value: 'phage', label: 'Phage'},
-        ]}
-      />
+      <Grid container className="app-section">
+        <Grid container item xs={12}>
+          <ObjectSelector
+            placeholder="Select a folder..."
+            label="Output Folder"
+            name="output_folder"
+            type="Folder"
+            dialogTitle="Select a folder"
+          />
+        </Grid>
 
-      <Typography variant="h6" component="h3">Output</Typography><br/>
-
-      <ObjectSelector
-        placeholder="Select a folder"
-        label="Output Folder"
-        name="output_folder"
-        type="Folder"
-        dialogTitle="Select a folder"
-      />
-
-      <TextInput
-        label="Output Name"
-        name="output_name"
-        adornment={filePrefix}
-      />
+        <Grid item xs={6}>
+          <TextInput
+            label="Output Name"
+            name="output_name"
+            adornment={filePrefix}
+          />
+        </Grid>
 
 
-      <Button variant="outlined" disableRipple>Reset</Button>
-      <Button variant="outlined" color="primary" disableRipple>Submit</Button>
-
+        <Grid container spacing={1}>
+          <Button variant="outlined" disableRipple>
+            Reset
+          </Button>
+          <Button
+            onClick={onSubmit}
+            variant="outlined"
+            color="primary"
+            disableRipple
+            disabled>
+            Submit
+          </Button>
+        </Grid>
+      </Grid>
     </Paper>
   )
 };

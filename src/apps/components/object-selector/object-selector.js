@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import { InputLabel } from '@material-ui/core';
+import { FormHelperText } from '@material-ui/core';
 
 import AsyncSelect from 'react-select/async';
 import highlightText from '../../../utils/text'
@@ -31,9 +32,16 @@ const inputStyles = {
 export default function ObjectSelector(props) {
   const styles = useStyles();
 
-  const {type, dialogTitle, placeholder, label, value} = props;
+  const {
+    type,
+    dialogTitle,
+    placeholder,
+    label,
+    value
+  } = props;
 
   const [items, setItems] = useState(null);
+  const [error, setError] = useState(null);
   const [selectedPath, setSelectedPath] = useState();
   const [query, setQuery] = useState(null);
 
@@ -73,7 +81,10 @@ export default function ObjectSelector(props) {
         });
         setItems(items)
         callback(items)
-      })
+      }).catch(err => {
+        setError(err);
+        callback([]);
+      });
   };
 
   const formatOptionLabel = (opt) => {
@@ -100,35 +111,44 @@ export default function ObjectSelector(props) {
   }
 
   return (
-    <div className={styles.root}>
-      <Grid container spacing={1} alignItems="flex-end">
-        <Grid item>
-          <InputLabel shrink htmlFor={label}>
-            {label}
-          </InputLabel>
-          <AsyncSelect
-            id={label}
-            cacheOptions
-            defaultOptions
-            placeholder={placeholder}
-            loadOptions={loadOptions}
-            styles={inputStyles}
-            formatOptionLabel={formatOptionLabel}
-            noOptionsMessage={() => "No results"}
-            onInputChange={val => setQuery(val)}
-            onChange={obj => setSelectedPath(obj)}
-            value={selectedPath}
-          />
-        </Grid>
+    <Grid container spacing={1}>
+      <Grid item xs={9}>
+        <InputLabel shrink htmlFor={label}>
+          {label}
+        </InputLabel>
+        <AsyncSelect
+          id={label}
+          cacheOptions
+          defaultOptions
+          placeholder={placeholder}
+          loadOptions={loadOptions}
+          styles={inputStyles}
+          formatOptionLabel={formatOptionLabel}
+          noOptionsMessage={() => "No results"}
+          onInputChange={val => setQuery(val)}
+          onChange={obj => setSelectedPath(obj)}
+          value={selectedPath}
+        />
+        {
+          error &&
+          <FormHelperText error={true}>
+            There was a problem fetching workspace data.
+            Please try refresh your browser or contact us.
+          </FormHelperText>
+        }
 
-        <Grid item>
-          <ObjectSelectorDialog
-            title={dialogTitle}
-            type={type}
-            onSelect={onDialogSelect}
-          />
-        </Grid>
       </Grid>
-    </div>
+
+      <Grid item xs={1}>
+        <InputLabel shrink htmlFor={label}>
+          &nbsp;
+        </InputLabel>
+        <ObjectSelectorDialog
+          title={dialogTitle}
+          type={type}
+          onSelect={onDialogSelect}
+        />
+      </Grid>
+    </Grid>
   );
 }

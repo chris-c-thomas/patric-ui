@@ -8,9 +8,7 @@ import { FormControl, InputLabel, OutlinedInput, MenuItem } from '@material-ui/c
 
 const useStyles = makeStyles(theme => ({
   formControl: {
-    margin: theme.spacing(5, 0),
-    minWidth: 120,
-    display: 'block'
+    margin: theme.spacing(3, 0)
   },
   label: {
     // Fixme(nc): likely a bug with material-ui
@@ -23,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 export default function Selector(props) {
   const styles = useStyles()
 
-  const {options, label, name} = props;
+  const {options, label, name, width} = props;
 
   if (!options) throw ('Selector component must have prop: options');
   if (!label) throw ('Selector component must have prop: label');
@@ -38,7 +36,8 @@ export default function Selector(props) {
       </InputLabel>
       <Select
         value={value}
-        onChange={(evt) => setValue(evt.target.value)}
+        style={{width}}
+        onChange={evt => setValue(evt.target.value)}
         input={<OutlinedInput name={name} id={name} />}
       >
         {

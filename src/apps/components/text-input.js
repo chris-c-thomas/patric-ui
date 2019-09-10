@@ -9,9 +9,7 @@ import { TextField, FormControl } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
-    margin: theme.spacing(5, 0),
-    minWidth: 120,
-    display: 'block'
+    margin: theme.spacing(3, 0),
   },
   label: {
     // Fixme(nc): likely a bug with material-ui

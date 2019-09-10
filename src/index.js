@@ -42,7 +42,8 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background
+    backgroundColor: '#F5F5F5',
+    height: '100%'
   },
   card: {
     minWidth: 275,

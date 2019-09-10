@@ -5,7 +5,7 @@ import { InputLabel } from '@material-ui/core';
 import AsyncSelect from 'react-select/async';
 import highlightText from '../../utils/text'
 
-import { queryTaxon } from '../../api/data-api';
+import { queryTaxonID } from '../../api/data-api';
 
 
 const inputStyles = {
@@ -14,12 +14,11 @@ const inputStyles = {
     zIndex: 9999
   }),
   input: styles => ({
-    ...styles,
-    minWidth: '450px'
+    ...styles
   })
 }
 
-export default function TaxonNameInput(props) {
+export default function TaxonIDInput(props) {
   const {placeholder, label, noQueryText, onChange} = props;
   const [value, setValue] = useState(null);
   const [query, setQuery] = useState(null);
@@ -27,14 +26,12 @@ export default function TaxonNameInput(props) {
   const loadOptions = (query, callback) => {
     if (!query) return;
 
-    queryTaxon({query})
-      .then(data => {
-        callback(data)
-      })
+    queryTaxonID({query})
+      .then(data => callback(data));
   };
 
   const formatOptionLabel = opt => (
-    <div>[{opt.taxon_rank}] {highlightText(opt.taxon_name, query)}</div>
+    <div>{highlightText(opt.taxon_id, query)} [{opt.taxon_name}]</div>
   )
 
   function handleChange(obj) {
@@ -44,11 +41,11 @@ export default function TaxonNameInput(props) {
 
   return (
     <>
-      <InputLabel shrink htmlFor="taxon-name">
-        Taxonomy Name
+      <InputLabel shrink htmlFor="taxon-id">
+        Taxonomy ID
       </InputLabel>
       <AsyncSelect
-        id="taxon-name"
+        id="taxon-id"
         cacheOptions
         placeholder={placeholder}
         loadOptions={loadOptions}
