@@ -3,7 +3,6 @@
 import React, {lazy, Suspense, Fragment} from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 
-import PropTypes from 'prop-types';
 import { render } from "react-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -26,7 +25,8 @@ import './styles/styles.scss'
 import NotFound404 from './404';
 
 // lazy load apps
-const Annotate = lazy(() => import('./apps/annotate'))
+const Annotation = lazy(() => import('./apps/annotation'))
+const Assembly = lazy(() => import('./apps/assembly'))
 
 const theme = createMuiTheme({
   palette: {
@@ -88,7 +88,8 @@ const App = () => {
                 <Home />
               }/>
 
-              <Route path="/apps/annotate" exact render={() => <Annotate />} />
+              <Route path="/apps/annotation" exact render={() => <Annotation />} />
+              <Route path="/apps/assembly" exact render={() => <Assembly />} />
               <Route path='*' component={NotFound404} />
               {/* START genome tabs */}
               <div className={styles.content}>

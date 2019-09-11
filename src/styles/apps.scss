@@ -10,9 +10,14 @@ $form-pad: 35px;
   .text-input,
   .selector,
   .object-selector,
-  .taxon-selector {
+  .taxon-selector,
+  .btn-group {
     margin-bottom: 20px;
   }
+}
+
+.app-description {
+  font-size: .9em !important;
 }
 
 .submit-bar {
@@ -23,3 +28,4 @@ $form-pad: 35px;
 .no-raised {
   box-shadow: none;
 }
+

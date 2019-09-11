@@ -13,5 +13,8 @@ a:hover {
 
 .p4-ui {
     @import './general.scss';
+    @import './tables.scss';
     @import './mui-overrides.scss';
+    @import './hottable-overrides.scss';
 }
+

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Paper, Grid, Button } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+import { Paper, Grid } from '@material-ui/core';
 
+import { AppHeader, SubmitBtns } from './partials';
 import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
 import TextInput from './components/text-input';
-import TaxonNameInput from './components/taxon-name';
-import TaxonIDInput from './components/taxon-id';
+// import TaxonNameInput from './components/taxon-name';
+// import TaxonIDInput from './components/taxon-id';
 import { Step, StepIcon, StepLabel } from '@material-ui/core';
 
 import '../styles/apps.scss';
@@ -27,9 +27,6 @@ const useStyles = makeStyles(theme => ({
   },
   progress: {
     margin: theme.spacing(2),
-  },
-  p: {
-    fontSize: '.9em'
   }
 }));
 
@@ -45,7 +42,7 @@ const example = {
 }
 
 
-export default function Annotate() {
+export default function Annotation() {
   const styles = useStyles();
 
   const [contigs, setContigs] = useState(null);
@@ -77,29 +74,24 @@ export default function Annotate() {
 
   }
 
+  function onReset() {
+
+  }
 
 
   return (
     <Paper className={styles.root}>
-      <Grid container spacing={1}>
-        <Grid container justify="space-between" alignItems="center">
-          <Grid item>
-          <Typography variant="h5" component="h3">
-            Genome Annotation
-          </Typography>
-          </Grid>
-          <Grid item>
-            <small><a onClick={useExample}>use example</a></small>
-          </Grid>
-        </Grid>
-
-        <Grid item>
-          <Typography className={styles.p}>
+      <AppHeader
+        title="Genome Annotation"
+        onUseExample={useExample}
+        description={
+          <>
             The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
             For further explanation, please see the Genome Annotation <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
-          </Typography>
-        </Grid>
-      </Grid>
+          </>
+        }
+      />
+
       <br/>
 
       <Step active={true} completed={contigs && domain && genCode && recipe}>
@@ -207,24 +199,11 @@ export default function Annotate() {
           />
         </Grid>
 
-        <Grid container spacing={1} justify="space-between" className="submit-bar">
-          <Grid item>
-            <Button
-              onClick={onSubmit}
-              variant="contained"
-              color="primary"
-              className="no-raised"
-              disableRipple
-              >
-              Submit
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button disableRipple>
-              Reset
-            </Button>
-          </Grid>
-        </Grid>
+        <SubmitBtns
+          onSubmit={onSubmit}
+          onReset={onReset}
+        />
+
       </Grid>
     </Paper>
   )

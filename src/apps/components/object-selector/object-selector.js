@@ -12,12 +12,6 @@ import ObjectSelectorDialog from './object-selector-dialog';
 import { pathToOptionObj } from '../../../utils/paths';
 import * as WS from '../../../api/workspace-api';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    minWidth: 290
-  }
-}));
 
 const inputStyles = {
   menu: styles => ({
@@ -30,8 +24,11 @@ const inputStyles = {
   })
 }
 
+const usageError = (propName, value) => {
+  return `ObjectSelector component must have prop: ${propName}.  Value was: ${value}`
+}
+
 export default function ObjectSelector(props) {
-  const styles = useStyles();
 
   const {
     type,
@@ -42,8 +39,11 @@ export default function ObjectSelector(props) {
     onChange
   } = props;
 
+  if (!type) throw usageError('type', type);
+  if (!dialogTitle) throw usageError('dialogTitle', dialogTitle);
+  if (!label) throw usageError('label', label);
   if (typeof value == 'undefined')
-    throw (`ObjectSelector component must have prop: value.  Was: ${value}`);
+    throw usageError('value', value);
 
   const [items, setItems] = useState(null);
   const [error, setError] = useState(null);
@@ -76,9 +76,7 @@ export default function ObjectSelector(props) {
     let path = '/nconrad@patricbrc.org/home';
     WS.list({path, type, recursive: true, showHidden: false})
       .then(data => {
-        const items = data.map(obj => {
-          return pathToOptionObj(obj.path);
-        });
+        const items = data.map(obj => pathToOptionObj(obj.path));
 
         setItems(items)
         callback(items)

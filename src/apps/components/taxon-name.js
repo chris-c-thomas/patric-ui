@@ -28,13 +28,11 @@ export default function TaxonNameInput(props) {
   const [val, setVal] = useState(null);
   const [query, setQuery] = useState(null);
 
-  console.log('value', value)
 
   // here allow the value to be set from outside this component
   useEffect(() => {
     if (!value) return;
 
-    console.log('setting VAlue', value)
     setVal(value)
   }, [value])
 
