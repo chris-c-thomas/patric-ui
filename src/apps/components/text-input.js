@@ -1,29 +1,23 @@
 
-import React, {useState} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
-
-
 import { TextField, FormControl } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  label: {
-    // Fixme(nc): likely a bug with material-ui
-    background: '#fff',
-    padding: '0 3px'
-  }
 }));
 
 
+const usageError = (propName, value, label) => {
+  return `TextInput component with label="${label}" must have prop: ${propName}.  ` +
+    `Value was: ${value}`
+}
+
 export default function TextInput(props) {
-  const styles = useStyles()
+  const {label, value, adornment, type} = props;
 
-  const {label, value, adornment} = props;
-
-  if (!label) throw ('TextInput component must have prop: label');
-  if (typeof value == 'undefined')
-    throw (`TextInput component must have prop: value.  Was: ${value}`);
-
+  if (!label) throw usageError('label', label);
+  if (typeof value == 'undefined') throw usageError('value', value, label);
 
   let inputProps = {
     InputProps: {
@@ -35,6 +29,7 @@ export default function TextInput(props) {
     <FormControl variant="outlined" margin="dense" notched="true" className="text-input">
       <TextField
         variant="outlined"
+        type={type}
         value={value || ''}
         id={label}
         label={label}
