@@ -17,7 +17,6 @@ const useStyles = makeStyles(theme => ({
 export default function Home() {
   const styles = useStyles();
 
-
   return (
     <div className={styles.root}>
       <Paper className={styles.home}>This is the home page</Paper>

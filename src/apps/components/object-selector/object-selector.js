@@ -9,6 +9,7 @@ import AsyncSelect from 'react-select/async';
 import highlightText from '../../../utils/text'
 import ObjectSelectorDialog from './object-selector-dialog';
 
+import { pathToOptionObj } from '../../../utils/paths';
 import * as WS from '../../../api/workspace-api';
 
 const useStyles = makeStyles(theme => ({
@@ -37,12 +38,16 @@ export default function ObjectSelector(props) {
     dialogTitle,
     placeholder,
     label,
-    value
+    value,
+    onChange
   } = props;
+
+  if (typeof value == 'undefined')
+    throw (`ObjectSelector component must have prop: value.  Was: ${value}`);
 
   const [items, setItems] = useState(null);
   const [error, setError] = useState(null);
-  const [selectedPath, setSelectedPath] = useState();
+  const [selectedPath, setSelectedPath] = useState(null);
   const [query, setQuery] = useState(null);
 
   // here allow the value to be set from outside this component
@@ -71,14 +76,10 @@ export default function ObjectSelector(props) {
     let path = '/nconrad@patricbrc.org/home';
     WS.list({path, type, recursive: true, showHidden: false})
       .then(data => {
-        const items = data.map((obj, i) => {
-          const parts = obj.path.split('/');
-
-          return {
-            label: '/' + parts.slice(2).join('/'),
-            value: obj.path
-          };
+        const items = data.map(obj => {
+          return pathToOptionObj(obj.path);
         });
+
         setItems(items)
         callback(items)
       }).catch(err => {
@@ -102,12 +103,9 @@ export default function ObjectSelector(props) {
   }
 
   const _setPath = (path) => {
-    const parts = path.split('/');
-
-    setSelectedPath({
-      label: '/' + parts.slice(2).join('/'),
-      value: path
-    });
+    const obj = pathToOptionObj(path);
+    setSelectedPath(obj);
+    if (onChange) onChange(path);
   }
 
   return (
@@ -126,8 +124,9 @@ export default function ObjectSelector(props) {
           formatOptionLabel={formatOptionLabel}
           noOptionsMessage={() => "No results"}
           onInputChange={val => setQuery(val)}
-          onChange={obj => setSelectedPath(obj)}
+          onChange={obj => _setPath(obj.value)}
           value={selectedPath}
+          className="object-selector"
         />
         {
           error &&
@@ -136,7 +135,6 @@ export default function ObjectSelector(props) {
             Please try refresh your browser or contact us.
           </FormHelperText>
         }
-
       </Grid>
 
       <Grid item xs={1}>

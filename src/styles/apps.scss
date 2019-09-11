@@ -1,4 +1,25 @@
 
+$form-pad: 35px;
+
 .app-section {
-  padding-left: 35px;
+  padding-left: $form-pad;
+  margin-bottom: 20px;
+}
+
+.app-section {
+  .text-input,
+  .selector,
+  .object-selector,
+  .taxon-selector {
+    margin-bottom: 20px;
+  }
+}
+
+.submit-bar {
+  margin-top: 5px;
+  margin-right: $form-pad;
+}
+
+.no-raised {
+  box-shadow: none;
 }

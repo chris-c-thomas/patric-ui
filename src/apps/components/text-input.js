@@ -8,9 +8,6 @@ import clsx from 'clsx';
 import { TextField, FormControl } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  formControl: {
-    margin: theme.spacing(3, 0),
-  },
   label: {
     // Fixme(nc): likely a bug with material-ui
     background: '#fff',
@@ -22,18 +19,20 @@ const useStyles = makeStyles(theme => ({
 export default function TextInput(props) {
   const styles = useStyles()
 
-  const {label, name} = props;
+  const {label, value} = props;
 
   if (!label) throw ('TextInput component must have prop: label');
-  if (!name) throw ('TextInput component must have prop: name');
+  if (typeof value == 'undefined')
+    throw (`TextInput component must have prop: value.  Was: ${value}`);
+
 
   return (
-    <FormControl variant="outlined" margin="dense" notched="true" className={styles.formControl}>
+    <FormControl variant="outlined" margin="dense" notched="true" className="text-input">
       <TextField
         variant="outlined"
-        id={name}
+        value={value || ''}
+        id={label}
         label={label}
-        className={clsx(styles.textField, styles.dense)}
         margin="dense"
         InputProps={{
           startAdornment: <InputAdornment position="start">{props.adornment}</InputAdornment>,

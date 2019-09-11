@@ -18,6 +18,8 @@ const userGuideURL = `${config.docsURL}/tutorial/genome_annotation/annotation.ht
 const tutorialURL = `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
 
 
+import { user } from '../../token.js'
+
 const useStyles = makeStyles(theme => ({
   root: {
     margin: theme.spacing(4, 30),
@@ -31,26 +33,51 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const exampleParams = {
+const example = {
   contigs: '/PATRIC@patricbrc.org/PATRIC Workshop/Annotation/Staphylococcus_aureus_VB4283.fna',
-  taxon_name: 'Staphylococcus auresus',
+  domain: 'Bacteria',
+  scientific_name: 'Staphylococcus auresus',
+  tax_id: 1280,
+  code: 11,
+  output_path: `/${user}@patricbrc.org/home`,
+  output_file: 'example',
+  recipe: 'default'
 }
 
 
 export default function Annotate() {
   const styles = useStyles();
 
-  const [contigs, setContigs] = useState(null)
+  const [contigs, setContigs] = useState(null);
+  const [domain, setDomain] = useState('Bacteria');
+  const [taxName, setTaxName] = useState(null);
+  const [taxID, setTaxID] = useState(null);
+  const [genCode, setGencode] = useState(11);
+  const [recipe, setRecipe] = useState('default');
+  const [folder, setFolder] = useState(null);
+  const [fileName, setFileName] = useState(null);
+
+
   const [filePrefix, setFilePrefix] = useState('')
 
 
   function useExample() {
-    setContigs(exampleParams.contigs);
+    const obj = example;
+    setContigs(obj.contigs);
+    setDomain(obj.contigs);
+    setTaxName(obj.scientific_name);
+    setTaxID(obj.tax_id);
+    setGencode(obj.code);
+    setRecipe(obj.recipe);
+    setFolder(obj.output_path);
+    setFileName(obj.output_file);
   }
 
   function onSubmit() {
 
   }
+
+
 
   return (
     <Paper className={styles.root}>
@@ -64,7 +91,6 @@ export default function Annotate() {
           <Grid item>
             <small><a onClick={useExample}>use example</a></small>
           </Grid>
-
         </Grid>
 
         <Grid item>
@@ -76,8 +102,7 @@ export default function Annotate() {
       </Grid>
       <br/>
 
-
-      <Step active={true} completed={false}>
+      <Step active={true} completed={contigs && domain && genCode && recipe}>
         <StepIcon icon={1} />
         <StepLabel>Set Parameters</StepLabel>
       </Step>
@@ -89,12 +114,16 @@ export default function Annotate() {
             label="Contigs"
             type="contigs"
             value={contigs}
+            onChange={val => setContigs(val)}
             dialogTitle="Select a contigs file"
           />
         </Grid>
 
-        <Grid container item>
-          <Selector label="Domain" name="domain" default="Bacteria"
+        <Grid item>
+          <Selector
+            label="Domain"
+            value={domain}
+            onChange={val => setDomain(val)}
             options={[
               {value: 'Bacteria', label: 'Bacteria'},
               {value: 'Archea', label: 'Archea'},
@@ -103,30 +132,35 @@ export default function Annotate() {
           />
         </Grid>
 
-
-        <Grid container item spacing={1} xs={12} alignItems="flex-end" >
+        <Grid container item spacing={1} xs={12} >
           <Grid item xs={8}>
+            {/*
             <TaxonNameInput
-              label="TaxonomyName"
-              name="tax_name"
+              value={taxName}
+
               placeholder="e.g. Brucella Cereus"
               noQueryText="Type to search for a taxonomy name..."
               onChange={({taxon_name}) => setFilePrefix(taxon_name)}
-              />
+            />
+            */}
           </Grid>
+
           <Grid item xs={4}>
+            {/*
             <TaxonIDInput
-              label="Taxonomy ID"
-              name="tax_id"
+
               placeholder=""
               noQueryText="Type to search by taxonomy ID..."
             />
+            */}
           </Grid>
         </Grid>
 
-
-        <Grid container item>
-          <Selector label="Genetic Code" name="genetic-code" default="11"
+        <Grid container item xs={12}>
+          <Selector
+            label="Genetic Code"
+            value={genCode}
+            onChange={val => setGencode(val)}
             options={[
               {value: '11', label: '11 (Archaea & most bacteria)'},
               {value: '4', label: '4 (Mycoplasma, Spiroplasma & Ureaplasma)'},
@@ -135,8 +169,11 @@ export default function Annotate() {
           />
         </Grid>
 
-        <Grid container item>
-          <Selector label="Annotation Recipe" name="annotation-recipe" default="default"
+        <Grid container item xs={12}>
+          <Selector
+            label="Annotation Recipe"
+            value={recipe}
+            onChange={val => setRecipe(val)}
             width="200px"
             options={[
               {value: 'default', label: 'Default'},
@@ -154,9 +191,9 @@ export default function Annotate() {
       <Grid container className="app-section">
         <Grid container item xs={12}>
           <ObjectSelector
+            value={folder}
             placeholder="Select a folder..."
             label="Output Folder"
-            name="output_folder"
             type="Folder"
             dialogTitle="Select a folder"
           />
@@ -164,25 +201,29 @@ export default function Annotate() {
 
         <Grid item xs={6}>
           <TextInput
+            value={fileName}
             label="Output Name"
-            name="output_name"
             adornment={filePrefix}
           />
         </Grid>
 
-
-        <Grid container spacing={1}>
-          <Button variant="outlined" disableRipple>
-            Reset
-          </Button>
-          <Button
-            onClick={onSubmit}
-            variant="outlined"
-            color="primary"
-            disableRipple
-            disabled>
-            Submit
-          </Button>
+        <Grid container spacing={1} justify="space-between" className="submit-bar">
+          <Grid item>
+            <Button
+              onClick={onSubmit}
+              variant="contained"
+              color="primary"
+              className="no-raised"
+              disableRipple
+              >
+              Submit
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button disableRipple>
+              Reset
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </Paper>

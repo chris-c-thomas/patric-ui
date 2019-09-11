@@ -72,11 +72,6 @@ function TabContainer(props) {
   );
 }
 
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
-
 const App = () => {
   const styles = useStyles();
 

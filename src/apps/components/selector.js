@@ -7,9 +7,6 @@ import { FormControl, InputLabel, OutlinedInput, MenuItem } from '@material-ui/c
 
 
 const useStyles = makeStyles(theme => ({
-  formControl: {
-    margin: theme.spacing(3, 0)
-  },
   label: {
     // Fixme(nc): likely a bug with material-ui
     background: '#fff',
@@ -21,24 +18,25 @@ const useStyles = makeStyles(theme => ({
 export default function Selector(props) {
   const styles = useStyles()
 
-  const {options, label, name, width} = props;
+  const {options, label, value, width} = props;
 
   if (!options) throw ('Selector component must have prop: options');
   if (!label) throw ('Selector component must have prop: label');
-  if (!name) throw ('Selector component must have prop: name');
+  if (typeof value == 'undefined')
+    throw (`Selector component must have prop: value.  Was: ${value}`);
 
-  const [value, setValue] = useState(props.default);
+  const [val, setVal] = useState(value || props.default);
 
   return (
-    <FormControl variant="outlined" margin="dense" notched="true" className={styles.formControl}>
-      <InputLabel htmlFor={name} className={styles.label}>
+    <FormControl variant="outlined" margin="dense" notched="true" className="selector">
+      <InputLabel htmlFor={label} className={styles.label}>
         {label}
       </InputLabel>
       <Select
-        value={value}
+        value={val}
         style={{width}}
-        onChange={evt => setValue(evt.target.value)}
-        input={<OutlinedInput name={name} id={name} />}
+        onChange={evt => setVal(evt.target.value)}
+        input={<OutlinedInput name={label} id={label} />}
       >
         {
           options.map((obj, i) => <MenuItem key={i} value={obj.value}>{obj.label}</MenuItem>)
