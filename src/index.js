@@ -25,8 +25,8 @@ import './styles/styles.scss'
 import NotFound404 from './404';
 
 // lazy load apps
-const Annotation = lazy(() => import('./apps/annotation'))
-const Assembly = lazy(() => import('./apps/assembly'))
+const Annotation = lazy(() => import('./apps/annotation'));
+const Assembly = lazy(() => import('./apps/assembly'));
 
 const theme = createMuiTheme({
   palette: {

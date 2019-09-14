@@ -34,9 +34,9 @@ import IconButton from '@material-ui/core/IconButton';
 import RemoveButton from '@material-ui/icons/CloseRounded';
 
 
-const usageError = (propName, value) => {
-  return `SelectedTable component must have prop: ${propName}.  Value was: ${value}`
-}
+const usageError = (propName, value) => (
+  `SelectedTable component must have prop: ${propName}.  Value was: ${value}`
+)
 
 const defaultColumns = [{
   name: 'Reads',
@@ -46,12 +46,10 @@ const defaultColumns = [{
   key: 'platform'
 }]
 
-const noSelection = (colCount) => (
+const noSelection = (columns) => (
   <tr>
-    <td colSpan={colCount + 1}>
-      <small className="muted italic">
-        No reads currently selected.
-      </small>
+    <td colSpan={columns.length + 1} className="muted italic">
+      No {columns[0].name.toLowerCase()} currently selected.
     </td>
   </tr>
 )
@@ -93,7 +91,7 @@ export default function SelectedTable(props) {
         </tr>
       </thead>
       <tbody>
-        {!items.length && noSelection(columns.length)}
+        {!items.length && noSelection(columns)}
         {items.length > 0 && getRows({columns, items, onRemove})}
       </tbody>
     </table>

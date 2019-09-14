@@ -7,15 +7,15 @@ import { AppHeader, SubmitBtns } from './partials';
 import ObjectSelector from './components/object-selector/object-selector';
 import Selector from './components/selector';
 import TextInput from './components/text-input';
-// import TaxonNameInput from './components/taxon-name';
-// import TaxonIDInput from './components/taxon-id';
+import TaxonNameInput from './components/taxon-name';
+import TaxonIDInput from './components/taxon-id';
 import { Step, StepIcon, StepLabel } from '@material-ui/core';
 
 import '../styles/apps.scss';
 
 import config from '../config.js'
-const userGuideURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
-const tutorialURL = `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
+const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
+const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
 
 
 import { user } from '../../token.js'
@@ -90,6 +90,7 @@ export default function Annotation() {
             For further explanation, please see the Genome Annotation <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
           </>
         }
+        userGuideURL={userGuideURL}
       />
 
       <br/>
@@ -129,7 +130,6 @@ export default function Annotation() {
             {/*
             <TaxonNameInput
               value={taxName}
-
               placeholder="e.g. Brucella Cereus"
               noQueryText="Type to search for a taxonomy name..."
               onChange={({taxon_name}) => setFilePrefix(taxon_name)}
@@ -140,7 +140,6 @@ export default function Annotation() {
           <Grid item xs={4}>
             {/*
             <TaxonIDInput
-
               placeholder=""
               noQueryText="Type to search by taxonomy ID..."
             />
@@ -203,6 +202,7 @@ export default function Annotation() {
           onSubmit={onSubmit}
           onReset={onReset}
         />
+
 
       </Grid>
     </Paper>

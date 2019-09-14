@@ -8,11 +8,14 @@ import Button from '@material-ui/core/Button';
 import Label from '@material-ui/core/InputLabel';
 import AddIcon from '@material-ui/icons/AddRounded';
 
+import AdvandedButton from './advanced-button'
 import ObjectSelector from './object-selector/object-selector';
 import SelectedTable from './selected-table';
 import TextInput from './text-input';
+import Selector from './selector';
 
-import { pathToObject } from '../../utils/paths';
+import { parsePath } from '../../utils/paths';
+
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -24,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 export default function ReadSelector(props) {
   const styles = useStyles();
 
-  const { onChange } = props;
+  const { onChange, advancedOptions} = props;
 
   // currently selected path (for single reads)
   const [path, setPath] = useState(null);
@@ -39,8 +42,14 @@ export default function ReadSelector(props) {
   // currently selected read type
   const [type, setType] = useState('single');
 
-  // currently selected path (for single reads)
+  // list of selected reads
   const [reads, setReads] = useState([]);
+
+  const [advOpen, setAdvOpen] = useState(false);
+
+  const [interleaved, setInterleaved] = useState('false');
+  const [read_orientation_outward, setMatePaired] = useState('false');
+  const [platform, setPlatform] = useState('infer');
 
 
   // two way binding on "reads"
@@ -54,14 +63,23 @@ export default function ReadSelector(props) {
   }
 
   function onAdd() {
+    let item;
     if (type == 'single') {
-      const item = {
-        name: path,
-        platform: 'single ended'
+      item = {
+        name: parsePath(path).label,
+        platform: patform
       }
-
-      setReads([...reads, item]);
+    } else if (type == 'paired') {
+      item = {
+        name: parsePath(path1).label + ', ' + parsePath(path2).label ,
+        platform,
+        interleaved,
+        read_orientation_outward
+      }
     }
+
+    // add reads
+    setReads([...reads, item]);
   }
 
   function onRemove({index}) {
@@ -89,9 +107,10 @@ export default function ReadSelector(props) {
         </ToggleButton>
       </ToggleButtonGroup>
 
+      {/*<UserGuideDialog url={userGuideURL} />*/}
 
-      <Grid container>
-        <Grid item xs={9}>
+      <Grid container justify="space-between">
+        <Grid item xs={10}>
           {
             type == 'single' &&
             <ObjectSelector
@@ -133,6 +152,7 @@ export default function ReadSelector(props) {
           }
         </Grid>
 
+
         {/* reuse "add" button for each set of forms */}
         <Grid item xs={1}>
           <Button
@@ -142,7 +162,7 @@ export default function ReadSelector(props) {
             disabled={
               type == 'single' && !path ||
               type == 'paired' && (!path1 || !path2) ||
-              type == 'sra' && !sra
+              type == 'SRA' && !sraID
             }
             disableRipple
           >
@@ -150,19 +170,67 @@ export default function ReadSelector(props) {
           </Button>
         </Grid>
 
-
-
-          <SelectedTable
-            items={reads}
-            onRemove={onRemove}
+        {/* we show the advanced options for single or paired */
+          advancedOptions && type != 'SRA' &&
+          <AdvandedButton
+            onClick={open => setAdvOpen(open)}
+            label="Advanced"
           />
+        }
 
+        {
+          advOpen &&
+          <Grid container spacing={1}>
 
+            { type == 'paired' &&
+              <>
+                <Grid item xs={4}>
+                  <Selector
+                    label="File 1 Interleaved"
+                    value={interleaved}
+                    width="150px"
+                    options={[
+                      {label: 'False', value: 'false'},
+                      {label: 'True', value: 'true'}
+                    ]}
+                  />
+                </Grid>
+
+                <Grid item xs={4}>
+                  <Selector
+                      label="Mate Paired"
+                      value={read_orientation_outward}
+                      width="150px"
+                      options={[
+                        {label: 'False', value: 'false'},
+                        {label: 'True', value: 'true'}
+                      ]}
+                    />
+                </Grid>
+              </>
+            }
+
+            <Grid item>
+              <Selector
+                  label="Platform"
+                  value={platform}
+                  options={[
+                    {label: 'Infer Platform', value: 'infer'},
+                    {label: 'Illumina', value: 'illumina'},
+                    {label: 'Ion Torrent', value: 'iontorrent'}
+                  ]}
+                />
+            </Grid>
+          </Grid>
+
+        }
+
+        <SelectedTable
+          items={reads}
+          onRemove={onRemove}
+        />
 
       </Grid>
-
-
-
     </>
   )
 }

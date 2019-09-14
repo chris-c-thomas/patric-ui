@@ -51,6 +51,9 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(2, 0),
+  },
   dialog: {
   },
   tabRoot: {
@@ -106,7 +109,10 @@ export default function ObjectSelectorDialog(props) {
 
   return (
     <div>
-      <Button color="primary" onClick={handleClickOpen} disableRipple>
+      <Button color="primary" onClick={handleClickOpen}
+        className={styles.button}
+        disableRipple
+      >
         <FolderIcon />
       </Button>
       <Dialog

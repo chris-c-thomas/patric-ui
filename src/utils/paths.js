@@ -1,15 +1,12 @@
 
 
-// pathToObj: convience helper that takes a path and
+// pathToObj: convenience helper that takes a path and
 //  returns an object
-export function pathToObj(path) {
-  const parts = path.split('/'),
-    name = parts.pop();
-
+export function parsePath(path) {
   return {
-    name,
-    path: parts.join('/'),
-    fullPath: path
+    name: path.slice(path.lastIndexOf('/')),
+    path: path,
+    label: pathToLabel(path)
   };
 }
 
@@ -18,9 +15,17 @@ export function pathToObj(path) {
  * pathToOptionObj: helper used for dropdown options
  */
 export function pathToOptionObj(path) {
-  const parts = path.split('/');
   return {
-    label: '/' + parts.slice(2).join('/'),
+    label: pathToLabel(path),
     value: path
   };
+}
+
+
+function pathToLabel(path) {
+  const parts = path.split('/');
+
+  // remove user domain for label
+  parts[1] = parts[1].split('@')[0];
+  return '/' + parts.slice(1).join('/');
 }

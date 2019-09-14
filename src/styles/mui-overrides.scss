@@ -51,7 +51,8 @@ div.MuiToolbar-dense {
   display: none;
 }
 
-.MuiButton-root {
+.MuiButton-root,
+.MuiToggleButton-label {
   text-transform: none;
 }
 

@@ -2,15 +2,17 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import UserGuideDialog from './components/user-guide-dialog';
 
+export function AppHeader(props) {
+  const {title, description, onUseExample, userGuideURL} = props;
 
-export function AppHeader({title, description, onUseExample}) {
   return (
     <Grid container spacing={1}>
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
         <Typography variant="h5" component="h3">
-          {title}
+          {title} <UserGuideDialog url={userGuideURL} />
         </Typography>
         </Grid>
         <Grid item>

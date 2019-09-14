@@ -34,7 +34,7 @@ export default function Selector(props) {
       </InputLabel>
       <Select
         value={val}
-        style={{width}}
+        style={{minWidth: width}}
         onChange={evt => setVal(evt.target.value)}
         input={<OutlinedInput name={label} id={label} />}
       >

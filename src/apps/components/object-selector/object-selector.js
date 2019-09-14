@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import { InputLabel } from '@material-ui/core';
@@ -29,7 +28,6 @@ const usageError = (propName, value) => {
 }
 
 export default function ObjectSelector(props) {
-
   const {
     type,
     dialogTitle,
@@ -108,7 +106,7 @@ export default function ObjectSelector(props) {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={9}>
+      <Grid item xs={11}>
         <InputLabel shrink htmlFor={label}>
           {label}
         </InputLabel>
@@ -136,9 +134,6 @@ export default function ObjectSelector(props) {
       </Grid>
 
       <Grid item xs={1}>
-        <InputLabel shrink htmlFor={label}>
-          &nbsp;
-        </InputLabel>
         <ObjectSelectorDialog
           title={dialogTitle}
           type={type}

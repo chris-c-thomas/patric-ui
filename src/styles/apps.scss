@@ -3,6 +3,7 @@ $form-pad: 35px;
 
 .app-section {
   padding-left: $form-pad;
+  padding-right: $form-pad;
   margin-bottom: 20px;
 }
 
@@ -14,6 +15,15 @@ $form-pad: 35px;
   .btn-group {
     margin-bottom: 20px;
   }
+
+  .advanced-btn {
+    margin-top: -15px;
+    margin-bottom: 10px;
+  }
+}
+
+.MuiStep-root .help {
+  margin-left: 5px;
 }
 
 .app-description {

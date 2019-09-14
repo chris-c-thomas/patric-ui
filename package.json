@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel ./src/index.html",
     "build": "parcel build ./src/index.html",
-    "p4-build": "parcel build ./p4-build/apps.js --no-content-hash",
+    "p4-build": "parcel build ./build-p4/apps.js --no-content-hash",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
