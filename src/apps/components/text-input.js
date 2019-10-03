@@ -1,11 +1,7 @@
 
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { TextField, FormControl } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-}));
 
 
 const usageError = (propName, value, label) => {
@@ -14,10 +10,11 @@ const usageError = (propName, value, label) => {
 }
 
 export default function TextInput(props) {
-  const {label, value, adornment, type} = props;
+  const {label, value, adornment, type, onChange} = props;
 
   if (!label) throw usageError('label', label);
-  if (typeof value == 'undefined') throw usageError('value', value, label);
+
+  const [val, setVal] = useState(value || '')
 
   let inputProps = {
     InputProps: {
@@ -25,12 +22,19 @@ export default function TextInput(props) {
     }
   }
 
+  const handleChange = evt => {
+    const val = evt.target.value
+    setVal(val)
+    if (onChange) onChange(val)
+  }
+
   return (
     <FormControl variant="outlined" margin="dense" notched="true" className="text-input">
       <TextField
         variant="outlined"
         type={type}
-        value={value || ''}
+        value={val}
+        onChange={handleChange}
         id={label}
         label={label}
         margin="dense"

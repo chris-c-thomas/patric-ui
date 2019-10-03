@@ -13,7 +13,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import FolderIcon  from '@material-ui/icons/FolderOpen';
+import FolderIcon  from '@material-ui/icons/FolderOutlined';
 import MyIcon from '@material-ui/icons/AccountCircleOutlined';
 import SharedIcon from '@material-ui/icons/PeopleOutline';
 import PublicIcon from '@material-ui/icons/PublicOutlined';

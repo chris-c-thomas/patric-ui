@@ -67,7 +67,7 @@ export default function ReadSelector(props) {
     if (type == 'single') {
       item = {
         name: parsePath(path).label,
-        platform: patform
+        platform
       }
     } else if (type == 'paired') {
       item = {
@@ -214,6 +214,7 @@ export default function ReadSelector(props) {
               <Selector
                   label="Platform"
                   value={platform}
+                  onChange={val => setPlatform(val)}
                   options={[
                     {label: 'Infer Platform', value: 'infer'},
                     {label: 'Illumina', value: 'illumina'},

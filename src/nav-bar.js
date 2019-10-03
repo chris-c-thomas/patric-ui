@@ -3,21 +3,19 @@
 import React, {useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
-
 import Typography from '@material-ui/core/Typography';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
 import logo from './patric-logo-88h.png';
-import SearchIcon from '@material-ui/icons/Search';
+import FolderIcon from '@material-ui/icons/FolderOpen';
 import StorageIcon from '@material-ui/icons/StorageRounded';
 import ServiceIcon from '@material-ui/icons/Settings';
-import DocsIcon from '@material-ui/icons/LibraryBooks';
 import AccountIcon from '@material-ui/icons/AccountCircle';
-import Caret from '@material-ui/icons/ArrowDropDown';
+
+import * as Auth from './api/auth-api';
+import SignInDialog from './auth/sign-in-dialog';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -36,15 +34,16 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     color: '#c0dcec', // slightly brighter than mockup
     fontSize: '.9em',
+    marginRight: '5px',
     '& span': {
-      marginRight: theme.spacing(3),
+      marginLeft: '5px'
     },
     '& svg': {
-      fontSize: '1.05em',
+      fontSize: '1.4em',
     }
   },
   brand: {
-    marginRight: theme.spacing(8),
+    marginRight: theme.spacing(2),
   },
   version: {
     fontSize: '50%',
@@ -69,7 +68,13 @@ const useStyles = makeStyles(theme => ({
 export function NavBar() {
   const style = useStyles();
 
+
   const [show, setShow] = useState(false);
+  const [signIn, setSignIn] = useState(false);
+
+  const handleSignOut = () => {
+    Auth.signOut()
+  }
 
   return (
     <AppBar position="static" className={style.appBar}>
@@ -80,13 +85,19 @@ export function NavBar() {
         </Typography>
 
         <div className={style.menu}>
-          <span><SearchIcon /> Search</span>
-          <span><StorageIcon /> Browse</span>
-          {/*<span onMouseOver={() => { setShow(true) }} onMouseLeave={() => setShow(false)}>
-            <ServiceIcon /> Services
-          </span>*/}
-          <span><ServiceIcon /> Services</span>
-          <span><DocsIcon /> Docs </span>
+          <Button color="inherit" disableRipple>
+            <StorageIcon />
+            <span>Data</span>
+          </Button>
+          <Button color="inherit" disableRipple>
+            <FolderIcon />
+            <span>Workspace</span>
+          </Button>
+          <Button color="inherit" disableRipple>
+            <ServiceIcon />
+            <span>Services</span>
+          </Button>
+          {/*<span><DocsIcon /> Docs </span>*/}
 
           <div className="dropdown-menu" style={{display: show ? 'block' : 'none'}}>
               <div className="container my-3">
@@ -140,10 +151,20 @@ export function NavBar() {
         </div>
 
         <div className={style.account}>
-          <Button color="inherit"><AccountIcon/> Login</Button>
+          {Auth.isSignedIn() &&
+            <Button color="inherit" onClick={handleSignOut} disableRipple>
+              <AccountIcon/>&nbsp;Sign out
+            </Button>
+          }
+          {!Auth.isSignedIn() &&
+            <Button color="inherit" onClick={() => setSignIn(!signIn)} disableRipple>
+              <AccountIcon/>&nbsp;Sign in
+            </Button>
+          }
         </div>
-
       </Toolbar>
+
+      <SignInDialog open={signIn} onClose={() => setSignIn(false)}/>
     </AppBar>
   );
 };
