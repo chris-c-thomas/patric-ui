@@ -21,6 +21,7 @@ import { ThemeProvider } from '@material-ui/styles';
 
 
 import Home from './home';
+import Account from './my-profile';
 import './styles/styles.scss'
 import NotFound404 from './404';
 
@@ -86,6 +87,10 @@ const App = () => {
             <Switch>
               <Route path="/" exact render={() =>
                 <Home />
+              }/>
+
+              <Route path="/my-profile" exact render={() =>
+                <Account />
               }/>
 
               <Route path="/apps/annotation" exact render={() => <Annotation />} />

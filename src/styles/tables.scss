@@ -24,12 +24,12 @@ table.simple td {
   border-top: 1px solid #dee2e6;
 }
 
-table.simple.hover tr:not(.no-hover):not(.selected):hover {
+table.simple.table-hover tr:not(.no-hover):not(.selected):hover {
   background: #f5f5f5;
 }
 
 // no hover on headers
-table.simple.hover thead:hover {
+table.simple.table-hover thead:hover {
   background: none;
 }
 

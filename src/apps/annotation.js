@@ -87,7 +87,7 @@ export default function Annotation() {
         description={
           <>
             The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
-            For further explanation, please see the Genome Annotation <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
+            For further explanation, please see the Genome Annotation <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">>Tutorial</a>.
           </>
         }
         userGuideURL={userGuideURL}

@@ -1,7 +1,12 @@
-
+//
+// todo(nc): provide general styling for icons next to text
+//
 
 import React, {useState } from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
@@ -12,6 +17,8 @@ import FolderIcon from '@material-ui/icons/FolderOpen';
 import StorageIcon from '@material-ui/icons/StorageRounded';
 import ServiceIcon from '@material-ui/icons/Settings';
 import AccountIcon from '@material-ui/icons/AccountCircle';
+import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
+import ExitIcon from '@material-ui/icons/ExitToApp';
 
 import * as Auth from './api/auth-api';
 import SignInDialog from './auth/sign-in-dialog';
@@ -65,21 +72,53 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+
+
 export function NavBar() {
   const style = useStyles();
 
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
-  const [show, setShow] = useState(false);
-  const [signIn, setSignIn] = useState(false);
+  const [openSignIn, setOpenSignIn] = useState(false);
+
+  // accunt menu
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSignOut = () => {
     Auth.signOut()
   }
 
+  /**
+   * account menu pieces
+   */
+  const openAccountMenu = (evt) => {
+    setAnchorEl(evt.currentTarget);
+    setIsMenuOpen(true)
+  }
+
+  const closeAccountMenu = () => {
+    setAnchorEl(null);
+    setIsMenuOpen(false)
+  }
+
+  const accountMenu = () => (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={closeAccountMenu}
+    >
+      <MenuItem component={Link} to="/my-profile"><AccountIcon/> My Profile</MenuItem>
+      <MenuItem onClick={handleSignOut}><ExitIcon/> Sign out</MenuItem>
+    </Menu>
+  );
+
   return (
     <AppBar position="static" className={style.appBar}>
       <Toolbar variant="dense" className={style.toolbar}>
-        <Typography variant="h5" className={style.brand}>
+        <Typography variant="h5" className={style.brand} component={Link} to="/">
           <img src={logo} className={style.logoImg} />
           <span className={style.version}>demo</span>
         </Typography>
@@ -99,7 +138,7 @@ export function NavBar() {
           </Button>
           {/*<span><DocsIcon /> Docs </span>*/}
 
-          <div className="dropdown-menu" style={{display: show ? 'block' : 'none'}}>
+          <div className="dropdown-menu" style={{display: isNavOpen ? 'block' : 'none'}}>
               <div className="container my-3">
                 <div className="row">
                   <div className="col-md-3">
@@ -152,19 +191,21 @@ export function NavBar() {
 
         <div className={style.account}>
           {Auth.isSignedIn() &&
-            <Button color="inherit" onClick={handleSignOut} disableRipple>
-              <AccountIcon/>&nbsp;Sign out
+            <Button color="inherit" onClick={openAccountMenu} disableRipple>
+              <AccountIcon/>&nbsp;{Auth.getUser()} <CaretIcon/>
             </Button>
           }
+
           {!Auth.isSignedIn() &&
-            <Button color="inherit" onClick={() => setSignIn(!signIn)} disableRipple>
+            <Button color="inherit" onClick={() => setOpenSignIn(true)} disableRipple>
               <AccountIcon/>&nbsp;Sign in
             </Button>
           }
         </div>
+        {accountMenu()}
       </Toolbar>
 
-      <SignInDialog open={signIn} onClose={() => setSignIn(false)}/>
+      <SignInDialog open={openSignIn} onClose={() => setOpenSignIn(false)}/>
     </AppBar>
   );
 };

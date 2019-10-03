@@ -1,7 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from "react-router-dom";
-
 import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
@@ -15,21 +13,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function Home() {
+export default function Account() {
   const styles = useStyles();
 
   return (
     <div className={styles.root}>
       <Paper className={styles.home}>
-        <p>This is a stub for a homepage.</p>
-
-        Demos:
-        <ul>
-          <li><Link to="/apps/assembly">Assembly</Link></li>
-          <li><Link to="/apps/annotation">Annotation</Link></li>
-        </ul>
-
-
+        This is a stub for an account profile.
       </Paper>
     </div>
   )

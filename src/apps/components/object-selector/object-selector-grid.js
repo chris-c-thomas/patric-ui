@@ -204,7 +204,7 @@ export default function ObjectSelectorGrid(props) {
       <BreadCrumbs path={path} onNavigate={navigate}/>
 
       <br />
-      <table className="simple hover">
+      <table className="simple table-hover">
         <thead>
           <tr>
             <th>Name</th>

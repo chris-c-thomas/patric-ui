@@ -5,13 +5,13 @@ const { authAPI } = config;
 import {parseTokenStr} from '../utils/parse'
 
 
-export function signIn(user, pass) {
+export function signIn(user, pass, on401) {
   const params = `username=${user}&password=${pass}`;
   return axios.post(authAPI, params)
     .then(res => {
       const token = res.data;
       storeToken(token);
-      return token;
+      window.location.reload();
     })
 }
 
@@ -31,7 +31,8 @@ export function isSignedIn() {
 }
 
 export function getUser() {
-  const user = JSON.parse(localStorage.getItem('auth')).un;
-  return user;
+  const userID = JSON.parse(localStorage.getItem('auth')).un;
+  const username = userID.split('@')[0];
+  return username;
 }
 

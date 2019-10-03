@@ -92,7 +92,7 @@ export default function Assembly() {
           <>
             This service allows single or multiple assemblers to be invoked to compare results.
             The service attempts to select the best assembly. For further explanation, please see
-            the <a href={userGuideURL}>User Guide</a> and <a href={tutorialURL}>Tutorial</a>.
+            the <a href={userGuideURL} target="_blank">>User Guide</a> and <a href={tutorialURL} target="_blank">>Tutorial</a>.
           </>
         }
         userGuideURL={userGuideURL}
