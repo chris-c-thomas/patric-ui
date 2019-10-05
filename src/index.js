@@ -19,11 +19,13 @@ import { PFContainer } from './genome-tabs/protein-families/protein-families';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
-
 import Home from './home';
 import Account from './my-profile';
 import './styles/styles.scss'
 import NotFound404 from './404';
+
+import * as Auth from './404';
+
 
 // lazy load apps
 const Annotation = lazy(() => import('./apps/annotation'));
@@ -93,9 +95,15 @@ const App = () => {
                 <Account />
               }/>
 
-              <Route path="/apps/annotation" exact render={() => <Annotation />} />
-              <Route path="/apps/assembly" exact render={() => <Assembly />} />
+              <Route path="/apps/annotation" exact render={() =>
+                <Annotation />
+              } />
+              <Route path="/apps/assembly" exact render={() =>
+                <Assembly />
+              } />
+
               <Route path='*' component={NotFound404} />
+
               {/* START genome tabs */}
               <div className={styles.content}>
                 <ActionBar />

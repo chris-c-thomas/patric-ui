@@ -13,6 +13,10 @@ import { Step, StepIcon, StepLabel } from '@material-ui/core';
 
 import '../styles/apps.scss';
 
+// auth is required
+import { isSignedIn } from '../api/auth-api';
+import SignInForm from '../auth/sign-in-form';
+
 import config from '../config.js'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
 const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
@@ -78,23 +82,8 @@ export default function Annotation() {
 
   }
 
-
-  return (
-    <Paper className={styles.root}>
-      <AppHeader
-        title="Genome Annotation"
-        onUseExample={useExample}
-        description={
-          <>
-            The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
-            For further explanation, please see the Genome Annotation <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">>Tutorial</a>.
-          </>
-        }
-        userGuideURL={userGuideURL}
-      />
-
-      <br/>
-
+  let serviceForm = (
+    <>
       <Step active={true} completed={contigs && domain && genCode && recipe}>
         <StepIcon icon={1} />
         <StepLabel>Set Parameters</StepLabel>
@@ -202,9 +191,29 @@ export default function Annotation() {
           onSubmit={onSubmit}
           onReset={onReset}
         />
-
-
       </Grid>
+    </>
+  )
+
+
+  return (
+    <Paper className={styles.root}>
+      <AppHeader
+        title="Genome Annotation"
+        onUseExample={useExample}
+        description={
+          <>
+            The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
+            For further explanation, please see the Genome Annotation <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">Tutorial</a>.
+          </>
+        }
+        userGuideURL={userGuideURL}
+      />
+
+      <br/>
+
+      {isSignedIn() ? serviceForm : <SignInForm forApp />}
+
     </Paper>
   )
 };

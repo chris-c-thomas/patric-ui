@@ -12,6 +12,11 @@ import { AppHeader, SubmitBtns } from './partials';
 
 import '../styles/apps.scss';
 
+// auth is required
+import { isSignedIn } from '../api/auth-api';
+import SignInForm from '../auth/sign-in-form';
+
+
 import config from '../config.js';
 const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service2.html`;
 const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly2.html`;
@@ -26,6 +31,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
   }
 }));
+
 
 const example = {
   paired_end_libs: [{
@@ -49,6 +55,7 @@ const example = {
 export default function Assembly() {
   const styles = useStyles();
   const [reads, setReads] = useState([]);
+
   const [form, setForm] = useState({
     paired_end_libs: [],
     single_end_libs: [],
@@ -63,7 +70,6 @@ export default function Assembly() {
     output_file: null
   });
 
-  const [advReadOpts, setAdvReadOpts] = useState(false);
   const [advParams, setAdvParams] = useState(false);
 
 
@@ -83,23 +89,8 @@ export default function Assembly() {
     setReads(reads)
   }
 
-  return (
-    <Paper className={styles.root}>
-      <AppHeader
-        title="Genome Assembly"
-        onUseExample={useExample}
-        description={
-          <>
-            This service allows single or multiple assemblers to be invoked to compare results.
-            The service attempts to select the best assembly. For further explanation, please see
-            the <a href={userGuideURL} target="_blank">>User Guide</a> and <a href={tutorialURL} target="_blank">>Tutorial</a>.
-          </>
-        }
-        userGuideURL={userGuideURL}
-      />
-
-      <br/>
-
+  const serviceForm = (
+    <>
       <Step active={true} completed={reads.length > 0}>
         <StepIcon icon={1} />
         <StepLabel>Select Reads</StepLabel>
@@ -108,7 +99,7 @@ export default function Assembly() {
       <Grid container className="app-section">
         <Grid item xs={12}>
           <ReadSelector
-           reads={reads}
+            reads={reads}
             onChange={onReadsChange}
             advancedOptions
           />
@@ -149,7 +140,7 @@ export default function Assembly() {
                   label="RACON Interations"
                   type="number"
                   value={form.racon_iter}
-                />
+                    />
               </Grid>
 
               <Grid item xs={3}>
@@ -213,6 +204,28 @@ export default function Assembly() {
         />
 
       </Grid>
+    </>
+  )
+
+
+  return (
+    <Paper className={styles.root}>
+      <AppHeader
+        title="Genome Assembly"
+        onUseExample={useExample}
+        description={
+          <>
+            This service allows single or multiple assemblers to be invoked to compare results.
+            The service attempts to select the best assembly. For further explanation, please see
+            the <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">Tutorial</a>.
+          </>
+        }
+        userGuideURL={userGuideURL}
+      />
+
+      <br/>
+
+      {isSignedIn() ? serviceForm : <SignInForm forApp />}
     </Paper>
   )
 };
