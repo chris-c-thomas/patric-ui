@@ -211,7 +211,6 @@ export default function Annotation() {
       />
 
       <br/>
-
       {isSignedIn() ? serviceForm : <SignInForm forApp />}
 
     </Paper>

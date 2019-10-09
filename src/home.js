@@ -21,9 +21,10 @@ export default function Home() {
   return (
     <div className={styles.root}>
       <Paper className={styles.home}>
-        <p>This is a stub for a homepage.</p>
+        <h4>This is a stub for a homepage.</h4>
 
-        Demos:
+
+        <h5>Service Demos</h5>
         <ul>
           <li><Link to="/apps/assembly">Assembly</Link></li>
           <li><Link to="/apps/annotation">Annotation</Link></li>

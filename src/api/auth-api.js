@@ -16,17 +16,20 @@ export function signIn(user, pass, on401) {
 }
 
 export function storeToken(token) {
+  localStorage.setItem('token', token);
+
   const jsonStr = JSON.stringify(parseTokenStr(token));
   localStorage.setItem('auth', jsonStr);
 }
 
 export function signOut() {
+  localStorage.removeItem('token');
   localStorage.removeItem('auth');
   window.location.reload();
 }
 
 export function isSignedIn() {
-  const val = localStorage.getItem('auth');
+  const val = localStorage.getItem('token');
   return val !== null;
 }
 
@@ -36,3 +39,6 @@ export function getUser() {
   return username;
 }
 
+export function getToken() {
+  return localStorage.getItem('token');
+}

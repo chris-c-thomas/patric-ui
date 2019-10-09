@@ -1,8 +1,9 @@
+$primary-color: #2e75a3;
 
 body {
     font-family: 'Roboto';
 }
-a, a.visited {
+a:not(.no-style), a.visited {
     color: #3a8cc2;
     text-decoration: none;
 }
@@ -11,7 +12,14 @@ a:hover {
     color: #215b81;
 }
 
+a.no-style {
+    color: inherit;
+    text-decoration: none;
+}
+
 .p4-ui {
+    background: #F5F5F5;
+
     @import './general.scss';
     @import './tables.scss';
     @import './mui-overrides.scss';

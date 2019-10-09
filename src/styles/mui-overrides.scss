@@ -17,11 +17,11 @@ div.MuiToolbar-dense {
 }
 
 .MuiButtonBase-root.Mui-selected {
-  color: #2e75a3;
+  color: $primary-color;
 }
 
 .MuiTabs-indicator {
-  background-color: #2e75a3 !important; /* primary color */
+  background-color: $primary-color !important; /* primary color */
   transform: translateY(-45px);
 }
 
@@ -29,7 +29,8 @@ div.MuiToolbar-dense {
   animation-duration: 0.8s !important;
 }
 
-.MuiCard-root {
+.MuiCard-root,
+.MuiPaper-root:not(.MuiAppBar-root) {
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
@@ -54,6 +55,22 @@ div.MuiToolbar-dense {
 .MuiButton-root,
 .MuiToggleButton-label {
   text-transform: none;
+}
+
+.MuiStepIcon-root{
+  color: $primary-color !important;
+}
+
+.MuiStepIcon-primary {
+  color: $primary-color;
+}
+
+.MuiButton-containedPrimary {
+  background: $primary-color;
+}
+
+.MuiBadge-badge {
+  background: $primary-color !important;
 }
 
 .MuiStep-root {

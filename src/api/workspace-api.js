@@ -14,7 +14,7 @@ const workspace = axios.create({
 
 const rpc = (cmd, params) => {
   const req = {
-    "id": 7, // should be random
+    "id": String(Math.random()).slice(2),
     "method": `Workspace.${cmd}`,
     "params": [params],
     "jsonrpc": "2.0"

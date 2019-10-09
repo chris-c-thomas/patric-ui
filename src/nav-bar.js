@@ -29,7 +29,9 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     flexGrow: 1,
     background: '#2e76a3',
-    borderTop: '3px solid #154e72'
+    borderTop: '3px solid #154e72',
+    position: 'fixed',
+    top: 0
   },
   toolbar: {
     height: '35px'

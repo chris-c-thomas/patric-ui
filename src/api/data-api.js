@@ -38,7 +38,7 @@ export function listGenomes({query, start, limit = 200}) {
     `${query ? `&keyword(*${query}*)` : ''}`
 
 
-  return api.get(`/genome/${q}`, getOpts)
+  return api.get(`/genome/${q}`)
     .then(res => {
       let data = res.data.response.docs
       return res;
