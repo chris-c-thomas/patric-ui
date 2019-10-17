@@ -2,6 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
 
+
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
@@ -23,13 +25,12 @@ export default function Home() {
       <Paper className={styles.home}>
         <h4>This is a stub for a homepage.</h4>
 
-
         <h5>Service Demos</h5>
         <ul>
           <li><Link to="/apps/assembly">Assembly</Link></li>
           <li><Link to="/apps/annotation">Annotation</Link></li>
         </ul>
-
+        <Button color="primary">i'm a button</Button>
 
       </Paper>
     </div>

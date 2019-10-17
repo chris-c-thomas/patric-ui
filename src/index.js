@@ -10,6 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Button from '@material-ui/core/Button';
+
 
 import { NavBar } from './nav-bar';
 import { ActionBar } from './action-bar';
@@ -34,15 +36,20 @@ import './styles/styles.scss'
 const Annotation = lazy(() => import('./apps/annotation'));
 const Assembly = lazy(() => import('./apps/assembly'));
 
+const colors = {
+  primary: '#2e75a3',
+  secondary: '#FFA750'
+}
+
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#2e75a3'
+      main: colors.primary
     },
     secondary: {
-      main: '#FFA750',
+      main: colors.secondary,
       contrastText: '#dc7216'
-    },
+    }
   }
 });
 
@@ -82,6 +89,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+
         <div className={styles.root}>
 
           <NavBar />
@@ -89,7 +97,6 @@ const App = () => {
           {Auth.isSignedIn() && <JobStatus />}
 
           <div className={styles.content}>
-
             <Suspense fallback={<div>loading...</div>}>
               <Switch>
                 <Route path="/" exact render={() =>

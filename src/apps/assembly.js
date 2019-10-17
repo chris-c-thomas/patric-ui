@@ -18,8 +18,8 @@ import SignInForm from '../auth/sign-in-form';
 
 
 import config from '../config.js';
-const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service2.html`;
-const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly2.html`;
+const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service.html`;
+const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`;
 
 
 const useStyles = makeStyles(theme => ({
@@ -106,7 +106,7 @@ export default function Assembly() {
         </Grid>
       </Grid>
 
-      <Step active={true} completed={true}>
+      <Step active={true} completed={reads.length > 0}>
         <StepIcon icon={2} />
         <StepLabel>Set Parameters</StepLabel>
       </Step>
