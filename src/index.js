@@ -10,8 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Button from '@material-ui/core/Button';
-
 
 import { NavBar } from './nav-bar';
 import { ActionBar } from './action-bar';
@@ -22,7 +20,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
 import Home from './home';
-import JobStatus from './jobs/job-status';
+import JobsTicker from './jobs/job-ticker';
+import { JobStatusProvider } from './jobs/job-status-context';
 import Account from './my-profile';
 import Jobs from './jobs/jobs';
 import NotFound404 from './404';
@@ -67,10 +66,6 @@ const useStyles = makeStyles(theme => ({
   tabs: {
     background: 'rgba(0, 0, 0, 0.03)',
     borderBottom: '1px solid rgba(0, 0, 0, 0.125)',
-  },
-  home: {
-    marginTop: '40px',
-    padding: '20px'
   }
 }));
 
@@ -94,7 +89,12 @@ const App = () => {
 
           <NavBar />
 
-          {Auth.isSignedIn() && <JobStatus />}
+          {
+            Auth.isSignedIn() &&
+            <JobStatusProvider>
+              <JobsTicker />
+            </JobStatusProvider>
+          }
 
           <div className={styles.content}>
             <Suspense fallback={<div>loading...</div>}>
@@ -129,33 +129,33 @@ const App = () => {
                     <Route
                       path="/"
                       render={({ location }) => (
-                        <Fragment>
+                        <>
                           <Tabs
                             value={location.pathname}
                             variant="scrollable"
-                          scrollButtons="auto"
-                          className={styles.tabs}
-                        >
-                          <Tab disableRipple component={Link} label="Overview" value="/overview"  to="/overview" />
-                          <Tab disableRipple component={Link} label="Phylogeny" value="/phylogeny" to="/phylogeny" />/>
-                          <Tab disableRipple component={Link} label="Genomes" value="/genomes"  to="/genomes" />
-                          <Tab disableRipple component={Link} label="Protein Families" value="/protein-families"  to="/protein-families" />/>
-                          <Tab disableRipple component={Link} label="AMR Phenotypes"  value="/amr-phenotypes"  to="/amr-phenotypes" />/>
-                          <Tab disableRipple component={Link} label="Sequences" value="/sequences" to="/features" />/>
-                          <Tab disableRipple component={Link} label="Features"  value="/features" to="/sequences"  />
-                          <Tab disableRipple component={Link} label="Specialty Genes" value="/spec-genes" to="/spec-genes" />
-                          <Tab disableRipple component={Link} label="Pathways" value="/pathways" to="/pathway" />
-                          <Tab disableRipple component={Link} label="Subsystems" value="/subsystems" to="/subsytems" />
-                          <Tab disableRipple component={Link} label="Transcriptomics" value="/transcriptomics" to="/transcriptomics" />
-                          <Tab disableRipple component={Link} label="Interactions" value="/interactions" to="interactions" />
-                        </Tabs>
+                            scrollButtons="auto"
+                            className={styles.tabs}
+                          >
+                            <Tab disableRipple component={Link} label="Overview" value="/overview"  to="/overview" />
+                            <Tab disableRipple component={Link} label="Phylogeny" value="/phylogeny" to="/phylogeny" />/>
+                            <Tab disableRipple component={Link} label="Genomes" value="/genomes"  to="/genomes" />
+                            <Tab disableRipple component={Link} label="Protein Families" value="/protein-families"  to="/protein-families" />/>
+                            <Tab disableRipple component={Link} label="AMR Phenotypes"  value="/amr-phenotypes"  to="/amr-phenotypes" />/>
+                            <Tab disableRipple component={Link} label="Sequences" value="/sequences" to="/features" />/>
+                            <Tab disableRipple component={Link} label="Features"  value="/features" to="/sequences"  />
+                            <Tab disableRipple component={Link} label="Specialty Genes" value="/spec-genes" to="/spec-genes" />
+                            <Tab disableRipple component={Link} label="Pathways" value="/pathways" to="/pathway" />
+                            <Tab disableRipple component={Link} label="Subsystems" value="/subsystems" to="/subsytems" />
+                            <Tab disableRipple component={Link} label="Transcriptomics" value="/transcriptomics" to="/transcriptomics" />
+                            <Tab disableRipple component={Link} label="Interactions" value="/interactions" to="interactions" />
+                          </Tabs>
 
                         <Switch>
                           <Route path="/overview"         render={() => <div>Overview goes here</div>}/>
                           <Route path="/genomes"          render={() => <Genomes />}/>
                           <Route path="/protein-families" render={() => <PFContainer />}/>
                         </Switch>
-                      </Fragment>
+                      </>
                     )}
                     /> {/* END Route */}
                   </Paper>

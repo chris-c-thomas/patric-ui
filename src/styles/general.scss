@@ -74,3 +74,11 @@
 .hover { opacity: .7; }
 .hover:hover { cursor: pointer; opacity: 1.0;  }
 
+/**
+ * general colors
+ */
+.queued { color: #777; }
+.in-progress { color: #ffa900; }
+.completed { color: #3c763d; }
+.failed { color: #a94442; }
+

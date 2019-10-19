@@ -1,19 +1,59 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import {
-  PagingState,
-  IntegratedPaging,
-  DataTypeProvider,
-  TableColumnResizing,
-  SortingState,
-  Toolbar,
-  ToolbarPagingPanel
-} from '@devexpress/dx-react-grid';
-import { Grid, Table, TableHeaderRow, VirtualTable, PagingPanel} from '@devexpress/dx-react-grid-material-ui';
-import { listJobs } from '../api/app-service-api';
+import clsx from 'clsx';
+import { Link } from "react-router-dom";
 
-import {toDateTimeStr} from '../utils/units';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
+import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
+import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
+
+import Table from '../grids/mui-table';
+import { listJobs } from '../api/app-service-api';
+import { toDateTimeStr } from '../utils/units';
+
+import { JobStatusProvider, JobStatusContext } from "./job-status-context";
+
+import './jobs.scss';
+import urlMapping from './url-mapping';
+
+const columns = [
+  {
+    id: 'status',
+    label: 'Status',
+    format: val => {
+      return <span className={`${val} status-text`}>{val}</span>
+    }
+  }, {
+    id: 'submit_time',
+    label: 'Submitted',
+    format: val => toDateTimeStr(val)
+  },
+  {
+    id: 'app',
+    label: 'Service',
+    format: val => {
+      const isAvail = val.indexOf(Object.keys(urlMapping)) != -1;
+      return  isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val;
+    }
+  },
+  {
+    id: 'parameters',
+    label: 'Output Name',
+    format: obj => obj.output_file || '-'
+  }, {
+    id: 'start_time',
+    label: 'Started',
+    format: val => toDateTimeStr(val)
+  }, {
+    id: 'completed_time',
+    label: 'Completed',
+    format: val => toDateTimeStr(val)
+  }
+]
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,77 +62,87 @@ const useStyles = makeStyles(theme => ({
   card: {
     margin: '5px',
     padding: '20px'
-  }
+  },
+  tableCard: {
+    height: 'calc(100% - 150px)',
+    margin: '5px'
+  },
+  icon: {
+    fontSize: '2em',
+    display: 'inline-block'
+  },
 }));
 
 
+function Overview() {
+  const [state] = useContext(JobStatusContext);
 
-const columns = [
-  { name: 'status', title: 'Status' },
-  { name: 'submit_time', title: 'Submitted' },
-  { name: 'app', title: 'Service' },
-  { name: 'outputName', title: 'Output Name' },
-  { name: 'start_time', title: 'Started' },
-  { name: 'completed_time', title: 'Completed' }
-]
+  const styles = useStyles();
+  return (
+    <Grid container>
+      <Grid item xs={3}>
+        <Typography variant="h6" component="h3">
+          Job Status
+        </Typography>
+      </Grid>
+
+      <Grid item xs={3}>
+        <QueuedIcon className={clsx(styles.icon, 'queued')}/>
+        <span className={styles.status}>{state.queud}<br/>queued</span>
+      </Grid>
+
+      <Grid item xs={3}>
+        <InProgressIcon className={clsx(styles.icon, 'in-progress')}/>
+        <span className={styles.status}>{state.inProgress}<br/>in progress</span>
+      </Grid>
+
+      <Grid item xs={3}>
+        <CompletedIcon className={clsx(styles.icon, 'completed')}/>
+        <span className={styles.status}>{state.completed}<br/>completed</span>
+      </Grid>
+    </Grid>
+  )
+}
 
 
-const DateFormatter = ({ value }) => toDateTimeStr(value)
-
-const TimeProvider = props => (
-  <DataTypeProvider
-    formatterComponent={DateFormatter}
-    {...props}
-  />
-);
-
-const Root = props => <Grid.Root {...props} style={{ height: '100%' }} />;
 
 export default function Jobs() {
   const styles = useStyles();
 
+  const [page, setPage] = useState(0);
   const [rows, setRows] = useState(null);
-  const [timeColumns] = useState(['submit_time', 'start_time', 'completed_time']);
+  const [total, setTotal] = useState(null);
 
+  const limit = 200;
 
   useEffect(() => {
-    listJobs().then(data => {
-      console.log('data', data)
-      setRows(data)
+    const start = page * limit;
+    listJobs({start, limit}).then(data => {
+      setRows(data.jobs)
+      setTotal(data.total)
     })
-  }, [])
+  }, [page])
 
   return (
     <div className={styles.root}>
       <Paper className={styles.card}>
-        blah blah
+        <JobStatusProvider>
+          <Overview />
+        </JobStatusProvider>
       </Paper>
 
-      <Paper className={styles.card}>
-        {rows &&
-        <Grid
-          rows={rows}
-          columns={columns}
-          rootComponent={Root}
-        >
-
-          <SortingState
-            defaultSorting={[{ columnName: 'completed_time', direction: 'asc' }]}
+      <Paper className={styles.tableCard}>
+        {
+          rows &&
+          <Table
+            columns={columns}
+            rows={rows}
+            page={page}
+            total={total}
+            onPage={page => setPage(page)}
           />
-          <TimeProvider
-            for={timeColumns}
-          />
-
-          <PagingState
-            defaultCurrentPage={0}
-            pageSize={200}
-          />
-          <IntegratedPaging />
-          <VirtualTable height="auto" />
-          <TableHeaderRow />
-          <PagingPanel />
-        </Grid>
         }
+
       </Paper>
     </div>
   )

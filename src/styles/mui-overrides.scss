@@ -42,8 +42,8 @@ div.MuiToolbar-dense {
   z-index: 2 !important;
 }
 
-/* Fixme(nc): hack to fix vertical tab bug */
 .MuiTabs-root[orientation="vertical"] .MuiTabs-flexContainer {
+  /* Fixme(nc): hack to fix vertical tab bug */
   flex-direction: column;
 }
 
@@ -64,3 +64,11 @@ div.MuiToolbar-dense {
   margin-left: 10px;
   font-size: 1em;
 }
+
+.MuiTableCell-stickyHeader {
+  background-color: #fff;
+}
+
+
+
+

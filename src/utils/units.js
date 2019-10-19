@@ -12,3 +12,4 @@ export function toDateTimeStr(dateTime) {
   let date = new Date(dateTime);
   return date.toDateString();
 }
+

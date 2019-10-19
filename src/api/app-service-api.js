@@ -4,13 +4,11 @@ const { appServiceAPI } = config;
 
 import {getToken} from '../api/auth-api';
 
-
 const api = axios.create({
   headers: {
     Authorization: getToken()
   }
 });
-
 
 const rpc = (cmd, params) => {
   const req = {
@@ -22,15 +20,19 @@ const rpc = (cmd, params) => {
 
   return api.post(appServiceAPI, req)
     .then(res => {
-      return res.data.result[0];
+      return res.data.result;
     });
 }
 
-
 export function getStatus() {
   return rpc('query_task_summary')
+    .then(data => data[0])
 }
 
-export function listJobs() {
-  return rpc('enumerate_tasks', [0, 30000])
+export function listJobs({start = 0, limit = 200, query = {}}) {
+  return rpc('enumerate_tasks_filtered', [start, limit, query])
+    .then(data => ({
+      jobs: data[0],
+      total: Number(data[1])
+    }))
 }
