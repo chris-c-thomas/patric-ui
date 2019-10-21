@@ -17,9 +17,9 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import File from '@material-ui/icons/InsertDriveFileOutlined';
 // import Contigs from '../../../../assets/icons/ws/contigs.svg';
 
-import BreadCrumbs from '../../../utils/ui/breadcrumbs';
-import {bytesToSize, toDateTimeStr} from '../../../utils/units';
-import * as WS from '../../../api/workspace-api';
+import BreadCrumbs from '../utils/ui/breadcrumbs';
+import {bytesToSize, toDateTimeStr} from '../utils/units';
+import * as WS from '../api/workspace-api';
 
 
 const columns = [
@@ -157,7 +157,7 @@ function FileListRecursive(props) {
           onDoubleClick={() => type == 'folder' && onNav(path)}
           className={clsx(disabled && styles.disabled, {selected: path == selectedPath}, disabled && 'no-hover')}
         >
-          <TableCell colSpan="3">
+          <TableCell>
             <span style={{paddingLeft: level ? `${24 * level}px` : ''}}>
               {
                 type == 'folder' &&
@@ -214,7 +214,6 @@ export default function FileList(props) {
     setObjs(null)
     WS.list({path})
       .then(data => {
-        console.log('data', data)
         setObjs(data)
       })
   }, [props.path])
@@ -234,7 +233,6 @@ export default function FileList(props) {
   function getLevel() {
     return path.split('/').length - 1;
   }
-
 
 
   return (
@@ -275,7 +273,7 @@ export default function FileList(props) {
               </TableRow>
             }
 
-            {
+            {/* render the rows */
               objs &&
               <FileListRecursive
                 objects={objs}

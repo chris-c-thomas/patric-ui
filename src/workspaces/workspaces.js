@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 
 import Table from '../grids/mui-table';
 
-import FileList from '../apps/components/object-selector/file-list';
+import FileList from './file-list';
 
 import * as WS from '../api/workspace-api';
 

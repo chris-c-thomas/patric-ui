@@ -75,7 +75,7 @@ export default function StickyHeaderTable(props) {
       }
       <div className={classes.tableWrapper}>
         <Table stickyHeader aria-label="sticky table" size="small">
-          <TableHead>
+          <TableHead style={{width: '100%'}}>
             <TableRow>
               {columns.map(column => (
                 <TableCell

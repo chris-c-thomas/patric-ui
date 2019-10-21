@@ -22,8 +22,9 @@ import PublicIcon from '@material-ui/icons/PublicOutlined';
 // import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
 // import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
 
+import * as Auth from '../../../api/auth-api';
 
-import FileList from './file-list';
+import FileList from '../../../workspaces/file-list';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -76,6 +77,7 @@ export default function ObjectSelectorDialog(props) {
   const styles = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const path = `/${Auth.getUser()}@patricbrc.org/home`;
 
   const {title, type} = props;
 
@@ -159,13 +161,13 @@ export default function ObjectSelectorDialog(props) {
           </Tabs>
 
           <TabPanel value={tab} index={0} className={styles.tab}>
-            <FileList type={type} onSelect={onSelect}/>
+            <FileList type={type} onSelect={onSelect} path={path}/>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             Shared with me
           </TabPanel>
           <TabPanel value={tab} index={2}>
-            {/*<FileList path="/public/" type={type}/>*/}
+            {/*<FileList path="/public/" type={type} />*/}
           </TabPanel>
           <TabPanel value={tab} index={3}>
             Sample Data

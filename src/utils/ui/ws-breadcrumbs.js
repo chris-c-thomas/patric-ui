@@ -12,9 +12,6 @@ export default function BreadCrumbs() {
   const topLevel = parts.shift();
   const currentLevel = parts.length - 1;  // subtract 1 for leading "/"
 
-  console.log('topLevel', topLevel)
-  console.log('parts', parts)
-
   return (
     <div>
       {'/ '}
