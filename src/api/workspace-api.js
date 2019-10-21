@@ -28,6 +28,9 @@ const rpc = (cmd, params) => {
 
 
 export function list(args) {
+  if (typeof args !== 'object')
+    throw Error('Workspace API: the "list" method requires an object');
+
   const {path, type, recursive = false, showHidden = false} = args;
 
   if (path == '/public/')

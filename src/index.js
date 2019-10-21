@@ -1,11 +1,10 @@
 
 
-import React, {lazy, Suspense, Fragment} from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import React, {lazy, Suspense} from "react";
+import { BrowserRouter, Switch, Route, Link} from "react-router-dom";
 
 import { render } from "react-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -24,6 +23,7 @@ import JobsTicker from './jobs/job-ticker';
 import { JobStatusProvider } from './jobs/job-status-context';
 import Account from './my-profile';
 import Jobs from './jobs/jobs';
+import Workspaces from './workspaces/workspaces.js';
 import NotFound404 from './404';
 
 import * as Auth from './api/auth-api';
@@ -70,14 +70,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function TabContainer(props) {
-  return (
-    <Typography component="div">
-      {props.children}
-    </Typography>
-  );
-}
-
 const App = () => {
   const styles = useStyles();
 
@@ -116,6 +108,10 @@ const App = () => {
 
                 <Route path="/jobs" exact render={() =>
                   <Jobs />
+                } />
+
+                <Route path="/files/:path*" render={() =>
+                  <Workspaces />
                 } />
 
                 <Route path='*' component={NotFound404} />

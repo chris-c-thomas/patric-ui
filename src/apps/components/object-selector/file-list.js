@@ -82,7 +82,7 @@ function getIcon(type) {
 
 /**
  * Recursive helper to build a file list view
- * Note: should be used within a table
+ * Note: should be used within a table (see below)
  * @param {*} props
  */
 function FileListRecursive(props) {
@@ -210,12 +210,8 @@ export default function FileList(props) {
   const [path, setPath] = useState(props.path);
   const [objs, setObjs] = useState(null);
 
-  console.log('HERE!')
-  console.log('thePath is ', path)
-
   useEffect(() => {
     setObjs(null)
-    console.log('getting path', path)
     WS.list({path})
       .then(data => {
         console.log('data', data)

@@ -8,7 +8,7 @@ import React from 'react';
  *
  * @param {*} props
  */
-export default function BreadCrumbs(props) {
+export default function WSBreadCrumbs(props) {
   const {path} = props;
 
   const parts = path.split('/');

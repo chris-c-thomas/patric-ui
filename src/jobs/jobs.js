@@ -35,14 +35,21 @@ const columns = [
     id: 'app',
     label: 'Service',
     format: val => {
-      const isAvail = val.indexOf(Object.keys(urlMapping)) != -1;
-      return  isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val;
+      const isAvail = Object.keys(urlMapping).indexOf(val) != -1;
+      return isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val;
     }
   },
   {
     id: 'parameters',
     label: 'Output Name',
-    format: obj => obj.output_file || '-'
+    format: obj => {
+      const isAvail = 'output_file' in obj;
+      if (!isAvail) return '-';
+
+      const name = obj.output_file,
+            path = `${obj.output_path}/.${name}`;
+      return  <Link to={`/files${path}`}>{name}</Link>;
+    }
   }, {
     id: 'start_time',
     label: 'Started',
