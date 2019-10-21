@@ -23,7 +23,7 @@ import PublicIcon from '@material-ui/icons/PublicOutlined';
 // import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
 
 
-import ObjectSelectorGrid from './object-selector-grid';
+import FileList from './file-list';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -159,13 +159,13 @@ export default function ObjectSelectorDialog(props) {
           </Tabs>
 
           <TabPanel value={tab} index={0} className={styles.tab}>
-            <ObjectSelectorGrid type={type} onSelect={onSelect}/>
+            <FileList type={type} onSelect={onSelect}/>
           </TabPanel>
           <TabPanel value={tab} index={1}>
             Shared with me
           </TabPanel>
           <TabPanel value={tab} index={2}>
-            {/*<ObjectSelectorGrid path="/public/" type={type}/>*/}
+            {/*<FileList path="/public/" type={type}/>*/}
           </TabPanel>
           <TabPanel value={tab} index={3}>
             Sample Data
