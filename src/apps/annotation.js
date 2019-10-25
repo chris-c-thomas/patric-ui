@@ -21,8 +21,7 @@ import config from '../config.js'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
 const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
 
-
-import { user } from '../../token.js'
+import { getUser } from '../api/auth-api'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,7 +39,7 @@ const example = {
   scientific_name: 'Staphylococcus auresus',
   tax_id: 1280,
   code: 11,
-  output_path: `/${user}@patricbrc.org/home`,
+  output_path: `/${getUser()}@patricbrc.org/home`,
   output_file: 'example',
   recipe: 'default'
 }
@@ -194,7 +193,6 @@ export default function Annotation() {
       </Grid>
     </>
   )
-
 
   return (
     <Paper className={styles.root}>
