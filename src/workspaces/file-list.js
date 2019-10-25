@@ -54,13 +54,13 @@ const useStyles = makeStyles(theme => ({
   disabled: {
     color: '#aaa'
   },
-  btn: {
-    padding: 0,
-    minWidth: 'inherit'
-  },
   emptyFolder: {
     padding: '200px 0 !important',
     textAlign: 'center'
+  },
+  btn: {
+    padding: 0,
+    minWidth: 'inherit'
   },
   tableWrapper: {
     maxHeight: 'calc(100% - 100px)',
@@ -78,6 +78,23 @@ function getIcon(type) {
   } else {
     return <span style={{paddingLeft: `${24}px`}}><File /></span>
   }
+}
+
+function getParentPath(path) {
+  const parts = path.split('/');
+  return parts.slice(0, parts.length - 1).join('/')
+}
+
+
+function EmptyFolder(props) {
+  const {styles} = props;
+  return (
+    <TableRow className="no-hover">
+      <TableCell colSpan="100%" className={styles.emptyFolder}>
+        This folder is empty
+      </TableCell>
+    </TableRow>
+    )
 }
 
 /**
@@ -198,11 +215,6 @@ function FileListRecursive(props) {
   })
 }
 
-function getParentPath(path) {
-  const parts = path.split('/');
-  return parts.slice(0, parts.length - 1).join('/')
-}
-
 export default function FileList(props) {
   const styles = useStyles();
   const {type, onSelect, noBreadCrumbs} = props;
@@ -285,11 +297,7 @@ export default function FileList(props) {
 
             {/* if folder is emtpy */
               objs && objs.length == 0 &&
-              <TableRow className="no-hover">
-                <TableCell colSpan="100%" className={styles.emptyFolder}>
-                  This folder is empty
-                </TableCell>
-              </TableRow>
+              <EmptyFolder styles={styles}/>
             }
           </TableBody>
         </Table>

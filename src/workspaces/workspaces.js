@@ -70,8 +70,6 @@ function Overview(props) {
       <Grid item xs={9}>
         <WSBreadCrumbs/>
       </Grid>
-
-
     </Grid>
   )
 }
@@ -81,12 +79,8 @@ function Overview(props) {
 export default function Workspaces() {
   const styles = useStyles();
 
-  const [rows, setRows] = useState(null);
-  const [total, setTotal] = useState(null);
-
   let { path } = useParams();
   path = '/' + path;
-
 
   function onSelect() {
   }

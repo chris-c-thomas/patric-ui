@@ -6,22 +6,17 @@ import { BrowserRouter, Switch, Route, Link} from "react-router-dom";
 import { render } from "react-dom";
 import { makeStyles } from '@material-ui/core/styles';
 
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
 import { NavBar } from './nav-bar';
-import { ActionBar } from './action-bar';
-import { Genomes } from './genome-tabs/genomes/genomes';
-import { PFContainer } from './genome-tabs/protein-families/protein-families';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
+// views
 import Home from './home';
 import JobsTicker from './jobs/job-ticker';
 import { JobStatusProvider } from './jobs/job-status-context';
 import Account from './my-profile';
+import GenomeTabs from './genome-tabs/genome-tabs';
 import Jobs from './jobs/jobs';
 import Workspaces from './workspaces/workspaces.js';
 import NotFound404 from './404';
@@ -55,17 +50,9 @@ const theme = createMuiTheme({
 const useStyles = makeStyles(theme => ({
   root: {
   },
-  card: {
-    minWidth: 275,
-    margin: '10px'
-  },
   content: {
     marginTop: '40px',
     paddingTop: '10px'
-  },
-  tabs: {
-    background: 'rgba(0, 0, 0, 0.03)',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.125)',
   }
 }));
 
@@ -91,77 +78,20 @@ const App = () => {
           <div className={styles.content}>
             <Suspense fallback={<div>loading...</div>}>
               <Switch>
-                <Route path="/" exact render={() =>
-                  <Home />
-                }/>
-
-                <Route path="/my-profile" exact render={() =>
-                  <Account />
-                }/>
-
-                <Route path="/apps/annotation" exact render={() =>
-                  <Annotation />
+                <Route path="/" exact component={Home} />
+                <Route path="/my-profile" exact component={Account} />
+                <Route path="/apps/annotation" exact component={Annotation} />
+                <Route path="/apps/assembly" exact component={Assembly} />
+                <Route path="/jobs" exact component={Jobs}/>
+                <Route path="/files/:path*" exact component={Workspaces} />
+                <Route path="/taxon/:view" exact render={() =>
+                  <GenomeTabs />
                 } />
-                <Route path="/apps/assembly" exact render={() =>
-                  <Assembly />
-                } />
+                <Route path="*" component={NotFound404} />
 
-                <Route path="/jobs" exact render={() =>
-                  <Jobs />
-                } />
-
-                <Route path="/files/:path*" render={() =>
-                  <Workspaces />
-                } />
-
-                <Route path='*' component={NotFound404} />
-
-                {/* START genome tabs */}
-                <div>
-                  <ActionBar />
-
-                    <Paper className={styles.card}>
-
-                    <Route
-                      path="/"
-                      render={({ location }) => (
-                        <>
-                          <Tabs
-                            value={location.pathname}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            className={styles.tabs}
-                          >
-                            <Tab disableRipple component={Link} label="Overview" value="/overview"  to="/overview" />
-                            <Tab disableRipple component={Link} label="Phylogeny" value="/phylogeny" to="/phylogeny" />/>
-                            <Tab disableRipple component={Link} label="Genomes" value="/genomes"  to="/genomes" />
-                            <Tab disableRipple component={Link} label="Protein Families" value="/protein-families"  to="/protein-families" />/>
-                            <Tab disableRipple component={Link} label="AMR Phenotypes"  value="/amr-phenotypes"  to="/amr-phenotypes" />/>
-                            <Tab disableRipple component={Link} label="Sequences" value="/sequences" to="/features" />/>
-                            <Tab disableRipple component={Link} label="Features"  value="/features" to="/sequences"  />
-                            <Tab disableRipple component={Link} label="Specialty Genes" value="/spec-genes" to="/spec-genes" />
-                            <Tab disableRipple component={Link} label="Pathways" value="/pathways" to="/pathway" />
-                            <Tab disableRipple component={Link} label="Subsystems" value="/subsystems" to="/subsytems" />
-                            <Tab disableRipple component={Link} label="Transcriptomics" value="/transcriptomics" to="/transcriptomics" />
-                            <Tab disableRipple component={Link} label="Interactions" value="/interactions" to="interactions" />
-                          </Tabs>
-
-                        <Switch>
-                          <Route path="/overview"         render={() => <div>Overview goes here</div>}/>
-                          <Route path="/genomes"          render={() => <Genomes />}/>
-                          <Route path="/protein-families" render={() => <PFContainer />}/>
-                        </Switch>
-                      </>
-                    )}
-                    /> {/* END Route */}
-                  </Paper>
-                </div>
-                {/* END genome tabs */}
               </Switch>
             </Suspense>
           </div>
-          {/* END content area */}
-
         </div>
       </ThemeProvider>
     </BrowserRouter>
