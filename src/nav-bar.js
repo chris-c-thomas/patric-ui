@@ -23,7 +23,7 @@ import ExitIcon from '@material-ui/icons/ExitToApp';
 import * as Auth from './api/auth-api';
 import SignInDialog from './auth/sign-in-dialog';
 
-
+const color = '#efefef';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
   menu: {
     flexGrow: 1,
-    color: '#c0dcec', // slightly brighter than mockup
+    color,
     fontSize: '.9em',
     marginRight: '5px',
     '& span': {
@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     bottom: '-8px'
   },
   account: {
-    color: '#c0dcec',
+    color,
     '& svg': {
       fontSize: '1.4em'
     }
@@ -132,7 +132,7 @@ export function NavBar() {
           </Button>
           <Button color="inherit" disableRipple>
             <FolderIcon />
-            <span>Workspace</span>
+            <span>Workspaces</span>
           </Button>
           <Button color="inherit" disableRipple>
             <ServiceIcon />

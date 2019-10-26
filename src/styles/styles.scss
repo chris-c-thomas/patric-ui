@@ -2,7 +2,13 @@ $primary-color: #2e75a3;
 
 body {
     font-family: 'Roboto';
+    font-size: 14px;
 }
+
+p {
+    line-height: 1.5em;
+}
+
 a:not(.no-style), a.visited {
     color: #3a8cc2;
     text-decoration: none;
