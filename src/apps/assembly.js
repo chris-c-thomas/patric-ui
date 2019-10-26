@@ -10,7 +10,7 @@ import AdvandedButton from './components/advanced-button';
 
 import { AppHeader, SubmitBtns } from './partials';
 
-import '../styles/apps.scss';
+import './apps.scss';
 
 // auth is required
 import { isSignedIn } from '../api/auth-api';

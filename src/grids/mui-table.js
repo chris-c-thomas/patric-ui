@@ -30,10 +30,48 @@ const useStyles = makeStyles({
   }
 });
 
+
+const Cell = React.memo(props => {
+  const {children} = props;
+  return (
+    <TableCell {...props}>
+      {children}
+    </TableCell>
+  )
+})
+
+const Row = React.memo(props => {
+  const {row, columns, id} = props;
+  return (
+    <TableRow tabIndex={-1} key={id}>
+      {columns.map((column, i) => {
+        const value = row[column.id];
+        return (
+          <Cell key={column.id} align={column.align} >
+            {column.format ? column.format(value, row) : value}
+          </Cell>
+        );
+      })}
+    </TableRow>
+  );
+})
+
+
+const TableRows = React.memo((props) => {
+  const {rows, columns} = props;
+  return (
+    <>
+      {rows.map((row, i) => {
+        return <Row row={row} columns={columns} id={i} />
+      })}
+    </>
+  )
+})
+
 export default function StickyHeaderTable(props) {
   const classes = useStyles();
 
-  const {noPagination} = props;
+  const {pagination} = props;
 
   const [page, setPage] = useState(props.page);
   const [rowsPerPage, setRowsPerPage] = useState(200);
@@ -53,7 +91,7 @@ export default function StickyHeaderTable(props) {
   return (
     <>
       {
-        !noPagination &&
+        pagination &&
         <TablePagination
           labelRowsPerPage={''}
           rowsPerPageOptions={[rowsPerPage]}
@@ -68,7 +106,7 @@ export default function StickyHeaderTable(props) {
             disableRipple: true,
             'aria-label': 'next page',
           }}
-          count={props.total || rows.count || 0}
+          count={props.total || (rows && rows.length) || 0}
           onChangePage={handleChangePage}
           // onChangeRowsPerPage={handleChangeRowsPerPage}
         />
@@ -77,7 +115,7 @@ export default function StickyHeaderTable(props) {
         <Table stickyHeader aria-label="sticky table" size="small">
           <TableHead style={{width: '100%'}}>
             <TableRow>
-              {columns.map(column => (
+              {columns.map((column, i) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
@@ -90,20 +128,8 @@ export default function StickyHeaderTable(props) {
           </TableHead>
           <TableBody>
             {/*.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)*/}
-            {rows.map((row, i) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={i}>
-                  {columns.map(column => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format ? column.format(value) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+            <TableRows {...props}/>
+
           </TableBody>
         </Table>
       </div>

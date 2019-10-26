@@ -92,7 +92,7 @@ export default function ReadSelector(props) {
         value={type}
         exclusive
         onChange={onTypeChange}
-        aria-label="text alignment"
+        aria-label="read type"
         size="small"
         className="btn-group"
       >

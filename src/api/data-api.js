@@ -1,3 +1,8 @@
+
+/**
+ * Todo: create query builder
+*/
+
 import axios from 'axios';
 
 import config from '../config';
@@ -19,8 +24,8 @@ function getSolrConfig({start = null, limit, contentType}) {
     config.headers['Range'] = `items=${start}-${start+limit}`;
   }
 
-  // If putting content-type in the request, the body must
-  // have content. This configuration is not currently
+  // Note! If putting content-type in the request, the body must
+  // have content. This configuration is not currently used.
   if (contentType) {
     config.headers['Content-Type'] = contentType;
     config.data = {};
@@ -30,9 +35,50 @@ function getSolrConfig({start = null, limit, contentType}) {
 }
 
 
+export function listRepresentative({taxonID,  limit=10000}) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
+    `&select(genome_id,reference_genome,genome_name)` +
+    `&facet((field,reference_genome),(mincount,1))&json(nl,map)` +
+    `&limit(${limit})` +
+    `&http_accept=application/solr+json`;
+
+  return api.get(`/genome/${q}`)
+    .then(res => {
+      let docs = res.data.response.docs
+      return docs;
+    })
+}
+
+export function getOverviewMeta({taxonID}) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})` +
+    `&facet((field,host_name),(field,disease),(field,genome_status),(field,isolation_country),(mincount,1))` +
+    `&limit(1)&json(nl,map)` +
+    `&http_accept=application/solr+json`;
+
+  return api.get(`/genome/${q}`)
+    .then(res => {
+      const obj = res.data.facet_counts.facet_fields;
+
+      return {
+        host_name: metaObjToList(obj.host_name),
+        disease: metaObjToList(obj.disease),
+        genome_status: metaObjToList(obj.genome_status),
+        isolation_country: metaObjToList(obj.isolation_country)
+      }
+    })
+}
+
+function metaObjToList(metaObj, topN = 4) {
+  return Object.keys(metaObj).map(key => ({
+    id: key,
+    label: key,
+    value: metaObj[key]
+  })).sort((a, b) => (a.value < b.value) ? 1 : -1)
+}
+
+
 export function listGenomes({query, start, limit = 200}) {
-  const q =
-    `?http_accept=application/solr+json` +
+  const q  = `?http_accept=application/solr+json` +
     `&eq(taxon_lineage_ids,234)&sort(-score)` +
     `${start ? `&limit(${limit},${start-1})` : `&limit(${limit})`}` +
     `${query ? `&keyword(*${query}*)` : ''}`

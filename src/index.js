@@ -84,7 +84,7 @@ const App = () => {
                 <Route path="/apps/assembly" exact component={Assembly} />
                 <Route path="/jobs" exact component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
-                <Route path="/taxon/:view" exact render={() =>
+                <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                   <GenomeTabs />
                 } />
                 <Route path="*" component={NotFound404} />

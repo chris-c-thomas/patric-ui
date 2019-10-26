@@ -11,7 +11,7 @@ import TaxonNameInput from './components/taxon-name';
 import TaxonIDInput from './components/taxon-id';
 import { Step, StepIcon, StepLabel } from '@material-ui/core';
 
-import '../styles/apps.scss';
+import './apps.scss';
 
 // auth is required
 import { isSignedIn } from '../api/auth-api';

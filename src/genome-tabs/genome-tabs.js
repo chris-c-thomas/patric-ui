@@ -8,6 +8,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
 import { ActionBar } from './action-bar';
+import Overview from './overview';
 import { Genomes } from './genomes/genomes';
 import { PFContainer } from './protein-families/protein-families';
 
@@ -82,7 +83,6 @@ const TabButtons = () => {
 
 const placeHolder = (view) => <div>{view} goes here</div>;
 
-
 export default function GenomeTabs(props) {
   const styles = useStyles();
   const {view} = useParams();
@@ -91,36 +91,36 @@ export default function GenomeTabs(props) {
     <>
       <ActionBar />
 
-        <Paper className={styles.card}>
-          <>
-            <Tabs
-              value={view}
-              variant="scrollable"
-              scrollButtons="auto"
-              className={styles.tabs}
-            >
-              {TabButtons()}
-            </Tabs>
-
-            {view == tabs[0].view && placeHolder(view)}
-            {view == tabs[1].view && placeHolder(view)}
-            {view == tabs[2].view && <Genomes />}
-            {view == tabs[3].view && <PFContainer />}
-            {view == tabs[4].view && placeHolder(view)}
-            {view == tabs[5].view && placeHolder(view)}
-            {view == tabs[6].view && placeHolder(view)}
-            {view == tabs[7].view && placeHolder(view)}
-            {view == tabs[8].view && placeHolder(view)}
-            {view == tabs[9].view && placeHolder(view)}
-            {view == tabs[10].view && placeHolder(view)}
-            {view == tabs[11].view && placeHolder(view)}
-            {
-              tabs.map(obj => obj.view).indexOf(view) == -1 &&
-              <NotFound404 />
-            }
-
+      <Paper className={styles.card}>
+        <>
+          <Tabs
+            value={view}
+            variant="scrollable"
+            scrollButtons="auto"
+            className={styles.tabs}
+          >
+            {TabButtons()}
+          </Tabs>
         </>
       </Paper>
+
+      {view == tabs[0].view && <Overview />}
+      {view == tabs[1].view && placeHolder(view)}
+      {view == tabs[2].view && <Genomes />}
+      {view == tabs[3].view && <PFContainer />}
+      {view == tabs[4].view && placeHolder(view)}
+      {view == tabs[5].view && placeHolder(view)}
+      {view == tabs[6].view && placeHolder(view)}
+      {view == tabs[7].view && placeHolder(view)}
+      {view == tabs[8].view && placeHolder(view)}
+      {view == tabs[9].view && placeHolder(view)}
+      {view == tabs[10].view && placeHolder(view)}
+      {view == tabs[11].view && placeHolder(view)}
+      {
+        tabs.map(obj => obj.view).indexOf(view) == -1 &&
+        <NotFound404 />
+      }
+
     </>
   )
 }
