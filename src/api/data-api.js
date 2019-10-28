@@ -14,8 +14,17 @@ const api = axios.create({
 
 const solrConfigStr = 'http_content-type=application/solrquery+x-www-form-urlencoded'
 
+// config for when faceting and post requests in rqlquery are needed
+const rqlReqConfig =  {
+  headers: {
+    'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+    Accept: 'application/solr+json'
+  }
+}
+
+
 // helper for when Solr query strings are used.
-function getSolrConfig({start = null, limit, contentType}) {
+function getSolrConfig({start = null, limit, contentType, data}) {
   let config = {
     headers: {}
   }
@@ -28,13 +37,16 @@ function getSolrConfig({start = null, limit, contentType}) {
   // have content. This configuration is not currently used.
   if (contentType) {
     config.headers['Content-Type'] = contentType;
-    config.data = {};
+    config.data = data || {};
   }
 
   return config;
 }
 
 
+/**
+ * Data API helpers
+ */
 export function listRepresentative({taxonID,  limit=10000}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
     `&select(genome_id,reference_genome,genome_name)` +
@@ -48,6 +60,37 @@ export function listRepresentative({taxonID,  limit=10000}) {
       return docs;
     })
 }
+
+export function getAMRCounts({genomeIDs}) {
+  console.warn('Note: The AMR Overview Counts still need to be fixed.')
+  const kinds = 'Resistant,Susceptible,Intermediate';
+  const pivot = 'antibiotic,resistant_phenotype,genome_id';
+
+  const q = //`in(genome_id,(${genomeIDs.join(',')}))` +
+  `in(resistant_phenotype,(${kinds}))` +
+  `&limit(1)&facet((pivot,(${pivot})),(mincount,1),(limit,-1))` +
+  `&json(nl,map)`;
+
+  return api.post(`/genome_amr/`, q, rqlReqConfig)
+    .then(res => {
+      const pivots = res.data.facet_counts.facet_pivot[pivot];
+
+      // convert nested objects into list of objects
+      return pivots.map(drug => {
+        const obj = {}
+        drug.pivot.forEach(item => {
+          obj[item.value] = item.count;
+        })
+        return {
+          drug: drug.value,
+          total: drug.count,
+          ...obj
+        }
+      }).sort((a, b) => (a.total < b.total) ? 1 : -1)
+    })
+}
+
+
 
 export function getOverviewMeta({taxonID}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})` +
@@ -68,6 +111,8 @@ export function getOverviewMeta({taxonID}) {
     })
 }
 
+
+
 function metaObjToList(metaObj, topN = 4) {
   return Object.keys(metaObj).map(key => ({
     id: key,
@@ -83,10 +128,8 @@ export function listGenomes({query, start, limit = 200}) {
     `${start ? `&limit(${limit},${start-1})` : `&limit(${limit})`}` +
     `${query ? `&keyword(*${query}*)` : ''}`
 
-
   return api.get(`/genome/${q}`)
     .then(res => {
-      let data = res.data.response.docs
       return res;
     })
 }

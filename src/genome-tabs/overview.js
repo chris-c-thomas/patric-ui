@@ -12,12 +12,12 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import Pie from '../charts/pie';
+import BarChart from '../charts/bar';
 
 import VirtualTable from '../grids/mui-virtual-table';
 
-import {listRepresentative, getOverviewMeta} from '../api/data-api';
-
-
+import {listRepresentative, getOverviewMeta, getAMRCounts} from '../api/data-api';
+import { amber } from '@material-ui/core/colors';
 
 
 const columns = [{
@@ -35,15 +35,14 @@ const useStyles = makeStyles(theme => ({
   icon: {
     height: '30px'
   },
-  paper: {
-    margin: theme.spacing(1)
+  overview: {
+    marginBottom: theme.spacing(1),
+    padding: theme.spacing(2)
   },
   card: {
     margin: theme.spacing(1)
   },
-  repTable: {
-    maxHeight: `calc(100%)`,
-  },
+
   title: {
     fontSize: 14,
   },
@@ -55,9 +54,18 @@ const useStyles = makeStyles(theme => ({
   topN: {
     marginLeft: theme.spacing(1),
     marginTop: 0,
-    width: 60,
+    width: 100,
   }
 }));
+
+const getTitle = taxonID => (
+  <>
+    {taxonID == 2 && 'Bacteria'}
+    {taxonID == 2157 && 'Archaea'}
+    {taxonID == 2759 && 'Eukaryotic'}
+    {taxonID == 10239 && 'Viruses'}
+  </>
+)
 
 
 const MetaCharts = (props) => {
@@ -101,7 +109,7 @@ const MetaCharts = (props) => {
       </ToggleButtonGroup>
 
       <TextField
-        label="Top N"
+        label="Showing Top"
         value={topN}
         onChange={evt => setTopN(evt.target.value)}
         type="number"
@@ -113,7 +121,7 @@ const MetaCharts = (props) => {
         variant="outlined"
       />
 
-      <Grid item xs={12} style={{height: '400px'}}>
+      <Grid item xs={12} style={{height: '350'}}>
         {type == 'host' && <Pie data={host_name.slice(0,topN)} /> }
         {type == 'disease' && <Pie data={disease.slice(0,topN)} /> }
         {type == 'country' && <Pie data={isolation_country.slice(0,topN)} /> }
@@ -123,24 +131,37 @@ const MetaCharts = (props) => {
   )
 }
 
+const AMRChart = (props) => {
+  const {data} = props;
+
+}
+
 export default function Overview() {
   const classes = useStyles();
 
+  const {taxonID} = useParams();
+
   const [rows, setRows] = useState(null);
   const [meta, setMeta] = useState(null);
+  const [amr, setAMR] = useState(null);
 
-  const {taxonID} = useParams();
 
   useEffect(() => {
     listRepresentative({taxonID})
       .then(rows => {
-        console.log('data', rows)
         setRows(rows)
+
+        // Todo: bug:  this is wrong (and is also wrong on production website)
+        const genomeIDs = rows.map(r => r.genome_id);
+        getAMRCounts({genomeIDs})
+          .then(amr => {
+            console.log('amr', amr)
+            setAMR(amr)
+          })
       })
 
     getOverviewMeta({taxonID})
       .then(meta => {
-        console.log('data', meta)
         setMeta(meta)
       })
   }, [])
@@ -149,32 +170,59 @@ export default function Overview() {
     <>
       <Grid container>
 
-        <Grid item xs={4}>
-          <Grid container className={classes.repTable}>
-            <Grid item xs={12}>
-              <Paper className={classes.overviewTable}>
-                {rows &&
-                <VirtualTable
-                  columns={columns}
-                  rows={rows}
+        <Grid item container direction="column" xs={4} className={classes.overviewTable}>
+
+          <Grid item>
+            <Paper className={classes.overview}>
+              <Typography className={classes.title} color="textSecondary" gutterBottom>
+                {getTitle(taxonID)}
+              </Typography>
+              <hr />
+
+
+            </Paper>
+
+            <Paper style={{height: '600px'}}>
+              {rows &&
+              <VirtualTable
+                columns={columns}
+                rows={rows}
+              />
+              }
+            </Paper>
+          </Grid>
+
+        </Grid>
+
+        <Grid item container direction="column" xs={5}>
+          <Grid item>
+            <Card className={classes.card} style={{height: '400px'}}>
+              <Typography className={classes.title} color="textSecondary" gutterBottom>
+                Genomes by Antimicrobial Resistance
+              </Typography>
+              {
+                amr &&
+                <BarChart
+                  data={amr.slice(0, 10)}
+                  keys={['Resistant','Susceptible','Intermediate']}
+                  indexBy='drug'
+                  xLabel="Antibiotic"
                 />
-                }
-              </Paper>
-            </Grid>
+              }
+            </Card>
+          </Grid>
+
+          <Grid item>
+            <Card className={classes.card}>
+                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                  Genomes by Metadata
+                </Typography>
+                {meta && <MetaCharts data={meta}/>}
+              </Card>
           </Grid>
         </Grid>
 
-        <Grid item xs={5}>
-          <Card className={classes.card}>
-            <Typography className={classes.title} color="textSecondary" gutterBottom>
-              Genomes by Metadata
-            </Typography>
-            {meta && <MetaCharts data={meta}/>}
-          </Card>
-
-        </Grid>
-
-        <Grid item xs={3}>
+        <Grid item container direction="column" xs={3}>
           <Paper className={classes.paper}>
           </Paper>
         </Grid>
