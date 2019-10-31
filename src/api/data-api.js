@@ -91,6 +91,13 @@ export function getAMRCounts({genomeIDs}) {
 }
 
 
+function metaObjToList(metaObj, topN = 4) {
+  return Object.keys(metaObj).map(key => ({
+    id: key,
+    label: key,
+    value: metaObj[key]
+  })).sort((a, b) => (a.value < b.value) ? 1 : -1)
+}
 
 export function getOverviewMeta({taxonID}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})` +
@@ -109,16 +116,6 @@ export function getOverviewMeta({taxonID}) {
         isolation_country: metaObjToList(obj.isolation_country)
       }
     })
-}
-
-
-
-function metaObjToList(metaObj, topN = 4) {
-  return Object.keys(metaObj).map(key => ({
-    id: key,
-    label: key,
-    value: metaObj[key]
-  })).sort((a, b) => (a.value < b.value) ? 1 : -1)
 }
 
 

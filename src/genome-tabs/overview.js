@@ -17,7 +17,7 @@ import BarChart from '../charts/bar';
 import VirtualTable from '../grids/mui-virtual-table';
 
 import {listRepresentative, getOverviewMeta, getAMRCounts} from '../api/data-api';
-import { amber } from '@material-ui/core/colors';
+import {getPubSummary, pubSearch } from '../api/ncbi-eutils-api';
 
 
 const columns = [{
@@ -55,6 +55,11 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginTop: 0,
     width: 100,
+  },
+  publications: {
+    '& li': {
+      marginBottom: theme.spacing(1)
+    }
   }
 }));
 
@@ -76,34 +81,26 @@ const MetaCharts = (props) => {
   const [type, setType] = useState('host');
   const [topN, setTopN] = useState(10);
 
-  const onChange = (_, newType) => {
-    setType(newType || type);
-  }
-
-  const onEnter = (evt) => {
-    setType(evt.target.value || type);
-  }
-
   return (
     <Grid container>
       <ToggleButtonGroup
         value={type}
         exclusive
-        onChange={onChange}
+        onChange={() => setType(newType || type)}
         aria-label="meta pie chart type"
         size="small"
         className="btn-group"
       >
-        <ToggleButton onMouseEnter={onEnter} value="host" aria-label="host" disableRipple>
+        <ToggleButton value="host" aria-label="host" disableRipple>
           Host Name
         </ToggleButton>
-        <ToggleButton onMouseEnter={onEnter} value="disease" aria-label="disease" disableRipple>
+        <ToggleButton value="disease" aria-label="disease" disableRipple>
           Disease
         </ToggleButton>
-        <ToggleButton onMouseEnter={onEnter} value="country" aria-label="isolation country" disableRipple>
+        <ToggleButton value="country" aria-label="isolation country" disableRipple>
           Isolation Country
         </ToggleButton>
-        <ToggleButton onMouseEnter={onEnter} value="status" aria-label="genome status" disableRipple>
+        <ToggleButton value="status" aria-label="genome status" disableRipple>
           Genome Status
         </ToggleButton>
       </ToggleButtonGroup>
@@ -136,6 +133,30 @@ const AMRChart = (props) => {
 
 }
 
+const Publications = (props) => {
+  const {data} = props;
+  const classes = useStyles();
+
+  return (
+    <ul className={classes.publications}>
+      {
+        data.map((pub, i) => {
+          const authors = pub.authors.map(author => author.name).slice(0, 3);
+
+          return (
+            <li key={i}>
+              {pub.sortpubdate}<br/>
+              <a href="">{pub.title}</a><br/>
+              <small>{authors.slice(0,3).join(', ')} {authors.length > 3 && ' et al.'}</small>
+            </li>
+          )
+        })
+      }
+    </ul>
+  )
+}
+
+
 export default function Overview() {
   const classes = useStyles();
 
@@ -144,6 +165,7 @@ export default function Overview() {
   const [rows, setRows] = useState(null);
   const [meta, setMeta] = useState(null);
   const [amr, setAMR] = useState(null);
+  const [pubs, setPubs] = useState(null);
 
 
   useEffect(() => {
@@ -154,16 +176,20 @@ export default function Overview() {
         // Todo: bug:  this is wrong (and is also wrong on production website)
         const genomeIDs = rows.map(r => r.genome_id);
         getAMRCounts({genomeIDs})
-          .then(amr => {
-            console.log('amr', amr)
-            setAMR(amr)
-          })
+          .then(amr => setAMR(amr))
       })
 
     getOverviewMeta({taxonID})
-      .then(meta => {
-        setMeta(meta)
-      })
+      .then(meta => setMeta(meta))
+
+    if (taxonID in [2, 2157, 2759, 10239]) {
+      getPubSummary()
+        .then(pubs => setPubs(pubs))
+    } else {
+      // Todo add genus/species search, etc
+      pubSearch('//')
+        .then(pubs => setPubs(pubs))
+    }
   }, [])
 
   return (
@@ -196,7 +222,7 @@ export default function Overview() {
 
         <Grid item container direction="column" xs={5}>
           <Grid item>
-            <Card className={classes.card} style={{height: '400px'}}>
+            <Card className={classes.card} style={amr ? {height: '400px'} : {}}>
               <Typography className={classes.title} color="textSecondary" gutterBottom>
                 Genomes by Antimicrobial Resistance
               </Typography>
@@ -222,8 +248,9 @@ export default function Overview() {
           </Grid>
         </Grid>
 
-        <Grid item container direction="column" xs={3}>
+        <Grid item container direction="column" xs={2}>
           <Paper className={classes.paper}>
+            {pubs && <Publications data={pubs} />}
           </Paper>
         </Grid>
       </Grid>

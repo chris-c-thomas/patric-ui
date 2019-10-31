@@ -34,6 +34,7 @@ export function isSignedIn() {
 }
 
 export function getUser() {
+  if (!isSignedIn()) return null;
   const userID = JSON.parse(localStorage.getItem('auth')).un;
   const username = userID.split('@')[0];
   return username;
