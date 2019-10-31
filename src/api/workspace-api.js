@@ -1,16 +1,15 @@
 import axios from 'axios';
 import config from '../config';
+
+import { getToken } from '../api/auth-api';
+
 const { wsAPI } = config;
-
-import auth from '../../token.js';
-
 
 const workspace = axios.create({
   headers: {
-    Authorization: auth.token
+    Authorization: getToken()
   }
 });
-
 
 const rpc = (cmd, params) => {
   const req = {
