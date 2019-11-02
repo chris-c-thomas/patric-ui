@@ -9,16 +9,6 @@ const plugins = [
     },
     'core'
   ],
-  [
-    'babel-plugin-import',
-    {
-      'libraryName': '@material-ui/icons',
-      // Use "'libraryDirectory': ''," if your bundler does not support ES modules
-      'libraryDirectory': 'esm',
-      'camel2DashComponentName': false
-    },
-    'icons'
-  ],
   "@babel/plugin-proposal-class-properties"
 ];
 
