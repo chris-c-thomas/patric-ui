@@ -11,7 +11,7 @@ import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
 
 import Table from '../grids/mui-table';
-import { listJobs } from '../api/app-service-api';
+import { listJobs } from '../api/app-service';
 import { toDateTimeStr } from '../utils/units';
 
 import { JobStatusProvider, JobStatusContext } from "./job-status-context";

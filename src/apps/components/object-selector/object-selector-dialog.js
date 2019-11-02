@@ -22,7 +22,7 @@ import PublicIcon from '@material-ui/icons/PublicOutlined';
 // import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
 // import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
 
-import * as Auth from '../../../api/auth-api';
+import * as Auth from '../../../api/auth';
 
 import FileList from '../../../workspaces/file-list';
 

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 
-import { getStatus } from '../api/app-service-api';
+import { getStatus } from '../api/app-service';
 
 const JobStatusContext = React.createContext([{}]);
 

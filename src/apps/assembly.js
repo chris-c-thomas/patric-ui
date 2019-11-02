@@ -13,7 +13,7 @@ import { AppHeader, SubmitBtns } from './partials';
 import './apps.scss';
 
 // auth is required
-import { isSignedIn } from '../api/auth-api';
+import { isSignedIn } from '../api/auth';
 import SignInForm from '../auth/sign-in-form';
 
 

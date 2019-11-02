@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config';
 
-import { getToken } from '../api/auth-api';
+import { getToken } from './auth';
 
 const { wsAPI } = config;
 

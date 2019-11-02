@@ -12,7 +12,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
 // views
-import Home from './home';
+import Home from './home/home';
 import JobsTicker from './jobs/job-ticker';
 import { JobStatusProvider } from './jobs/job-status-context';
 import Account from './my-profile';
@@ -21,7 +21,7 @@ import Jobs from './jobs/jobs';
 import Workspaces from './workspaces/workspaces.js';
 import NotFound404 from './404';
 
-import * as Auth from './api/auth-api';
+import * as Auth from './api/auth';
 
 import './styles/styles.scss'
 
@@ -82,7 +82,7 @@ const App = () => {
                 <Route path="/my-profile" exact component={Account} />
                 <Route path="/apps/annotation" exact component={Annotation} />
                 <Route path="/apps/assembly" exact component={Assembly} />
-                <Route path="/jobs" exact component={Jobs}/>
+                <Route path="/jobs/:filter" exact component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                   <GenomeTabs />

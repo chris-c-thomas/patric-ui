@@ -2,7 +2,9 @@ import axios from 'axios';
 import config from '../config';
 const { appServiceAPI } = config;
 
-import {getToken} from '../api/auth-api';
+import {getToken} from './auth';
+
+import { metaObjToList } from '../charts/chart-helpers';
 
 const api = axios.create({
   headers: {
@@ -29,6 +31,13 @@ export function getStatus() {
     .then(data => data[0])
 }
 
+export function getStats() {
+  return rpc('query_app_summary')
+    .then(data => {
+      return metaObjToList(data[0]);
+    })
+}
+
 export function listJobs({start = 0, limit = 200, query = {}}) {
   return rpc('enumerate_tasks_filtered', [start, limit, query])
     .then(data => ({
@@ -36,3 +45,5 @@ export function listJobs({start = 0, limit = 200, query = {}}) {
       total: Number(data[1])
     }))
 }
+
+

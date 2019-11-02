@@ -14,14 +14,14 @@ import { Step, StepIcon, StepLabel } from '@material-ui/core';
 import './apps.scss';
 
 // auth is required
-import { isSignedIn } from '../api/auth-api';
+import { isSignedIn } from '../api/auth';
 import SignInForm from '../auth/sign-in-form';
 
 import config from '../config.js'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
 const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
 
-import { getUser } from '../api/auth-api'
+import { getUser } from '../api/auth'
 
 const useStyles = makeStyles(theme => ({
   root: {

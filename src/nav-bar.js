@@ -20,7 +20,7 @@ import AccountIcon from '@material-ui/icons/AccountCircle';
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 
-import * as Auth from './api/auth-api';
+import * as Auth from './api/auth';
 import SignInDialog from './auth/sign-in-dialog';
 
 const color = '#efefef';

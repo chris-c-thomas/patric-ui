@@ -12,7 +12,7 @@ import Table from '../grids/mui-table';
 
 import FileList from './file-list';
 
-import * as WS from '../api/workspace-api';
+import * as WS from '../api/workspace';
 
 import {bytesToSize, toDateTimeStr} from '../utils/units';
 import WSBreadCrumbs from '../utils/ui/ws-breadcrumbs';

@@ -9,7 +9,7 @@ import highlightText from '../../../utils/text'
 import ObjectSelectorDialog from './object-selector-dialog';
 
 import { pathToOptionObj } from '../../../utils/paths';
-import * as WS from '../../../api/workspace-api';
+import * as WS from '../../../api/workspace';
 
 
 const inputStyles = {

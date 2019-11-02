@@ -1,30 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
 
-import Typography from '@material-ui/core/Typography';
+import Subtitle from './subtitle';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import Avatar from '@material-ui/core/Avatar';
-
-import bacteria from '../assets/imgs/bacteria.png';
-import archaea from '../assets/imgs/archaea.png';
-import eukaryotic from '../assets/imgs/eukaryotic.png';
-import phages from '../assets/imgs/phages.png';
-
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
+import TextField from '@material-ui/core/TextField';
 
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 
-import images from '../assets/imgs/services/*.jpg';
-import config from './config.js'
 
-import * as Auth from './api/auth-api';
-import SignInDialog from './auth/sign-in-dialog';
+import images from '../../assets/imgs/services/*.jpg';
+import chipImages from '../../assets/imgs/*.png';
+
+import config from '../config.js'
+import * as Auth from '../api/auth';
+import SignInDialog from '../auth/sign-in-dialog';
+import JobsOverview from './jobs-overview';
 
 const services = [
   {type: 'All'},
@@ -57,13 +55,16 @@ const services = [
   {type: 'Proteomics', name: 'Proteome Comparison'},
   {type: 'Metabolomics', name: 'Comparative Pathway'},
   {type: 'Metabolomics', name: 'Model Reconstruction'},
-  {type: 'Data Utilities', name: 'Data Mapper'},
-  {type: 'Data Utilities', name: 'Fastq Utilities'}
+  {type: 'Data', name: 'Data Mapper'},
+  {type: 'Data', name: 'Fastq Utilities'}
 ]
 
 const useStyles = makeStyles(theme => ({
+  root: {
+
+  },
   card: {
-    margin: theme.spacing(2, 4),
+    margin: theme.spacing(1, 2),
     padding: theme.spacing(2, 2),
   },
   scroller: {
@@ -89,17 +90,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Subtitle = (props) => {
-  const { children } = props;
-  return (
-    <>
-      <Typography variant="h6"
-        style={props.inline ? {display: 'inline', marginRight: '10px'} : {}}>
-        {children}
-      </Typography>
-    </>
-  );
-}
+const NoAuth = props => !Auth.isSignedIn() ? [props.children] : <></>;
+const HasAuth = props => Auth.isSignedIn() ? [props.children] : <></>;
+
 
 const ChipBtn = (props) => {
   return (
@@ -118,22 +111,37 @@ const Overview = () => {
   return (
 
     <Paper className={styles.card}>
-      <Subtitle>
-        Baterial Bioinformatics Resource Center
-      </Subtitle>
-      <p>
-        PATRIC, the PAThosystems Resource Integration Center, provides integrated data and analysis
-        tools to support biomedical research on bacterial infectious diseases.
-      </p>
+      <NoAuth>
+        <Subtitle>
+          Baterial Bioinformatics Resource Center
+        </Subtitle>
+        <p>
+          PATRIC, the PAThosystems Resource Integration Center, provides integrated data and analysis
+          tools to support biomedical research on bacterial infectious diseases.
+        </p>
+      </NoAuth>
 
-      <div>
+    <div>
         <Subtitle inline>
           Browse
         </Subtitle>
-        <ChipBtn label="Bacteria" src={bacteria} to="/taxonomy/2/overview"/>
-        <ChipBtn label="Archaea" src={archaea} to="/taxonomy/2157/overview" />
-        <ChipBtn label="Eukaryotic" src={eukaryotic} to="/taxonomy/2759/overview"/>
-        <ChipBtn label="Phages" src={phages} to="/taxonomy/10239/overview" />
+
+        <ChipBtn label="Bacteria" src={chipImages['bacteria']} to="/taxonomy/2/overview"/>
+        <ChipBtn label="Archaea" src={chipImages['archaea']} to="/taxonomy/2157/overview" />
+        <ChipBtn label="Eukaryotic" src={chipImages['eukaryotic']} to="/taxonomy/2759/overview"/>
+        <ChipBtn label="Phages" src={chipImages['phages']} to="/taxonomy/10239/overview" />
+      </div>
+
+      <div>
+        <Subtitle inline>
+          Search
+        </Subtitle>
+        <TextField
+          placeholder="search should be here as usual"
+          variant="outlined"
+          margin="dense"
+          style={{width: 'calc(100% - 100px'}}
+        />
       </div>
     </Paper>
   )
@@ -165,7 +173,7 @@ const ChipFilters = (props) => {
   )
 }
 
-const cardStyles = makeStyles({
+const serviceCardStyles = makeStyles({
   card: {
     maxWidth: 275,
     display: 'inline-block',
@@ -186,7 +194,7 @@ const cardStyles = makeStyles({
 });
 
 const ServiceCard = (props) => {
-  const classes = cardStyles();
+  const styles = serviceCardStyles();
   const {name, type, descript, path, tutorial} = props;
 
   // ignore all filter
@@ -195,24 +203,21 @@ const ServiceCard = (props) => {
   const imgPath = images[name.toLowerCase().replace(/ /g, '_')];
 
   return (
-    <Card className={classes.card} component={Link} to={path || '/'}>
+    <Card className={styles.card} component={Link} to={path || '/'}>
       <CardActionArea>
-        <img className={classes.media} src={imgPath} title={name} />
+        <img className={styles.media} src={imgPath} title={name} />
 
         <GridListTileBar
           title={name}
           subtitle={<span>{descript || 'A much shorter description, blah blah'}</span>}
           /*actionIcon={
-            <IconButton aria-label={`info about ${name}`} className={classes.icon}>
+            <IconButton aria-label={`info about ${name}`} className={styles.icon}>
               <InfoIcon />
             </IconButton>
           }*/
         />
 
-        {/* add tag for each card, currently only showing when not displaying "all" */
-          props.filter == 'All' &&
-          <Chip className={classes.tag} label={type} color="primary" size="small"/>
-        }
+        <Chip className={styles.tag} label={type} color="primary" size="small"/>
       </CardActionArea>
     </Card>
   )
@@ -225,19 +230,17 @@ const ServiceCards = () => {
 
   return (
     <Paper className={styles.card}>
-      <Subtitle inline>
-        Analyze Data at PATRIC
-      </Subtitle>
+      <NoAuth>
+        <Subtitle inline>
+          Analyze Data at PATRIC
+        </Subtitle>
 
-      <p>
-        At PATRIC, you can <a>upload</a> your private data in a
-        workspace, <a>analyze</a> it using high-throughput services, and <a>compare</a> it with other public
-        databases using visual analytics tools.
-        {
-          !Auth.isSignedIn() &&
-          <> Please <a onClick={() => setOpenSignIn(true)}>sign in</a> to get started.</>
-        }
-      </p>
+        <p>
+          At PATRIC, you can <a>upload</a> your private data in a
+          workspace, <a>analyze</a> it using high-throughput services, and <a>compare</a> it with other public
+          databases using visual analytics tools. Please <a onClick={() => setOpenSignIn(true)}>sign in</a> to get started.
+        </p>
+      </NoAuth>
 
       <Subtitle inline>
         Services
@@ -264,21 +267,51 @@ const ServiceCards = () => {
 }
 
 
-export default function Home() {
-  return (
-    <>
-      <Grid container>
-        <Grid item xs={9}>
-          <Overview />
-        </Grid>
-      </Grid>
+const Recents = (props) => {
+  const styles = useStyles();
 
+  useEffect(() => {
+
+  }, [])
+
+
+  return (
+    <Paper className={styles.card}>
+      <Subtitle>
+        Recents
+      </Subtitle>
+
+    </Paper>
+  )
+}
+
+export default function Home() {
+  const styles = useStyles();
+  return (
+    <div className={styles.root}>
       <Grid container>
-        <Grid item xs={9}>
-          <ServiceCards />
+
+        <Grid container item xs={8} direction="column">
+          <Grid item>
+            <Overview />
+          </Grid>
+          <Grid item>
+            <ServiceCards />
+          </Grid>
         </Grid>
+
+        <Grid container item xs={4} direction="column">
+          <Grid item>
+            <JobsOverview styles={styles} />
+          </Grid>
+          <Grid item>
+            <Recents />
+          </Grid>
+        </Grid>
+
       </Grid>
-    </>
+   </div>
+
   )
 }
 

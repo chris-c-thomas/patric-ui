@@ -14,7 +14,7 @@ import { Step, StepIcon, StepLabel } from '@material-ui/core';
 
 import TextInput from '../apps/components/text-input';
 
-import * as Auth from '../api/auth-api';
+import * as Auth from '../api/auth';
 
 
 const useStyles = makeStyles({
