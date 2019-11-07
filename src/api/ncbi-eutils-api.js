@@ -6,7 +6,7 @@ const api = axios.create({
   baseURL: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 });
 
-// Todo: note: not entirely sure about these
+// Todo: note: not entirely sure about these?
 const defaultIDs = [
   31640646,31635062,31631948,31631463,31629291,31621824,
   31618795,31616437,31605592,31603950,31602051,31602050,

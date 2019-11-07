@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import logo from './patric-logo-88h.png';
 import FolderIcon from '@material-ui/icons/FolderOpen';
 import StorageIcon from '@material-ui/icons/StorageRounded';
 import ServiceIcon from '@material-ui/icons/Settings';
@@ -20,6 +19,8 @@ import AccountIcon from '@material-ui/icons/AccountCircle';
 import JobsIcon from '@material-ui/icons/ListRounded';
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
 import ExitIcon from '@material-ui/icons/ExitToApp';
+
+import logo from '../assets/imgs/patric-logo-88h.png';
 
 import * as Auth from './api/auth';
 import SignInDialog from './auth/sign-in-dialog';

@@ -7,10 +7,11 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
 import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
-import DoneIcon from '@material-ui/icons/DoneRounded';
+
 
 import Table from '../grids/mui-table';
 import { listJobs } from '../api/app-service';
@@ -18,8 +19,11 @@ import { toDateTimeStr } from '../utils/units';
 
 import { JobStatusProvider, JobStatusContext } from "./job-status-context";
 
+import ErrorMsg from '../error-msg';
+
 import './jobs.scss';
 import urlMapping from './url-mapping';
+
 
 const columns = [
   {
@@ -74,7 +78,8 @@ const useStyles = makeStyles(theme => ({
   },
   tableCard: {
     height: 'calc(100% - 150px)',
-    margin: '5px'
+    margin: '5px',
+    position: 'relative'
   },
   icon: {
     fontSize: '2em',
@@ -85,7 +90,7 @@ const useStyles = makeStyles(theme => ({
 
 function Overview(props) {
   const [state] = useContext(JobStatusContext);
-  const {filterState, onFilterChange} = props;
+  const {app, onFilterChange} = props;
 
 
   const styles = useStyles();
@@ -98,8 +103,8 @@ function Overview(props) {
         {
           app && <>
             <Chip size="small"
-              label={filterState}
-              onDelete={onFilterChange(filterState)}
+              label={app}
+              onDelete={onFilterChange(app)}
               color="primary"
             />
           </>
@@ -133,8 +138,9 @@ export default function Jobs() {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(null);
+  const [error, setError] = useState(null);
 
-  const [filterState, setFilterState] = useState(app);
+  const [appFilter, setAppFilter] = useState(app);
 
   const limit = 200;
 
@@ -143,7 +149,7 @@ export default function Jobs() {
     listJobs({start, limit, query: {app}}).then(data => {
       setRows(data.jobs)
       setTotal(data.total)
-    })
+    }).catch(err => setError(err))
   }, [page])
 
 
@@ -155,14 +161,16 @@ export default function Jobs() {
     <div className={styles.root}>
       <Paper className={styles.card}>
         <JobStatusProvider>
-          <Overview filterState={filterState} onFilterChange={onFilterChange} />
+          <Overview app={appFilter} onFilterChange={onFilterChange} />
         </JobStatusProvider>
       </Paper>
 
       <Paper className={styles.tableCard}>
+        {!rows && !error && <LinearProgress className="card-progress" /> }
         {
           rows &&
           <Table
+            pagination
             columns={columns}
             rows={rows}
             page={page}
@@ -170,6 +178,7 @@ export default function Jobs() {
             onPage={page => setPage(page)}
           />
         }
+        {error && <ErrorMsg error={error} />}
 
       </Paper>
     </div>

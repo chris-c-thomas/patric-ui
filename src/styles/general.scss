@@ -84,6 +84,25 @@
 }
 
 
+/**
+ * alerts
+ */
+
+.alert {
+  padding: 20px;
+  border-width: 1px;
+
+  &.alert-fail {
+    color: #8d1111;
+    background: #fae2e4;
+    border-color: #f5c6cb;
+  }
+  &.alert-warning {
+    color: #765906;;
+    background: #fff3cd;
+    border-color: #ffeeba;
+  }
+}
 
 /**
  * floating (useful when grid is overkill)
