@@ -82,7 +82,7 @@ const App = () => {
                 <Route path="/my-profile" exact component={Account} />
                 <Route path="/apps/annotation" exact component={Annotation} />
                 <Route path="/apps/assembly" exact component={Assembly} />
-                <Route path="/jobs/:filter*" component={Jobs}/>
+                <Route path="/jobs/:app*" component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                   <GenomeTabs />

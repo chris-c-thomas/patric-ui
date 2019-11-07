@@ -1,14 +1,16 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
 import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
 import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
+import DoneIcon from '@material-ui/icons/DoneRounded';
 
 import Table from '../grids/mui-table';
 import { listJobs } from '../api/app-service';
@@ -81,8 +83,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function Overview() {
+function Overview(props) {
   const [state] = useContext(JobStatusContext);
+  const {filterState, onFilterChange} = props;
+
 
   const styles = useStyles();
   return (
@@ -91,11 +95,20 @@ function Overview() {
         <Typography variant="h6" component="h3">
           Job Status
         </Typography>
+        {
+          app && <>
+            <Chip size="small"
+              label={filterState}
+              onDelete={onFilterChange(filterState)}
+              color="primary"
+            />
+          </>
+        }
       </Grid>
 
       <Grid item xs={3}>
         <QueuedIcon className={clsx(styles.icon, 'queued')}/>
-        <span className={styles.status}>{state.queud}<br/>queued</span>
+        <span className={styles.status}>{state.queued}<br/>queued</span>
       </Grid>
 
       <Grid item xs={3}>
@@ -115,26 +128,34 @@ function Overview() {
 
 export default function Jobs() {
   const styles = useStyles();
+  const { app } = useParams();
 
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(null);
 
+  const [filterState, setFilterState] = useState(app);
+
   const limit = 200;
 
   useEffect(() => {
     const start = page * limit;
-    listJobs({start, limit}).then(data => {
+    listJobs({start, limit, query: {app}}).then(data => {
       setRows(data.jobs)
       setTotal(data.total)
     })
   }, [page])
 
+
+  function onFilterChange(app) {
+
+  }
+
   return (
     <div className={styles.root}>
       <Paper className={styles.card}>
         <JobStatusProvider>
-          <Overview />
+          <Overview filterState={filterState} onFilterChange={onFilterChange} />
         </JobStatusProvider>
       </Paper>
 

@@ -5,7 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import Subtitle from './subtitle';
+
 
 import SortAlphaIcon from '@material-ui/icons/SortByAlphaRounded';
 import SortIcon from '@material-ui/icons/Sort';
@@ -64,15 +67,33 @@ const JobCounts = (props) => {
   )
 }
 
+
+const SortBtn = (props) => {
+  const {title, onClick, sort} = props;
+  return (
+    <Tooltip title={title} placement="left">
+      <IconButton
+        onClick={onClick}
+        size="small"
+        disableRipple
+      >
+        {sort ? <SortIcon /> : <SortAlphaIcon />}
+      </IconButton>
+    </Tooltip>
+  )
+}
+
 export default function JobsOverview(props) {
   const {styles} = props;
 
   const [stats, setStats] = useState(null);
   const [sort, setSort] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getStats()
       .then(stats => setStats(stats))
+      .then(err => setError(err))
   }, [])
 
   const sortList = (alpha) => {
@@ -82,6 +103,7 @@ export default function JobsOverview(props) {
 
   return (
     <Paper className={styles.card}>
+      {!stats && <LinearProgress className="card-progress"/>}
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
@@ -89,22 +111,15 @@ export default function JobsOverview(props) {
           </Subtitle>
         </Grid>
         <Grid item>
-          <Tooltip title={`sort ${sort ? 'by count' : 'alphabetically'}`} placement="left">
-            <IconButton
-              onClick={() => sortList(!sort)}
-              size="small"
-              disableRipple
-            >
-              {sort ? <SortIcon /> : <SortAlphaIcon />}
-            </IconButton>
-          </Tooltip>
+          <SortBtn title={`sort ${sort ? 'by count' : 'alphabetically'}`}
+            onClick={() => sortList(!sort)}
+            sort={sort}
+          />
         </Grid>
       </Grid>
 
-      {
-        stats &&
-        <JobCounts data={stats} />
-      }
+      {stats && <JobCounts data={stats} />}
+      {error && <span>{error.message}</span>}
     </Paper>
   )
 }

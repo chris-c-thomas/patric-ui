@@ -17,6 +17,7 @@ import FolderIcon from '@material-ui/icons/FolderOpen';
 import StorageIcon from '@material-ui/icons/StorageRounded';
 import ServiceIcon from '@material-ui/icons/Settings';
 import AccountIcon from '@material-ui/icons/AccountCircle';
+import JobsIcon from '@material-ui/icons/ListRounded';
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 
@@ -137,6 +138,10 @@ export function NavBar() {
           <Button color="inherit" disableRipple>
             <ServiceIcon />
             <span>Services</span>
+          </Button>
+          <Button color="inherit" disableRipple>
+            <JobsIcon />
+            <span>Jobs</span>
           </Button>
           {/*<span><DocsIcon /> Docs </span>*/}
 

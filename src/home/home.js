@@ -12,8 +12,11 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import TextField from '@material-ui/core/TextField';
 
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
+
+import News from './news';
+import Recents from './recents';
+import MyData from './my-data';
+
 
 
 import images from '../../assets/imgs/services/*.jpg';
@@ -64,6 +67,7 @@ const useStyles = makeStyles(theme => ({
 
   },
   card: {
+    position: 'relative',
     margin: theme.spacing(1, 2),
     padding: theme.spacing(2, 2),
   },
@@ -267,24 +271,6 @@ const ServiceCards = () => {
 }
 
 
-const Recents = (props) => {
-  const styles = useStyles();
-
-  useEffect(() => {
-
-  }, [])
-
-
-  return (
-    <Paper className={styles.card}>
-      <Subtitle>
-        Recents
-      </Subtitle>
-
-    </Paper>
-  )
-}
-
 export default function Home() {
   const styles = useStyles();
   return (
@@ -296,16 +282,24 @@ export default function Home() {
             <Overview />
           </Grid>
           <Grid item>
-            <ServiceCards />
+            <ServiceCards styles={styles} />
+          </Grid>
+          <Grid container>
+            <Grid item xs={6}>
+              <JobsOverview styles={styles} />
+            </Grid>
+            <Grid item xs={6}>
+              <MyData styles={styles} />
+            </Grid>
           </Grid>
         </Grid>
 
         <Grid container item xs={4} direction="column">
           <Grid item>
-            <JobsOverview styles={styles} />
+            <News styles={styles} />
           </Grid>
           <Grid item>
-            <Recents />
+            <Recents styles={styles} />
           </Grid>
         </Grid>
 

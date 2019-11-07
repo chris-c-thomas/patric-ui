@@ -97,3 +97,19 @@
 .completed { color: #3c763d; }
 .failed { color: #a94442; }
 
+
+/**
+ * card related stuff
+ */
+
+.card {
+
+}
+
+.card-progress {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  left: 0;
+}
+

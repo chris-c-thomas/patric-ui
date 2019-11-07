@@ -25,6 +25,20 @@ const rpc = (cmd, params) => {
     });
 }
 
+function metaToObj(m) {
+  return {
+    path: m[2] + m[0],
+    name: m[0],
+    parent: m[2],
+    type: m[1],
+    created: m[3],
+    hash: m[4],
+    owner: m[5],
+    size: m[6],
+    priv: m[9],
+    public: m[10]
+  };
+}
 
 export function list(args) {
   if (typeof args !== 'object')
@@ -85,17 +99,24 @@ export function listPublic({type, recursive = false, showHidden = false}) {
     })
 }
 
-function metaToObj(m) {
-  return {
-    path: m[2] + m[0],
-    name: m[0],
-    parent: m[2],
-    type: m[1],
-    created: m[3],
-    hash: m[4],
-    owner: m[5],
-    size: m[6],
-    priv: m[9],
-    public: m[10]
+export function getUserCounts({user}) {
+  const paths = [
+    `/${user}@patricbrc.org/`,
+    `/${user}@patricbrc.org/home/Genome Groups/`,
+    `/${user}@patricbrc.org/home/Feature Groups/`,
+    `/${user}@patricbrc.org/home/Experiment Groups/`,
+  ]
+
+  const params = {
+    "paths": paths
   };
+
+  return rpc('ls', params)
+    .then(data => {
+      return paths.reduce((accum, path) => {
+        accum[path] = (path in data && data[path]).length || 0;
+        return accum;
+      }, {})
+    })
 }
+
