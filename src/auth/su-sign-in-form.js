@@ -25,14 +25,17 @@ export default function SUSignInForm(props) {
   const [pass, setPass] = useState(null);
   const [targetUser, setTargetUser] = useState(null);
 
+  const [inProgress, setInProgress] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
   const [failMsg, setFailMsg] = useState(null);
 
   const handleSignIn = evt => {
     evt.preventDefault();
 
+    setInProgress(true);
     suSignIn(getUser(), pass, targetUser)
       .catch(err => {
+        setInProgress(false);
         const error = err.response.data;
         const status = error.status;
         if (status == 401) {
@@ -73,10 +76,10 @@ export default function SUSignInForm(props) {
       <DialogActions>
         <Button color="primary"
           variant="contained"
-          disabled={!targetUser || !pass}
+          disabled={!targetUser || !pass || inProgress}
           type="submit"
         >
-          Take control
+          {inProgress ? 'Taking control...' : 'Take control'}
         </Button>
       </DialogActions>
     </form>

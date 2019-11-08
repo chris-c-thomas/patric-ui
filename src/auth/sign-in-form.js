@@ -44,16 +44,21 @@ export default function SignInDialog(props) {
   const [user, setUser] = useState(null);
   const [pass, setPass] = useState(null);
 
+  const [inProgress, setInProgress] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
   const [failMsg, setFailMsg] = useState(null);
 
   const handleSignIn = evt => {
     evt.preventDefault();
 
+    setInProgress(true);
     Auth.signIn(user, pass)
       .catch(err => {
+        setInProgress(false);
+
         const error = err.response.data;
         const status = error.status;
+
         if (status == 401) {
           setIsInvalid(true)
           return;
@@ -87,10 +92,11 @@ export default function SignInDialog(props) {
       <DialogActions>
         <Button color="primary"
           variant="contained"
-          disabled={!user || !pass}
+          disabled={!user || !pass || inProgress}
           type="submit"
+          disableRipple
         >
-          Sign in
+          {inProgress ? 'Signing in...' : 'Sign in'}
         </Button>
       </DialogActions>
     </form>
