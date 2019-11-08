@@ -285,12 +285,14 @@ export default function Home() {
             <ServiceCards styles={styles} />
           </Grid>
           <Grid container>
-            <Grid item xs={6}>
-              <JobsOverview styles={styles} />
-            </Grid>
-            <Grid item xs={6}>
-              <MyData styles={styles} />
-            </Grid>
+            <HasAuth>
+              <Grid item xs={6}>
+                <JobsOverview styles={styles} />
+              </Grid>
+              <Grid item xs={6}>
+                <MyData styles={styles} />
+              </Grid>
+            </HasAuth>
           </Grid>
         </Grid>
 
@@ -298,9 +300,11 @@ export default function Home() {
           <Grid item>
             <News styles={styles} />
           </Grid>
-          <Grid item>
-            <Recents styles={styles} />
-          </Grid>
+          <HasAuth>
+            <Grid item>
+              <Recents styles={styles} />
+            </Grid>
+          </HasAuth>
         </Grid>
 
       </Grid>
