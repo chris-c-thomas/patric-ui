@@ -149,7 +149,9 @@ export default function Jobs() {
     listJobs({start, limit, query: {app}}).then(data => {
       setRows(data.jobs)
       setTotal(data.total)
-    }).catch(err => setError(err))
+    }).catch(err => {
+      setError(err)
+    })
   }, [page])
 
 

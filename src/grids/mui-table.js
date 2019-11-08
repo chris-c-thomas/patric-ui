@@ -42,6 +42,7 @@ const Cell = React.memo(props => {
 
 const Row = React.memo(props => {
   const {row, columns, id} = props;
+
   return (
     <TableRow tabIndex={-1} key={id}>
       {columns.map((column, i) => {
@@ -61,9 +62,7 @@ const TableRows = React.memo((props) => {
   const {rows, columns} = props;
   return (
     <>
-      {rows.map((row, i) => {
-        return <Row row={row} columns={columns} id={i} />
-      })}
+      {rows.map((row, i) => <Row key={i} row={row} columns={columns} id={i} />)}
     </>
   )
 })

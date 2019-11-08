@@ -15,9 +15,12 @@ export function AppHeader(props) {
           {title} <UserGuideDialog url={userGuideURL} />
         </Typography>
         </Grid>
-        <Grid item>
-          <small><a onClick={onUseExample}>use example</a></small>
-        </Grid>
+
+        {onUseExample &&
+          <Grid item>
+            <small><a onClick={onUseExample}>use example</a></small>
+          </Grid>
+        }
       </Grid>
 
       <Grid item>

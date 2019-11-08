@@ -212,7 +212,7 @@ export default function Assembly() {
     <Paper className={styles.root}>
       <AppHeader
         title="Genome Assembly"
-        onUseExample={useExample}
+        onUseExample={isSignedIn() ? useExample : null}
         description={
           <>
             This service allows single or multiple assemblers to be invoked to compare results.

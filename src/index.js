@@ -18,7 +18,8 @@ import { JobStatusProvider } from './jobs/job-status-context';
 import Account from './my-profile';
 import GenomeTabs from './genome-tabs/genome-tabs';
 import Jobs from './jobs/jobs';
-import Workspaces from './workspaces/workspaces.js';
+import Workspaces from './workspaces/workspaces';
+import SUSignIn from './auth/su-sign-in';
 import NotFound404 from './404';
 
 import * as Auth from './api/auth';
@@ -87,6 +88,8 @@ const App = () => {
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                   <GenomeTabs />
                 } />
+
+                <Route path="/susignin" exact component={SUSignIn} />
                 <Route path="*" component={NotFound404} />
 
               </Switch>

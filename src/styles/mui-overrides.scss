@@ -72,8 +72,10 @@ div.MuiToolbar-dense {
 .MuiChip-outlined {
   color: #333;
 }
-a.MuiChip-colorPrimary {
-  color: #fff;
+
+a.MuiChip-colorPrimary,
+a.MuiListItem-root {
+  color: initial;
 }
 
 

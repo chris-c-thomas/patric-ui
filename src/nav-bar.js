@@ -12,13 +12,14 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import FolderIcon from '@material-ui/icons/FolderOpen';
-import StorageIcon from '@material-ui/icons/StorageRounded';
-import ServiceIcon from '@material-ui/icons/Settings';
+// import FolderIcon from '@material-ui/icons/FolderOpen';
+// import StorageIcon from '@material-ui/icons/StorageRounded';
+// import ServiceIcon from '@material-ui/icons/Settings';
+// import JobsIcon from '@material-ui/icons/ListRounded';
 import AccountIcon from '@material-ui/icons/AccountCircle';
-import JobsIcon from '@material-ui/icons/ListRounded';
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
 import ExitIcon from '@material-ui/icons/ExitToApp';
+import SUIcon from '@material-ui/icons/SupervisedUserCircle';
 
 import logo from '../assets/imgs/patric-logo-88h.png';
 
@@ -38,8 +39,20 @@ const useStyles = makeStyles(theme => ({
   toolbar: {
     height: '35px'
   },
-  menuButton: {
+  brand: {
     marginRight: theme.spacing(2),
+  },
+  version: {
+    fontSize: '50%',
+    color: '#e57200',
+    marginBottom: 20
+  },
+  logoImg: {
+    marginTop: 2,
+    height: '24px'
+  },
+  menuButton: {
+    marginRight: theme.spacing(2)
   },
   menu: {
     flexGrow: 1,
@@ -47,31 +60,31 @@ const useStyles = makeStyles(theme => ({
     fontSize: '.9em',
     marginRight: '5px',
     '& span': {
-      marginLeft: '5px'
+      marginLeft: '5px',
+      color: '#fff'
     },
     '& svg': {
       fontSize: '1.4em',
+
     }
   },
-  brand: {
-    marginRight: theme.spacing(2),
-  },
-  version: {
-    fontSize: '50%',
-    color: '#e57200'
-  },
-  logoImg: {
-    height: '22px'
-  },
-  logoText: {
-    position: 'absolute',
-    left: '60px',
-    bottom: '-8px'
+  signInBtn: {
+    marginBottom: 2,
+    color: '#f2f2f2',
+    background: '#1e98bb',
+    '&:hover': {
+      background: '#157f9d'
+    }
   },
   account: {
     color,
     '& svg': {
       fontSize: '1.4em'
+    }
+  },
+  accountMenu: {
+    '& svg': {
+      marginRight: 5
     }
   }
 }))
@@ -79,19 +92,13 @@ const useStyles = makeStyles(theme => ({
 
 
 export function NavBar() {
-  const style = useStyles();
-
-  const [isNavOpen, setIsNavOpen] = useState(false);
+  const styles = useStyles();
 
   const [openSignIn, setOpenSignIn] = useState(false);
 
   // accunt menu
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleSignOut = () => {
-    Auth.signOut()
-  }
 
   /**
    * account menu pieces
@@ -101,7 +108,7 @@ export function NavBar() {
     setIsMenuOpen(true)
   }
 
-  const closeAccountMenu = () => {
+  const closeMenu = () => {
     setAnchorEl(null);
     setIsMenuOpen(false)
   }
@@ -112,92 +119,56 @@ export function NavBar() {
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMenuOpen}
-      onClose={closeAccountMenu}
+      onClose={closeMenu}
+      className={styles.accountMenu}
     >
-      <MenuItem component={Link} to="/my-profile"><AccountIcon/> My Profile</MenuItem>
-      <MenuItem onClick={handleSignOut}><ExitIcon/> Sign out</MenuItem>
+      <MenuItem component={Link} to="/my-profile" onClick={closeMenu} disableRipple>
+        <AccountIcon/> My profile
+      </MenuItem>
+      {
+        Auth.isAdmin() ?
+        <MenuItem onClick={Auth.suSwitchBack} disableRipple>
+          <ExitIcon/> SU switch Back
+        </MenuItem> :
+        <MenuItem component={Link} to="/susignin" onClick={closeMenu} disableRipple>
+          <SUIcon/> SU sign in
+        </MenuItem>
+      }
+
+      <MenuItem onClick={Auth.signOut} disableRipple>
+        <ExitIcon/> Sign out
+      </MenuItem>
     </Menu>
   );
 
   return (
-    <AppBar position="static" className={style.appBar}>
-      <Toolbar variant="dense" className={style.toolbar}>
-        <Typography variant="h5" className={style.brand} component={Link} to="/">
-          <img src={logo} className={style.logoImg} />
-          <span className={style.version}>demo</span>
+    <AppBar position="static" className={styles.appBar}>
+      <Toolbar variant="dense" className={styles.toolbar}>
+        <Typography variant="h5" className={styles.brand} component={Link} to="/">
+          <img src={logo} className={styles.logoImg} />
+          <span className={styles.version}>demo</span>
         </Typography>
 
-        <div className={style.menu}>
+        <div className={styles.menu}>
           <Button color="inherit" disableRipple>
-            <StorageIcon />
-            <span>Data</span>
+            {/*<StorageIcon />*/}
+            Organisms <CaretIcon/>
           </Button>
           <Button color="inherit" disableRipple>
-            <FolderIcon />
-            <span>Workspaces</span>
+             {/*<FolderIcon />*/}
+            Workspaces <CaretIcon/>
           </Button>
           <Button color="inherit" disableRipple>
-            <ServiceIcon />
-            <span>Services</span>
+             {/*<ServiceIcon />*/}
+            <span>Services</span> <CaretIcon/>
           </Button>
-          <Button color="inherit" disableRipple>
-            <JobsIcon />
-            <span>Jobs</span>
+          <Button color="inherit" disableRipple component={Link} to="/jobs">
+             {/*<JobsIcon />*/}
+            Jobs
           </Button>
-          {/*<span><DocsIcon /> Docs </span>*/}
-
-          <div className="dropdown-menu" style={{display: isNavOpen ? 'block' : 'none'}}>
-              <div className="container my-3">
-                <div className="row">
-                  <div className="col-md-3">
-                    <h6><strong>Genomics</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <div className="mb-3 list-group list-group-flush">
-                      <a href="/app/Annotation" title="Service: Annotation">Annotation</a>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <h6><strong>Metagenomics</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <div className="mb-3 list-group list-group-flush">
-                    </div>
-                    <h6><strong>Transcriptomics</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <div className="mb-3 list-group list-group-flush">
-                      <a href="/app/Expression" title="Service: Expression Import" className="list-group-item list-group-item-action">Expression Import</a>
-                      <a href="/app/Rnaseq" title="Service: RNA-Seq Analysis" className="list-group-item list-group-item-action">RNA-Seq Analysis</a>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <h6><strong>Protein Tools</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <div className="mb-3 list-group list-group-flush">
-                      <a href="/app/ProteinFamily" title="Service: Protein Family Sorter" className="list-group-item list-group-item-action">Protein Family Sorter</a>
-                      <a href="/app/SeqComparison" title="Service: Proteome Comparison" className="list-group-item list-group-item-action">Proteome Comparison</a>
-                    </div>
-                    <h6><strong>Metabolomics</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <div className="mb-3 list-group list-group-flush">
-                      <a href="/app/ComparativePathway" title="Service: Comparative Pathway" className="list-group-item list-group-item-action">Comparative Pathway</a>
-                      <a href="/app/Reconstruct" title="Service: Model Reconstruction" className="list-group-item list-group-item-action">Model Reconstruction</a>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <h6><strong>Data</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <div className="mb-3 list-group list-group-flush">
-                      <a href="/app/IDMapper" title="Service: ID Mapper" className="list-group-item list-group-item-action">ID Mapper</a>
-                    </div>
-                    <h6><strong>Raw Data Download</strong></h6>
-                    <hr className="hr--brand-sm col-2 ml-0 mt-0" />
-                    <a className="btn btn-secondary" href="ftp://ftp.patricbrc.org/" title="Access PATRIC FTP Server" target="_blank"><i className="fa fa-download fa-fw"></i>&nbsp;FTP Server</a>
-                  </div>
-                </div>{/* end row */}
-              </div>
-          </div>
         </div>
 
-        <div className={style.account}>
+        <div className={styles.account}>
           {Auth.isSignedIn() &&
             <Button color="inherit" onClick={openAccountMenu} disableRipple>
               <AccountIcon/>&nbsp;{Auth.getUser()} <CaretIcon/>
@@ -205,8 +176,13 @@ export function NavBar() {
           }
 
           {!Auth.isSignedIn() &&
-            <Button color="inherit" onClick={() => setOpenSignIn(true)} disableRipple>
-              <AccountIcon/>&nbsp;Sign in
+            <Button size="small"
+              className={styles.signInBtn}
+              color="inherit" variant="contained"
+              onClick={() => setOpenSignIn(true)}
+              disableRipple
+            >
+              Sign in&nbsp;<ExitIcon/>
             </Button>
           }
         </div>

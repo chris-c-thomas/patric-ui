@@ -50,28 +50,31 @@ export default function ContactDialog(props) {
 
   return (
     <Dialog
+      maxWidth='sm'
+      fullWidth
       open={open}
       onClose={handleClose}
     >
-      <DialogTitle style={{ cursor: 'move' }} id="dragable-dialog">
-        Provide Feedback
-      </DialogTitle>
+      <DialogTitle>Contact Us</DialogTitle>
 
       <form onSubmit={sendMsg}>
         <DialogContent>
           <Grid container direction="column" alignItems="center">
             <Grid item xs={12}>
-              <TextInput label="Subject" onChange={subject => setForm({subject, ...form})} />
+              <TextInput fullWidth label="Subject" onChange={subject => setForm({subject, ...form})} />
             </Grid>
             <Grid item xs={12}>
-              <TextField multiline rows={5} aria-label="provide feedback message"
+              <TextField multiline
+                fullWidth
+                rows={5}
+                aria-label="provide feedback message"
+                onChange={msg => setForm({msg, ...form})}
                 variant="outlined"
                 placeholder="Add your message..." />
             </Grid>
 
             {error && <div className="alert alert-fail">{error.message}</div>}
           </Grid>
-          <br/>
         </DialogContent>
 
         <DialogActions>
