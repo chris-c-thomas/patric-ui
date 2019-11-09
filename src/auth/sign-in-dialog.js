@@ -25,12 +25,8 @@ export default function SignInDialog(props) {
       onClose={handleClose}
       aria-labelledby="dragable-dialog"
     >
-      <DialogTitle style={{ cursor: 'move' }} id="dragable-dialog">
-        Sign In
-      </DialogTitle>
-
+      <DialogTitle>Sign In</DialogTitle>
       <SignInForm />
-
     </Dialog>
   );
 }

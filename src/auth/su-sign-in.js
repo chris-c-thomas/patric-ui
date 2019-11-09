@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function SUSignIn() {
+export default function SUSignIn(props) {
   const styles = useStyles();
 
   return (

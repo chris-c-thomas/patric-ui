@@ -1,7 +1,3 @@
-//
-// todo(nc): provide general styling for icons next to text
-//
-
 import React, {useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
@@ -48,7 +44,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 20
   },
   logoImg: {
-    marginTop: 2,
+    marginBottom: 2,
     height: '24px'
   },
   menuButton: {
@@ -90,9 +86,33 @@ const useStyles = makeStyles(theme => ({
 }))
 
 
+const UserMenus = () => {
+  return (
+    <>
+      <Button color="inherit" disableRipple>
+        {/*<StorageIcon />*/}
+        Organisms <CaretIcon/>
+      </Button>
+      <Button color="inherit" disableRipple>
+        {/*<FolderIcon />*/}
+        Workspaces <CaretIcon/>
+      </Button>
+      <Button color="inherit" disableRipple>
+        {/*<ServiceIcon />*/}
+        <span>Services</span> <CaretIcon/>
+      </Button>
+      <Button color="inherit" disableRipple component={Link} to="/jobs">
+        {/*<JobsIcon />*/}
+        Jobs
+      </Button>
+    </>
+  )
+}
 
-export function NavBar() {
+export function NavBar(props) {
   const styles = useStyles();
+
+  const {systemDash, systemMenu} = props;
 
   const [openSignIn, setOpenSignIn] = useState(false);
 
@@ -113,11 +133,9 @@ export function NavBar() {
     setIsMenuOpen(false)
   }
 
-  const accountMenu = () => (
+  const userAccount = () => (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMenuOpen}
       onClose={closeMenu}
       className={styles.accountMenu}
@@ -141,31 +159,29 @@ export function NavBar() {
     </Menu>
   );
 
+  const adminAccount = () => (
+    <Menu
+      anchorEl={anchorEl}
+      open={isMenuOpen}
+      onClose={closeMenu}
+      className={styles.accountMenu}
+    >
+      <MenuItem onClick={Auth.signOut} disableRipple>
+        <ExitIcon/> Sign out
+      </MenuItem>
+    </Menu>
+  );
+
   return (
     <AppBar position="static" className={styles.appBar}>
       <Toolbar variant="dense" className={styles.toolbar}>
         <Typography variant="h5" className={styles.brand} component={Link} to="/">
           <img src={logo} className={styles.logoImg} />
-          <span className={styles.version}>demo</span>
+          <span className={styles.version}></span>
         </Typography>
 
         <div className={styles.menu}>
-          <Button color="inherit" disableRipple>
-            {/*<StorageIcon />*/}
-            Organisms <CaretIcon/>
-          </Button>
-          <Button color="inherit" disableRipple>
-             {/*<FolderIcon />*/}
-            Workspaces <CaretIcon/>
-          </Button>
-          <Button color="inherit" disableRipple>
-             {/*<ServiceIcon />*/}
-            <span>Services</span> <CaretIcon/>
-          </Button>
-          <Button color="inherit" disableRipple component={Link} to="/jobs">
-             {/*<JobsIcon />*/}
-            Jobs
-          </Button>
+          {systemDash ? <>{systemMenu}</> : <UserMenus />}
         </div>
 
         <div className={styles.account}>
@@ -175,7 +191,7 @@ export function NavBar() {
             </Button>
           }
 
-          {!Auth.isSignedIn() &&
+          {!Auth.isSignedIn() && !systemDash &&
             <Button size="small"
               className={styles.signInBtn}
               color="inherit" variant="contained"
@@ -186,7 +202,8 @@ export function NavBar() {
             </Button>
           }
         </div>
-        {accountMenu()}
+
+        {systemDash ? adminAccount() : userAccount()}
       </Toolbar>
 
       <SignInDialog open={openSignIn} onClose={() => setOpenSignIn(false)}/>

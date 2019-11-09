@@ -1,8 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, createContext} from 'react';
 
 import { getStatus } from '../api/app-service';
 
-const JobStatusContext = React.createContext([{}]);
+const JobStatusContext = createContext([{}]);
 
 const JobStatusProvider = (props) => {
   const [state, setState] = useState({

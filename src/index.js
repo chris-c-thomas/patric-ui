@@ -1,9 +1,8 @@
 
 
-import React, {lazy, Suspense} from "react";
-import { BrowserRouter, Switch, Route, Link} from "react-router-dom";
-
-import { render } from "react-dom";
+import React, {lazy, Suspense} from 'react';
+import { BrowserRouter, Switch, Route} from 'react-router-dom';
+import { render } from 'react-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { NavBar } from './nav-bar';
