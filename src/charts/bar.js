@@ -37,26 +37,15 @@ const exampleData =
 ]
 */
 
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-// website examples showcase many properties,
-// you'll often use just a few of them.
-
 export default function BarChart(props) {
   const {
-    data, keys, indexBy,
     margin,
-    xLabel, yLabel,
-    xLabelOffset,
-    noXLabels
+    xLabel,
+    yLabel,
   } = props
 
   return (
     <ResponsiveBar
-        data={data}
-        keys={keys}
-        indexBy={indexBy}
         margin={margin || { top: 50, right: 130, bottom: 100, left: 60 }}
         padding={0.3}
         colors={{ scheme: 'nivo' }}
@@ -98,22 +87,6 @@ export default function BarChart(props) {
         borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
         axisTop={null}
         axisRight={null}
-        axisBottom={noXLabels ? null : {
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 25,
-            legend: xLabel,
-            legendPosition: 'middle',
-            legendOffset: xLabelOffset || 50
-        }}
-        axisLeft={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: yLabel,
-            legendPosition: 'middle',
-            legendOffset: -40
-        }}
         labelSkipWidth={12}
         labelSkipHeight={12}
         labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
