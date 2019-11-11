@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 
-const parseLog = (data) => {
+const parseLog = (data, service = null) => {
   let rows = data.trim().split('\n');
   let columns = rows.shift().split('\t');
 
@@ -20,7 +20,7 @@ const parseLog = (data) => {
     const [s, e] = [timeStr.indexOf('[')+1, timeStr.indexOf(']')];
     const time = vals.shift().slice(s, e);
 
-    const tests = columns.map((name, j) => {
+    let tests = columns.map((name, j) => {
       const result = vals[j];
       return {
         name,
@@ -28,6 +28,9 @@ const parseLog = (data) => {
         duration: Number(result.split('|')[1])
       }
     })
+
+    if (service)
+      tests = tests.filter(test => test.name == service);
 
     return {
       time,
@@ -46,9 +49,9 @@ const getToday = () => new Date().toLocaleDateString('sv-SE')
 /**
  * Log API
  */
-export function getHealthSummary() {
+export function getHealthReport(service = null) {
   return api.get(`/results/health_${getToday()}.tsv`)
-    .then(res => parseLog(res.data))
+    .then(res => parseLog(res.data, service))
 }
 
 export function getDailyHealth() {

@@ -17,8 +17,6 @@ import News from './news';
 import Recents from './recents';
 import MyData from './my-data';
 
-
-
 import images from '../../assets/imgs/services/*.jpg';
 import chipImages from '../../assets/imgs/*.png';
 
@@ -26,6 +24,7 @@ import config from '../config.js'
 import * as Auth from '../api/auth';
 import SignInDialog from '../auth/sign-in-dialog';
 import JobsOverview from './jobs-overview';
+import ChipFilters from '../utils/ui/chip-filters';
 
 const services = [
   {type: 'All'},
@@ -88,9 +87,6 @@ const useStyles = makeStyles(theme => ({
       background: '#eee',
       borderRadius: '10px'
     }
-  },
-  filterChip: {
-    marginRight: theme.spacing(1)
   }
 }));
 
@@ -151,31 +147,6 @@ const Overview = () => {
   )
 }
 
-const ChipFilters = (props) => {
-  const styles = useStyles();
-  const {onClick, filterState} = props;
-  return (
-    <span>
-      {
-        [...new Set(services.map(obj => obj.type))]
-          .map(type => {
-            const opts = filterState == type ? {} : {variant: 'outlined'}
-            return (
-              <Chip
-                {...opts}
-                color={filterState == type ? 'primary' : 'default'}
-                key={type}
-                clickable
-                className={styles.filterChip}
-                label={type}
-                onClick={() => onClick(type)}
-              />
-            )
-          })
-      }
-    </span>
-  )
-}
 
 const serviceCardStyles = makeStyles({
   card: {
@@ -251,6 +222,7 @@ const ServiceCards = () => {
       </Subtitle>
 
       <ChipFilters
+        items={services}
         filterState={filter}
         onClick={type => setFilter(type)}
       />

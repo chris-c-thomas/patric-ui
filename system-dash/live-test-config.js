@@ -1,16 +1,19 @@
 export default {
   auth: {
-    label: 'Auth Service',
+    label: 'Auth',
+    logColumn: 'Auth',
     description: 'User registration and login',
     url: 'https://user.patricbrc.org/'
   },
   dataAPI: {
     label: 'Data API',
+    logColumn: 'Data API',
     description: 'All services; Search; PATRIC public and private data',
     url: 'https://patricbrc.org/api/genome/?http_accept=application/solr+json'
   },
   ws: {
     label: 'Workspace',
+    logColumn: 'Workspace',
     description: 'All services; public and private Workspace data (files)',
     url: 'https://p3.theseed.org/services/Workspace/ping'
   },

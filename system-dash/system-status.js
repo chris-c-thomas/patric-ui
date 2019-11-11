@@ -11,10 +11,13 @@ import WarningIcon from '@material-ui/icons/WarningRounded'
 import BarChart from '../src/charts/bar';
 import Calendar from '../src/charts/calendar';
 
-import {getHealthSummary, getDailyHealth} from './api/log-fetcher';
+import {getHealthReport, getDailyHealth} from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
 
 import { LiveStatusProvider, LiveStatusContext } from './live-status-context'
+
+import Subtitle from '../src/home/subtitle';
+import FilterChips from '../src/utils/ui/chip-filters'
 
 import config from './live-test-config'
 
@@ -31,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1, 2),
     padding: theme.spacing(2, 2),
-    height: 400
+    height: 350
   },
   calCard: {
     position: 'relative',
@@ -44,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 
 const formatData = (data, lastN = HOURS*60) => {
   data = data.map(obj => ({
-    time: obj.time.split(' ')[1],
+    time: obj.time.split(' ')[1].slice(0, -3),
     dataTime: obj.time,
     status: obj.status,
     duration: obj.duration,
@@ -64,7 +67,7 @@ const tickValues = (statuses) => {
   return statuses.map(obj => obj.time);
 }
 
-function LiveRows(props) {
+const LiveRows = (props) => {
   const [state, time] = useContext(LiveStatusContext);
 
   useEffect(() => {
@@ -75,7 +78,11 @@ function LiveRows(props) {
     <>
       {Object.keys(config).map(key => (
         <tr key={key}>
-          <td>{config[key].label}</td>
+          <td>
+            <a>
+              {config[key].label}
+            </a>
+          </td>
           <td>
             {!(key in state) && 'loading...' }
             {key in state && state[key] && <CheckIcon className="success" />}
@@ -89,7 +96,7 @@ function LiveRows(props) {
 
 }
 
-function LiveStatus() {
+const LiveStatus = (props) => {
   const styles = useStyles()
 
   const [time, setTime] = useState(null)
@@ -114,7 +121,7 @@ function LiveStatus() {
         </thead>
         <tbody>
           <LiveStatusProvider>
-            <LiveRows afterUpdate={(time) => setTime(time)} />
+            <LiveRows afterUpdate={(time) => setTime(time)}/>
           </LiveStatusProvider>
         </tbody>
       </table>
@@ -122,23 +129,37 @@ function LiveStatus() {
   )
 }
 
+const getFilters = () => {
+  return [
+    {type: 'All'},
+    ...Object.keys(config).map(key => ({...config[key], type: config[key].label}) )
+  ]
+}
 
 export default function SystemStatus() {
   const styles = useStyles();
 
-  const [statuses, setStatuses] = useState(null);
+  const [report, setReport] = useState(null);
   const [dailyHealth, setDailyHealth] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const [service, setService] = useState('All');
 
   useEffect(() => {
-    getHealthSummary().then(data => {
-      setStatuses(formatData(data));
-    })
+    const filter = service != 'All' && service
 
+    setLoading(true)
+    getHealthReport(filter).then(data => {
+      setReport(formatData(data))
+      setLoading(false)
+    })
+  }, [service])
+
+  useEffect(() => {
     getDailyHealth().then(data => {
       setDailyHealth(data);
     })
   }, [])
-
 
   return (
     <div className={styles.root}>
@@ -151,13 +172,19 @@ export default function SystemStatus() {
 
           <Grid item>
             <Paper className={styles.vizCard}>
-              {!statuses && <LinearProgress className="card-progress"/>}
+              {loading && <LinearProgress className="card-progress"/>}
 
-              <Typography variant="h6">System Health (last {HOURS} hours)</Typography>
+              <Subtitle inline>System Health (last {HOURS} hours)</Subtitle>
+              <FilterChips
+                items={getFilters()}
+                filterState={service}
+                onClick={type => setService(type)}
+              />
+
               {
-                statuses &&
+                report &&
                 <BarChart
-                  data={statuses}
+                  data={report}
                   indexBy="time"
                   margin={{ top: 10, right: 20, bottom: 70, left: 40 }}
                   axisLeft={{
@@ -169,7 +196,7 @@ export default function SystemStatus() {
                     tickRotation: 40,
                     legendPosition: 'middle',
                     legendOffset: 50,
-                    tickValues: tickValues(statuses)
+                    tickValues: tickValues(report)
                   }}
                 />
               }
