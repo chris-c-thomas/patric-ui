@@ -40,11 +40,39 @@ const parseLog = (data) => {
   return records;
 }
 
+// todo: fix dates
+const getToday = () => new Date().toLocaleDateString('sv-SE')
+
 /**
  * Log API
  */
 export function getHealthSummary() {
-  return api.get(`/results/health.tsv`)
+  return api.get(`/results/health_${getToday()}.tsv`)
     .then(res => parseLog(res.data))
 }
 
+export function getDailyHealth() {
+  return api.get(`/results/health-calendar.txt`)
+    .then(res => {
+      const data = res.data.trim();
+      const rows = data.split('\n')
+      console.log(rows)
+      let objs = rows.map(row => JSON.parse(row))
+      console.log('objs', objs)
+
+      objs = objs.map(obj => {
+        const passed = obj.services.map(s => s.passed).reduce((acc, val) => acc + val, 0)
+        const failed = obj.services.map(s => s.failed).reduce((acc, val) => acc + val, 0)
+
+        return {
+          day: obj.date,
+          passed,
+          failed,
+          value: (failed / (passed + failed)) * 100,
+          ...obj
+        }
+      })
+
+      return objs
+    })
+}

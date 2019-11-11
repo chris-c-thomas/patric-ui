@@ -1,5 +1,6 @@
 import React from 'react';
-import { ResponsiveBar } from '@nivo/bar'
+import { BarCanvas } from '@nivo/bar'
+import { AutoSizer } from 'react-virtualized';
 
 /*
 const exampleData =
@@ -40,61 +41,30 @@ const exampleData =
 export default function BarChart(props) {
   const {
     margin,
-    xLabel,
-    yLabel,
   } = props
 
   return (
-    <ResponsiveBar
-        margin={margin || { top: 50, right: 130, bottom: 100, left: 60 }}
-        padding={0.3}
-        colors={{ scheme: 'nivo' }}
-        enableLabel={false}
-        defs={[
-            {
-                id: 'dots',
-                type: 'patternDots',
-                background: 'inherit',
-                color: '#38bcb2',
-                size: 4,
-                padding: 1,
-                stagger: true
-            },
-            {
-                id: 'lines',
-                type: 'patternLines',
-                background: 'inherit',
-                color: '#eed312',
-                rotation: -45,
-                lineWidth: 6,
-                spacing: 10
-            }
-        ]}
-        fill={[
-            {
-                match: {
-                    id: 'foo'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'bar'
-                },
-                id: 'lines'
-            }
-        ]}
-        borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-        axisTop={null}
-        axisRight={null}
-        labelSkipWidth={12}
-        labelSkipHeight={12}
-        labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-        legends={[]}
-        animate={true}
-        motionStiffness={90}
-        motionDamping={15}
-        {...props}
-    />
+    <AutoSizer>
+      {({ height, width }) => (
+        <BarCanvas
+          height={height}
+          width={width}
+          margin={{ top: 50, right: 130, bottom: 100, left: 60 }}
+          colors={{ scheme: 'nivo' }}
+          enableLabel={false}
+          borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+          axisTop={null}
+          axisRight={null}
+          labelSkipWidth={12}
+          labelSkipHeight={12}
+          labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
+          legends={[]}
+          animate={true}
+          motionStiffness={90}
+          motionDamping={15}
+          {...props}
+        />
+      )}
+    </AutoSizer>
   )
 }
