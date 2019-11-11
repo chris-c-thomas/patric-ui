@@ -17,7 +17,7 @@ table.simple th {
   padding: .5em;
 }
 
-table.simple td:not(.icon) {
+table.simple:not(.dense) td:not(.icon) {
   padding: .5rem;
 }
 table.simple td {
@@ -44,5 +44,5 @@ table.simple tr.selected a {
 table.dense th,
 table.dense td {
   font-size: .9em;
-
+  padding: 0.3rem;
 }

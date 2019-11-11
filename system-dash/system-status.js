@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -12,17 +11,15 @@ import WarningIcon from '@material-ui/icons/WarningRounded'
 import BarChart from '../src/charts/bar';
 import Calendar from '../src/charts/calendar';
 
-
 import {getHealthSummary, getDailyHealth} from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
-import {get} from 'axios';
+
+import { LiveStatusProvider, LiveStatusContext } from './live-status-context'
 
 import config from './live-test-config'
 
-
-// last number of hours to show
+// number of hours into the past to show
 const HOURS = 8
-
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -40,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     margin: theme.spacing(1, 2),
     padding: theme.spacing(2, 2),
-    height: 300
+    height: 200
   }
 }));
 
@@ -67,98 +64,63 @@ const tickValues = (statuses) => {
   return statuses.map(obj => obj.time);
 }
 
-function LiveStatus(props) {
-  const styles = useStyles()
-
-  const {
-    auth, dataAPI, ws, shock,
-    appService, minHash, homology
-  } = config;
-
-  const [status, setStatus] = useState({});
+function LiveRows(props) {
+  const [state, time] = useContext(LiveStatusContext);
 
   useEffect(() => {
-    get(auth.url).then(res => {
-      if (res.status !== 200) throw res;
-      setStatus(obj => ({...obj, auth: true}))
-    }).catch(e => {
-      setStatus(obj => ({...status, auth: false}))
-    })
+    props.afterUpdate(time)
+  }, [time])
 
-    get(dataAPI.url).then(res => {
-      if (res.status !== 200 && res.data.response.docs.length == 25 ) throw res;
-      setStatus(obj => ({...obj, dataAPI: true}))
-    }).catch(e => {
-      setStatus(obj => ({...obj, dataAPI: false}))
-    })
+  return (
+    <>
+      {Object.keys(config).map(key => (
+        <tr key={key}>
+          <td>{config[key].label}</td>
+          <td>
+            {!(key in state) && 'loading...' }
+            {key in state && state[key] && <CheckIcon className="success" />}
+            {key in state && !state[key] &&  <WarningIcon className="failed" />}
+          </td>
+        </tr>
+        )
+      )}
+    </>
+  )
 
-    get(ws.url).then(res => {
-      if (res.status !== 200) throw res;
-      setStatus(obj => ({...obj, ws: true}))
-    }).catch(e => {
-      setStatus(obj => ({...obj, ws: false}))
-    })
+}
 
-    get(appService.url).then(res => {
-      if (res.status !== 200) throw res;
-      setStatus(obj => ({...obj, appService: true}))
-    }).catch(e => {
-      setStatus(obj => ({...obj, appService: false}))
-    })
+function LiveStatus() {
+  const styles = useStyles()
 
-    get(shock.url).then(res => {
-      if (res.status !== 200) throw res;
-      setStatus(obj => ({...obj, shock: true}))
-    }).catch(e => {
-      setStatus(obj => ({...obj, shock: false}))
-    })
-
-    get(minHash.url).then(res => {
-      if (res.status !== 200) throw res;
-      setStatus(obj => ({...obj, minHash: true}))
-    }).catch(e => {
-      setStatus(obj => ({...obj, minHash: false}))
-    })
-
-    get(homology.url).then(res => {
-      if (res.status !== 200) throw res;
-      setStatus(obj => ({...obj, homology: true}))
-    }).catch(e => {
-      setStatus(obj => ({...obj, homology: false}))
-    })
-  }, [])
+  const [time, setTime] = useState(null)
 
   return (
     <Paper className={styles.card}>
-      <Typography variant="h6">Live Status</Typography>
-        <table className="table simple">
-          <thead>
-            <tr>
-              <th>Service</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              Object.keys(config).map(key => (
-                <tr key={key}>
-                  <td>{config[key].label}</td>
-                  <td>
-                    {!(key in status) && 'loading...' }
-                    {key in status && status[key] && <CheckIcon className="success" />}
-                    {key in status && !status[key] &&  <WarningIcon className="failed" />}
-                  </td>
-                </tr>
-                )
-              )
-            }
-          </tbody>
-        </table>
+      <Grid container justify="space-between" alignItems="center">
+        <Grid item>
+          <Typography variant="h6">Live Status</Typography>
+        </Grid>
+        <Grid item>
+          <small>Updated: {time}</small>
+        </Grid>
+      </Grid>
+
+      <table className="simple dense">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <LiveStatusProvider>
+            <LiveRows afterUpdate={(time) => setTime(time)} />
+          </LiveStatusProvider>
+        </tbody>
+      </table>
     </Paper>
   )
 }
-
-
 
 
 export default function SystemStatus() {
@@ -197,7 +159,7 @@ export default function SystemStatus() {
                 <BarChart
                   data={statuses}
                   indexBy="time"
-                  margin={{ top: 10, right: 10, bottom: 70, left: 40 }}
+                  margin={{ top: 10, right: 20, bottom: 70, left: 40 }}
                   axisLeft={{
                     label: 'milliseconds'
                   }}
