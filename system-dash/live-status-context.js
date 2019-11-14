@@ -1,8 +1,8 @@
 import React, {useState, useEffect, createContext} from 'react';
-import config from './live-test-config'
+import config, {timeout} from './config'
 import {get, all} from 'axios'
 
-const TIMEOUT = 5000;
+const TIMEOUT = timeout.liveStatus || 5000;
 
 const LiveStatusContext = createContext([{}]);
 

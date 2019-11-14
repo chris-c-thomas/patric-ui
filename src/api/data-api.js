@@ -8,7 +8,7 @@ import axios from 'axios';
 import config from '../config';
 const { dataAPI } = config;
 
-import metaObjToList from '../charts/chart-helpers';
+import { metaObjToList } from '../charts/chart-helpers';
 
 const api = axios.create({
   baseURL: dataAPI
@@ -36,7 +36,8 @@ function getSolrConfig({start = null, limit, contentType, data}) {
   }
 
   // Note! If putting content-type in the request, the body must
-  // have content. This configuration is not currently used.
+  // have content. This configuration is not currently used,
+  // but if it is, config.data should have at least an emtpy hash.
   if (contentType) {
     config.headers['Content-Type'] = contentType;
     config.data = data || {};
@@ -123,6 +124,17 @@ export function listGenomes({query, start, limit = 200}) {
     .then(res => {
       return res;
     })
+}
+
+
+// curently only used for scripting
+export function queryGenomes({select, limit = 25, start}) {
+  console.log('select', select)
+  const q  = `?http_accept=application/json`
+  + (select ? `&select(${select.join(',')})` : '')
+  + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
+
+return api.get(`/genome/${q}`)
 }
 
 

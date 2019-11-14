@@ -59,9 +59,7 @@ export function getDailyHealth() {
     .then(res => {
       const data = res.data.trim();
       const rows = data.split('\n')
-      console.log(rows)
       let objs = rows.map(row => JSON.parse(row))
-      console.log('objs', objs)
 
       objs = objs.map(obj => {
         const passed = obj.services.map(s => s.passed).reduce((acc, val) => acc + val, 0)

@@ -38,3 +38,7 @@ export default {
     url: 'https://p3.theseed.org/services/homology_service/ping'
   }
 }
+
+export const timeout = {
+  liveStatus: 5000, // timeout for "live status" component
+}

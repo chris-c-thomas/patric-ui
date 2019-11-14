@@ -3,3 +3,4 @@ node_modules/
 dist/
 
 token*
+system-dash/config.js
