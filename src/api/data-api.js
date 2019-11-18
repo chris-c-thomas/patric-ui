@@ -129,7 +129,6 @@ export function listGenomes({query, start, limit = 200}) {
 
 // curently only used for scripting
 export function queryGenomes({select, limit = 25, start}) {
-  console.log('select', select)
   const q  = `?http_accept=application/json`
   + (select ? `&select(${select.join(',')})` : '')
   + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)

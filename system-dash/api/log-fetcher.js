@@ -29,8 +29,9 @@ const parseLog = (data, service = null) => {
       }
     })
 
-    if (service)
+    if (service) {
       tests = tests.filter(test => test.name == service);
+    }
 
     return {
       time,
@@ -49,8 +50,8 @@ const getToday = () => new Date().toLocaleDateString('sv-SE')
 /**
  * Log API
  */
-export function getHealthReport(service = null) {
-  return api.get(`/results/health_${getToday()}.tsv`)
+export function getHealthReport({service = null, date = null}) {
+  return api.get(`/results/health_${date || getToday()}.tsv`)
     .then(res => parseLog(res.data, service))
 }
 

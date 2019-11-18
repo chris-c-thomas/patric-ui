@@ -40,5 +40,5 @@ export default {
 }
 
 export const timeout = {
-  liveStatus: 5000, // timeout for "live status" component
+  liveStatus: 200000, // timeout for "live status" component
 }

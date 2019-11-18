@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Chip from '@material-ui/core/Chip';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
@@ -14,10 +15,11 @@ import Calendar from '../src/charts/calendar';
 import {getHealthReport, getDailyHealth, filterByService} from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
 
-import { LiveStatusProvider, LiveStatusContext } from './live-status-context'
+import { LiveStatusProvider, LiveStatusContext } from './live-status-context';
 
+import ErrorMsg from '../src/error-msg';
 import Subtitle from '../src/home/subtitle';
-import FilterChips from '../src/utils/ui/chip-filters'
+import FilterChips from '../src/utils/ui/chip-filters';
 
 import config from './config'
 
@@ -50,6 +52,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1, 2),
     padding: theme.spacing(2, 2),
     height: 200
+  },
+  dateFilter: {
+    marginLeft: theme.spacing(1)
   }
 }));
 
@@ -160,7 +165,7 @@ const StatusHistory = (props) => {
 
 const formatData = (data, lastN = HOURS*60) => {
   data = data.map(obj => ({
-    time: obj.time.split(' ')[1].slice(0, -3),
+    time: new Date(obj.time).toLocaleTimeString().slice(0, -6), // remove secs
     status: obj.status,
     duration: obj.duration,
     value: obj.duration,
@@ -177,31 +182,49 @@ export default function SystemStatus() {
 
   const [recentHistory, setRecentHistory] = useState(null);
   const [history, setHistory] = useState(null);
-  const [dailyHealth, setDailyHealth] = useState(null);
+  const [calendar, setCalendar] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [error, setError] = useState(null);
+
   const [service, setService] = useState('All');
+  const [date, setDate] = useState(null);
 
   useEffect(() => {
-    const filter = service != 'All' && service
-
-    setLoading(true)
-    getHealthReport(filter).then(data => {
-      setRecentHistory(formatRecentData(data))
-      setHistory(formatData(data))
-      setLoading(false)
-    })
-  }, [service])
+    fetchLog();
+  }, [service, date])
 
   useEffect(() => {
     getDailyHealth().then(data => {
-      setDailyHealth(data);
+      setCalendar(data);
     })
   }, [])
 
-  const onFilter = (service) => {
-    const data = filterByService(data, service)
-    console.log('filtered data', data)
+
+  const fetchLog = () => {
+    const serviceFilter = service != 'All' && service
+
+    setLoading(true)
+    getHealthReport({service: serviceFilter, date}).then(data => {
+      setRecentHistory(formatRecentData(data))
+      setHistory(formatData(data))
+      setLoading(false)
+    }).catch(e => {
+      setError(e);
+      setLoading(false);
+    })
+  }
+
+  const handleDayClick = (evt) => {
+    const {date, data} = evt;
+
+    // there may not be data for that date
+    if (!data) return;
+
+    const d = new Date(date)
+    const [yyyy, mm, dd] = [d.getFullYear(), ('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2)]
+    const str = `${yyyy}-${mm}-${dd}`
+    setDate(str);
   }
 
   return (
@@ -219,21 +242,36 @@ export default function SystemStatus() {
               {recentHistory && <StatusHistory data={recentHistory} />}
             </Paper>
           </Grid>
-
         </Grid>
-
 
         <Grid container item xs={12} direction="column">
           <Grid item>
             <Paper className={styles.vizCard}>
               {loading && <LinearProgress className="card-progress"/>}
 
-              <Subtitle inline>System Health (last {HOURS} hours)</Subtitle>
-              <FilterChips
-                items={getFilters()}
-                filterState={service}
-                onClick={(type) => setService(type)}
-              />
+              {!error &&
+                <>
+                  <Subtitle inline>
+                    System Health
+                    {
+                      date ?
+                      <Chip
+                        label={date}
+                        onDelete={() => setDate(null)}
+                        color="primary"
+                        className={styles.dateFilter}
+                      />
+                      : ` (last ${HOURS} hours)`
+                    }
+                  </Subtitle>
+                  <FilterChips
+                    items={getFilters()}
+                    filterState={service}
+                    onClick={(type) => setService(type)}
+                  />
+                </>
+              }
+              { error && <ErrorMsg error={error} noContact /> }
 
               { history && <StatusHistory data={history} /> }
             </Paper>
@@ -242,10 +280,9 @@ export default function SystemStatus() {
           <Grid item>
             <Paper className={styles.calCard}>
               <Subtitle>History</Subtitle>
-              {dailyHealth && <Calendar data={dailyHealth} />}
+              {calendar && <Calendar data={calendar} onClick={handleDayClick} />}
             </Paper>
           </Grid>
-
         </Grid>
 
       </Grid>
