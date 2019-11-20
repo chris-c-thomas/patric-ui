@@ -27,6 +27,7 @@ a.no-style {
     background: #F5F5F5;
 
     @import './general.scss';
+    @import './layout.scss';
     @import './tables.scss';
     @import './mui-overrides.scss';
     @import './hottable-overrides.scss';

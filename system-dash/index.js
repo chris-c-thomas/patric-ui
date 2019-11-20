@@ -20,6 +20,7 @@ import PrivateRoute from './private-route';
 // views
 import SystemStatus from './system-status';
 import Tests from './tests';
+import Insights from './gronkomatic';
 import NotFound404 from '../src/404';
 
 import * as Auth from '../src/api/auth';
@@ -68,6 +69,9 @@ const SystemMenu = () => {
       <Button color="inherit" disableRipple component={Link} to="/tests">
         Tests
       </Button>
+      <Button color="inherit" disableRipple component={Link} to="/insights">
+        Gronkomatic
+      </Button>
     </>
   )
 }
@@ -101,6 +105,7 @@ const App = () => {
               <Route path="/sign-in" exact component={SignIn} />
               <PrivateRoute path="/system-status" exact component={SystemStatus} />
               <PrivateRoute path="/tests" exact component={Tests} />
+              <PrivateRoute path="/insights" exact component={Insights} />
               <Route path="*" component={NotFound404} />
             </Switch>
           </div>

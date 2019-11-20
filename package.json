@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/parcel/bin/cli.js ./src/index.html",
-    "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html",
     "build": "./node_modules/parcel/bin/cli.js  build ./src/index.html",
+
+    "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html",
+    "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html",
+
     "p4-build": "parcel build ./build-p4/apps.js --no-content-hash",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -128,12 +128,13 @@ export function listGenomes({query, start, limit = 200}) {
 
 
 // curently only used for scripting
-export function queryGenomes({select, limit = 25, start}) {
-  const q  = `?http_accept=application/json`
-  + (select ? `&select(${select.join(',')})` : '')
+export function queryGenomes({select, limit = 25, start, sort}) {
+  const q  = `?http_accept=application/json&keyword(*)`
   + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
+  + (select ? `&select(${select.join(',')})` : '')
+  + (sort ? `&sort(${sort})` : '')
 
-return api.get(`/genome/${q}`)
+  return api.get(`/genome/${q}`).then(res => res.data)
 }
 
 

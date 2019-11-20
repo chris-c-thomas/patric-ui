@@ -1,0 +1,18 @@
+
+
+.flex {
+  display: flex;
+
+  .row {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    flex-basis: 100%;
+    flex-direction: column;
+    flex: 1;
+  }
+}
