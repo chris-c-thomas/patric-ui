@@ -112,7 +112,7 @@ const UserMenus = () => {
 export function NavBar(props) {
   const styles = useStyles();
 
-  const {systemDash, systemMenu} = props;
+  const {systemDash, MenuComponent} = props;
 
   const [openSignIn, setOpenSignIn] = useState(false);
 
@@ -181,7 +181,7 @@ export function NavBar(props) {
         </Typography>
 
         <div className={styles.menu}>
-          {systemDash ? <>{systemMenu}</> : <UserMenus />}
+          {systemDash ? <>{MenuComponent}</> : <UserMenus />}
         </div>
 
         <div className={styles.account}>

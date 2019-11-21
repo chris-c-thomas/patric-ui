@@ -1,18 +1,23 @@
 
-
 .flex {
   display: flex;
-
-  .row {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .column {
-    flex-basis: 100%;
-    flex-direction: column;
-    flex: 1;
-  }
+  justify-content: space-between;
 }
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.column {
+  display: flex;
+  flex-basis: 100%;
+  flex-direction: column;
+  flex: 1;
+}
+

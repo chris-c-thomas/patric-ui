@@ -1,13 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import raceData from './race.json'
+import raceData from './data/by-host_name.json'
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Slider from '@material-ui/core/Slider'
+import Tooltip from '@material-ui/core/Tooltip'
+
+import PlayIcon from '@material-ui/icons/PlayCircleOutlineRounded'
+import ReplayIcon from '@material-ui/icons/ReplayRounded'
+import RewindIcon from '@material-ui/icons/FastRewindRounded'
+import StopIcon from '@material-ui/icons/Stop'
 
 import Subtitle from '../src/home/subtitle';
+import {months} from '../src/utils/dates';
 
 import { Paper } from '@material-ui/core';
 import { Bar } from '@nivo/bar'
@@ -77,25 +84,22 @@ const getDayData = (data) => {
   return dayData.sort((a,b) => a.value - b.value).slice(-15)
 }
 
-const months = [
-  'January', 'February', 'March', 'April', 'May',
-  'June', 'July', 'August', 'September', 'October', 'November', 'December'
-];
-
 const renderDay = (date) => {
   const d = new Date(date);
+
+  if (isNaN(d))
+    console.error('*** Data sanitization issue: ', date, 'is not valid')
+
   const [yyyy, mm, dd] = [d.getFullYear(), months[d.getMonth()], d.getDate()]
 
   return (
     <div className="flex">
       <span style={{fontSize: '3.0em', fontWeight: 800}} className="column">{yyyy}</span>
-      <span style={{fontSize: '1.2em', margin: '5px 5px'}} className="column">
-        <span>{mm}</span><br/>
+      <span style={{margin: '5px 5px'}} className="column">
+        <span style={{fontSize: '1.4em'}}>{mm}</span>
         <span>{dd}</span>
       </span>
     </div>
-
-
   )
 }
 
@@ -134,6 +138,31 @@ const Chart = (props) => {
 }
 
 
+function ValueLabelComponent(props) {
+  const { children, open, value } = props;
+
+  const popperRef = React.useRef(null);
+  React.useEffect(() => {
+    if (popperRef.current) {
+      popperRef.current.update();
+    }
+  });
+
+  return (
+    <Tooltip
+      PopperProps={{
+        popperRef,
+      }}
+      open={open}
+      enterTouchDelay={0}
+      placement="top"
+      title={value}
+    >
+      {children}
+    </Tooltip>
+  );
+}
+
 export default function Insights() {
   const styles = useStyles();
 
@@ -145,14 +174,15 @@ export default function Insights() {
   const [date, setDate] = useState(raceData[lastIdx].date);
   const [field, setField] = useState('isolation_country');
 
-  const [start, setStart] = useState(false);
+  const [play, setPlay] = useState(false);
   const [reset, setReset] = useState(false);
 
 
+  // effect for play button
   useEffect(() => {
     setData( getDayData(raceData[current]) )
 
-    if (!start) return;
+    if (!play) return;
 
     const timer = setTimeout(() => {
       const next = current + 1
@@ -163,23 +193,24 @@ export default function Insights() {
       }
 
       setCurrent(next);
-
       const day = raceData[next].date
       setDate(day)
     }, 20);
 
     return () => clearTimeout(timer);
-  }, [current, start])
+  }, [current, play])
 
 
+  // effect for date change
+  useEffect(() => {
+    const day = raceData[current].date
+    setDate(day)
+  }, [current])
 
-  const startSimulation = () => {
-    if (!start) {
-      setCurrent(0)
-      setStart(true)
-    } else if (start) {
-      setStart(false)
-    }
+
+  const replaySim = () => {
+    setCurrent(0)
+    setPlay(true)
   }
 
   return (
@@ -201,29 +232,49 @@ export default function Insights() {
               </Grid>
             </Grid>
 
-
-            <Grid container direction="column">
-              <Grid item>
+            <Grid container alignItems="center">
+              <Grid item xs={3}>
                 {date && renderDay(date)}
               </Grid>
 
-              <Grid item>
+              <Grid item xs={6}>
                 <Slider
                   className={styles.slider}
-                  defaultValue={current}
+                  value={current}
                   getAriaValueText={() => date}
                   aria-labelledby="discrete-slider"
-                  valueLabelDisplay="auto"
                   onChange={(evt, idx) => setCurrent(idx)}
                   min={0}
                   max={lastIdx}
+                  valueLabelDisplay="auto"
+                  ValueLabelComponent={ValueLabelComponent}
+                  valueLabelFormat={i => new Date(raceData[i].date).toLocaleDateString('sv-SE')}
                 />
               </Grid>
 
-              <Grid item>
-                <Button variant="contained" color="primary" onClick={startSimulation} disableRipple>
-                  {start ? 'Stop' : 'Play'}
-                </Button>
+              <Grid item xs={3}>
+                {!play && current != 0 &&
+                  <Button color="primary"
+                    variant="contained"
+                    onClick={replaySim}
+                    disableRipple
+                    style={{marginRight: 5}}
+                  >
+                    <ReplayIcon/> Replay
+                  </Button>
+                }
+                {
+                  lastIdx !== current &&
+                  <Button color="primary"
+                    variant="contained"
+                    onClick={() => setPlay(!play)}
+                    disableRipple
+                    style={{width: 20}}
+                  >
+                    {play ? <StopIcon /> : <PlayIcon />}
+                    {play ? ' Stop' : ' Play'}
+                  </Button>
+                }
               </Grid>
             </Grid>
 

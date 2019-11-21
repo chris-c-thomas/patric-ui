@@ -240,6 +240,7 @@ export default function SystemStatus() {
             <Paper className={styles.shortHistoryCard}>
               <Subtitle>Last {MOST_RECENT} minutes</Subtitle>
               {recentHistory && <StatusHistory data={recentHistory} />}
+              { error && <ErrorMsg error={error} noContact /> }
             </Paper>
           </Grid>
         </Grid>
@@ -281,6 +282,7 @@ export default function SystemStatus() {
             <Paper className={styles.calCard}>
               <Subtitle>History</Subtitle>
               {calendar && <Calendar data={calendar} onClick={handleDayClick} />}
+              { error && <ErrorMsg error={error} noContact /> }
             </Paper>
           </Grid>
         </Grid>

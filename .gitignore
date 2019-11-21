@@ -5,3 +5,4 @@ dist/
 token*
 system-dash/config.js
 system-dash/scripts/*.json
+system-dash/data/*.json

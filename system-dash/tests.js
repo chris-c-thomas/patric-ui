@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from "react-router-dom";
+import Paper from '@material-ui/core/Paper';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -23,8 +23,10 @@ export default function Tests() {
     <div className={styles.root}>
       <Grid container>
 
-        <Grid container item xs={8} direction="column">
-          This is a test page
+        <Grid container item xs={12} direction="column">
+          <Paper className={styles.card}>
+            This is a place holder for end-to-end test results
+          </Paper>
         </Grid>
 
       </Grid>

@@ -95,7 +95,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <div className={styles.root}>
 
-          <NavBar systemDash systemMenu={<SystemMenu />}/>
+          <NavBar systemDash MenuComponent={<SystemMenu />}/>
 
           <div className={styles.content}>
             <Switch>

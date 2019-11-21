@@ -5,7 +5,8 @@
 import {readFile as rf} from 'fs'
 import util from 'util'
 
-const FIELD_OF_INTEREST = 'isolation_country'
+const FIELD_OF_INTEREST = process.argv[2] || 'isolation_country'
+console.error('field of interest is:', FIELD_OF_INTEREST)
 
 const readFile = util.promisify(rf)
 
@@ -98,6 +99,7 @@ async function organizeData() {
 
   console.log(JSON.stringify(topN, null, 4))
 
+  console.error('done.')
 }
 
 organizeData();

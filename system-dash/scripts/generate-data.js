@@ -10,10 +10,14 @@ const total = 300000
 const limit = 25000
 const pages = total / limit
 
+const fields = [
+  'genus', 'completion_date', 'collection_year', 'isolation_country', 'host_name'
+]
+
 function collectSet(start = 0) {
   console.error('fetching with start:', start)
 
-  return queryGenomes({select: ['genus', 'completion_date', 'collection_year', 'isolation_country'], limit, start, sort: '+completion_date'})
+  return queryGenomes({select: fields, limit, start, sort: '+completion_date'})
     .then(res => {
       return res
     })
@@ -22,7 +26,6 @@ function collectSet(start = 0) {
 
 
 async function collectAllData() {
-
   let allData = []
   for (const i of Array(pages).keys()) {
     const data = await collectSet(i * limit)
@@ -35,4 +38,5 @@ async function collectAllData() {
   console.error('done.')
 }
 
+console.error('fetching data for: ', fields.join(', '))
 collectAllData()
