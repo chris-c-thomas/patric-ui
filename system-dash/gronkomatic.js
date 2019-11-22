@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
-import raceData from './data/by-host_name.json'
+import Select from 'react-select'
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -18,22 +17,34 @@ import {months} from '../src/utils/dates';
 
 import { Paper } from '@material-ui/core';
 import { Bar } from '@nivo/bar'
+import { AutoSizer } from 'react-virtualized';
+import axios from 'axios';
+
+const fieldOptions = [
+  { value: 'genus', label: 'Genus' },
+  { value: 'isolation_country', label: 'Isolation Country' },
+  { value: 'host_name', label: 'Host Name' },
+  { value: 'isolation_site', label: 'Isolation Site' },
+  { value: 'genome_quality', label: 'Genome Quality' }
+]
+
 
 const useStyles = makeStyles(theme => ({
   root: {
-
+    flexGrow: 1
   },
   card: {
     position: 'relative',
-    margin: theme.spacing(1, 2),
     padding: theme.spacing(2, 2),
     height: 900
   },
+  controls: {
+    marginTop: theme.spacing(1)
+  },
   slider: {
-    width: 300
-  }
-}));
 
+  },
+}));
 
 const BarComponent = props => {
   return (
@@ -93,13 +104,13 @@ const renderDay = (date) => {
   const [yyyy, mm, dd] = [d.getFullYear(), months[d.getMonth()], d.getDate()]
 
   return (
-    <div className="flex">
-      <span style={{fontSize: '3.0em', fontWeight: 800}} className="column">{yyyy}</span>
-      <span style={{margin: '5px 5px'}} className="column">
-        <span style={{fontSize: '1.4em'}}>{mm}</span>
-        <span>{dd}</span>
-      </span>
-    </div>
+    <Grid container>
+      <Grid item style={{fontSize: '3.0em', fontWeight: 800}}>{yyyy}</Grid>
+      <Grid item style={{margin: '5px 5px'}}>
+        <div style={{fontSize: '1.4em'}}>{mm}</div>
+        <div>{dd}</div>
+      </Grid>
+    </Grid>
   )
 }
 
@@ -107,42 +118,47 @@ const renderDay = (date) => {
 const Chart = (props) => {
   const {data} = props;
   return (
-    <Bar
-      width={800}
-      height={800}
-      layout="horizontal"
-      margin={{ top: 50, right: 120, bottom: 80, left: 20 }}
-      data={data}
-      indexBy="name"
-      keys={['value']}
-      colors={{ scheme: 'spectral' }}
-      colorBy="indexValue"
-      borderColor={{ from: 'color', modifiers: [['darker', 2.6]] }}
-      enableGridX
-      enableGridY={false}
-      axisTop={{
-        format: '~s',
-      }}
-      axisBottom={{
-        format: '~s',
-      }}
-      axisLeft={null}
-      padding={0.3}
-      labelTextColor={{ from: 'color', modifiers: [['darker', 1.4]] }}
-      isInteractive={false}
-      barComponent={BarComponent}
-      motionStiffness={170}
-      motionDamping={26}
-    />
+    <AutoSizer>
+      {({ height, width }) => (
+        <Bar
+          width={width}
+          height={height}
+          layout="horizontal"
+          margin={{ top: 50, right: 120, bottom: 120, left: 20 }}
+          data={data}
+          indexBy="name"
+          keys={['value']}
+          colors={{ scheme: 'spectral' }}
+          colorBy="indexValue"
+          borderColor={{ from: 'color', modifiers: [['darker', 2.6]] }}
+          enableGridX
+          enableGridY={false}
+          axisTop={{
+            format: '~s',
+          }}
+          axisBottom={{
+            format: '~s',
+          }}
+          axisLeft={null}
+          padding={0.3}
+          labelTextColor={{ from: 'color', modifiers: [['darker', 1.4]] }}
+          isInteractive={false}
+          barComponent={BarComponent}
+          motionStiffness={170}
+          motionDamping={26}
+          animate={true}
+        />
+      )
+    }
+    </AutoSizer>
   )
 }
 
-
-function ValueLabelComponent(props) {
+const SliderLabelComponent = (props) => {
   const { children, open, value } = props;
 
-  const popperRef = React.useRef(null);
-  React.useEffect(() => {
+  const popperRef = useRef(null);
+  useEffect(() => {
     if (popperRef.current) {
       popperRef.current.update();
     }
@@ -166,65 +182,75 @@ function ValueLabelComponent(props) {
 export default function Insights() {
   const styles = useStyles();
 
-  const lastIdx = raceData.length - 1;
-
-  const [current, setCurrent] = useState(lastIdx);
-  const [data, setData] = useState(null);
-
-  const [date, setDate] = useState(raceData[lastIdx].date);
-  const [field, setField] = useState('isolation_country');
+  const [allData, setAllData] = useState(null);
 
   const [play, setPlay] = useState(false);
-  const [reset, setReset] = useState(false);
+  const [lastIdx, setLastIdx] = useState(null);
+  const [idx, setIdx] = useState(null);
+
+  const [field, setField] = useState({value: 'genus', label: 'Genus'});
 
 
-  // effect for play button
+  // for changing time series data set
   useEffect(() => {
-    setData( getDayData(raceData[current]) )
+    axios.get(`/data/by-${field.value}.json`)
+      .then(res => {
+        const {data} = res;
+        const lastIdx = data.length - 1;
+        setAllData(data)
+        setLastIdx(lastIdx)
 
+        // start at last index, set to 0 first to force render
+        setIdx(0)
+        setIdx(lastIdx)
+      })
+  }, [field])
+
+
+  // for idx change or if play button is clicked
+  useEffect(() => {
+    // stop timeout if not playing
     if (!play) return;
 
     const timer = setTimeout(() => {
-      const next = current + 1
+      const next = idx + 1
 
-      if (next >= raceData.length) {
+      if (next > lastIdx) {
         clearTimeout(timer);
         return;
       }
 
-      setCurrent(next);
-      const day = raceData[next].date
-      setDate(day)
+      setIdx(next);
     }, 20);
 
     return () => clearTimeout(timer);
-  }, [current, play])
+  }, [idx, play])
 
 
-  // effect for date change
-  useEffect(() => {
-    const day = raceData[current].date
-    setDate(day)
-  }, [current])
+  const data = useMemo(() => {
+    if (allData) return getDayData(allData[idx])
+  }, [idx])
 
+  const date = useMemo(() => {
+    if (allData) return allData[idx].date
+  }, [idx])
 
   const replaySim = () => {
-    setCurrent(0)
+    setIdx(0)
     setPlay(true)
   }
 
   return (
     <div className={styles.root}>
-      <Grid container>
+      <Grid container spacing={2}>
 
-        <Grid container item xs={8} direction="column">
+        <Grid item xs={8}>
 
           <Paper className={styles.card}>
-
             <Grid container justify="space-between">
               <Grid item>
-                <Subtitle inline>
-                  Historical View <small className="muted"> | genomes by {field.replace('_', ' ')}</small>
+                <Subtitle>
+                  Historical View <small className="muted"> | Genomes by {field.label}</small>
                 </Subtitle>
               </Grid>
               <Grid>
@@ -232,56 +258,62 @@ export default function Insights() {
               </Grid>
             </Grid>
 
-            <Grid container alignItems="center">
-              <Grid item xs={3}>
+            <Grid container alignItems="center" justify="space-between" className={styles.controls} spacing={2}>
+              <Grid item style={{width: 220}}>
                 {date && renderDay(date)}
               </Grid>
 
-              <Grid item xs={6}>
-                <Slider
-                  className={styles.slider}
-                  value={current}
-                  getAriaValueText={() => date}
-                  aria-labelledby="discrete-slider"
-                  onChange={(evt, idx) => setCurrent(idx)}
-                  min={0}
-                  max={lastIdx}
-                  valueLabelDisplay="auto"
-                  ValueLabelComponent={ValueLabelComponent}
-                  valueLabelFormat={i => new Date(raceData[i].date).toLocaleDateString('sv-SE')}
-                />
+              <Grid item xs={5}>
+                {idx !== null &&
+                  <Slider
+                    className={styles.slider}
+                    value={idx}
+                    getAriaValueText={() => date}
+                    aria-labelledby="discrete-slider"
+                    onChange={(evt, idx) => setIdx(idx)}
+                    min={0}
+                    max={lastIdx}
+                    valueLabelDisplay="auto"
+                    ValueLabelComponent={SliderLabelComponent}
+                    valueLabelFormat={i => new Date(allData[i].date).toLocaleDateString('sv-SE')}
+                  />
+                }
               </Grid>
 
-              <Grid item xs={3}>
-                {!play && current != 0 &&
-                  <Button color="primary"
-                    variant="contained"
-                    onClick={replaySim}
-                    disableRipple
-                    style={{marginRight: 5}}
-                  >
-                    <ReplayIcon/> Replay
-                  </Button>
-                }
-                {
-                  lastIdx !== current &&
-                  <Button color="primary"
-                    variant="contained"
-                    onClick={() => setPlay(!play)}
-                    disableRipple
-                    style={{width: 20}}
-                  >
-                    {play ? <StopIcon /> : <PlayIcon />}
-                    {play ? ' Stop' : ' Play'}
-                  </Button>
-                }
+              <Grid item>
+                <Button color="primary"
+                  variant="contained"
+                  onClick={replaySim}
+                  disableRipple
+                  style={{marginRight: 5}}
+                  disabled={(play && idx !== lastIdx) || idx == 0 }
+                >
+                  <ReplayIcon/> Replay
+                </Button>
+                <Button color="primary"
+                  variant="contained"
+                  onClick={() => setPlay(!play)}
+                  disableRipple
+                  style={{width: 20}}
+                  disabled={lastIdx == idx}
+                >
+                  {play ? <StopIcon /> : <PlayIcon />}
+                  {play ? ' Stop' : ' Play'}
+                </Button>
               </Grid>
             </Grid>
 
             {data && <Chart data={data} /> }
           </Paper>
+        </Grid>
 
-
+        <Grid item xs={4}>
+          <Paper className={styles.card}>
+            <Select options={fieldOptions}
+              value={field}
+              onChange={field => setField(field)}
+            />
+          </Paper>
         </Grid>
 
       </Grid>

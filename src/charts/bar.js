@@ -39,10 +39,6 @@ const exampleData =
 */
 
 export default function BarChart(props) {
-  const {
-    margin,
-  } = props
-
   return (
     <AutoSizer>
       {({ height, width }) => (

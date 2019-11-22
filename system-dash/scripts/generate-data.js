@@ -11,7 +11,8 @@ const limit = 25000
 const pages = total / limit
 
 const fields = [
-  'genus', 'completion_date', 'collection_year', 'isolation_country', 'host_name'
+  'genus', 'completion_date', 'collection_year', 'isolation_country', 'host_name',
+  'isolation_site', 'genome_quality'
 ]
 
 function collectSet(start = 0) {
