@@ -6,29 +6,12 @@ const api = axios.create({
 
 
 const parseLog = (data, service = null) => {
-  let rows = data.trim().split('\n');
-  let columns = rows.shift().split('\t');
+  const rows = data.trim().split('\n');
+  const objs = rows.map(row => JSON.parse(row))
 
-  // remove time from columns list
-  columns.shift();
+  const records = objs.map(({time, tests}) => {
 
-  const records = rows.map(row => {
-    const vals = row.split('\t');
-
-    // parse time, remove it from rows
-    const timeStr = vals[0];
-    const [s, e] = [timeStr.indexOf('[')+1, timeStr.indexOf(']')];
-    const time = vals.shift().slice(s, e);
-
-    let tests = columns.map((name, j) => {
-      const result = vals[j];
-      return {
-        name,
-        status: result.split('|')[0],
-        duration: Number(result.split('|')[1])
-      }
-    })
-
+    // filter by service if requested
     if (service) {
       tests = tests.filter(test => test.name == service);
     }
@@ -44,14 +27,15 @@ const parseLog = (data, service = null) => {
   return records;
 }
 
+
 // todo: fix dates
-const getToday = () => new Date().toLocaleDateString('sv-SE')
+const getToday = () => new Date().toISOString().split('T')[0]
 
 /**
  * Log API
  */
 export function getHealthReport({service = null, date = null}) {
-  return api.get(`/results/health_${date || getToday()}.tsv`)
+  return api.get(`/results/health_${date || getToday()}.json`)
     .then(res => parseLog(res.data, service))
 }
 
