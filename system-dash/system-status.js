@@ -24,7 +24,7 @@ import FilterChips from '../src/utils/ui/chip-filters';
 import config from './config'
 
 // number of hours into the past to show
-const HOURS = 8
+const HOURS = 3
 
 // number of minutes to show as most recent
 const MOST_RECENT = 10
@@ -50,8 +50,8 @@ const useStyles = makeStyles(theme => ({
   calCard: {
     position: 'relative',
     margin: theme.spacing(1, 2),
-    padding: theme.spacing(2, 2),
-    height: 200
+    padding: theme.spacing(4, 2),
+    height: 300
   },
   dateFilter: {
     marginLeft: theme.spacing(1)
@@ -280,7 +280,7 @@ export default function SystemStatus() {
 
           <Grid item>
             <Paper className={styles.calCard}>
-              <Subtitle>History</Subtitle>
+              <Subtitle>Calendar</Subtitle>
               {calendar && <Calendar data={calendar} onClick={handleDayClick} />}
               { error && <ErrorMsg error={error} noContact /> }
             </Paper>
