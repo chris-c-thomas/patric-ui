@@ -34,10 +34,10 @@ const getToday = () => new Date().toISOString().split('T')[0]
 /**
  * Log API
  */
-export function getHealthReport({service = null, date = null}) {
-  return api.get(`/results/health_${date || getToday()}.json`)
+export const getHealthReport = ({service = null, date = null}) =>
+  api.get(`/results/health/health_${date || getToday()}.txt`)
     .then(res => parseLog(res.data, service))
-}
+
 
 export function getDailyHealth() {
   return api.get(`/results/health-calendar.txt`)
