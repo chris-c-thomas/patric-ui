@@ -13,6 +13,8 @@ const LiveStatusProvider = (props) => {
   // make ping requests, update state
   const updateState = () => {
     const proms = Object.keys(config).map(key => {
+      setState(obj => ({...obj, [key]: 'loading'}))
+
       return get(config[key].url).then(res => {
         if (res.status !== 200) throw res;
         if (key == 'dataAPI' && res.data.response.docs.length != 25) throw res;

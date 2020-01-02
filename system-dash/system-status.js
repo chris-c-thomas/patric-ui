@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
@@ -12,7 +13,7 @@ import WarningIcon from '@material-ui/icons/WarningRounded'
 import BarChart from '../src/charts/bar';
 import Calendar from '../src/charts/calendar';
 
-import {getHealthReport, getDailyHealth, filterByService} from './api/log-fetcher';
+import { getHealthReport, getDailyHealth } from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
 
 import { LiveStatusProvider, LiveStatusContext } from './live-status-context';
@@ -55,6 +56,11 @@ const useStyles = makeStyles(theme => ({
   },
   dateFilter: {
     marginLeft: theme.spacing(1)
+  },
+  loadingIndicator: {
+    position: "absolute",
+    right: 3,
+    top: 2
   }
 }));
 
@@ -65,26 +71,40 @@ const tickValues = (statuses) => {
   return statuses.map(obj => obj.time);
 }
 
+
+const loadingStyle = {
+  position: "absolute",
+  right: 3,
+  top: 2
+}
+
 const LiveRows = (props) => {
   const [state, time] = useContext(LiveStatusContext);
 
   useEffect(() => {
     props.afterUpdate(time)
-  }, [time])
+  }, [time, state])
 
   return (
     <>
       {Object.keys(config).map(key => (
         <tr key={key}>
-          <td>
+          <td width="100%">
             <a>
               {config[key].label}
             </a>
           </td>
-          <td>
-            {!(key in state) && 'loading...' }
+          <td align="right" style={{position: 'relative'}}>
             {key in state && state[key] && <CheckIcon className="success" />}
             {key in state && !state[key] &&  <WarningIcon className="failed" />}
+
+            {/* also indicate there after */}
+            {
+              (key in state && state[key] == 'loading') &&
+              <span style={loadingStyle}>
+                <CircularProgress size={28} />
+              </span>
+            }
           </td>
         </tr>
         )
@@ -101,6 +121,7 @@ const LiveStatus = (props) => {
 
   return (
     <Paper className={styles.card}>
+      {!time && <LinearProgress className="card-progress"/>}
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Typography variant="h6">

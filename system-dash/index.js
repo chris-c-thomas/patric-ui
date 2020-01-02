@@ -23,8 +23,6 @@ import Tests from './tests';
 import Gronkomatic from './gronkomatic';
 import NotFound404 from '../src/404';
 
-import * as Auth from '../src/api/auth';
-
 import '../src/styles/styles.scss'
 
 
@@ -100,7 +98,7 @@ const App = () => {
           <Switch>
             <Route path="/" exact>
               <Redirect to="/system-status" />
-              </Route>
+            </Route>
             <Route path="/sign-in" exact component={SignIn} />
             <PrivateRoute path="/system-status" exact component={SystemStatus} />
             <PrivateRoute path="/tests" exact component={Tests} />

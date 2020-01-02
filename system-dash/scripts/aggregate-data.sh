@@ -1,5 +1,5 @@
-# node -r esm ./generate-data.js > out.json
-
+echo "Generating data..."
+node -r esm ./generate-data.js > out.json
 
 fields=('genus' 'host_name' 'isolation_country' 'isolation_site' 'genome_quality')
 
@@ -10,5 +10,3 @@ do
   echo "Wrote file to: ${out_file}"
   echo ""
 done
-
-
