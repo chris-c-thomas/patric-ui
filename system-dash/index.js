@@ -1,14 +1,14 @@
 
 
 import React from "react";
-import { BrowserRouter, Switch, Route, Link, Redirect} from "react-router-dom";
+import { BrowserRouter, Switch, Route, NavLink, Redirect, useLocation} from "react-router-dom";
 import { render } from "react-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
-import { NavBar } from '../src/nav-bar';
+import { NavBar } from '../src/nav-bar/nav-bar';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -59,17 +59,21 @@ const useStyles = makeStyles(theme => ({
 
 
 const SystemMenu = () => {
+  const {pathname} = useLocation();
+  console.log('location', location)
+  const styles = useStyles()
+
   return (
     <>
-      <Button color="inherit" disableRipple component={Link} to="/system-status">
+      <NavLink to="/system-status" className="nav-item" activeClassName="active">
         System Status
-      </Button>
-      <Button color="inherit" disableRipple component={Link} to="/tests">
+      </NavLink>
+      <NavLink to="/tests" className="nav-item">
         Tests
-      </Button>
-      <Button color="inherit" disableRipple component={Link} to="/gronkomatic">
+      </NavLink>
+      <NavLink to="/gronkomatic" className="nav-item">
         Gronkomatic
-      </Button>
+      </NavLink>
     </>
   )
 }

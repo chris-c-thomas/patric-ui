@@ -10,6 +10,8 @@ const LiveStatusProvider = (props) => {
   const [state, setState] = useState({});
   const [time, setTime] = useState(null);
 
+  let timeout;
+
   // make ping requests, update state
   const updateState = () => {
     const proms = Object.keys(config).map(key => {
@@ -28,12 +30,13 @@ const LiveStatusProvider = (props) => {
     // update time
     all(proms).then(() => setTime(getTime()))
 
-
-    setTimeout(updateState, TIMEOUT)
+    timeout = setTimeout(updateState, TIMEOUT)
   }
 
   useEffect(() => {
     updateState()
+
+    return () => clearTimeout(timeout)
   }, [])
 
   return (

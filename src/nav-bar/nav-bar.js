@@ -1,4 +1,5 @@
 import React, {useState } from "react";
+import clsx from 'clsx';
 import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Menu from '@material-ui/core/Menu';
@@ -8,19 +9,16 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
-// import FolderIcon from '@material-ui/icons/FolderOpen';
-// import StorageIcon from '@material-ui/icons/StorageRounded';
-// import ServiceIcon from '@material-ui/icons/Settings';
-// import JobsIcon from '@material-ui/icons/ListRounded';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import SUIcon from '@material-ui/icons/SupervisedUserCircle';
 
-import logo from '../assets/imgs/patric-logo-88h.png';
+import logo from '../../assets/imgs/patric-logo-88h.png';
 
-import * as Auth from './api/auth';
-import SignInDialog from './auth/sign-in-dialog';
+import * as Auth from '../api/auth';
+import SignInDialog from '../auth/sign-in-dialog';
+
 
 const color = '#efefef';
 
@@ -180,7 +178,7 @@ export function NavBar(props) {
           <span className={styles.version}></span>
         </Typography>
 
-        <div className={styles.menu}>
+        <div className={clsx(styles.menu, 'nav-bar')}>
           {systemDash ? <>{MenuComponent}</> : <UserMenus />}
         </div>
 

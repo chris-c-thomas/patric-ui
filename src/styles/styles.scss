@@ -26,6 +26,7 @@ a.no-style {
 .p4-ui {
     background: #F5F5F5;
 
+    @import './nav-bar.scss';
     @import './general.scss';
     @import './layout.scss';
     @import './tables.scss';

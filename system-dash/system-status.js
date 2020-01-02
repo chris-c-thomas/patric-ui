@@ -98,7 +98,7 @@ const LiveRows = (props) => {
             {key in state && state[key] && <CheckIcon className="success" />}
             {key in state && !state[key] &&  <WarningIcon className="failed" />}
 
-            {/* also indicate there after */}
+            {/* also indicate thereafter */}
             {
               (key in state && state[key] == 'loading') &&
               <span style={loadingStyle}>
@@ -302,7 +302,7 @@ export default function SystemStatus() {
           <Grid item>
             <Paper className={styles.calCard}>
               <Subtitle>Calendar</Subtitle>
-              {calendar && <Calendar data={calendar} onClick={handleDayClick} />}
+              {calendar && <Calendar data={calendar} onClick={handleDayClick} from="2020-1-1" />}
               { error && <ErrorMsg error={error} noContact /> }
             </Paper>
           </Grid>
