@@ -27,11 +27,11 @@
     "@devexpress/dx-react-grid": "^2.1.1",
     "@devexpress/dx-react-grid-material-ui": "^2.1.1",
     "@handsontable/react": "^3.0.0",
-    "@material-ui/core": "^4.5.0",
-    "@material-ui/icons": "^4.4.3",
-    "@nivo/bar": "^0.59.2",
-    "@nivo/calendar": "^0.59.1",
-    "@nivo/pie": "^0.59.1",
+    "@material-ui/core": "^4.8.2",
+    "@material-ui/icons": "^4.5.1",
+    "@nivo/bar": "^0.61.1",
+    "@nivo/calendar": "^0.61.1",
+    "@nivo/pie": "^0.61.1",
     "axios": "^0.19.0",
     "handsontable": "^7.1.0",
     "prop-types": "^15.7.2",
@@ -54,6 +54,7 @@
     "esm": "^3.2.25",
     "parcel": "^1.12.4",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "sass": "^1.22.10"
+    "sass": "^1.22.10",
+    "typescript": "^3.7.4"
   }
 }
