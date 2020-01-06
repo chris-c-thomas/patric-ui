@@ -28,18 +28,36 @@ const parseLog = (data, service = null) => {
 }
 
 
-// todo: fix dates
 const getToday = () => new Date().toISOString().split('T')[0]
 
 /**
  * Log API
  */
-export const getHealthReport = ({service = null, date = null}) =>
-  api.get(`/results/health/health_${date || getToday()}.txt`)
-    .then(res => parseLog(res.data, service))
+export function getHealthReport ({service = null, date = null}) {
+  date = date || getToday()
+
+  // we'll need to get the day before as well since times are in UTC
+  const d = new Date(date)
+  const dUTC =  Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-1,
+    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
+  const dayBefore = new Date(dUTC).toISOString().split('T')[0]
+
+  const path = `/results/health`
+  const [file1, file2] = [`${path}/health_${dayBefore}.txt`, `${path}/health_${date}.txt`]
+
+  return axios.all([api.get(file1), api.get(file2)])
+    .then(([prevDay, day]) => {
+      const prevDayLog = parseLog(prevDay.data, service)
+      const log = parseLog(day.data, service)
+
+      // concat and take the last 24 hours
+      const data = [...prevDayLog, ...log].slice(-24*60)
+      return data
+    })
+}
 
 
-export function getDailyHealth() {
+export function getCalendar() {
   return api.get(`/results/health-calendar.txt`)
     .then(res => {
       const data = res.data.trim();
@@ -61,4 +79,23 @@ export function getDailyHealth() {
 
       return objs
     })
+}
+
+
+export function getIndexerHistory() {
+  return api.get(`/results/indexer/indexer-status.txt`)
+  .then(res => {
+    const data = res.data.trim();
+    const rows = data.split('\n')
+    let objs = rows.map(row => JSON.parse(row))
+
+    objs = objs.map((obj, i) => {
+      return {
+        value: obj.genomesInQueue,
+        ...obj
+      }
+    })
+
+    return objs
+  })
 }

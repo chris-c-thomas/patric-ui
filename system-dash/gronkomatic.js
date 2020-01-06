@@ -9,7 +9,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 
 import PlayIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 import ReplayIcon from '@material-ui/icons/ReplayRounded'
-import RewindIcon from '@material-ui/icons/FastRewindRounded'
 import StopIcon from '@material-ui/icons/Stop'
 
 import Subtitle from '../src/home/subtitle';
@@ -189,7 +188,6 @@ export default function Insights() {
   const [idx, setIdx] = useState(null);
 
   const [field, setField] = useState({value: 'genus', label: 'Genus'});
-
 
   // for changing time series data set
   useEffect(() => {

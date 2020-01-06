@@ -35,7 +35,6 @@ const LiveStatusProvider = (props) => {
 
   useEffect(() => {
     updateState()
-
     return () => clearTimeout(timeout)
   }, [])
 

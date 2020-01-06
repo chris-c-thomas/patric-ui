@@ -59,10 +59,6 @@ const useStyles = makeStyles(theme => ({
 
 
 const SystemMenu = () => {
-  const {pathname} = useLocation();
-  console.log('location', location)
-  const styles = useStyles()
-
   return (
     <>
       <NavLink to="/system-status" className="nav-item" activeClassName="active">
