@@ -74,12 +74,12 @@
 .hover { opacity: .7; }
 .hover:hover { cursor: pointer; opacity: 1.0;  }
 
-
+.pull-right { float: right; }
+.pull-left { float: left; }
 
 /**
  * alerts
  */
-
 .alert {
   padding: 20px;
   border-width: 1px;

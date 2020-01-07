@@ -84,18 +84,38 @@ export function getCalendar() {
 
 export function getIndexerHistory() {
   return api.get(`/results/indexer/indexer-status.txt`)
-  .then(res => {
-    const data = res.data.trim();
-    const rows = data.split('\n')
-    let objs = rows.map(row => JSON.parse(row))
+    .then(res => {
+      const data = res.data.trim();
+      const rows = data.split('\n')
+      let objs = rows.map(row => JSON.parse(row))
 
-    objs = objs.map((obj, i) => {
-      return {
-        value: obj.genomesInQueue,
-        ...obj
-      }
+      objs = objs.map((obj, i) => {
+        return {
+          value: obj.genomesInQueue,
+          ...obj
+        }
+      })
+
+      return objs
     })
+}
 
-    return objs
-  })
+
+export function getErrorLog(utcTime) {
+  const date = utcTime.split('T')[0]
+  const year = date.slice(0, date.indexOf('-'))
+
+  return api.get(`/results/health/health-errors_${date}.txt`)
+    .then(res => {
+      const data = res.data
+
+      // parse out matching error
+      const re = new RegExp(`\\[${year}\\-`, 'g');
+      const errors = data.split(re)
+        .map(err =>`[${year}-${err}`)
+        .filter(err => err.includes(utcTime))
+
+      console.log('errors', errors)
+      return errors
+    })
 }

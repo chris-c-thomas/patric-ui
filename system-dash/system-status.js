@@ -16,7 +16,7 @@ import WarningIcon from '@material-ui/icons/WarningRounded'
 import BarChart from '../src/charts/bar';
 import Calendar from '../src/charts/calendar';
 
-import { getHealthReport, getCalendar, getIndexerHistory } from './api/log-fetcher';
+import { getHealthReport, getCalendar, getIndexerHistory, getErrorLog } from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
 
 import { LiveStatusProvider, LiveStatusContext } from './live-status-context';
@@ -165,7 +165,6 @@ const colorBy = (node) => (
 
 const SystemHealth = (props) => {
   const {data} = props;
-  const opts = props.customBar ? {barComponent: BarComponent} : {}
 
   return (
     <BarChart
@@ -184,7 +183,6 @@ const SystemHealth = (props) => {
         tickValues: tickValues(data)
       }}
       {...props}
-      {...opts}
     />
   )
 }
@@ -240,10 +238,10 @@ const renderInterval = (interval) => {
 
   return (
     <div>
-      <span item style={{ fontWeight: 800}}>
+      <span style={{ fontWeight: 800}}>
         {start} - {end}
       </span>
-      <span item style={{margin: '5px 5px', fontSize: '1em'}}>
+      <span style={{margin: '5px 5px', fontSize: '1em'}}>
         {mm} {dd}
       </span>
     </div>
@@ -350,8 +348,16 @@ export default function SystemStatus() {
     return Math.max(...fullHistory.map(o => o.value))
   }
 
-  const onBarClick = (node) => {
-    console.log(node)
+  const onNodeClick = (node) => {
+    console.log('node', node)
+
+    const {status, time} = node.data
+    // ignore anything that isn't failed status
+    if (status != 'F') return;
+
+    getErrorLog(time).then(data => {
+      console.log('data', data)
+    })
   }
 
   return (
@@ -365,7 +371,7 @@ export default function SystemStatus() {
           <Grid item xs={7}>
             <Paper className={styles.shortHistoryCard}>
               <Subtitle>Genome Indexer</Subtitle>
-              {indexerHist && <SystemHealth data={indexerHist} customBar />}
+              {indexerHist && <SystemHealth data={indexerHist} />}
               { error && <ErrorMsg error={error} noContact /> }
             </Paper>
           </Grid>
@@ -390,7 +396,6 @@ export default function SystemStatus() {
                             color="primary"
                             className={styles.dateFilter}
                           />
-
                         }
                       </Subtitle>
                       {renderInterval(interval)}
@@ -406,7 +411,7 @@ export default function SystemStatus() {
                   </Grid>
 
 
-                  { history && <SystemHealth data={history} maxValue={historyMax()} onClick={onBarClick} /> }
+                  { history && <SystemHealth data={history} maxValue={historyMax()} onClick={onNodeClick} /> }
 
                   <div>
                     <Slider
