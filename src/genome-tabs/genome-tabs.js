@@ -6,11 +6,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { plainTabsStylesHook } from '@mui-treasury/styles/tabs';
 
 import { ActionBar } from './action-bar';
 import Overview from './overview';
 import { Genomes } from './genomes/genomes';
-import { PFContainer } from './protein-families/protein-families';
+// import { PFContainer } from './protein-families/protein-families';
+
+
 
 import NotFound404 from '../404';
 
@@ -24,6 +27,7 @@ const useStyles = makeStyles(theme => ({
   tabs: {
     background: 'rgba(0, 0, 0, 0.03)',
     borderBottom: '1px solid rgba(0, 0, 0, 0.125)',
+    paddingLeft: 10
   }
 }));
 
@@ -37,10 +41,10 @@ const tabs = [{
 }, {
   label: 'Genomes',
   view: 'genomes'
-}, {
+}, /*{
   label: 'Protein Families',
   view: 'protein-families'
-}, {
+}*/, {
   label: 'AMR Phenotypes',
   view: 'amr-phenotypes'
 }, {
@@ -66,12 +70,16 @@ const tabs = [{
   view: 'interactions'
 }]
 
+
 const TabButtons = () => {
+  const tabItemStyles = plainTabsStylesHook.useTabItem();
+
   return tabs.map((tab, i) => {
     const {label, view} = tab;
     return (
       <Tab key={i}
         disableRipple
+        classes={tabItemStyles}
         component={Link}
         label={label}
         value={view}
@@ -88,26 +96,24 @@ export default function GenomeTabs(props) {
   const {view} = useParams();
 
   return (
-    <>
+    <div style={{background: '#fff'}}>
+
       <ActionBar />
 
-      <Paper className={styles.card}>
-        <>
-          <Tabs
-            value={view}
-            variant="scrollable"
-            scrollButtons="auto"
-            className={styles.tabs}
-          >
-            {TabButtons()}
-          </Tabs>
-        </>
-      </Paper>
+      <Tabs
+        value={view}
+        variant="scrollable"
+        scrollButtons="auto"
+        className={styles.tabs}
+      >
+        {TabButtons()}
+      </Tabs>
+
 
       {view == tabs[0].view && <Overview />}
       {view == tabs[1].view && placeHolder(view)}
       {view == tabs[2].view && <Genomes />}
-      {view == tabs[3].view && <PFContainer />}
+      {/*view == tabs[3].view && <PFContainer />*/}
       {view == tabs[4].view && placeHolder(view)}
       {view == tabs[5].view && placeHolder(view)}
       {view == tabs[6].view && placeHolder(view)}
@@ -121,6 +127,8 @@ export default function GenomeTabs(props) {
         <NotFound404 />
       }
 
-    </>
+
+
+    </div>
   )
 }

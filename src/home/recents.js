@@ -7,13 +7,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Subtitle from './subtitle';
 
-import {getStats} from '../api/app-service';
-
-
 
 export default function Recents(props) {
   const {styles} = props;
-
   const [stats, setStats] = useState(null);
   const [sort, setSort] = useState(false);
 
@@ -22,9 +18,8 @@ export default function Recents(props) {
   }, [])
 
 
-
   return (
-    <Paper className={styles.card}>
+    <Paper className="card">
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>

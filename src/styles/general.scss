@@ -1,5 +1,4 @@
-
-
+$spacing: 8px;
 
 .not-found{
   background-color: rgb(14, 51, 83);
@@ -114,8 +113,10 @@
  * card related stuff
  */
 
-.card {
-
+ .card {
+  position: 'relative';
+  margin: 1*$spacing 1*$spacing;
+  padding: 1*$spacing 2*$spacing;
 }
 
 .card-progress {

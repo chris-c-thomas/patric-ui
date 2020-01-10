@@ -371,7 +371,7 @@ export default function SystemStatus() {
           <Grid item xs={7}>
             <Paper className={styles.shortHistoryCard}>
               <Subtitle>Genome Indexer</Subtitle>
-              {indexerHist && <SystemHealth data={indexerHist} />}
+              { indexerHist && <SystemHealth data={indexerHist} /> }
               { error && <ErrorMsg error={error} noContact /> }
             </Paper>
           </Grid>

@@ -1,12 +1,17 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
-export default function Subtitle({inline, ...props}) {
+export default function Subtitle({inline, noUpper, ...props}) {
   const {children} = props;
+
+  let styles = inline ? {display: 'inline', marginRight: '10px'} : {};
+  styles = noUpper ? {textTransform: 'none', ...styles} : { ...styles}
+
   return (
     <Typography
+      className="title"
       variant="h6"
-      style={inline ? {display: 'inline', marginRight: '10px'} : {}}
+      style={styles}
       {...props}
     >
       {children}

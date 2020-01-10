@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import taxonIcon from '../../assets/icons/selection-Taxonomy.svg';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   icon: {
     height: '30px'
   },
@@ -18,21 +18,19 @@ const useStyles = makeStyles({
   },
   title: {
     fontSize: 14,
+    padding: theme.spacing(2)
   }
-});
+}));
 
 
 export function ActionBar() {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
-      <CardContent>
-
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
+    <>
+      <Typography className={classes.title} color="textSecondary" gutterBottom>
         <img src={taxonIcon} className={`${classes.icon} green-icon`}/> Taxon View
-        </Typography>
-      </CardContent>
-    </Card>
+      </Typography>
+    </>
   );
 };

@@ -126,7 +126,6 @@ const expGroups = `/${user}@patricbrc.org/home/Experiment Groups/`;
 
 export default function WSTree(props) {
   const classes = useStyles();
-
   const {counts} = props;
 
   return (
@@ -144,7 +143,7 @@ export default function WSTree(props) {
             nodeId="4"
             labelText="Genome Groups"
             labelIcon={FolderFav}
-            labelInfo={`${counts[genomeGroups]}`}
+            labelInfo={counts && `${counts[genomeGroups]}`}
             color="#1a73e8"
             bgColor="#e8f0fe"
             style={subTreeStyles}
@@ -155,7 +154,7 @@ export default function WSTree(props) {
             nodeId="5"
             labelText="Feature Groups"
             labelIcon={FolderFav}
-            labelInfo={`${counts[featureGroups]}`}
+            labelInfo={counts && `${counts[featureGroups]}`}
             color="#e3742f"
             bgColor="#fcefe3"
             style={subTreeStyles}
@@ -165,7 +164,7 @@ export default function WSTree(props) {
             nodeId="6"
             labelText="Experiment Groups"
             labelIcon={FolderFav}
-            labelInfo={`${counts[expGroups]}`}
+            labelInfo={counts && `${counts[expGroups]}`}
             color="#a250f5"
             bgColor="#f3e8fd"
             style={subTreeStyles}

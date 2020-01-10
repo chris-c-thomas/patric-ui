@@ -1,8 +1,9 @@
 
-import React, {useState, useEffect} from 'react';
+import React, {useEffect } from 'react';
 import { HotTable } from '@handsontable/react';
 
 const licenseKey = 'non-commercial-and-evaluation';
+
 
 export default function SolrGrid(props) {
   let hotTableRef;

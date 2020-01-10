@@ -5,15 +5,15 @@ import { BrowserRouter, Switch, Route} from 'react-router-dom';
 import { render } from 'react-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { NavBar } from './nav-bar';
+import { NavBar } from './nav-bar/nav-bar';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 
 // views
 import Home from './home/home';
-import JobsTicker from './jobs/job-ticker';
-import { JobStatusProvider } from './jobs/job-status-context';
+// import JobsTicker from './jobs/job-ticker';
+// import { JobStatusProvider } from './jobs/job-status-context';
 import Account from './my-profile';
 import GenomeTabs from './genome-tabs/genome-tabs';
 import Jobs from './jobs/jobs';
@@ -68,12 +68,12 @@ const App = () => {
 
           <NavBar />
 
-          {
+          {/*
             Auth.isSignedIn() &&
             <JobStatusProvider>
               <JobsTicker />
             </JobStatusProvider>
-          }
+          */}
 
           <div className={styles.content}>
             <Suspense fallback={<div>loading...</div>}>

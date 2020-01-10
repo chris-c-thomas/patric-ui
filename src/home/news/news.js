@@ -3,36 +3,33 @@ import { Link } from "react-router-dom";
 
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Subtitle from './subtitle';
+import Subtitle from '../subtitle';
 
-import {getStats} from '../api/app-service';
+import {get} from 'axios';
+import MobileStepper from './stepper';
 
 
+const newsURL = "https://docs.patricbrc.org/_static/carousel.json";
 
 export default function News(props) {
-  const {styles} = props;
-
-  const [stats, setStats] = useState(null);
-  const [sort, setSort] = useState(false);
+  const [steps, setSteps] = useState(null);
 
   useEffect(() => {
-
+    get(newsURL).then(({data}) => {
+      setSteps(data)
+    })
   }, [])
 
-
-
   return (
-    <Paper className={styles.card}>
+    <Paper className="card">
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
-            News <small>| <Link to="/jobs/">view all</Link></small>
+            NEWS <small>| <a href="https://docs.patricbrc.org/news/index.html" target="_blank">view all</a></small>
           </Subtitle>
         </Grid>
         <Grid item>
-
+          {steps && <MobileStepper steps={steps}/>}
         </Grid>
       </Grid>
     </Paper>

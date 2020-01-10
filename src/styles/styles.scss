@@ -16,6 +16,11 @@ a:not(.no-style), a.visited {
 a:hover {
     cursor: pointer;
     color: #215b81;
+    text-decoration: underline;
+}
+
+a[role="button"]:hover, a[role="tab"]:hover {
+    text-decoration: none;
 }
 
 a.no-style {
@@ -24,7 +29,7 @@ a.no-style {
 }
 
 .p4-ui {
-    background: #F5F5F5;
+    background-color: #efefef;
 
     @import './nav-bar.scss';
     @import './general.scss';

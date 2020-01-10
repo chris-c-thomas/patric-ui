@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
+import clsx from 'clsx'
 
 import Subtitle from './subtitle';
 import Paper from '@material-ui/core/Paper';
@@ -13,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 
-import News from './news';
+import News from './news/news';
 import Recents from './recents';
 import MyData from './my-data';
 
@@ -63,12 +64,8 @@ const services = [
 
 const useStyles = makeStyles(theme => ({
   root: {
-
-  },
-  card: {
-    position: 'relative',
-    margin: theme.spacing(1, 2),
-    padding: theme.spacing(2, 2),
+    maxWidth: '1440',
+    margin: 'auto auto'
   },
   scroller: {
     overflowX: 'auto',
@@ -87,12 +84,19 @@ const useStyles = makeStyles(theme => ({
       background: '#eee',
       borderRadius: '10px'
     }
-  }
+  },
+  /*
+  overview: {
+    backgroundColor: '#1e98bb !important', //#ecf8ff
+    color: '#fff',
+    '& input, & [role="button"]': {
+      background: '#fff'
+    },
+  }*/
 }));
 
 const NoAuth = props => !Auth.isSignedIn() ? [props.children] : <></>;
 const HasAuth = props => Auth.isSignedIn() ? [props.children] : <></>;
-
 
 const ChipBtn = (props) => {
   return (
@@ -109,8 +113,7 @@ const ChipBtn = (props) => {
 const Overview = () => {
   const styles = useStyles();
   return (
-
-    <Paper className={styles.card}>
+    <Paper className={clsx('card', styles.overview)}>
       <NoAuth>
         <Subtitle>
           Baterial Bioinformatics Resource Center
@@ -122,7 +125,7 @@ const Overview = () => {
       </NoAuth>
 
     <div>
-        <Subtitle inline>
+        <Subtitle inline noUpper>
           Browse
         </Subtitle>
 
@@ -133,7 +136,7 @@ const Overview = () => {
       </div>
 
       <div>
-        <Subtitle inline>
+        <Subtitle inline noUpper>
           Search
         </Subtitle>
         <TextField
@@ -149,7 +152,7 @@ const Overview = () => {
 
 
 const serviceCardStyles = makeStyles({
-  card: {
+  serviceCard: {
     maxWidth: 275,
     display: 'inline-block',
     marginRight: '10px'
@@ -178,7 +181,7 @@ const ServiceCard = (props) => {
   const imgPath = images[name.toLowerCase().replace(/ /g, '_')];
 
   return (
-    <Card className={styles.card} component={Link} to={path || '/'}>
+    <Card className={styles.serviceCard} component={Link} to={path || '/'}>
       <CardActionArea>
         <img className={styles.media} src={imgPath} title={name} />
 
@@ -204,7 +207,7 @@ const ServiceCards = () => {
   const [openSignIn, setOpenSignIn] = useState(false);
 
   return (
-    <Paper className={styles.card}>
+    <Paper className="card">
       <NoAuth>
         <Subtitle inline>
           Analyze Data at PATRIC
@@ -217,15 +220,20 @@ const ServiceCards = () => {
         </p>
       </NoAuth>
 
-      <Subtitle inline>
-        Services
-      </Subtitle>
 
-      <ChipFilters
-        items={services}
-        filterState={filter}
-        onClick={type => setFilter(type)}
-      />
+      <Grid container direction="row" justify="space-between">
+        <Grid item>
+          <Subtitle inline>Services</Subtitle>
+        </Grid>
+
+        <Grid item>
+         <ChipFilters
+            items={services}
+            filterState={filter}
+            onClick={type => setFilter(type)}
+          />
+        </Grid>
+      </Grid>
 
       <div className={styles.scroller}>
         {
@@ -249,33 +257,34 @@ export default function Home() {
     <div className={styles.root}>
       <Grid container>
 
-        <Grid container item xs={8} direction="column">
+        <Grid container item xs={9} direction="column">
           <Grid item>
             <Overview />
           </Grid>
           <Grid item>
-            <ServiceCards styles={styles} />
+            <ServiceCards />
           </Grid>
           <Grid container>
             <HasAuth>
-              <Grid item xs={6}>
-                <JobsOverview styles={styles} />
+              <Grid item xs={4}>
+                <JobsOverview />
               </Grid>
-              <Grid item xs={6}>
-                <MyData styles={styles} />
+              <Grid item xs={4}>
+                <MyData />
+              </Grid>
+              <Grid item xs={4}>
+                <Recents />
               </Grid>
             </HasAuth>
           </Grid>
         </Grid>
 
-        <Grid container item xs={4} direction="column">
+        <Grid container item xs={3} direction="column">
           <Grid item>
-            <News styles={styles} />
+            <News />
           </Grid>
           <HasAuth>
-            <Grid item>
-              <Recents styles={styles} />
-            </Grid>
+
           </HasAuth>
         </Grid>
 

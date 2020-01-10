@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, lazy, Suspense} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -8,8 +8,11 @@ import columns from './columns'
 
 import Actions from './actions';
 import TableControls from '../../grids/table-controls'
-import SolrGrid from '../../grids/solr-grid'
+//import SolrGrid from '../../grids/solr-grid'
 import { listGenomes } from '../../api/data-api';
+
+
+const SolrGrid = lazy(() => import('../../grids/solr-grid'));
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -85,15 +88,17 @@ export function Genomes() {
           </div>
         }
 
-        {data &&
-          <SolrGrid
-            data={data}
-            columns={columns}
-            hidden={hidden}
-            colHeaders={colHeaders}
-            onRowSelect={() => setShowActions(true)}
-            />
-        }
+        <Suspense fallback={<div>loading...</div>}>
+          {data &&
+            <SolrGrid
+              data={data}
+              columns={columns}
+              hidden={hidden}
+              colHeaders={colHeaders}
+              onRowSelect={() => setShowActions(true)}
+              />
+          }
+        </Suspense>
       </div>
       {/*<Actions open={showActions}/> */}
     </div>

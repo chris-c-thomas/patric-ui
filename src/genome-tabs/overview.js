@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import { Link, useParams} from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Paper';
-import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
@@ -156,6 +154,12 @@ const Publications = (props) => {
   )
 }
 
+const Card = (props) => {
+  return (
+    <Paper {...props} className="no-elevation">{props.children}</Paper>
+  )
+}
+
 
 export default function Overview() {
   const classes = useStyles();
@@ -198,24 +202,22 @@ export default function Overview() {
 
         <Grid item container direction="column" xs={4} className={classes.overviewTable}>
 
-          <Grid item>
-            <Paper className={classes.overview}>
+          <Grid item className={classes.overview}>
+            <Card className={classes.overview}>
               <Typography className={classes.title} color="textSecondary" gutterBottom>
                 {getTitle(taxonID)}
               </Typography>
               <hr />
+            </Card>
 
-
-            </Paper>
-
-            <Paper style={{height: '600px'}}>
+            <Card style={{height: '600px'}}>
               {rows &&
               <VirtualTable
                 columns={columns}
                 rows={rows}
               />
               }
-            </Paper>
+            </Card>
           </Grid>
 
         </Grid>
@@ -249,9 +251,7 @@ export default function Overview() {
         </Grid>
 
         <Grid item container direction="column" xs={2}>
-          <Paper className={classes.paper}>
-            {pubs && <Publications data={pubs} />}
-          </Paper>
+          {pubs && <Publications data={pubs} />}
         </Grid>
       </Grid>
     </>

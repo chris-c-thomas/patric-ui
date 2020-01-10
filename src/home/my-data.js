@@ -27,7 +27,7 @@ export default function MyData(props) {
   }, [])
 
   return (
-    <Paper className={styles.card}>
+    <Paper className="card">
       {!counts && <LinearProgress className="card-progress"/>}
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
@@ -39,7 +39,7 @@ export default function MyData(props) {
         </Grid>
       </Grid>
 
-      {counts && <WSTree counts={counts}/>}
+      <WSTree counts={counts}/>
     </Paper>
   )
 }
