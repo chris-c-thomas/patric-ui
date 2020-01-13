@@ -34,7 +34,7 @@ export default function Calendar(props) {
           height={height}
           to={new Date().toLocaleDateString('sv-SE')}
           emptyColor="#eeeeee"
-          margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+          margin={{ top: 40, right: 40, bottom: 70, left: 40 }}
           monthBorderColor="#ccc"
           monthBorderWidth={2}
           dayBorderWidth={2}

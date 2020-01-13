@@ -247,7 +247,7 @@ export default function Insights() {
           <Paper className={styles.card}>
             <Grid container justify="space-between">
               <Grid item>
-                <Subtitle>
+                <Subtitle noUpper>
                   Historical View <small className="muted"> | Genomes by {field.label}</small>
                 </Subtitle>
               </Grid>

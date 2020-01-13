@@ -35,29 +35,6 @@ const HOURS = 3
 const MOST_RECENT = 10
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    position: 'relative',
-    margin: theme.spacing(1, 2),
-    padding: theme.spacing(2, 2),
-  },
-  shortHistoryCard: {
-    position: 'relative',
-    margin: theme.spacing(1, 2),
-    padding: theme.spacing(2, 2),
-    height: 290
-  },
-  vizCard: {
-    position: 'relative',
-    margin: theme.spacing(1, 2),
-    padding: theme.spacing(2, 2),
-    minHeight: 375
-  },
-  calCard: {
-    position: 'relative',
-    margin: theme.spacing(1, 2),
-    padding: theme.spacing(4, 2),
-    height: 300
-  },
   dateFilter: {
     marginLeft: theme.spacing(1)
   },
@@ -119,12 +96,10 @@ const LiveRows = (props) => {
 }
 
 const LiveStatus = (props) => {
-  const styles = useStyles()
-
   const [time, setTime] = useState(null)
 
   return (
-    <Paper className={styles.card}>
+    <Paper className="card">
       {!time && <LinearProgress className="card-progress"/>}
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
@@ -265,7 +240,10 @@ export default function SystemStatus() {
 
   // the usual loading and error state
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error1, setError1] = useState(null);
+  const [error2, setError2] = useState(null);
+  const [error3, setError3] = useState(null);
+
 
   // currently selected service and day state
   const [service, setService] = useState('All');
@@ -281,7 +259,7 @@ export default function SystemStatus() {
     getIndexerHistory().then(data => {
       const nonZero = data.filter(o => o)
       setIndexerHist(formatData(data))
-    })
+    }).catch(e => setError1(e))
   }, [])
 
   // fetch health logs whenever service and dates change
@@ -309,7 +287,9 @@ export default function SystemStatus() {
 
   // fetch calendar
   useEffect(() => {
-    getCalendar().then(data => setCalendar(data))
+    getCalendar()
+      .then(data => setCalendar(data))
+      .catch(e => setError3())
   }, [])
 
 
@@ -326,7 +306,7 @@ export default function SystemStatus() {
 
       setLoading(false)
     }).catch(e => {
-      setError(e);
+      setError2(e);
       setLoading(false);
     })
   }
@@ -364,29 +344,29 @@ export default function SystemStatus() {
     <div className={styles.root}>
       <Grid container>
         <Grid container>
-          <Grid item xs={5}>
+          <Grid item xs={4}>
             <LiveStatus />
           </Grid>
 
-          <Grid item xs={7}>
-            <Paper className={styles.shortHistoryCard}>
-              <Subtitle>Genome Indexer</Subtitle>
+          <Grid item xs={8}>
+            <Paper className="card" style={{height: 290}}>
+              <Subtitle noUpper>Genome Indexer</Subtitle>
               { indexerHist && <SystemHealth data={indexerHist} /> }
-              { error && <ErrorMsg error={error} noContact /> }
+              { error1 && <ErrorMsg error={error1} noContact /> }
             </Paper>
           </Grid>
         </Grid>
 
         <Grid container item xs={12} direction="column">
           <Grid item>
-            <Paper className={styles.vizCard}>
+            <Paper className="card" style={{height: 370}}>
               {loading && <LinearProgress className="card-progress"/>}
 
-              {!error &&
+              {!error2 &&
                 <>
                   <Grid container direction="row" justify="space-between">
                     <Grid item>
-                      <Subtitle inline>
+                      <Subtitle inline noUpper>
                         System Health
                         {
                           date &&
@@ -429,15 +409,15 @@ export default function SystemStatus() {
                 </>
               }
 
-              { error && <ErrorMsg error={error} noContact /> }
+              { error2 && <ErrorMsg error={error2} noContact /> }
 
             </Paper>
           </Grid>
 
           <Grid item>
-            <Paper className={styles.calCard}>
-              <Subtitle>Calendar</Subtitle>
-              { error && <ErrorMsg error={error} noContact /> }
+            <Paper className="card" style={{height: 370}}>
+              <Subtitle noUpper>Calendar</Subtitle>
+              { error3 && <ErrorMsg error={error3} noContact /> }
               { calendar && <Calendar data={calendar} onClick={handleDayClick} from="2020-1-1" /> }
             </Paper>
           </Grid>
