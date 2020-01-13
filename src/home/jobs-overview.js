@@ -6,15 +6,13 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import LinearProgress from '@material-ui/core/LinearProgress';
-
-import Subtitle from './subtitle';
-
 import SortAlphaIcon from '@material-ui/icons/SortByAlphaRounded';
 import SortIcon from '@material-ui/icons/Sort';
 
-import {getStats} from '../api/app-service';
+import Subtitle from './subtitle';
+import { getStats } from '../api/app-service';
 
-import {sortBy} from '../utils/process';
+import { sortBy } from '../utils/process';
 
 import './jobs-overview.scss';
 

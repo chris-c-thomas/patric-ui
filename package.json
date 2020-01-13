@@ -9,7 +9,8 @@
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html",
     "p4-build": "parcel build ./build-p4/apps.js --no-content-hash",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "story": "./node_modules/parcel/bin/cli.js ./stories.html"
   },
   "repository": {
     "type": "git",

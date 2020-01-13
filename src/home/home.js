@@ -283,11 +283,10 @@ export default function Home() {
           <Grid item>
             <News />
           </Grid>
-          <HasAuth>
+          <Grid>
 
-          </HasAuth>
+          </Grid>
         </Grid>
-
       </Grid>
    </div>
 
