@@ -64,6 +64,7 @@ export function listRepresentative({taxonID,  limit=10000}) {
     })
 }
 
+
 export function getAMRCounts({genomeIDs}) {
   console.warn('Note: The AMR Overview Counts still need to be fixed.')
   const kinds = 'Resistant,Susceptible,Intermediate';

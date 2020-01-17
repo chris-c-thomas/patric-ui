@@ -32,11 +32,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
-  card: {
-    position: 'relative',
-    padding: theme.spacing(2, 2),
-    height: 900
-  },
   controls: {
     marginTop: theme.spacing(1)
   },
@@ -240,11 +235,11 @@ export default function Insights() {
 
   return (
     <div className={styles.root}>
-      <Grid container spacing={2}>
+      <Grid container>
 
         <Grid item xs={8}>
 
-          <Paper className={styles.card}>
+          <Paper className="card" style={{height: 900}}>
             <Grid container justify="space-between">
               <Grid item>
                 <Subtitle noUpper>
@@ -256,7 +251,7 @@ export default function Insights() {
               </Grid>
             </Grid>
 
-            <Grid container alignItems="center" justify="space-between" className={styles.controls} spacing={2}>
+            <Grid container alignItems="center" justify="space-between" className={styles.controls}>
               <Grid item style={{width: 220}}>
                 {date && renderDay(date)}
               </Grid>
@@ -306,7 +301,7 @@ export default function Insights() {
         </Grid>
 
         <Grid item xs={4}>
-          <Paper className={styles.card}>
+          <Paper className="card" style={{height: 900}}>
             <Select options={fieldOptions}
               value={field}
               onChange={field => setField(field)}

@@ -13,3 +13,12 @@ export function toDateTimeStr(dateTime) {
   return date.toDateString();
 }
 
+export function msToTimeStr(milliseconds) {
+  if (milliseconds >= 86400000 ) {
+    console.error('msToTimeStr: can not compute times over a full day (86400000 ms)')
+    return 'N/A'
+  }
+
+  let str = new Date(milliseconds).toISOString().slice(11, -5);
+  return str
+}

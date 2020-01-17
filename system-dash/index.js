@@ -19,7 +19,7 @@ import PrivateRoute from './private-route';
 
 // views
 import SystemStatus from './system-status';
-import Tests from './tests';
+import Tests from './end2end/tests';
 import Gronkomatic from './gronkomatic';
 import NotFound404 from '../src/404';
 
