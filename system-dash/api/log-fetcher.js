@@ -60,9 +60,14 @@ export function getHealthReport ({service = null, date = null}) {
 export function getCalendar() {
   return api.get(`/results/health-calendar.txt`)
     .then(res => {
-      const data = res.data.trim();
-      const rows = data.split('\n')
-      let objs = rows.map(row => JSON.parse(row))
+      let objs;
+      if (typeof data === 'object') {
+        objs = data
+      }else {
+        const data = res.data.trim();
+        const rows = data.split('\n')
+        objs = rows.map(row => JSON.parse(row))
+      }
 
       objs = objs.map(obj => {
         const passed = obj.services.map(s => s.passed).reduce((acc, val) => acc + val, 0)

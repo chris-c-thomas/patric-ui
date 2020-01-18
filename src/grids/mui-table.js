@@ -26,7 +26,7 @@ const exampleColumns = [
 const useStyles = makeStyles({
   tableWrapper: {
     maxHeight: 'calc(100% - 60px)',
-    overflow: 'auto',
+
   }
 });
 
@@ -86,6 +86,10 @@ export default function StickyHeaderTable(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const onTableClick = ({...evt}) => {
+    console.log('on table click ', evt)
+  }
 
   return (
     <>

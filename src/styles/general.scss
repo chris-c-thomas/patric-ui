@@ -105,8 +105,8 @@ $spacing: 8px;
  */
 .queued { color: #777; }
 .in-progress { color: #ffa900; }
-.completed, .success { color: #3c763d; }
-.failed { color: #a94442; }
+.completed, .success { color: #4aa94b; }
+.failed { color: #d80400; }
 
 
 /**
@@ -114,7 +114,7 @@ $spacing: 8px;
  */
 
  .card {
-  position: 'relative';
+  position: relative;
   margin: 1*$spacing 1*$spacing;
   padding: 1*$spacing 2*$spacing;
 }

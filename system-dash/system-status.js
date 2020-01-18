@@ -8,23 +8,20 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Slider from '@material-ui/core/Slider';
 import Tooltip from '@material-ui/core/Tooltip';
-
-
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 
+import Dialog from '../src/dialogs/basic-dialog';
 import BarChart from '../src/charts/bar';
 import Calendar from '../src/charts/calendar';
-
 import { getHealthReport, getCalendar, getIndexerHistory, getErrorLog } from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
-
 import { LiveStatusProvider, LiveStatusContext } from './live-status-context';
-
 import ErrorMsg from '../src/error-msg';
 import Subtitle from '../src/home/subtitle';
 import FilterChips from '../src/utils/ui/chip-filters';
 import {months} from '../src/utils/dates';
+
 
 import config from './config'
 
@@ -244,14 +241,15 @@ export default function SystemStatus() {
   const [error2, setError2] = useState(null);
   const [error3, setError3] = useState(null);
 
-
   // currently selected service and day state
   const [service, setService] = useState('All');
   const [date, setDate] = useState();
 
   // and index for the amount into the past
   const [idx, setIdx] = useState(0)
-  //const useDebouncedIdx = useDebounce(idx, 300)
+
+  // state for displaying error log
+  const [errorLog, setErrorLog] = useState(null)
 
 
   // fetch genome indexer history
@@ -324,19 +322,20 @@ export default function SystemStatus() {
     setDate(str);
   }
 
+
   const historyMax = () => {
     return Math.max(...fullHistory.map(o => o.value))
   }
 
-  const onNodeClick = (node) => {
-    console.log('node', node)
 
+  const onNodeClick = (node) => {
     const {status, time} = node.data
+
     // ignore anything that isn't failed status
     if (status != 'F') return;
 
     getErrorLog(time).then(data => {
-      console.log('data', data)
+      setErrorLog(data)
     })
   }
 
@@ -424,6 +423,17 @@ export default function SystemStatus() {
         </Grid>
 
       </Grid>
+
+      {errorLog &&
+        <Dialog title={<><WarningIcon className="failed"/> Error Log (time is in UTC)</>}
+          open={errorLog ? true : false}
+          primaryBtnText="close"
+          maxWidth="lg"
+          content={<pre>{errorLog}</pre>}
+          onClose={() => setErrorLog(false)}
+          onPrimaryClick={() => setErrorLog(false)}
+        />
+      }
    </div>
   )
 }
