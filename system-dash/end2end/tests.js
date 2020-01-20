@@ -17,7 +17,6 @@ const columns = [
   {
     id: 'testFilePath',
     label: 'File',
-    format: val => val
   }, {
     id: 'perfStats',
     label: 'Duration',
@@ -42,6 +41,22 @@ const columns = [
         </>
       )
     }
+  }
+]
+
+const subColumns = [
+  {
+    id: 'fullName',
+    label: 'Name',
+  }, {
+    id: 'duration',
+    label: 'Duration',
+    format: val => val
+
+  }, {
+    id: 'status',
+    label: 'Status',
+    format: val => val
   }
 ]
 
@@ -116,6 +131,8 @@ export default function Tests() {
               <Table
                 columns={columns}
                 rows={data.testResults}
+                expandable={subColumns}
+                expandedRowsKey="testResults"
               />
             }
           </Paper>

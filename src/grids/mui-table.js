@@ -7,6 +7,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
+import IconButton from '@material-ui/core/IconButton'
+import ArrowDown from '@material-ui/icons/ArrowDropDown'
+
 // import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 /*
@@ -26,7 +29,6 @@ const exampleColumns = [
 const useStyles = makeStyles({
   tableWrapper: {
     maxHeight: 'calc(100% - 60px)',
-
   }
 });
 
@@ -41,41 +43,105 @@ const Cell = React.memo(props => {
 })
 
 const Row = React.memo(props => {
-  const {row, columns, id} = props;
+  const {row,
+    columns,
+    id,
+    expandable,
+    onExpand,
+    emptyCell
+  } = props;
 
   return (
-    <TableRow tabIndex={-1} key={id}>
-      {columns.map((column, i) => {
-        const value = row[column.id];
-        return (
-          <Cell key={column.id} align={column.align} >
-            {column.format ? column.format(value, row) : value}
+    <>
+      <TableRow tabIndex={-1} key={id}>
+        {emptyCell && <Cell></Cell>}
+
+        {
+          expandable &&
+          <Cell style={{padding: 0}}>
+            <IconButton
+              onClick={() => onExpand(id)}
+              style={{padding: 0}}
+              aria-label="expand"
+            >
+              {<ArrowDown /> || <ArrowRight />}
+            </IconButton>
           </Cell>
-        );
-      })}
-    </TableRow>
+        }
+
+        {
+          columns.map((column, i) => {
+            const value = row[column.id];
+            return (
+              <Cell key={column.id} align={column.align} >
+                {column.format ? column.format(value, row) : value}
+              </Cell>
+            );
+          })
+        }
+      </TableRow>
+    </>
   );
 })
 
 
 const TableRows = React.memo((props) => {
-  const {rows, columns} = props;
+  const {rows, columns, expandable, expandedRowsKey} = props;
+
+  const [expanded, setExpanded] = useState({})
+
+  const onExpand = (id) => {
+    if (id in expanded) {
+      setExpanded((cur) => {
+        delete cur[id]
+        return cur
+      })
+    } else
+      setExpanded(cur => ({cur, [id]: true}))
+  }
+
   return (
     <>
-      {rows.map((row, i) => <Row key={i} row={row} columns={columns} id={i} />)}
+      {
+        rows.map((row, i) => {
+          let subRows = [];
+          if (expandable && i in expanded) {
+            console.log('HERE', expandable, row[expandedRowsKey])
+            subRows = row[expandedRowsKey].map((row, i) => {
+              const k = i+rows.length + 1
+              return <Row key={k} row={row} columns={expandable} id={k} emptyCell/>
+            })
+            console.log('subrows', subRows)
+          }
+
+          return [
+            <Row key={i} row={row} columns={columns} id={i} expandable onExpand={onExpand} />,
+            ...subRows
+          ]
+        })
+      }
     </>
   )
 })
 
+const usageError = (propName, value) =>
+  `StickyHeaderTable component must have prop: ${propName}.  Value was: ${value}`
+
+
 export default function StickyHeaderTable(props) {
   const classes = useStyles();
 
-  const {pagination} = props;
+  const {pagination, rows, columns} = props;
+
+  if (props.expandable && !props.expandedRowsKey) {
+    throw `StickyHeaderTable component must
+      have prop 'expandedRowsKey' when 'expandable is provided`
+  }
+
 
   const [page, setPage] = useState(props.page);
   const [rowsPerPage, setRowsPerPage] = useState(200);
 
-  const {rows, columns} = props;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -118,6 +184,7 @@ export default function StickyHeaderTable(props) {
         <Table stickyHeader aria-label="sticky table" size="small">
           <TableHead style={{width: '100%'}}>
             <TableRow>
+              {props.expandable && <TableCell style={{padding: 0}} />}
               {columns.map((column, i) => (
                 <TableCell
                   key={column.id}
