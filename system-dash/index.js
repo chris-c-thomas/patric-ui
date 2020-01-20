@@ -47,8 +47,9 @@ const useStyles = makeStyles(theme => ({
   root: {
   },
   content: {
-    marginTop: '40px',
-    paddingTop: '10px'
+    marginTop: 40,
+    paddingTop: 10,
+    margin: theme.spacing(1)
   },
   card: {
     maxWidth: 600,

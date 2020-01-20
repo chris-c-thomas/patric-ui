@@ -39,6 +39,7 @@ const exampleData =
 */
 
 export default function BarChart(props) {
+
   return (
     <AutoSizer>
       {({ height, width }) => (

@@ -6,7 +6,6 @@ export default function ErrorMsg(props) {
   const {error, noContact} = props;
 
   const res = error.response;
-  console.log('res', res)
 
   let msg;
   if (res && res.data != '') {

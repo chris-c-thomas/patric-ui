@@ -51,12 +51,16 @@ const subColumns = [
   }, {
     id: 'duration',
     label: 'Duration',
-    format: val => val
-
   }, {
     id: 'status',
     label: 'Status',
-    format: val => val
+    format: val => {
+      if (val == 'passed')
+        return <CheckIcon className="success"/>
+      else if (val == 'failed')
+        return <WarningIcon className="failed"/>
+      return <>??</>
+    }
   }
 ]
 

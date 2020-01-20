@@ -22,16 +22,16 @@ import Subtitle from '../src/home/subtitle';
 import FilterChips from '../src/utils/ui/chip-filters';
 import {months} from '../src/utils/dates';
 
-
 import config from './config'
 
-// number of hours into the past to show
-const HOURS = 3
 
-// number of minutes to show as most recent
-const MOST_RECENT = 10
+const HOURS = 3 // number of hours into the past to show
+
 
 const useStyles = makeStyles(theme => ({
+  root: {
+
+  },
   dateFilter: {
     marginLeft: theme.spacing(1)
   },
@@ -43,10 +43,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const tickValues = (statuses) => {
-  if (statuses.length > 30)
-    return statuses.map(obj => obj.humanTime).reverse().filter((_,i) => i % 10 == 0)
-  return statuses.map(obj => obj.humanTime);
+const tickValues = (data, key) => {
+  if (data.length > 30)
+    return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
+  return data.map(obj => obj[key]);
 }
 
 
@@ -135,14 +135,13 @@ const colorBy = (node) => (
   node.data.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
 );
 
-const SystemHealth = (props) => {
-  const {data} = props;
+const Chart = ({data, margin, ...props}) => {
 
   return (
     <BarChart
       data={data}
       indexBy="humanTime"
-      margin={{ top: 10, right: 20, bottom: 80, left: 40 }}
+      margin={{top: 10, right: 20, bottom: 80, left: 40, ...margin}}
       axisLeft={{
         label: 'milliseconds'
       }}
@@ -152,7 +151,7 @@ const SystemHealth = (props) => {
         tickRotation: 40,
         legendPosition: 'middle',
         legendOffset: 50,
-        tickValues: tickValues(data)
+        tickValues: tickValues(data, 'humanTime')
       }}
       {...props}
     />
@@ -167,10 +166,6 @@ const formatData = (data, lastN = HOURS*60) => {
     ...obj
   })).slice(-lastN)
   return data;
-}
-
-const formatRecentData = (data) => {
-  return formatData(data, MOST_RECENT)
 }
 
 
@@ -323,9 +318,7 @@ export default function SystemStatus() {
   }
 
 
-  const historyMax = () => {
-    return Math.max(...fullHistory.map(o => o.value))
-  }
+  const historyMax = () => Math.max(...fullHistory.map(o => o.value))
 
 
   const onNodeClick = (node) => {
@@ -350,7 +343,7 @@ export default function SystemStatus() {
           <Grid item xs={8}>
             <Paper className="card" style={{height: 290}}>
               <Subtitle noUpper>Genome Indexer</Subtitle>
-              { indexerHist && <SystemHealth data={indexerHist} /> }
+              { indexerHist && <Chart data={indexerHist} colors={['rgb(77, 165, 78)']} /> }
               { error1 && <ErrorMsg error={error1} noContact /> }
             </Paper>
           </Grid>
@@ -390,7 +383,14 @@ export default function SystemStatus() {
                   </Grid>
 
 
-                  { history && <SystemHealth data={history} maxValue={historyMax()} onClick={onNodeClick} /> }
+                  {
+                    history &&
+                    <Chart data={history}
+                      maxValue={historyMax()}
+                      onClick={onNodeClick}
+                      margin={{bottom: 90, top: 50}}
+                    />
+                  }
 
                   <div>
                     <Slider

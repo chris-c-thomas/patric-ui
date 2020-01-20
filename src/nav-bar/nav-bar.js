@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     top: 0
   },
   toolbar: {
-    height: '35px'
+    height: 38
   },
   brand: {
     marginRight: theme.spacing(2),
