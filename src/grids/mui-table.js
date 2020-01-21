@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 
 import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
+import ArrowRight from '@material-ui/icons/ArrowRight'
 
 // import TableSortLabel from '@material-ui/core/TableSortLabel';
 
@@ -42,7 +43,7 @@ const Cell = React.memo(props => {
   )
 })
 
-const Row = React.memo(props => {
+const Row = props => {
   const {row,
     columns,
     id,
@@ -50,6 +51,13 @@ const Row = React.memo(props => {
     onExpand,
     emptyCell
   } = props;
+
+  const [caret, setCaret] = useState(false)
+
+  const onCaret = (id) => {
+    setCaret(cur => !cur)
+    onExpand(id)
+  }
 
   return (
     <>
@@ -60,11 +68,11 @@ const Row = React.memo(props => {
           expandable &&
           <Cell style={{padding: 0}}>
             <IconButton
-              onClick={() => onExpand(id)}
+              onClick={() => onCaret(id)}
               style={{padding: 0}}
               aria-label="expand"
             >
-              {<ArrowDown /> || <ArrowRight />}
+              {caret ? <ArrowDown /> : <ArrowRight />}
             </IconButton>
           </Cell>
         }
@@ -82,22 +90,21 @@ const Row = React.memo(props => {
       </TableRow>
     </>
   );
-})
+}
 
 
-const TableRows = React.memo((props) => {
+const TableRows = (props) => {
   const {rows, columns, expandable, expandedRowsKey} = props;
 
   const [expanded, setExpanded] = useState({})
 
   const onExpand = (id) => {
-    if (id in expanded) {
-      setExpanded((cur) => {
-        delete cur[id]
-        return cur
-      })
-    } else
-      setExpanded(cur => ({cur, [id]: true}))
+    setExpanded(cur => {
+      if (id in cur) {
+        return {...cur, [id]: false}
+      } else
+        return ({...cur, [id]: true})
+    })
   }
 
   return (
@@ -106,12 +113,10 @@ const TableRows = React.memo((props) => {
         rows.map((row, i) => {
           let subRows = [];
           if (expandable && i in expanded) {
-            console.log('HERE', expandable, row[expandedRowsKey])
             subRows = row[expandedRowsKey].map((row, i) => {
               const k = i+rows.length + 1
               return <Row key={k} row={row} columns={expandable} id={k} emptyCell/>
             })
-            console.log('subrows', subRows)
           }
 
           return [
@@ -122,7 +127,7 @@ const TableRows = React.memo((props) => {
       }
     </>
   )
-})
+}
 
 const usageError = (propName, value) =>
   `StickyHeaderTable component must have prop: ${propName}.  Value was: ${value}`
@@ -152,10 +157,6 @@ export default function StickyHeaderTable(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  const onTableClick = ({...evt}) => {
-    console.log('on table click ', evt)
-  }
 
   return (
     <>

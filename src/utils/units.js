@@ -19,6 +19,6 @@ export function msToTimeStr(milliseconds) {
     return 'N/A'
   }
 
-  let str = new Date(milliseconds).toISOString().slice(11, -5);
+  let str = new Date(milliseconds).toISOString().slice(11, -1);
   return str
 }

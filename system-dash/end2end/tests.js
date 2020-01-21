@@ -13,6 +13,9 @@ import { msToTimeStr } from '../../src/utils/units';
 import Subtitle from '../../src/home/subtitle';
 import Dialog from '../../src/dialogs/basic-dialog';
 
+import {months} from '../../src/utils/dates';
+
+
 const columns = [
   {
     id: 'testFilePath',
@@ -20,9 +23,7 @@ const columns = [
   }, {
     id: 'perfStats',
     label: 'Duration',
-    format: obj => {
-      return msToTimeStr(obj.end - obj.start)
-    }
+    format: obj => msToTimeStr(obj.end - obj.start)
   }, {
     id: 'numPassingTests',
     label: 'Status',
@@ -48,9 +49,17 @@ const subColumns = [
   {
     id: 'fullName',
     label: 'Name',
+    format: (_, obj) => {
+      return (
+        <span className="muted">
+          {obj.ancestorTitles[0]} > {obj.fullName}
+        </span>
+      )
+    }
   }, {
     id: 'duration',
     label: 'Duration',
+    format: val => msToTimeStr(val)
   }, {
     id: 'status',
     label: 'Status',
@@ -84,6 +93,24 @@ const FailChip = ({count, msg}) =>
     }}
   />
 
+
+const renderDateTime = (date) => {
+  const d = new Date(date)
+  const [_, mm, dd] = [d.getFullYear(), months[d.getMonth()], d.getDate()]
+
+  const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+  return (
+    <>
+      <span style={{ fontWeight: 800}}>
+        {time}
+      </span>
+      <span style={{margin: '5px 5px', fontSize: '1em'}}>
+        {mm} {dd}
+      </span>
+    </>
+  )
+}
 
 
 const useStyles = makeStyles(theme => ({
@@ -128,7 +155,7 @@ export default function Tests() {
             {loading && <Progress className="card-progress"/>}
 
             <Subtitle noUpper>
-              Lastest test <small>| {date && new Date(date).toLocaleString()}</small>
+              Latest tests <small className="muted">| {date && renderDateTime(date)}</small>
             </Subtitle>
 
             {data &&

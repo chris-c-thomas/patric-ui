@@ -30,10 +30,9 @@ const HOURS = 3 // number of hours into the past to show
 
 const useStyles = makeStyles(theme => ({
   root: {
-
   },
   dateFilter: {
-    marginLeft: theme.spacing(1)
+    marginRight: theme.spacing(1)
   },
   loadingIndicator: {
     position: "absolute",
@@ -68,7 +67,7 @@ const LiveRows = (props) => {
       {Object.keys(config).map(key => (
         <tr key={key}>
           <td width="100%">
-            <a>
+            <a onClick={() => props.onClick(config[key].label)}>
               {config[key].label}
             </a>
           </td>
@@ -115,7 +114,10 @@ const LiveStatus = (props) => {
         </thead>
         <tbody>
           <LiveStatusProvider>
-            <LiveRows afterUpdate={(time) => setTime(time)}/>
+            <LiveRows
+              afterUpdate={(time) => setTime(time)}
+              onClick={type => props.onClick(type)}
+            />
           </LiveStatusProvider>
         </tbody>
       </table>
@@ -193,6 +195,7 @@ const SliderLabelComponent = (props) => {
     </Tooltip>
   );
 }
+
 
 const renderInterval = (interval) => {
   if (!interval[0]) return (<></>)
@@ -337,7 +340,7 @@ export default function SystemStatus() {
       <Grid container>
         <Grid container>
           <Grid item xs={4}>
-            <LiveStatus />
+            <LiveStatus onClick={type => setService(type)} />
           </Grid>
 
           <Grid item xs={8}>
@@ -360,24 +363,24 @@ export default function SystemStatus() {
                     <Grid item>
                       <Subtitle inline noUpper>
                         System Health
-                        {
-                          date &&
-                          <Chip
-                            label={date}
-                            onDelete={() => setDate(null)}
-                            color="primary"
-                            className={styles.dateFilter}
-                          />
-                        }
                       </Subtitle>
                       {renderInterval(interval)}
                     </Grid>
 
                     <Grid item>
+                      {
+                        date &&
+                        <Chip
+                          label={date}
+                          onDelete={() => setDate(null)}
+                          color="primary"
+                          className={styles.dateFilter}
+                        />
+                      }
                       <FilterChips
                         items={getFilters()}
                         filterState={service}
-                        onClick={(type) => setService(type)}
+                        onClick={type => setService(type)}
                       />
                     </Grid>
                   </Grid>
@@ -397,12 +400,12 @@ export default function SystemStatus() {
                       value={idx}
                       getAriaValueText={(date) => date}
                       aria-labelledby="discrete-slider"
-                      onChange={(evt, idx) => setIdx(idx)}
+                      onChange={(evt, i) => setIdx(i)}
                       min={-24*60 - 3*60}
                       max={0}
-                      valueLabelDisplay="auto"
-                      ValueLabelComponent={SliderLabelComponent}
-                      valueLabelFormat={() => `${interval[0]} - ${interval[1]}`}
+                      // valueLabelDisplay="auto"
+                      // ValueLabelComponent={SliderLabelComponent}
+                      // valueLabelFormat={() => humanInterval(interval)}
                     />
                   </div>
                 </>
@@ -417,7 +420,14 @@ export default function SystemStatus() {
             <Paper className="card" style={{height: 370}}>
               <Subtitle noUpper>Calendar</Subtitle>
               { error3 && <ErrorMsg error={error3} noContact /> }
-              { calendar && <Calendar data={calendar} onClick={handleDayClick} from="2020-1-1" /> }
+              {
+                calendar &&
+                <Calendar data={calendar}
+                  onClick={handleDayClick}
+                  colors={['#c2e7c3', '#ffa2a2', '#ff4d4d']}
+                  from="2020-01-02T00:00:00.000Z"
+                />
+              }
             </Paper>
           </Grid>
         </Grid>
