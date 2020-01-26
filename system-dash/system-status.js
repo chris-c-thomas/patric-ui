@@ -42,13 +42,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const tickValues = (data, key) => {
-  if (data.length > 30)
-    return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
-  return data.map(obj => obj[key]);
-}
-
-
 const loadingStyle = {
   position: "absolute",
   right: 3,
@@ -138,7 +131,6 @@ const colorBy = (node) => (
 );
 
 const Chart = ({data, margin, ...props}) => {
-
   return (
     <BarChart
       data={data}
@@ -196,6 +188,12 @@ const SliderLabelComponent = (props) => {
   );
 }
 
+
+const tickValues = (data, key) => {
+  if (data.length > 30)
+    return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
+  return data.map(obj => obj[key]);
+}
 
 const renderInterval = (interval) => {
   if (!interval[0]) return (<></>)
@@ -346,7 +344,15 @@ export default function SystemStatus() {
           <Grid item xs={8}>
             <Paper className="card" style={{height: 290}}>
               <Subtitle noUpper>Genome Indexer</Subtitle>
-              { indexerHist && <Chart data={indexerHist} colors={['rgb(77, 165, 78)']} /> }
+              {
+                indexerHist &&
+                  <Chart data={indexerHist}
+                    colors={['rgb(77, 165, 78)']}
+                    axisLeft={{
+                      format: val => val % 1 == 0 ? val : ''
+                    }}
+                  />
+              }
               { error1 && <ErrorMsg error={error1} noContact /> }
             </Paper>
           </Grid>

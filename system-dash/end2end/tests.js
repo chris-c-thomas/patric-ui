@@ -7,6 +7,7 @@ import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 import Chip from '@material-ui/core/Chip'
 
+import BarChart from '../../src/charts/bar';
 import Table from '../../src/grids/mui-table'
 import { getEnd2EndLog } from '../api/log-fetcher'
 import { msToTimeStr } from '../../src/utils/units';
@@ -113,6 +114,42 @@ const renderDateTime = (date) => {
 }
 
 
+
+const tickValues = (data, key) => {
+  if (data.length > 30)
+    return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
+  return data.map(obj => obj[key]);
+}
+
+
+const colorBy = (node) => (
+  node.data.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
+);
+
+const Chart = ({data, margin, ...props}) => {
+  return (
+    <BarChart
+      data={data}
+      indexBy="humanTime"
+      margin={{top: 10, right: 20, bottom: 80, left: 40, ...margin}}
+      axisLeft={{
+        label: 'milliseconds'
+      }}
+      padding={.5}
+      colors={colorBy}
+      axisBottom={{
+        tickRotation: 40,
+        legendPosition: 'middle',
+        legendOffset: 50,
+        tickValues: tickValues(data, 'humanTime')
+      }}
+      {...props}
+    />
+  )
+}
+
+
+
 const useStyles = makeStyles(theme => ({
   root: {}
 }));
@@ -130,15 +167,16 @@ export default function Tests() {
   // get log
   useEffect(() => {
     getEnd2EndLog().then(data => {
+
       setData(data)
-      setDate(data.endTime)
+      setDate(data[data.length -1].endTime)
       setLoading(false)
     })
   }, [])
 
   const onOpenDialog = useCallback(event => setMsg(event.detail))
 
-  // custom event for opening error log
+  // event for error log dialog
   useEffect(() => {
     window.addEventListener('onShowMsg', onOpenDialog, true)
     return () => {
@@ -146,11 +184,27 @@ export default function Tests() {
     }
   }, [onOpenDialog])
 
+
+  const onNodeClick = () => {
+
+  }
+
   return (
     <div className={styles.root}>
       <Grid container>
 
         <Grid container item xs={12} direction="column">
+
+          <Paper className="card">
+            <Subtitle noUpper>Test History</Subtitle>
+            <Chart data={data}
+              onClick={onNodeClick}
+              margin={{bottom: 90, top: 50}}
+            />
+          </Paper>
+
+
+
           <Paper className="card">
             {loading && <Progress className="card-progress"/>}
 
@@ -161,7 +215,7 @@ export default function Tests() {
             {data &&
               <Table
                 columns={columns}
-                rows={data.testResults}
+                rows={data[data.length - 1].testResults}
                 expandable={subColumns}
                 expandedRowsKey="testResults"
               />

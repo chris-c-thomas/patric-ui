@@ -136,6 +136,6 @@ export function getEnd2EndLog(date = null) {
       const objs = rows.map(row => JSON.parse(row))
 
       // return just the last run for now
-      return objs[objs.length - 1]
+      return objs
     })
 }
