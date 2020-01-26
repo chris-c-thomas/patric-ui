@@ -70,7 +70,6 @@ export function adminSignIn(username, password) {
     .then(res => {
       const token = res.data;
       storeToken('token', token);
-      window.location.reload();
     })
 }
 

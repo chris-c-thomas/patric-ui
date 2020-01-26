@@ -11,7 +11,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 import TextInput from '../apps/components/text-input';
 
-import { getUser, adminSignIn} from '../api/auth';
+import { adminSignIn} from '../api/auth';
 import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
@@ -34,7 +34,9 @@ export default function SUSignInForm(props) {
 
     setInProgress(true);
     adminSignIn(user, pass)
-      .catch(err => {
+      .then(() => {
+        window.location.href = '/system-status'
+      }).catch(err => {
         setInProgress(false);
         const error = err.response.data;
         const status = error.status;
