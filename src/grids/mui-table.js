@@ -120,7 +120,12 @@ const TableRows = (props) => {
           }
 
           return [
-            <Row key={i} row={row} columns={columns} id={i} expandable onExpand={onExpand} />,
+            <Row key={i} id={i}
+              row={row}
+              columns={columns}
+              expandable={expandable}
+              onExpand={onExpand}
+            />,
             ...subRows
           ]
         })
@@ -129,24 +134,21 @@ const TableRows = (props) => {
   )
 }
 
-const usageError = (propName, value) =>
-  `StickyHeaderTable component must have prop: ${propName}.  Value was: ${value}`
-
 
 export default function StickyHeaderTable(props) {
   const classes = useStyles();
+  const {
+    pagination, rows, columns,
+    expandable, expandedRowsKey
+  } = props;
 
-  const {pagination, rows, columns} = props;
-
-  if (props.expandable && !props.expandedRowsKey) {
+  if (expandable && !expandedRowsKey) {
     throw `StickyHeaderTable component must
       have prop 'expandedRowsKey' when 'expandable is provided`
   }
 
-
   const [page, setPage] = useState(props.page);
   const [rowsPerPage, setRowsPerPage] = useState(200);
-
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -185,7 +187,7 @@ export default function StickyHeaderTable(props) {
         <Table stickyHeader aria-label="sticky table" size="small">
           <TableHead style={{width: '100%'}}>
             <TableRow>
-              {props.expandable && <TableCell style={{padding: 0}} />}
+              {expandable && <TableCell style={{padding: 0}} />}
               {columns.map((column, i) => (
                 <TableCell
                   key={column.id}

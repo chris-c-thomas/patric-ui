@@ -130,7 +130,21 @@ export function getEnd2EndLog(date = null) {
   date = date || getToday()
   return api.get(`/results/end2end/end2end_${date}.txt`)
     .then(({data}) => {
-      if (typeof data === 'object') return data
+      if (typeof data === 'object') return [data]
+
+      const rows = data.trim().split('\n')
+      const objs = rows.map(row => JSON.parse(row))
+
+      // return just the last run for now
+      return objs
+    })
+}
+
+export function getUIPerfLog(date = null) {
+  date = date || getToday()
+  return api.get(`/results/performance/performance_${date}.txt`)
+    .then(({data}) => {
+      if (typeof data === 'object') return [data]
 
       const rows = data.trim().split('\n')
       const objs = rows.map(row => JSON.parse(row))

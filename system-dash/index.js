@@ -19,8 +19,9 @@ import PrivateRoute from './private-route';
 
 // views
 import SystemStatus from './system-status';
+import Performance from './performance/ui-pref';
 import Tests from './end2end/tests';
-import Gronkomatic from './gronkomatic';
+import Gronkomatic from './gronkomatic/gronkomatic';
 import NotFound404 from '../src/404';
 
 import '../src/styles/styles.scss'
@@ -65,6 +66,9 @@ const SystemMenu = () => {
       <NavLink to="/system-status" className="nav-item" activeClassName="active">
         System Status
       </NavLink>
+      <NavLink to="/performance" className="nav-item">
+        Performance
+      </NavLink>
       <NavLink to="/tests" className="nav-item">
         Tests
       </NavLink>
@@ -102,6 +106,7 @@ const App = () => {
             </Route>
             <Route path="/sign-in" exact component={SignIn} />
             <PrivateRoute path="/system-status" exact component={SystemStatus} />
+            <PrivateRoute path="/Performance" exact component={Performance} />
             <PrivateRoute path="/tests" exact component={Tests} />
             <PrivateRoute path="/gronkomatic" exact component={Gronkomatic} />
             <Route path="*" component={NotFound404} />

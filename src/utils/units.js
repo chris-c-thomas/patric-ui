@@ -13,6 +13,10 @@ export function toDateTimeStr(dateTime) {
   return date.toDateString();
 }
 
+export function timeToHumanTime(dateTime) {
+  return  new Date(dateTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+}
+
 export function msToTimeStr(milliseconds) {
   if (milliseconds >= 86400000 ) {
     console.error('msToTimeStr: can not compute times over a full day (86400000 ms)')

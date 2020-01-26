@@ -9,38 +9,32 @@ import Chip from '@material-ui/core/Chip'
 
 import BarChart from '../../src/charts/bar';
 import Table from '../../src/grids/mui-table'
-import { getEnd2EndLog } from '../api/log-fetcher'
+import { getUIPerfLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
 import Subtitle from '../../src/home/subtitle';
 import Dialog from '../../src/dialogs/basic-dialog';
 
 import HumanTime from '../utils/components/human-time';
 
+
 const columns = [
   {
-    id: 'testFilePath',
-    label: 'File',
+    id: 'ancestorTitles',
+    label: 'Test',
+    format: vals => vals[0],
   }, {
-    id: 'perfStats',
+    id: 'duration',
     label: 'Duration',
-    format: obj => msToTimeStr(obj.end - obj.start)
+    format: val => msToTimeStr(val)
   }, {
-    id: 'numPassingTests',
+    id: 'status',
     label: 'Status',
-    format: (_, obj) => {
-      const {numPassingTests, numFailingTests} = obj
-      const total = obj.testResults.length
-
-      if ( numPassingTests == total)
-        return <PassChip count={numPassingTests} />
-      else if (numFailingTests == total)
-        return <FailChip count={numFailingTests} msg={obj.failureMessage}/>
-      else return (
-        <>
-          <PassChip count={numPassingTests} />
-          <FailChip count={numFailingTests} msg={obj.failureMessage}/>
-        </>
-      )
+    format: val => {
+      if (val == 'passed')
+        return <CheckIcon className="success"/>
+      else if (val == 'failed')
+        return <WarningIcon className="failed"/>
+      return <>??</>
     }
   }
 ]
@@ -73,7 +67,6 @@ const subColumns = [
   }
 ]
 
-
 const PassChip = ({count}) =>
   <Chip style={{color: '#fff', background: '#00b732'}}
     label={`${count} Passed`}
@@ -94,6 +87,23 @@ const FailChip = ({count, msg}) =>
     }}
   />
 
+
+const renderDateTime = (date) => {
+  const d = new Date(date)
+  const [_, mm, dd] = [d.getFullYear(), months[d.getMonth()], d.getDate()]
+  const time = timeToHumanTime(date)
+
+  return (
+    <>
+      <span style={{ fontWeight: 800}}>
+        {time}
+      </span>
+      <span style={{margin: '5px 5px', fontSize: '1em'}}>
+        {mm} {dd}
+      </span>
+    </>
+  )
+}
 
 
 
@@ -143,15 +153,19 @@ export default function Tests() {
 
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
+  const [currentData, setCurrentData] = useState(null)
   const [date, setDate] = useState(null)
 
   const [msg, setMsg] = useState(null)
 
   // get log
   useEffect(() => {
-    getEnd2EndLog().then(data => {
+    getUIPerfLog().then(data => {
+      console.log('setting data', data, data[data.length - 1].testResults[0].testResults)
       setData(data)
-      setDate(data[data.length -1].startTime)
+
+      setCurrentData(data[data.length - 1].testResults[0].testResults)
+      setDate(data[data.length - 1].startTime)
       setLoading(false)
     })
   }, [])
@@ -178,7 +192,7 @@ export default function Tests() {
         <Grid container item xs={12} direction="column">
 
           <Paper className="card" style={{height: 300}}>
-            <Subtitle noUpper>Test History</Subtitle>
+            <Subtitle noUpper>Performance History</Subtitle>
             { data &&
               <Chart data={data}
                 onClick={onNodeClick}
@@ -191,18 +205,18 @@ export default function Tests() {
             {loading && <Progress className="card-progress"/>}
 
             <Subtitle noUpper>
-              Latest Tests
+              Latest runs
               <small className="muted">
                 | {date && <HumanTime date={date}/>}
               </small>
             </Subtitle>
 
-            {data &&
+            {currentData &&
               <Table
                 columns={columns}
-                rows={data[data.length - 1].testResults}
-                expandable={subColumns}
-                expandedRowsKey="testResults"
+                rows={currentData}
+                //expandable={subColumns}
+                //expandedRowsKey="testResults"
               />
             }
           </Paper>

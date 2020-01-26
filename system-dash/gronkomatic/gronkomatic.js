@@ -11,8 +11,8 @@ import PlayIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 import ReplayIcon from '@material-ui/icons/ReplayRounded'
 import StopIcon from '@material-ui/icons/Stop'
 
-import Subtitle from '../src/home/subtitle';
-import {months} from '../src/utils/dates';
+import Subtitle from '../../src/home/subtitle';
+import {months} from '../../src/utils/dates';
 
 import { Paper } from '@material-ui/core';
 import { Bar } from '@nivo/bar'

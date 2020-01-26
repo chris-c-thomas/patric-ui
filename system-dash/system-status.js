@@ -23,6 +23,7 @@ import FilterChips from '../src/utils/ui/chip-filters';
 import {months} from '../src/utils/dates';
 
 import config from './config'
+import { timeToHumanTime } from '../src/utils/units';
 
 
 const HOURS = 3 // number of hours into the past to show
@@ -155,7 +156,7 @@ const Chart = ({data, margin, ...props}) => {
 
 const formatData = (data, lastN = HOURS*60) => {
   data = data.map(obj => ({
-    humanTime: new Date(obj.time).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }), // remove secs
+    humanTime: timeToHumanTime(obj.time), // remove secs
     value: obj.duration,
     ...obj
   })).slice(-lastN)
