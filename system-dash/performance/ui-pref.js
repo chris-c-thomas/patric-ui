@@ -5,17 +5,18 @@ import Grid from '@material-ui/core/Grid';
 import Progress from '@material-ui/core/LinearProgress';
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
-import Chip from '@material-ui/core/Chip'
+import IconButton from '@material-ui/core/IconButton'
 
 import BarChart from '../../src/charts/bar';
 import Table from '../../src/grids/mui-table'
+import Selector from '../../src/apps/components/selector';
 import { getUIPerfLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
 import Subtitle from '../../src/home/subtitle';
 import Dialog from '../../src/dialogs/basic-dialog';
+import ErrorMsg from '../../src/error-msg';
 
 import HumanTime from '../utils/components/human-time';
-
 
 const columns = [
   {
@@ -29,115 +30,131 @@ const columns = [
   }, {
     id: 'status',
     label: 'Status',
-    format: val => {
+    format: (val, obj) => {
       if (val == 'passed')
         return <CheckIcon className="success"/>
       else if (val == 'failed')
-        return <WarningIcon className="failed"/>
+        return <FailIcon msg={obj.suiteFailedMsg} />
       return <>??</>
     }
   }
 ]
 
-const subColumns = [
-  {
-    id: 'fullName',
-    label: 'Name',
-    format: (_, obj) => {
-      return (
-        <span className="muted">
-          {obj.ancestorTitles[0]} > {obj.fullName}
-        </span>
-      )
-    }
-  }, {
-    id: 'duration',
-    label: 'Duration',
-    format: val => msToTimeStr(val)
-  }, {
-    id: 'status',
-    label: 'Status',
-    format: val => {
-      if (val == 'passed')
-        return <CheckIcon className="success"/>
-      else if (val == 'failed')
-        return <WarningIcon className="failed"/>
-      return <>??</>
-    }
-  }
-]
 
-const PassChip = ({count}) =>
-  <Chip style={{color: '#fff', background: '#00b732'}}
-    label={`${count} Passed`}
-    size="small"
-    icon={<CheckIcon style={{color: '#fff', fill: '#006502'}} />}
-  />
-
-
-const FailChip = ({count, msg}) =>
-  <Chip style={{color: '#fff', background: '#ce0303'}}
-    label={`${count} Failed`}
-    size="small"
-    icon={<WarningIcon style={{color: '#fff', fill: '#650000'}} />}
-    onClick={() => {
-      // open dialog when fail chips are clicked
-      const event = new CustomEvent('onShowMsg', {detail: msg})
-      document.dispatchEvent(event)
-    }}
-  />
-
-
-const renderDateTime = (date) => {
-  const d = new Date(date)
-  const [_, mm, dd] = [d.getFullYear(), months[d.getMonth()], d.getDate()]
-  const time = timeToHumanTime(date)
+const FailIcon = (props) => {
+  const failMsg = props.msg
+  const [msg, setMsg] = useState(null);
 
   return (
     <>
-      <span style={{ fontWeight: 800}}>
-        {time}
-      </span>
-      <span style={{margin: '5px 5px', fontSize: '1em'}}>
-        {mm} {dd}
-      </span>
+      <IconButton onClick={() => setMsg(failMsg)} aria-label="open error dialog" size="small">
+        <WarningIcon className="failed"/>
+      </IconButton>
+      {
+        open &&
+        <Dialog title={<><WarningIcon className="failed"/> Error Log</>}
+          open={msg ? true : false}
+          primaryBtnText="close"
+          maxWidth="lg"
+          content={<pre>{msg}</pre>}
+          onClose={() => setMsg(false)}
+          onPrimaryClick={() => setMsg(false)}
+        />
+      }
     </>
   )
 }
 
+// takes test results, returns total "passed"/"failed" times
+// for each set of tests
+const getPerfMetrics = (data) => {
+  const perfMetrics = []
+  for (const tests of data) {
+    const {startTime} = tests
+    const testResults = tests.testResults[0].testResults;
 
+    let passedTime = 0,
+      failedTime = 0,
+      totalTime = 0
+    for (const test of testResults) {
+      const {status} = test;
+      if (status == 'passed') passedTime += test.duration;
+      else if (status == 'failed') failedTime += test.duration;
+      totalTime += test.duration;
+    }
 
-const tickValues = (data, key) => {
-  if (data.length > 30)
-    return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
-  return data.map(obj => obj[key]);
+    perfMetrics.push({
+      passedTime,
+      failedTime,
+      totalTime,
+      startTime
+    })
+  }
+
+  return perfMetrics
 }
 
 
 const Chart = ({data, margin, ...props}) => {
+  const [curData, setCurData] = useState(data)
+  const [view, setView] = useState('counts')
+  const [keys, setKeys] = useState(['numPassedTests', 'numFailedTests'])
+
+
+  useEffect(() => {
+    if (view == 'counts')
+      setCurData(data)
+    else {
+      setCurData(() => getPerfMetrics(data))
+    }
+
+    if (view == 'counts')
+      setKeys(['numPassedTests', 'numFailedTests'])
+    else if (view == 'total')
+      setKeys(['totalTime'])
+    else if (view == 'duration')
+      setKeys(['passedTime', 'failedTime'])
+
+  }, [view])
+
 
   return (
-    <BarChart
-      data={data}
-      keys={[ 'numPassedTests', 'numFailedTests']}
-      indexBy="startTime"
-      margin={{top: 10, right: 20, bottom: 80, left: 40, ...margin}}
-      axisLeft={{
-        label: 'milliseconds'
-      }}
-      padding={.5}
-      colors={['rgb(77, 165, 78)', 'rgb(198, 69, 66)']}
-      axisBottom={{
-        tickRotation: 40,
-        legendPosition: 'middle',
-        legendOffset: 50,
-        //tickValues: tickValues(data, 'humanTime')
-      }}
-      axisBottom={{
-        format: v => timeToHumanTime(v)
-      }}
-      {...props}
-    />
+    <>
+      <div className="pull-right">
+        <Selector label="view"
+          value={view}
+          options={[
+            {label: 'By status count', value: 'counts'},
+            {label: 'By total time', value: 'total'},
+            {label: 'By status duration', value: 'duration'}
+          ]}
+          onChange={v => setView(v)}
+          className="pull-right"
+        />
+      </div>
+
+      <BarChart
+        data={curData}
+        keys={keys}
+        indexBy="startTime"
+        margin={{top: 10, right: 20, bottom: 80, left: 40, ...margin}}
+        axisLeft={{
+          label: 'milliseconds'
+        }}
+        padding={.5}
+        colors={['rgb(77, 165, 78)', 'rgb(198, 69, 66)']}
+        axisBottom={{
+          tickRotation: 40,
+          legendPosition: 'middle',
+          legendOffset: 50,
+          //tickValues: tickValues(data, 'humanTime')
+        }}
+        axisBottom={{
+          format: v => timeToHumanTime(v)
+        }}
+        {...props}
+      />
+    </>
   )
 }
 
@@ -153,36 +170,44 @@ export default function Tests() {
 
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
-  const [currentData, setCurrentData] = useState(null)
+  const [error, setError] = useState(null)
+
+  // index for currently viewed test results
+  const [idx, setIdx] = useState(null)
+
+  const [testResults, setTestResults] = useState(null)
   const [date, setDate] = useState(null)
 
-  const [msg, setMsg] = useState(null)
 
   // get log
   useEffect(() => {
     getUIPerfLog().then(data => {
-      console.log('setting data', data, data[data.length - 1].testResults[0].testResults)
+      // set all data
       setData(data)
-
-      setCurrentData(data[data.length - 1].testResults[0].testResults)
-      setDate(data[data.length - 1].startTime)
+      setIdx(data.length - 1)
       setLoading(false)
-    })
+    }).catch(e => setError(e))
   }, [])
 
-  const onOpenDialog = useCallback(event => setMsg(event.detail))
-
-  // event for error log dialog
+  // when idx changes update the current data and date
   useEffect(() => {
-    window.addEventListener('onShowMsg', onOpenDialog, true)
-    return () => {
-      window.removeEventListener('onShowMsg', onOpenDialog, true)
-    }
-  }, [onOpenDialog])
+    if (!idx) return;
 
+    // separate state is used for currently viewed test results
+    // we store the full (suite) failure message in this state
+    const curData = data[idx]
+    const tests = curData.testResults[0]
 
-  const onNodeClick = () => {
+    const suiteFailedMsg = tests.failureMessage
+    const testResults = tests.testResults.map(test => ({...test, suiteFailedMsg}))
 
+    setTestResults(testResults)
+    setDate(curData.startTime)
+  }, [idx])
+
+  // when clicking a bar, update idx
+  const onNodeClick = (node) => {
+    setIdx(() => node.index)
   }
 
   return (
@@ -192,7 +217,7 @@ export default function Tests() {
         <Grid container item xs={12} direction="column">
 
           <Paper className="card" style={{height: 300}}>
-            <Subtitle noUpper>Performance History</Subtitle>
+            <Subtitle inline noUpper>Performance History</Subtitle>
             { data &&
               <Chart data={data}
                 onClick={onNodeClick}
@@ -206,15 +231,15 @@ export default function Tests() {
 
             <Subtitle noUpper>
               Latest runs
-              <small className="muted">
-                | {date && <HumanTime date={date}/>}
-              </small>
+              <small className="muted"> | {date && <HumanTime date={date}/>}</small>
             </Subtitle>
 
-            {currentData &&
+            { error && <ErrorMsg error={error} noContact /> }
+
+            {testResults &&
               <Table
                 columns={columns}
-                rows={currentData}
+                rows={testResults}
                 //expandable={subColumns}
                 //expandedRowsKey="testResults"
               />
@@ -222,18 +247,6 @@ export default function Tests() {
           </Paper>
         </Grid>
       </Grid>
-
-      {msg &&
-        <Dialog title={<><WarningIcon className="failed"/> Error Log</>}
-          open={msg ? true : false}
-          primaryBtnText="close"
-          maxWidth="lg"
-          content={<pre>{msg}</pre>}
-          onClose={() => setMsg(false)}
-          onPrimaryClick={() => setMsg(false)}
-        />
-      }
-
    </div>
   )
 }

@@ -192,9 +192,7 @@ export default function Tests() {
 
             <Subtitle noUpper>
               Latest Tests
-              <small className="muted">
-                | {date && <HumanTime date={date}/>}
-              </small>
+              <small className="muted"> | {date && <HumanTime date={date}/>}</small>
             </Subtitle>
 
             {data &&

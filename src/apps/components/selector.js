@@ -27,6 +27,12 @@ export default function Selector(props) {
 
   const [val, setVal] = useState(value || props.default);
 
+  const handleChange = (evt) => {
+    const val = evt.target.value;
+    setVal(val);
+    if (props.onChange) props.onChange(val);
+  }
+
   return (
     <FormControl variant="outlined" margin="dense" notched="true" className="selector">
       <InputLabel htmlFor={label} className={styles.label}>
@@ -35,7 +41,7 @@ export default function Selector(props) {
       <Select
         value={val}
         style={{minWidth: width}}
-        onChange={evt => setVal(evt.target.value)}
+        onChange={handleChange}
         input={<OutlinedInput name={label} id={label} />}
       >
         {
