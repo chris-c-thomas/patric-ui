@@ -137,6 +137,7 @@ const parseFullTestLog = (data) => {
   return objs
 }
 
+
 export function getEnd2EndLog(date = null) {
   date = date || getToday()
 
@@ -155,6 +156,7 @@ export function getEnd2EndLog(date = null) {
       return [...prevData, ...data]
     })
 }
+
 
 export function getUIPerfLog(date = null) {
   date = date || getToday()

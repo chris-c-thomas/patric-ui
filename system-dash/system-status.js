@@ -252,7 +252,6 @@ export default function SystemStatus() {
   // fetch genome indexer history
   useEffect(() => {
     getIndexerHistory().then(data => {
-      const nonZero = data.filter(o => o)
       setIndexerHist(formatData(data))
     }).catch(e => setError1(e))
   }, [])
@@ -299,6 +298,7 @@ export default function SystemStatus() {
       setHistory(d)
       setInterval([d[0].time, d[d.length - 1].time])
 
+      setIdx(0) // reset slider index as well
       setLoading(false)
     }).catch(e => {
       setError2(e);
