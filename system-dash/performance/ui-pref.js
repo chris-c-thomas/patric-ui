@@ -97,8 +97,8 @@ const getPerfMetrics = (data) => {
 
 const Chart = ({data, margin, ...props}) => {
   const [curData, setCurData] = useState(data)
-  const [view, setView] = useState('counts')
-  const [keys, setKeys] = useState(['numPassedTests', 'numFailedTests'])
+  const [view, setView] = useState('duration')
+  const [keys, setKeys] = useState(['passedTime', 'failedTime'])
 
 
   useEffect(() => {
@@ -124,9 +124,9 @@ const Chart = ({data, margin, ...props}) => {
         <Selector label="view"
           value={view}
           options={[
+            {label: 'By status & duration', value: 'duration'},
             {label: 'By status count', value: 'counts'},
             {label: 'By total time', value: 'total'},
-            {label: 'By status duration', value: 'duration'}
           ]}
           onChange={v => setView(v)}
           className="pull-right"

@@ -17,12 +17,34 @@ export function timeToHumanTime(dateTime) {
   return  new Date(dateTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 }
 
-export function msToTimeStr(milliseconds) {
-  if (milliseconds >= 86400000 ) {
+// milliseconds to HH:MM:SS.MMM
+export function msToTimeStr(ms) {
+  if (ms >= 86400000 ) {
     console.error('msToTimeStr: can not compute times over a full day (86400000 ms)')
     return 'N/A'
   }
 
-  let str = new Date(milliseconds).toISOString().slice(11, -1);
+  let str = new Date(ms).toISOString().slice(11, -1);
   return str
+}
+
+const prettyTimeParts = ['h', 'm', 's']
+
+export function prettyTime(ms, includeMS = false) {
+  const hhmmss = msToTimeStr(ms)
+  const parts = hhmmss.split(':')
+  const seconds = parts.pop()
+  const [secs, milliSecs] = seconds.split('.')
+
+
+  const strs = []
+  const l = parts.length
+  for (let i = 0; i < l; i++) {
+    const val = parseInt(parts[i])
+    if (!val) continue;
+
+    strs.push(val + prettyTimeParts[i])
+  }
+
+  return `${strs.join(' ')} ${parseInt(secs)}${(includeMS ? `.${milliSecs}` : '')}s`
 }
