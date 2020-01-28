@@ -20,7 +20,7 @@ export default function ErrorMsg(props) {
     <>
       <div className="alert alert-fail">
         {error.message} - {msg || 'Something has gone wrong.'}
-        {error.config.url && `: ${error.config.url}`}
+        {'config' in error && 'url' in error.config && `: ${error.config.url}`}
         <br/>
         {
           !noContact &&

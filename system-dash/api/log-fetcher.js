@@ -4,8 +4,17 @@ const api = axios.create({
   baseURL: 'http://127.0.0.1:8000'
 });
 
+const getToday = () => new Date().toISOString().split('T')[0]
 
-const parseLog = (data, service = null) => {
+const getDayBefore = (date) => {
+  const d = new Date(date)
+  const dUTC =  Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-1,
+    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
+  const dayBefore = new Date(dUTC).toISOString().split('T')[0]
+  return dayBefore
+}
+
+const parseHealthLog = (data, service = null) => {
   const rows = data.trim().split('\n');
   const objs = rows.map(row => JSON.parse(row))
 
@@ -27,9 +36,6 @@ const parseLog = (data, service = null) => {
   return records;
 }
 
-
-const getToday = () => new Date().toISOString().split('T')[0]
-
 /**
  * Log API
  */
@@ -37,18 +43,15 @@ export function getHealthReport ({service = null, date = null}) {
   date = date || getToday()
 
   // we'll need to get the day before as well since times are in UTC
-  const d = new Date(date)
-  const dUTC =  Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-1,
-    d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
-  const dayBefore = new Date(dUTC).toISOString().split('T')[0]
+  const dayBefore = getDayBefore(date)
 
   const path = `/results/health`
   const [file1, file2] = [`${path}/health_${dayBefore}.txt`, `${path}/health_${date}.txt`]
 
   return axios.all([api.get(file1), api.get(file2)])
     .then(([prevDay, day]) => {
-      const prevDayLog = parseLog(prevDay.data, service)
-      const log = parseLog(day.data, service)
+      const prevDayLog = parseHealthLog(prevDay.data, service)
+      const log = parseHealthLog(day.data, service)
 
       // concat and take the last 24 hours
       const data = [...prevDayLog, ...log].slice(-24*60)
@@ -120,36 +123,54 @@ export function getErrorLog(utcTime) {
         .map(err =>`[${year}-${err}`)
         .filter(err => err.includes(utcTime))
 
-      console.log('errors', errors)
       return errors
     })
 }
 
 
+const parseFullTestLog = (data) => {
+  if (typeof data === 'object') return [data]
+  if (!data) return []
+
+  const rows = data.trim().split('\n')
+  const objs = rows.map(row => JSON.parse(row))
+  return objs
+}
+
 export function getEnd2EndLog(date = null) {
   date = date || getToday()
-  return api.get(`/results/end2end/end2end_${date}.txt`)
-    .then(({data}) => {
-      if (typeof data === 'object') return [data]
 
-      const rows = data.trim().split('\n')
-      const objs = rows.map(row => JSON.parse(row))
+  const dayBefore = getDayBefore(date)
 
-      // return just the last run for now
-      return objs
+  const path = `/results/end2end`
+  const [file1, file2] = [`${path}/end2end_${dayBefore}.txt`, `${path}/end2end_${date}.txt`]
+
+  return axios.all([
+      api.get(file1),
+      api.get(file2).catch(() => false)
+    ]).then(([prevFile, file]) => {
+      const prevData = parseFullTestLog(prevFile.data),
+        data = parseFullTestLog(file.data);
+
+      return [...prevData, ...data]
     })
 }
 
 export function getUIPerfLog(date = null) {
   date = date || getToday()
-  return api.get(`/results/performance/performance_${date}.txt`)
-    .then(({data}) => {
-      if (typeof data === 'object') return [data]
 
-      const rows = data.trim().split('\n')
-      const objs = rows.map(row => JSON.parse(row))
+  const dayBefore = getDayBefore(date)
 
-      // return just the last run for now
-      return objs
+  const path = `/results/performance`
+  const [file1, file2] = [`${path}/performance_${dayBefore}.txt`, `${path}/performance_${date}.txt`]
+
+  return axios.all([
+      api.get(file1),
+      api.get(file2).catch(() => false)
+    ]).then(([prevFile, file]) => {
+      const prevData = parseFullTestLog(prevFile.data),
+        data = parseFullTestLog(file.data);
+
+      return [...prevData, ...data]
     })
 }
