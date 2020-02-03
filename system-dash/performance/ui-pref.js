@@ -24,6 +24,10 @@ const columns = [
     label: 'Test',
     format: vals => vals[0],
   }, {
+    id: 'last6Mean',
+    label: 'Mean of Last 6',
+    format: val => val && val != '-' ? msToTimeStr(val) : val
+  }, {
     id: 'duration',
     label: 'Duration',
     format: val => msToTimeStr(val)
@@ -93,6 +97,7 @@ const getPerfMetrics = (data) => {
 
   return perfMetrics
 }
+
 
 
 const Chart = ({data, margin, ...props}) => {
@@ -186,7 +191,10 @@ export default function Tests() {
       setData(data)
       setIdx(data.length - 1)
       setLoading(false)
-    }).catch(e => setError(e))
+    }).catch(e => {
+      setError(e)
+      setLoading(false)
+    })
   }, [])
 
   // when idx changes update the current data and date

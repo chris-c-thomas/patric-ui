@@ -13,6 +13,7 @@ import { getEnd2EndLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
 import Subtitle from '../../src/home/subtitle';
 import Dialog from '../../src/dialogs/basic-dialog';
+import ErrorMsg from '../../src/error-msg';
 
 import HumanTime from '../utils/components/human-time';
 
@@ -144,6 +145,7 @@ export default function Tests() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
   const [date, setDate] = useState(null)
+  const [error, setError] = useState(null)
 
   const [msg, setMsg] = useState(null)
 
@@ -152,6 +154,9 @@ export default function Tests() {
     getEnd2EndLog().then(data => {
       setData(data)
       setDate(data[data.length -1].startTime)
+      setLoading(false)
+    }).catch(e => {
+      setError(e)
       setLoading(false)
     })
   }, [])
@@ -194,6 +199,8 @@ export default function Tests() {
               Latest Tests
               <small className="muted"> | {date && <HumanTime date={date}/>}</small>
             </Subtitle>
+
+            { error && <ErrorMsg error={error} noContact /> }
 
             {data &&
               <Table

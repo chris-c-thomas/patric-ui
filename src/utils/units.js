@@ -1,6 +1,4 @@
 
-
-
 export function bytesToSize(bytes) {
   let sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes == 0) return '0 Byte';
@@ -17,20 +15,23 @@ export function timeToHumanTime(dateTime) {
   return  new Date(dateTime).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 }
 
+
 // milliseconds to HH:MM:SS.MMM
 export function msToTimeStr(ms) {
-  if (ms >= 86400000 ) {
-    console.error('msToTimeStr: can not compute times over a full day (86400000 ms)')
+  if (ms >= 1440000 ) {
+    console.error('msToTimeStr: can not compute times over 60 mins (1440000 ms)')
     return 'N/A'
   }
 
-  let str = new Date(ms).toISOString().slice(11, -1);
+  let str = new Date(ms).toISOString().slice(14, -1);
   return str
 }
 
+
 const prettyTimeParts = ['h', 'm', 's']
 
-export function prettyTime(ms, includeMS = false) {
+//  milliseconds to <hours>h <minutes>m <seconds>s.<milliseconds>
+export function prettyTime(ms, includeMS = true) {
   const hhmmss = msToTimeStr(ms)
   const parts = hhmmss.split(':')
   const seconds = parts.pop()
@@ -48,3 +49,4 @@ export function prettyTime(ms, includeMS = false) {
 
   return `${strs.join(' ')} ${parseInt(secs)}${(includeMS ? `.${milliSecs}` : '')}s`
 }
+

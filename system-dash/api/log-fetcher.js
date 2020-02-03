@@ -4,6 +4,11 @@ const api = axios.create({
   baseURL: 'http://127.0.0.1:8000'
 });
 
+
+const attemptFetch = path =>
+  api.get(path).catch(e => false)
+
+
 const getToday = () => new Date().toISOString().split('T')[0]
 
 const getDayBefore = (date) => {
@@ -11,6 +16,7 @@ const getDayBefore = (date) => {
   const dUTC =  Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-1,
     d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
   const dayBefore = new Date(dUTC).toISOString().split('T')[0]
+
   return dayBefore
 }
 
@@ -35,6 +41,7 @@ const parseHealthLog = (data, service = null) => {
 
   return records;
 }
+
 
 /**
  * Log API
@@ -138,6 +145,57 @@ const parseFullTestLog = (data) => {
 }
 
 
+// includes a (fairly inefficient) method of getting performances mean
+const aggregatePerfLog = (data, avgN = 6) => {
+  let objs = parseFullTestLog(data)
+  const avgKey = `last${avgN}Mean`
+
+  // for each set of tests
+  objs = objs.map((obj, i) => {
+    let testResults = obj.testResults[0].testResults
+
+    // if can't compute the average of last N, mark as 'N/A'
+    if (i < avgN) {
+      testResults = testResults.map(test => ({...test, [avgKey]: '-'}))
+
+    // otherwise add average to each test result
+    } else {
+      // for each test result
+      for (const test of testResults) {
+        const title = test.ancestorTitles[0]
+
+        // compute and save average of previous N
+        let totalDuration = 0
+        let k = avgN
+        let canNotCompute = false
+        while (k--) {
+          const results = objs[i - k].testResults[0].testResults
+
+          const matches = results.filter(t => t.ancestorTitles[0] == title)
+          if (!matches.length || matches[0].status !== 'passed') {
+            canNotCompute = true
+            test[avgKey] = '-'
+            break
+          }
+
+          totalDuration += matches[0].duration
+        }
+
+        if (canNotCompute) continue
+        test[avgKey] = totalDuration / avgN
+      }
+
+    }
+
+    obj.testResults[0].testResults = testResults
+    return obj
+  })
+
+  return objs
+}
+
+
+
 export function getEnd2EndLog(date = null) {
   date = date || getToday()
 
@@ -147,8 +205,8 @@ export function getEnd2EndLog(date = null) {
   const [file1, file2] = [`${path}/end2end_${dayBefore}.txt`, `${path}/end2end_${date}.txt`]
 
   return axios.all([
-      api.get(file1),
-      api.get(file2).catch(() => false)
+      attemptFetch(file1),
+      attemptFetch(file2)
     ]).then(([prevFile, file]) => {
       const prevData = parseFullTestLog(prevFile.data),
         data = parseFullTestLog(file.data);
@@ -167,11 +225,11 @@ export function getUIPerfLog(date = null) {
   const [file1, file2] = [`${path}/performance_${dayBefore}.txt`, `${path}/performance_${date}.txt`]
 
   return axios.all([
-      api.get(file1),
-      api.get(file2).catch(() => false)
+      attemptFetch(file1),
+      attemptFetch(file2),
     ]).then(([prevFile, file]) => {
-      const prevData = parseFullTestLog(prevFile.data),
-        data = parseFullTestLog(file.data);
+      const prevData = aggregatePerfLog(prevFile.data),
+        data = aggregatePerfLog(file.data);
 
       return [...prevData, ...data]
     })
