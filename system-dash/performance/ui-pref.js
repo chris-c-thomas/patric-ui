@@ -18,11 +18,27 @@ import ErrorMsg from '../../src/error-msg';
 
 import HumanTime from '../utils/components/human-time';
 
+
+const endpoint = 'https://patricbrc.org';
 const columns = [
   {
     id: 'ancestorTitles',
     label: 'Test',
-    format: vals => vals[0],
+    format: (vals, obj) => {
+      const {title} = obj
+      const parts = title.split(' ')
+      const path = parts.shift()
+      const text = parts.join(' ')
+      const link = endpoint + path.replace(endpoint, '')
+      return (
+        <>
+          <a target="_blank" href={link}>
+            {vals[0]}
+          </a>
+          <span className="muted"> > {text}</span>
+        </>
+      )
+    }
   }, {
     id: 'last6Mean',
     label: 'Mean of Last 6',

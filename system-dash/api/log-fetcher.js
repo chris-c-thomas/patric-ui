@@ -145,14 +145,14 @@ const parseFullTestLog = (data) => {
 }
 
 
-// includes a (fairly inefficient) method of getting performances mean
-const aggregatePerfLog = (data, avgN = 6) => {
-  let objs = parseFullTestLog(data)
+// includes method of getting performance mean
+const aggregatePerfLog = (objs, avgN = 6) => {
   const avgKey = `last${avgN}Mean`
 
   // for each set of tests
-  objs = objs.map((obj, i) => {
-    let testResults = obj.testResults[0].testResults
+  let i = objs.length
+  while(i--) {
+    let testResults = objs[i].testResults[0].testResults
 
     // if can't compute the average of last N, mark as 'N/A'
     if (i < avgN) {
@@ -166,8 +166,8 @@ const aggregatePerfLog = (data, avgN = 6) => {
 
         // compute and save average of previous N
         let totalDuration = 0
-        let k = avgN
         let canNotCompute = false
+        let k = avgN
         while (k--) {
           const results = objs[i - k].testResults[0].testResults
 
@@ -187,9 +187,8 @@ const aggregatePerfLog = (data, avgN = 6) => {
 
     }
 
-    obj.testResults[0].testResults = testResults
-    return obj
-  })
+    objs[i].testResults[0].testResults = testResults
+  }
 
   return objs
 }
@@ -228,9 +227,9 @@ export function getUIPerfLog(date = null) {
       attemptFetch(file1),
       attemptFetch(file2),
     ]).then(([prevFile, file]) => {
-      const prevData = aggregatePerfLog(prevFile.data),
-        data = aggregatePerfLog(file.data);
+      const prevData = parseFullTestLog(prevFile.data),
+        data = parseFullTestLog(file.data);
 
-      return [...prevData, ...data]
+      return aggregatePerfLog([...prevData, ...data])
     })
 }
