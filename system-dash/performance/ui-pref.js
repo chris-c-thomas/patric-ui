@@ -6,6 +6,8 @@ import Progress from '@material-ui/core/LinearProgress';
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 import IconButton from '@material-ui/core/IconButton'
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 import BarChart from '../../src/charts/bar';
 import Table from '../../src/grids/mui-table'
@@ -26,10 +28,10 @@ const columns = [
     label: 'Test',
     format: (vals, obj) => {
       const {title} = obj
-      const parts = title.split(' ')
-      const path = parts.shift()
-      const text = parts.join(' ')
-      const link = endpoint + path.replace(endpoint, '')
+      const parts = title.split(' '),
+        path = parts.shift(),
+        text = parts.join(' '),
+        link = endpoint + path.replace(endpoint, '')
       return (
         <>
           <a target="_blank" href={link}>
@@ -196,13 +198,20 @@ export default function Tests() {
   // index for currently viewed test results
   const [idx, setIdx] = useState(null)
 
+  // whether or not to substract network idle tiem
+  const [subtract, setSubtract] = useState(true)
+
   const [testResults, setTestResults] = useState(null)
   const [date, setDate] = useState(null)
 
-
   // get log
   useEffect(() => {
-    getUIPerfLog().then(data => {
+    setIdx(null)
+    getData()
+  }, [subtract])
+
+  const getData = () => {
+    getUIPerfLog({subtract}).then(data => {
       // set all data
       setData(data)
       setIdx(data.length - 1)
@@ -211,7 +220,8 @@ export default function Tests() {
       setError(e)
       setLoading(false)
     })
-  }, [])
+  }
+
 
   // when idx changes update the current data and date
   useEffect(() => {
@@ -228,6 +238,7 @@ export default function Tests() {
     setTestResults(testResults)
     setDate(curData.startTime)
   }, [idx])
+
 
   // when clicking a bar, update idx
   const onNodeClick = (node) => {
@@ -253,10 +264,22 @@ export default function Tests() {
           <Paper className="card">
             {loading && <Progress className="card-progress"/>}
 
-            <Subtitle noUpper>
+            <Subtitle inline noUpper>
               Latest runs
               <small className="muted"> | {date && <HumanTime date={date}/>}</small>
             </Subtitle>
+
+            <FormControlLabel
+              className="pull-right"
+              control={
+                <Switch
+                  checked={subtract}
+                  onChange={() => setSubtract(!subtract)}
+                  color="primary"
+                />
+              }
+              label="minus 500ms"
+            />
 
             { error && <ErrorMsg error={error} noContact /> }
 

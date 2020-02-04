@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { duration } from '@material-ui/core';
 
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000'
@@ -146,7 +147,7 @@ const parseFullTestLog = (data) => {
 
 
 // includes method of getting performance mean
-const aggregatePerfLog = (objs, avgN = 6) => {
+const aggregatePerfLog = ({objs, avgN = 6, subtract = true}) => {
   const avgKey = `last${avgN}Mean`
 
   // for each set of tests
@@ -182,9 +183,15 @@ const aggregatePerfLog = (objs, avgN = 6) => {
         }
 
         if (canNotCompute) continue
-        test[avgKey] = totalDuration / avgN
+        test[avgKey] = totalDuration / avgN - (subtract ? 500 : 0)
       }
+    }
 
+    // also subtract idle time if needed
+    if (subtract) {
+      for (const test of testResults) {
+        test.duration = test.duration - (subtract ? 500 : 0)
+      }
     }
 
     objs[i].testResults[0].testResults = testResults
@@ -210,12 +217,13 @@ export function getEnd2EndLog(date = null) {
       const prevData = parseFullTestLog(prevFile.data),
         data = parseFullTestLog(file.data);
 
-      return [...prevData, ...data]
+      return [...prevData, ...data].slice(-24)
     })
 }
 
 
-export function getUIPerfLog(date = null) {
+export function getUIPerfLog({date = null, subtract = true}) {
+  console.log('new fetch', subtract)
   date = date || getToday()
 
   const dayBefore = getDayBefore(date)
@@ -230,6 +238,9 @@ export function getUIPerfLog(date = null) {
       const prevData = parseFullTestLog(prevFile.data),
         data = parseFullTestLog(file.data);
 
-      return aggregatePerfLog([...prevData, ...data])
+      return aggregatePerfLog({
+        objs: [...prevData, ...data].slice(-24),
+        subtract
+      })
     })
 }
