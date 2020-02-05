@@ -14,7 +14,7 @@ const getToday = () => new Date().toISOString().split('T')[0]
 
 const getDayBefore = (date) => {
   const d = new Date(date)
-  const dUTC =  Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-1,
+  const dUTC = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-1,
     d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds())
   const dayBefore = new Date(dUTC).toISOString().split('T')[0]
 
@@ -62,8 +62,7 @@ export function getHealthReport ({service = null, date = null}) {
       const log = parseHealthLog(day.data, service)
 
       // concat and take the last 24 hours
-      const data = [...prevDayLog, ...log].slice(-24*60)
-      return data
+      return [...prevDayLog, ...log].slice(-24*60)
     })
 }
 
@@ -104,13 +103,7 @@ export function getIndexerHistory() {
       const data = res.data.trim();
       const rows = data.split('\n')
       let objs = rows.map(row => JSON.parse(row))
-
-      objs = objs.map((obj, i) => {
-        return {
-          value: obj.genomesInQueue,
-          ...obj
-        }
-      })
+      objs = objs.map(obj => ({value: obj.genomesInQueue, ...obj}))
 
       return objs
     })

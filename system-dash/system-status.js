@@ -408,7 +408,7 @@ export default function SystemStatus() {
                       getAriaValueText={(date) => date}
                       aria-labelledby="discrete-slider"
                       onChange={(evt, i) => setIdx(i)}
-                      min={-24*60 - 3*60}
+                      min={(fullHistory ? -fullHistory.length : -24*60) + 3*60}
                       max={0}
                       // valueLabelDisplay="auto"
                       // ValueLabelComponent={SliderLabelComponent}
