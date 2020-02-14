@@ -6,6 +6,8 @@
   "scripts": {
     "start": "./node_modules/parcel/bin/cli.js ./src/index.html",
     "build": "./node_modules/parcel/bin/cli.js  build ./src/index.html",
+    "start:bvbrc": "./node_modules/parcel/bin/cli.js ./bvbrc/index.html",
+    "build:bvbrc": "./node_modules/parcel/bin/cli.js  build ./bvbrc/index.html -d ./bvbrc-dist",
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html",
     "p4-build": "parcel build ./build-p4/apps.js --no-content-hash",
@@ -23,10 +25,6 @@
   },
   "homepage": "https://github.com/nconrad/patric-ui#readme",
   "dependencies": {
-    "@devexpress/dx-grid-core": "^2.1.1",
-    "@devexpress/dx-react-core": "^2.1.1",
-    "@devexpress/dx-react-grid": "^2.1.1",
-    "@devexpress/dx-react-grid-material-ui": "^2.1.1",
     "@handsontable/react": "^3.1.2",
     "@material-ui/core": "^4.8.2",
     "@material-ui/icons": "^4.5.1",
@@ -47,6 +45,7 @@
     "react-swipeable-views": "^0.13.3",
     "react-swipeable-views-utils": "^0.13.3",
     "react-virtualized": "^9.21.1",
+    "recharts": "^2.0.0-beta.1",
     "utils": "^0.3.1"
   },
   "devDependencies": {

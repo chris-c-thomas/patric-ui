@@ -28,20 +28,22 @@ import JobsOverview from './jobs-overview';
 import ChipFilters from '../utils/ui/chip-filters';
 
 const services = [
-  {type: 'All'},
   {
-    type: 'Genomics', name: 'Assembly',
+    type: 'Genomics',
+    name: 'Assembly',
     descript: 'Assembly using SPAdes, Unicycler, and more',
     path: '/apps/assembly',
     tutorial: `${config.docsURL}/tutorial/genome_assembly/assembly.html`
   }, {
-    type: 'Genomics', name: 'Annotation',
+    type: 'Genomics',
+    name: 'Annotation',
     descript: 'Annotate using the RAST tool kit (RASTtk)',
     path: '/apps/annotation',
     tutorial: `${config.docsURL}/user_guides/services/genome_annotation_service.html`
   }, {
-    type: 'Genomics', name: 'Comprehensive Genome Analysis',
-   descript: 'Complete, streamlined analysis'
+    type: 'Genomics',
+    name: 'Comprehensive Genome Analysis',
+    descript: 'Complete, streamlined analysis'
   },
   {type: 'Genomics', name: 'BLAST'},
   {type: 'Genomics', name: 'Similar Genome Finder'},
@@ -195,7 +197,9 @@ const ServiceCard = (props) => {
           }*/
         />
 
-        <Chip className={styles.tag} label={type} color="primary" size="small"/>
+        {/* here's a tab chip if we want it
+          <Chip className={styles.tag} label={type} color="primary" size="small"/>
+        */}
       </CardActionArea>
     </Card>
   )
@@ -203,7 +207,7 @@ const ServiceCard = (props) => {
 
 const ServiceCards = () => {
   const styles = useStyles();
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('Genomics');
   const [openSignIn, setOpenSignIn] = useState(false);
 
   return (
@@ -227,7 +231,7 @@ const ServiceCards = () => {
         </Grid>
 
         <Grid item>
-         <ChipFilters
+          <ChipFilters
             items={services}
             filterState={filter}
             onClick={type => setFilter(type)}

@@ -66,14 +66,7 @@ const App = () => {
 
         <div className={styles.root}>
 
-          <NavBar />
-
-          {/*
-            Auth.isSignedIn() &&
-            <JobStatusProvider>
-              <JobsTicker />
-            </JobStatusProvider>
-          */}
+          {<NavBar />}
 
           <div className={styles.content}>
             <Suspense fallback={<div>loading...</div>}>

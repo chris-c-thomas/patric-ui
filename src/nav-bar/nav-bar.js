@@ -83,24 +83,29 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const PatricLogo = () => {
+  const styles = useStyles();
+  return (
+    <Typography variant="h5" className={styles.brand} component={Link} to="/">
+      <img src={logo} className={styles.logoImg} />
+      <span className={styles.version}></span>
+    </Typography>
+  )
+}
 
 const UserMenus = () => {
   return (
     <>
       <Button color="inherit" disableRipple>
-        {/*<StorageIcon />*/}
         Organisms <CaretIcon/>
       </Button>
       <Button color="inherit" disableRipple>
-        {/*<FolderIcon />*/}
         Workspaces <CaretIcon/>
       </Button>
       <Button color="inherit" disableRipple>
-        {/*<ServiceIcon />*/}
         <span>Services</span> <CaretIcon/>
       </Button>
       <Button color="inherit" disableRipple component={Link} to="/jobs">
-        {/*<JobsIcon />*/}
         Jobs
       </Button>
     </>
@@ -110,7 +115,7 @@ const UserMenus = () => {
 export function NavBar(props) {
   const styles = useStyles();
 
-  const {systemDash, MenuComponent} = props;
+  const {spinOff, MenuComponnt, Logo} = props;
 
   const [openSignIn, setOpenSignIn] = useState(false);
 
@@ -173,13 +178,11 @@ export function NavBar(props) {
   return (
     <AppBar position="static" className={styles.appBar}>
       <Toolbar variant="dense" className={styles.toolbar}>
-        <Typography variant="h5" className={styles.brand} component={Link} to="/">
-          <img src={logo} className={styles.logoImg} />
-          <span className={styles.version}></span>
-        </Typography>
+
+        {Logo ? <Logo /> : <PatricLogo />}
 
         <div className={clsx(styles.menu, 'nav-bar')}>
-          {systemDash ? <>{MenuComponent}</> : <UserMenus />}
+          {spinOff ? <MenuComponnt/> : <UserMenus />}
         </div>
 
         <div className={styles.account}>
@@ -189,7 +192,7 @@ export function NavBar(props) {
             </Button>
           }
 
-          {!Auth.isSignedIn() && !systemDash &&
+          {!Auth.isSignedIn() && !spinOff &&
             <Button size="small"
               className={styles.signInBtn}
               color="inherit" variant="contained"
@@ -201,7 +204,7 @@ export function NavBar(props) {
           }
         </div>
 
-        {systemDash ? adminAccount() : userAccount()}
+        {spinOff ? adminAccount() : userAccount()}
       </Toolbar>
 
       <SignInDialog open={openSignIn} onClose={() => setOpenSignIn(false)}/>

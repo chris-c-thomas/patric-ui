@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -10,6 +9,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
+const INTERVAL = 10000
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,7 +39,7 @@ function Stepper(props) {
 
   const [activeStep, setActiveStep] = useState(0);
 
-  const maxSteps = steps.length;[]
+  const maxSteps = steps.length;
 
   const handleNext = () => {
     setActiveStep(prevStep => prevStep + 1);
@@ -61,6 +61,7 @@ function Stepper(props) {
       <Typography variant="caption" className={styles.caption}>{steps[activeStep].desc}</Typography>
 
       <AutoPlaySwipeableViews
+        interval={INTERVAL}
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={activeStep}
         onChangeIndex={handleStepChange}

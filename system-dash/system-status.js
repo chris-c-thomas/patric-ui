@@ -13,6 +13,7 @@ import WarningIcon from '@material-ui/icons/WarningRounded'
 
 import Dialog from '../src/dialogs/basic-dialog';
 import BarChart from '../src/charts/bar';
+import BrushBar from '../src/charts/brush-bar';
 import Calendar from '../src/charts/calendar';
 import { getHealthReport, getCalendar, getIndexerHistory, getErrorLog } from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
@@ -127,9 +128,7 @@ const getFilters = () => {
 }
 
 
-const colorBy = (node) => (
-  node.data.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
-);
+
 
 const Chart = ({data, margin, ...props}) => {
   return (
@@ -141,7 +140,6 @@ const Chart = ({data, margin, ...props}) => {
         label: 'milliseconds'
       }}
       padding={.5}
-      colors={colorBy}
       axisBottom={{
         tickRotation: 40,
         legendPosition: 'middle',
@@ -154,6 +152,10 @@ const Chart = ({data, margin, ...props}) => {
 }
 
 
+const colorBy = (obj) =>
+   obj.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
+
+
 const formatData = (data, lastN = HOURS*60) => {
   data = data.map(obj => ({
     humanTime: timeToHumanTime(obj.time), // remove secs
@@ -164,57 +166,10 @@ const formatData = (data, lastN = HOURS*60) => {
 }
 
 
-const SliderLabelComponent = (props) => {
-  const { children, open, value } = props;
-
-  const popperRef = useRef(null);
-  useEffect(() => {
-    if (popperRef.current) {
-      popperRef.current.update();
-    }
-  });
-
-  return (
-    <Tooltip
-      PopperProps={{
-        popperRef,
-      }}
-      open={open}
-      enterTouchDelay={0}
-      placement="top"
-      title={value}
-    >
-      {children}
-    </Tooltip>
-  );
-}
-
-
 const tickValues = (data, key) => {
   if (data.length > 30)
     return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
   return data.map(obj => obj[key]);
-}
-
-const renderInterval = (interval) => {
-  if (!interval[0]) return (<></>)
-
-  const d = new Date(interval[1])
-  const [_, mm, dd] = [d.getFullYear(), months[d.getMonth()], d.getDate()]
-
-  const start = new Date(interval[0]).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-  const end = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-
-  return (
-    <div>
-      <span style={{ fontWeight: 800}}>
-        {start} - {end}
-      </span>
-      <span style={{margin: '5px 5px', fontSize: '1em'}}>
-        {mm} {dd}
-      </span>
-    </div>
-  )
 }
 
 
@@ -242,9 +197,6 @@ export default function SystemStatus() {
   const [service, setService] = useState('All');
   const [date, setDate] = useState();
 
-  // and index for the amount into the past
-  const [idx, setIdx] = useState(0)
-
   // state for displaying error log
   const [errorLog, setErrorLog] = useState(null)
 
@@ -260,24 +212,6 @@ export default function SystemStatus() {
   useEffect(() => {
     fetchLog()
   }, [service, date])
-
-
-  // update history when slider state is changed
-  useEffect(() => {
-    if(!history) return;
-
-    // note: idx is non-positve, e.g., in [-24*60 + 3*60, 0]
-    const end = fullHistory.length + idx
-    const start = end - 3*60
-    const newHistory = fullHistory.slice(start, end)
-    setHistory(newHistory)
-
-    // also keep track of time interval
-    const sTime = (fullHistory[start] || {}).time
-    const eTime = (fullHistory[end] || {}).time
-    if (sTime && eTime) setInterval([sTime, eTime])
-
-  }, [idx])
 
   // fetch calendar
   useEffect(() => {
@@ -298,7 +232,6 @@ export default function SystemStatus() {
       setHistory(d)
       setInterval([d[0].time, d[d.length - 1].time])
 
-      setIdx(0) // reset slider index as well
       setLoading(false)
     }).catch(e => {
       setError2(e);
@@ -323,8 +256,9 @@ export default function SystemStatus() {
   const historyMax = () => Math.max(...fullHistory.map(o => o.value))
 
 
-  const onNodeClick = (node) => {
-    const {status, time} = node.data
+  const onNodeClick = (data) => {
+    if (!data) return;
+    const {status, time} = data.activePayload[0].payload
 
     // ignore anything that isn't failed status
     if (status != 'F') return;
@@ -371,7 +305,6 @@ export default function SystemStatus() {
                       <Subtitle inline noUpper>
                         System Health
                       </Subtitle>
-                      {renderInterval(interval)}
                     </Grid>
 
                     <Grid item>
@@ -392,29 +325,18 @@ export default function SystemStatus() {
                     </Grid>
                   </Grid>
 
-
                   {
-                    history &&
-                    <Chart data={history}
-                      maxValue={historyMax()}
+                    fullHistory &&
+                    <BrushBar data={fullHistory}
+                      yMax={historyMax()}
                       onClick={onNodeClick}
-                      margin={{bottom: 90, top: 50}}
+                      colorBy={colorBy}
+                      brushColor="#2e75a3"
+                      dataKey="value"
+                      xDataKey="humanTime"
+                      margin={{top: 20, right: 0, left: -20, bottom: 0}}
                     />
                   }
-
-                  <div>
-                    <Slider
-                      value={idx}
-                      getAriaValueText={(date) => date}
-                      aria-labelledby="discrete-slider"
-                      onChange={(evt, i) => setIdx(i)}
-                      min={(fullHistory ? -fullHistory.length : -24*60) + 3*60}
-                      max={0}
-                      // valueLabelDisplay="auto"
-                      // ValueLabelComponent={SliderLabelComponent}
-                      // valueLabelFormat={() => humanInterval(interval)}
-                    />
-                  </div>
                 </>
               }
 
