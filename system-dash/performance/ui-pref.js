@@ -120,7 +120,7 @@ const getPerfMetrics = (data) => {
 
 const Chart = ({data, margin, ...props}) => {
   const [curData, setCurData] = useState(data)
-  const [view, setView] = useState('duration')
+  const [view, setView] = useState('counts')
   const [keys, setKeys] = useState(['passedTime', 'failedTime'])
 
 

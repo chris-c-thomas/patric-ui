@@ -181,8 +181,6 @@ export default function SystemStatus() {
 
   // system health history data
   const [fullHistory, setFullHistory] = useState(null);
-  const [history, setHistory] = useState(null);
-  const [interval, setInterval] = useState([null, null]);
 
   // system health calendar overview
   const [calendar, setCalendar] = useState(null);
@@ -227,11 +225,6 @@ export default function SystemStatus() {
     setLoading(true)
     getHealthReport({service: serviceFilter, date}).then(data => {
       setFullHistory(formatData(data, 0))
-
-      const d = formatData(data)
-      setHistory(d)
-      setInterval([d[0].time, d[d.length - 1].time])
-
       setLoading(false)
     }).catch(e => {
       setError2(e);
@@ -334,6 +327,7 @@ export default function SystemStatus() {
                       brushColor="#2e75a3"
                       dataKey="value"
                       xDataKey="humanTime"
+                      units="ms"
                       margin={{top: 20, right: 0, left: -20, bottom: 0}}
                     />
                   }

@@ -50,6 +50,9 @@ export default function Calendar(props) {
               itemDirection: 'right-to-left'
             }
           ]}
+          tooltip={({ day, value, color }) => (
+            <><b>{day}</b>: {value.toString().slice(0, 6)}%</>
+          )}
           {...props}
         />
       )}
