@@ -6,14 +6,11 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Slider from '@material-ui/core/Slider';
-import Tooltip from '@material-ui/core/Tooltip';
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 
 import Dialog from '../src/dialogs/basic-dialog';
-import BarChart from '../src/charts/bar';
-import BrushBar from '../src/charts/brush-bar';
+import ReBrushChart from '../src/charts/re-brush-chart';
 import Calendar from '../src/charts/calendar';
 import { getHealthReport, getCalendar, getIndexerHistory, getErrorLog } from './api/log-fetcher';
 import { Typography } from '@material-ui/core';
@@ -21,14 +18,12 @@ import { LiveStatusProvider, LiveStatusContext } from './live-status-context';
 import ErrorMsg from '../src/error-msg';
 import Subtitle from '../src/home/subtitle';
 import FilterChips from '../src/utils/ui/chip-filters';
-import {months} from '../src/utils/dates';
 
 import config from './config'
 import { timeToHumanTime } from '../src/utils/units';
 
 
-const HOURS = 3 // number of hours into the past to show
-
+const HOURS = 24 // number of hours into the past to show
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -128,24 +123,17 @@ const getFilters = () => {
 }
 
 
-
-
-const Chart = ({data, margin, ...props}) => {
+const BrushChart = (props) => {
+  const {data} = props
   return (
-    <BarChart
-      data={data}
-      indexBy="humanTime"
-      margin={{top: 10, right: 20, bottom: 80, left: 40, ...margin}}
-      axisLeft={{
-        label: 'milliseconds'
-      }}
-      padding={.5}
-      axisBottom={{
-        tickRotation: 40,
-        legendPosition: 'middle',
-        legendOffset: 50,
-        tickValues: tickValues(data, 'humanTime')
-      }}
+    <ReBrushChart data={data}
+      brushColor="#2e75a3"
+      dataKey="value"
+      xDataKey="humanTime"
+      xTick={{fontSize: '.8em'}}
+      yTick={{fontSize: '.8em'}}
+      units="ms"
+      margin={{top: 20, right: 0, left: -15, bottom: 0}}
       {...props}
     />
   )
@@ -180,7 +168,7 @@ export default function SystemStatus() {
   const [indexerHist, setIndexerHist] = useState(null);
 
   // system health history data
-  const [fullHistory, setFullHistory] = useState(null);
+  const [healthHist, setHealthHist] = useState(null);
 
   // system health calendar overview
   const [calendar, setCalendar] = useState(null);
@@ -206,16 +194,18 @@ export default function SystemStatus() {
     }).catch(e => setError1(e))
   }, [])
 
+
   // fetch health logs whenever service and dates change
   useEffect(() => {
     fetchLog()
   }, [service, date])
 
+
   // fetch calendar
   useEffect(() => {
     getCalendar()
       .then(data => setCalendar(data))
-      .catch(e => setError3())
+      .catch(e => setError3(e))
   }, [])
 
 
@@ -224,7 +214,7 @@ export default function SystemStatus() {
 
     setLoading(true)
     getHealthReport({service: serviceFilter, date}).then(data => {
-      setFullHistory(formatData(data, 0))
+      setHealthHist(formatData(data, 0))
       setLoading(false)
     }).catch(e => {
       setError2(e);
@@ -245,9 +235,7 @@ export default function SystemStatus() {
     setDate(str);
   }
 
-
-  const historyMax = () => Math.max(...fullHistory.map(o => o.value))
-
+  const getMax = (data) => Math.max(...data.map(o => o.value))
 
   const onNodeClick = (data) => {
     if (!data) return;
@@ -270,23 +258,22 @@ export default function SystemStatus() {
           </Grid>
 
           <Grid item xs={8}>
-            <Paper className="card" style={{height: 290}}>
+          <Paper className="card" style={{height: 290}}>
               <Subtitle noUpper>Genome Indexer</Subtitle>
               {
                 indexerHist &&
-                  <Chart data={indexerHist}
-                    colors={['rgb(77, 165, 78)']}
-                    axisLeft={{
-                      format: val => val % 1 == 0 ? val : ''
-                    }}
-                  />
+                <BrushChart data={indexerHist}
+                  color={'rgb(77, 165, 78)'}
+                />
               }
               { error1 && <ErrorMsg error={error1} noContact /> }
             </Paper>
           </Grid>
         </Grid>
 
+
         <Grid container item xs={12} direction="column">
+
           <Grid item>
             <Paper className="card" style={{height: 370}}>
               {loading && <LinearProgress className="card-progress"/>}
@@ -319,23 +306,17 @@ export default function SystemStatus() {
                   </Grid>
 
                   {
-                    fullHistory &&
-                    <BrushBar data={fullHistory}
-                      yMax={historyMax()}
+                    healthHist &&
+                    <BrushChart data={healthHist}
+                      yMax={getMax(healthHist)}
                       onClick={onNodeClick}
                       colorBy={colorBy}
-                      brushColor="#2e75a3"
-                      dataKey="value"
-                      xDataKey="humanTime"
-                      units="ms"
-                      margin={{top: 20, right: 0, left: -20, bottom: 0}}
                     />
                   }
                 </>
               }
 
               { error2 && <ErrorMsg error={error2} noContact /> }
-
             </Paper>
           </Grid>
 
