@@ -87,7 +87,8 @@ export function getCalendar() {
           day: obj.date,
           passed,
           failed,
-          value: (failed / (passed + failed)) * 100,
+          count: failed,
+          percent: (failed / (passed + failed)) * 100,
           ...obj
         }
       })
@@ -97,7 +98,7 @@ export function getCalendar() {
 }
 
 
-export function getIndexerHistory() {
+export function getIndexerData() {
   return api.get(`/results/indexer/indexer-status.txt`)
     .then(res => {
       const data = res.data.trim();

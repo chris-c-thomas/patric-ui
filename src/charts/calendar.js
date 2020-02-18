@@ -43,7 +43,7 @@ export default function Calendar(props) {
             {
               anchor: 'bottom-right',
               direction: 'row',
-              itemCount: 3,
+              itemCount: props.colors.length || 4,
               itemWidth: 42,
               itemHeight: 36,
               itemsSpacing: 14,

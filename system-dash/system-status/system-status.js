@@ -1,26 +1,29 @@
-import React, {useState, useEffect, useContext, useRef} from 'react';
+import React, {useState, useEffect, useContext} from 'react'
+import styled from 'styled-components'
 import { makeStyles } from '@material-ui/core/styles';
 
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import Chip from '@material-ui/core/Chip'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
+import Dialog from '../../src/dialogs/basic-dialog'
+import ReBrushChart from '../../src/charts/re-brush-chart'
+import CalendarHeatmap from 'react-calendar-heatmap'
 
-import Dialog from '../src/dialogs/basic-dialog';
-import ReBrushChart from '../src/charts/re-brush-chart';
-import Calendar from '../src/charts/calendar';
-import { getHealthReport, getCalendar, getIndexerHistory, getErrorLog } from './api/log-fetcher';
-import { Typography } from '@material-ui/core';
-import { LiveStatusProvider, LiveStatusContext } from './live-status-context';
-import ErrorMsg from '../src/error-msg';
-import Subtitle from '../src/home/subtitle';
-import FilterChips from '../src/utils/ui/chip-filters';
+import { getHealthReport, getCalendar, getIndexerData, getErrorLog } from '../api/log-fetcher'
+import { Typography, StepConnector } from '@material-ui/core'
+import { LiveStatusProvider, LiveStatusContext } from '../live-status-context'
+import ErrorMsg from '../../src/error-msg'
+import Subtitle from '../../src/home/subtitle'
+import FilterChips from '../../src/utils/ui/chip-filters'
+import config from '../config'
+import { timeToHumanTime } from '../../src/utils/units'
 
-import config from './config'
-import { timeToHumanTime } from '../src/utils/units';
+import 'react-calendar-heatmap/dist/styles.css'
+import './calendar.scss'
 
 
 const HOURS = 24 // number of hours into the past to show
@@ -123,22 +126,73 @@ const getFilters = () => {
 }
 
 
-const BrushChart = (props) => {
-  const {data} = props
+const BrushChart = ({data, ...props}) =>
+  <ReBrushChart data={data}
+    brushColor="#2e75a3"
+    dataKey="value"
+    xDataKey="humanTime"
+    xTick={{fontSize: '.8em'}}
+    yTick={{fontSize: '.8em'}}
+    margin={{top: 20, right: 0, left: -15, bottom: 0}}
+    {...props}
+  />
+
+
+const Calendar = ({data, onClick}) => {
+
+  // const [tt, setTT] = useState(null)
+
   return (
-    <ReBrushChart data={data}
-      brushColor="#2e75a3"
-      dataKey="value"
-      xDataKey="humanTime"
-      xTick={{fontSize: '.8em'}}
-      yTick={{fontSize: '.8em'}}
-      units="ms"
-      margin={{top: 20, right: 0, left: -15, bottom: 0}}
-      {...props}
-    />
+    <>
+      <CalendarHeatmap
+        startDate={new Date(data[0].day)}
+        endDate={new Date('2020-12-31')} // data[data.length - 1].day
+        showWeekdayLabels={true}
+        weekdayLabels={['Sun', 'M', 'Tues', 'W', 'Thurs', 'F', 'Sat']}
+        values={data}
+        onClick={onClick}
+        titleForValue={(obj) => obj ?
+          `${obj.day}\n\n${obj.failed} failed\n${obj.passed} passed\n${obj.percent}% failure rate`
+          : ''
+        }
+        //onMouseOver={(evt, data) => {
+        //  if (!data) {
+        //    setTT(null)
+        //    return
+        //  }
+        //}}
+        classForValue={(obj) => {
+          if (!obj) return 'color-empty'
+
+          const {failed} = obj;
+          if (failed <= 0)
+            return `success-3`;
+          else if (failed <= 5)
+            return `success-2`;
+          else if (failed <= 10)
+            return `success-1`;
+          else if (failed <= 50)
+            return `fail-1`
+          else if (failed <= 100)
+          return `fail-2`;
+          else if (failed <= 200)
+            return `fail-3`;
+          else if (failed > 200)
+            return `fail-4`;
+        }}
+      />
+    </>
   )
 }
-
+/*
+const Tooltip = styled.div`
+  visibility: hidden;
+  position: absolute;
+  background-color: #333;
+  width: 100px;
+  height: 100px;
+  z-index: 1000
+`*/
 
 const colorBy = (obj) =>
    obj.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
@@ -154,24 +208,19 @@ const formatData = (data, lastN = HOURS*60) => {
 }
 
 
-const tickValues = (data, key) => {
-  if (data.length > 30)
-    return data.map(obj => obj[key]).reverse().filter((_,i) => i % 10 == 0)
-  return data.map(obj => obj[key]);
-}
 
 
 export default function SystemStatus() {
   const styles = useStyles();
 
   // genome indexer history data
-  const [indexerHist, setIndexerHist] = useState(null);
+  const [indexerData, setIndexerData] = useState(null);
 
   // system health history data
-  const [healthHist, setHealthHist] = useState(null);
+  const [healthData, setHealthData] = useState(null);
 
   // system health calendar overview
-  const [calendar, setCalendar] = useState(null);
+  const [calData, setCalData] = useState(null);
 
   // the usual loading and error state
   const [loading, setLoading] = useState(false);
@@ -189,8 +238,8 @@ export default function SystemStatus() {
 
   // fetch genome indexer history
   useEffect(() => {
-    getIndexerHistory().then(data => {
-      setIndexerHist(formatData(data))
+    getIndexerData().then(data => {
+      setIndexerData(formatData(data))
     }).catch(e => setError1(e))
   }, [])
 
@@ -204,7 +253,7 @@ export default function SystemStatus() {
   // fetch calendar
   useEffect(() => {
     getCalendar()
-      .then(data => setCalendar(data))
+      .then(data => setCalData(data))
       .catch(e => setError3(e))
   }, [])
 
@@ -214,7 +263,7 @@ export default function SystemStatus() {
 
     setLoading(true)
     getHealthReport({service: serviceFilter, date}).then(data => {
-      setHealthHist(formatData(data, 0))
+      setHealthData(formatData(data, 0))
       setLoading(false)
     }).catch(e => {
       setError2(e);
@@ -222,20 +271,19 @@ export default function SystemStatus() {
     })
   }
 
+  const getMax = (data) => Math.max(...data.map(o => o.value))
 
-  const handleDayClick = (evt) => {
-    const {date, data} = evt;
-
+  const onDayClick = (evt) => {
     // there may not be data for that date
-    if (!data) return;
+    if (!evt) return;
 
-    const d = new Date(date)
+    const {day} = evt;
+
+    const d = new Date(day)
     const [yyyy, mm, dd] = [d.getFullYear(), ('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2)]
     const str = `${yyyy}-${mm}-${dd}`
     setDate(str);
   }
-
-  const getMax = (data) => Math.max(...data.map(o => o.value))
 
   const onNodeClick = (data) => {
     if (!data) return;
@@ -261,9 +309,10 @@ export default function SystemStatus() {
           <Paper className="card" style={{height: 290}}>
               <Subtitle noUpper>Genome Indexer</Subtitle>
               {
-                indexerHist &&
-                <BrushChart data={indexerHist}
+                indexerData &&
+                <BrushChart data={indexerData}
                   color={'rgb(77, 165, 78)'}
+                  units=" genome(s)"
                 />
               }
               { error1 && <ErrorMsg error={error1} noContact /> }
@@ -273,7 +322,6 @@ export default function SystemStatus() {
 
 
         <Grid container item xs={12} direction="column">
-
           <Grid item>
             <Paper className="card" style={{height: 370}}>
               {loading && <LinearProgress className="card-progress"/>}
@@ -306,11 +354,12 @@ export default function SystemStatus() {
                   </Grid>
 
                   {
-                    healthHist &&
-                    <BrushChart data={healthHist}
-                      yMax={getMax(healthHist)}
+                    healthData &&
+                    <BrushChart data={healthData}
+                      yMax={getMax(healthData)}
                       onClick={onNodeClick}
                       colorBy={colorBy}
+                      units="ms"
                     />
                   }
                 </>
@@ -319,21 +368,36 @@ export default function SystemStatus() {
               { error2 && <ErrorMsg error={error2} noContact /> }
             </Paper>
           </Grid>
+        </Grid>
 
-          <Grid item>
-            <Paper className="card" style={{height: 370}}>
+
+        <Grid container>
+          <Grid item xs={12}>
+            <Paper className="card" style={{height: 200}}>
               <Subtitle noUpper>Calendar</Subtitle>
               { error3 && <ErrorMsg error={error3} noContact /> }
               {
-                calendar &&
-                <Calendar data={calendar}
-                  onClick={handleDayClick}
-                  colors={['#c2e7c3', '#ffa2a2', '#ff4d4d']}
-                  from="2020-01-02T00:00:00.000Z"
-                />
+                calData &&
+                <Calendar data={calData} onClick={onDayClick}/>
               }
             </Paper>
           </Grid>
+
+          {/*
+          <Grid item xs={3}>
+            <Paper className="card" style={{height: 200}}>
+              <Subtitle noUpper>Stats</Subtitle>
+
+            </Paper>
+          </Grid>
+
+          <Grid item xs={5}>
+            <Paper className="card" style={{height: 200}}>
+              <Subtitle noUpper>Histogram</Subtitle>
+
+            </Paper>
+          </Grid>
+          */}
         </Grid>
 
       </Grid>

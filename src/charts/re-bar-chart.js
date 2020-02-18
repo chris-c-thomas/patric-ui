@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import {BarChart, Bar, Brush,
+import React from 'react'
+import {BarChart, Bar,
   XAxis, YAxis, Tooltip, CartesianGrid,
   ResponsiveContainer
 } from 'recharts'
@@ -26,22 +26,11 @@ const ColoredBar = (props) => {
     return <rect x={x} y={y} width={width} height={height} fill={colorBy(props)} />
 }
 
-export default function BrushChart(props)  {
+export default function BarChart(props)  {
   const {
-    data, xDataKey, dataKey, yMax, color, colorBy, brushColor,
+    data, xDataKey, dataKey, yMax, color, colorBy,
     units, showLegend, xTick, yTick
   } = props;
-
-  const [loadBrush, setLoadBrush] = useState(false)
-
-  // add brush chartdelay for animation lag
-  useEffect(() => {
-    setLoadBrush(false)
-
-    setTimeout(() => {
-      setLoadBrush(true)
-    }, [700])
-  }, [props.data])
 
   return (
     <ResponsiveContainer width="100%" height="85%">
@@ -64,17 +53,6 @@ export default function BrushChart(props)  {
           fill={color || "#8884d8"}
           shape={colorBy && <ColoredBar colorBy={colorBy} />}
         />
-
-        <Brush
-          dataKey={xDataKey}
-          height={40}
-          stroke={brushColor || '#8884d8'}
-          startIndex={props.data.length > 300 ? props.data.length - 300 : 0}
-        >
-          <BarChart>
-            {loadBrush && <Bar dataKey={dataKey} />}
-          </BarChart>
-        </Brush>
 
       </BarChart>
 

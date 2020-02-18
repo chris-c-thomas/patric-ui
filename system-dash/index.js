@@ -16,7 +16,7 @@ import AdminSignInForm from '../src/auth/admin-sign-in-form'
 import PrivateRoute from './private-route'
 
 // view
-import SystemStatus from './system-status'
+import SystemStatus from './system-status/system-status'
 import Performance from './performance/ui-pref'
 import Tests from './end2end/tests'
 import Gronkomatic from './gronkomatic/gronkomatic'
