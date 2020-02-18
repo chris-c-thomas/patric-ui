@@ -4,6 +4,8 @@ import {BarChart, Bar, Brush,
   ResponsiveContainer
 } from 'recharts'
 
+import './charts.scss'
+
 /* sample data
 const data = [
   {name: '1', uv: 300, pv: 456},
@@ -41,7 +43,7 @@ export default function BrushChart(props)  {
     }, [700])
   }, [props.data])
 
-  return (<>
+  return (
     <ResponsiveContainer width="100%" height="85%">
       <BarChart data={data}
         margin={{top: 20, right: 20, left: 20, bottom: 20}} {...props}
@@ -67,7 +69,7 @@ export default function BrushChart(props)  {
           stroke={brushColor || '#8884d8'}
           startIndex={props.data.length > 300 ? props.data.length - 300 : 0}
         >
-          <BarChart >
+          <BarChart>
             {loadBrush && <Bar dataKey={dataKey} />}
           </BarChart>
         </Brush>
@@ -75,8 +77,7 @@ export default function BrushChart(props)  {
       </BarChart>
 
     </ResponsiveContainer>
-    {!loadBrush && <small className="muted">loading...</small>}
-    </>
   );
 }
+
 

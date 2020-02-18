@@ -216,7 +216,6 @@ export function getEnd2EndLog(date = null) {
 
 
 export function getUIPerfLog({date = null, subtract = true}) {
-  console.log('new fetch', subtract)
   date = date || getToday()
 
   const dayBefore = getDayBefore(date)

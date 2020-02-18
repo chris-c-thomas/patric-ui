@@ -1,26 +1,26 @@
 
 
-import React from "react";
-import { BrowserRouter, Switch, Route, NavLink, Redirect} from "react-router-dom";
-import { render } from "react-dom";
+import React from 'react'
+import { BrowserRouter, Switch, Route, NavLink, Redirect} from "react-router-dom"
+import { render } from "react-dom"
 
-import { makeStyles } from '@material-ui/core/styles';
-import { createMuiTheme } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles'
+import { createMuiTheme } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
 
-import { isSignedIn } from '../src/api/auth';
-import { NavBar } from '../src/nav-bar/nav-bar';
-import AdminSignInForm from '../src/auth/admin-sign-in-form';
-import PrivateRoute from './private-route';
+import { isSignedIn } from '../src/api/auth'
+import { NavBar } from '../src/nav-bar/nav-bar'
+import AdminSignInForm from '../src/auth/admin-sign-in-form'
+import PrivateRoute from './private-route'
 
-// views
-import SystemStatus from './system-status';
-import Performance from './performance/ui-pref';
-import Tests from './end2end/tests';
-import Gronkomatic from './gronkomatic/gronkomatic';
-import NotFound404 from '../src/404';
+// view
+import SystemStatus from './system-status'
+import Performance from './performance/ui-pref'
+import Tests from './end2end/tests'
+import Gronkomatic from './gronkomatic/gronkomatic'
+import NotFound404 from '../src/404'
 
 import '../src/styles/styles.scss'
 
