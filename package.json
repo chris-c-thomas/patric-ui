@@ -6,8 +6,6 @@
   "scripts": {
     "start": "./node_modules/parcel/bin/cli.js ./src/index.html",
     "build": "./node_modules/parcel/bin/cli.js  build ./src/index.html",
-    "start:bvbrc": "./node_modules/parcel/bin/cli.js ./bvbrc/index.html",
-    "build:bvbrc": "./node_modules/parcel/bin/cli.js  build ./bvbrc/index.html -d ./bvbrc-dist",
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html",
     "p4-build": "parcel build ./build-p4/apps.js --no-content-hash",
@@ -30,7 +28,6 @@
     "@material-ui/icons": "^4.5.1",
     "@mui-treasury/styles": "^0.3.5",
     "@nivo/bar": "^0.61.1",
-    "@nivo/calendar": "^0.61.1",
     "@nivo/pie": "^0.61.1",
     "axios": "^0.19.0",
     "clsx": "^1.0.4",

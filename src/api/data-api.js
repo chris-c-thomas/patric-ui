@@ -12,7 +12,7 @@ import { metaObjToList } from '../charts/chart-helpers';
 
 const api = axios.create({
   baseURL: dataAPI
-});
+})
 
 const solrConfigStr = 'http_content-type=application/solrquery+x-www-form-urlencoded'
 
@@ -125,17 +125,6 @@ export function listGenomes({query, start, limit = 200}) {
     .then(res => {
       return res;
     })
-}
-
-
-// curently only used for scripting
-export function queryGenomes({select, limit = 25, start, sort}) {
-  const q  = `?http_accept=application/json&keyword(*)`
-  + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
-  + (select ? `&select(${select.join(',')})` : '')
-  + (sort ? `&sort(${sort})` : '')
-
-  return api.get(`/genome/${q}`).then(res => res.data)
 }
 
 

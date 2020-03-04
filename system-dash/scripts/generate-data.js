@@ -4,7 +4,7 @@
  *    node -r esm generate-data.js > out.json
  */
 
-import {queryGenomes} from '../../src/api/data-api';
+import {query} from '../../src/api/query-data-api';
 
 const total = 300000
 const limit = 25000
@@ -18,7 +18,7 @@ const fields = [
 function collectSet(start = 0) {
   console.error('fetching with start:', start)
 
-  return queryGenomes({select: fields, limit, start, sort: '+completion_date'})
+  return query({select: fields, limit, start, sort: '+completion_date'})
     .then(res => {
       return res
     })

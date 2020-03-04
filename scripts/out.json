@@ -1,0 +1,7 @@
+obj { field: 'pathway_id',
+  format: 'simple',
+  ngroups: true,
+  limit: 1,
+  facet: true }
+groupQuery group((field,pathway_id),(format,simple),(ngroups,true),(limit,1),(facet,true))
+q ?http_accept=application/solr+json&keyword(*)&in(genome_id,(1160233.3,204722.15,29459.45,35802.57,35802.83,35802.75,1408887.3,1198699.3,35802.52,1210448.3,1905695.3))&group((field,pathway_id),(format,simple),(ngroups,true),(limit,1),(facet,true))&limit(25)
