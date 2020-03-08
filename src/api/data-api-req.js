@@ -15,6 +15,10 @@ const api = axios.create({
   baseURL: dataAPI
 })
 
+/**
+ * validateCompareType
+ * @param {String} type option to be validated
+ */
 function validateCompareType(type) {
   const types = ['eq', 'neq', 'gt', 'lt', 'ge', 'le']
 
@@ -23,22 +27,30 @@ function validateCompareType(type) {
       the accepted types are: ${types.join(',')}`
 }
 
-
-function getCompareStr(compareObj, type) {
+/**
+ * getCompareStr
+ * @param {String} type type of compare ('eq', 'neq', 'gt', etc)
+ * @param {Object} compareObj key/value object where the value is
+ *  is either a String or array of Strings
+ *
+ * example input:
+ *  {genome_id, annotation: 'PATRIC'}
+ */
+function getCompareStr(type, compareObj) {
   validateCompareType(type)
 
   let parts = []
   for (const [k, v] of Object.entries(compareObj)) {
     // don't allow empty lists
     if (!v.length) {
-      throw `query: the query '${type}' param requires an object with
+      throw `\nquery: the query '${type}' param requires an object with
         a string or array as an value. The value provided was '${k}' was '${v}'`
     }
 
     // don't allow more than one value for greater/less than, etc
     if (['gt', 'lt', 'ge', 'le'].includes(type)) {
       if (v.length > 0)
-        throw `query: the query '${type}' param requires an object with
+        throw `\nquery: the query '${type}' param requires an object with
           with values that are single strings. The value provided for '${k}' was '${v}'`
     }
 
@@ -64,68 +76,87 @@ function getCompareStr(compareObj, type) {
   return parts.join('&')
 }
 
+/**
+ * validGroupOption
+ * @param {String} opt option to validate
+ */
+function validateGroupFacet(type, opt) {
+  const types = ['group', 'facet']
 
-function validGroupOption(opt) {
-  const opts = ['field', 'format', 'ngroups', 'limit', 'facet']
+  if (!types.includes(type))
+    throw `\nquery: the provided option type '${type}' is not valid.
+      the accepted types are: ${types.join(',')}`
+
+  console.log('type', type, opt)
+  const opts = type == 'group' ?
+    ['field', 'format', 'ngroups', 'limit', 'facet'] :
+    ['field', 'mincount']
 
   if (!opts.includes(opt))
-    throw `query: the provided group option '${opt}' is not valid.
+    throw `\nquery: the provided group option '${opt}' is not valid.
       the accepted types are: ${opts.join(',')}`
 }
 
-
 /**
- * getGroupStr
- * takes and object, returns rql group string
+ * getTupleStr
+ * @param {String} type type of query ('facet', 'group', etc)
+ * @param {Object} groupObj object to be turned in list of tuples strings
  *
- *  example output:
- *   &group((field,pathway_id),(format,simple),(ngroups,true),(limit,1),(facet,true))
- **/
-function getGroupStr(groupObj) {
-  console.log('obj', groupObj)
+ * example output:
+ *   facet((field,pathway_id),(format,simple),(ngroups,true),(limit,1),(facet,true))
+ */
+function getTupleStr(type, groupObj) {
   let tupStrs = []
   for (const [k, v] of Object.entries(groupObj)) {
-    validGroupOption(k)
+    validateGroupFacet(type, k)
     tupStrs.push(`(${k},${v})`)
   }
 
-  return `group(${tupStrs.join(',')})`
+  return `${type}(${tupStrs.join(',')})`
 }
 
 
 /**
- *  This function is curently used for scripting,
- *  but could evolve into a generic call.
+ * query
+ * @param {Object} params
  *
  *  Note: the rql 'in' param has been made part of 'eq', 'neq', etc
- *    simply provide a list and 'in' will be used.
- **/
+ *  simply provide a list and 'in' will be used.
+ */
 export function query(params) {
   const {
     core = 'genome',
+    solrInfo, // include solrInfo if true
+    query,
     eq,
     neq,
     select,
+    facet,
     group,
     limit = 25,
     start,
     sort,
-    solrInfo
+    freeText, // free form
+    json
   } = params
 
-  const eqQuery = eq ? getCompareStr(eq, 'eq') : null
-  const neqQuery = neq ? getCompareStr(neq, 'neq') : null
-  const groupQuery = group ? getGroupStr(group) : null
-  console.log('groupQuery', groupQuery)
+  const eqQuery = eq ? getCompareStr('eq', eq) : null
+  const neqQuery = neq ? getCompareStr('neq', neq) : null
+  const groupQuery = group ? getTupleStr('group', group) : null
+  const facetQuery = facet ? getTupleStr('facet', facet) : null
+
+  const jsonQuery = json ? getTupleStr('json', json) : null
 
   const q = `?http_accept=application/${solrInfo ? 'solr+json': 'json'}`
-    + `&keyword(*)`
+    + (query ? `&keyword(${query})` : `&keyword(*)`)
     + (eqQuery ? `&${eqQuery}` : '')
     + (neqQuery ? `&${neqQuery}` : '')
     + (groupQuery ? `&${groupQuery}` : '')
+    + (facetQuery ? `&${facetQuery}` : '')
     + (select ? `&select(${select.join(',')})` : '')
     + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
     + (sort ? `&sort(${sort})` : '')
+    + (jsonQuery ?  `&${jsonQuery}` : '')
 
   console.log('q', q)
   return api.get(`/${core}/${q}`).then(res => res.data)
