@@ -145,7 +145,7 @@ export function query(params) {
   const groupQuery = group ? getTupleStr('group', group) : null
   const facetQuery = facet ? getTupleStr('facet', facet) : null
 
-  const jsonQuery = json ? getTupleStr('json', json) : null
+  // const jsonQuery = json ? getTupleStr('json', json) : null
 
   const q = `?http_accept=application/${solrInfo ? 'solr+json': 'json'}`
     + (query ? `&keyword(${query})` : `&keyword(*)`)
@@ -156,7 +156,7 @@ export function query(params) {
     + (select ? `&select(${select.join(',')})` : '')
     + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
     + (sort ? `&sort(${sort})` : '')
-    + (jsonQuery ?  `&${jsonQuery}` : '')
+    + (jsonQuery ?  `&json(${encodeURIComponent(JSON.stringify(jsonQuery))}` : '')
 
   console.log('q', q)
   return api.get(`/${core}/${q}`).then(res => res.data)

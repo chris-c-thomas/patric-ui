@@ -198,7 +198,7 @@ export default function Overview() {
 
   return (
     <>
-      <Grid container>
+      <Grid container style={{height: 'calc(100% - 200px)'}}>
 
         <Grid item container direction="column" xs={4} className={classes.overviewTable}>
 

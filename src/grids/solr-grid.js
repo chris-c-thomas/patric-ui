@@ -56,7 +56,7 @@ export default function SolrGrid(props) {
         colHeaders,
         rowHeaders,
         width: '100%',
-        height: '70%',
+        height: 'calc(100% - 250px)',
         wordWrap: false,
         multiColumnSorting: true,
         manualColumnResize: true,
