@@ -83,12 +83,11 @@ export function getCalendar() {
         const failed = obj.services.map(s => s.failed).reduce((acc, val) => acc + val, 0)
 
         return {
-          day: obj.date,
+          ...obj,
+          date: new Date(obj.date),
           passed,
           failed,
-          count: failed,
-          percent: (failed / (passed + failed)) * 100,
-          ...obj
+          percent: (failed / (passed + failed)) * 100
         }
       })
 

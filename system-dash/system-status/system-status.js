@@ -11,7 +11,7 @@ import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 import Dialog from '../../src/dialogs/basic-dialog'
 import ReBrushChart from '../../src/charts/re-brush-chart'
-import CalendarHeatmap from 'react-calendar-heatmap'
+import HeatmapCalendar from '../../components/heatmap-calendar/src/HeatmapCalendar'
 
 import { getHealthReport, getCalendar, getIndexerData, getErrorLog } from '../api/log-fetcher'
 import { Typography, StepConnector } from '@material-ui/core'
@@ -21,9 +21,6 @@ import Subtitle from '../../src/home/subtitle'
 import FilterChips from '../../src/utils/ui/chip-filters'
 import config from '../config'
 import { timeToHumanTime } from '../../src/utils/units'
-
-import 'react-calendar-heatmap/dist/styles.css'
-import './calendar.scss'
 
 
 const HOURS = 24 // number of hours into the past to show
@@ -41,12 +38,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-
-const loadingStyle = {
-  position: "absolute",
-  right: 3,
-  top: 2
-}
 
 const LiveRows = (props) => {
   const [state, time] = useContext(LiveStatusContext);
@@ -71,9 +62,9 @@ const LiveRows = (props) => {
             {/* also indicate thereafter */}
             {
               (key in state && state[key] == 'loading') &&
-              <span style={loadingStyle}>
+              <LoadingCircle>
                 <CircularProgress size={28} />
-              </span>
+              </LoadingCircle>
             }
           </td>
         </tr>
@@ -81,8 +72,13 @@ const LiveRows = (props) => {
       )}
     </>
   )
-
 }
+
+const LoadingCircle = styled.span`
+  position: absolute;
+  right: 3;
+  top: 2;
+`
 
 const LiveStatus = (props) => {
   const [time, setTime] = useState(null)
@@ -138,61 +134,62 @@ const BrushChart = ({data, ...props}) =>
   />
 
 
-const Calendar = ({data, onClick}) => {
+const CalTooltip = ({date, value, data}) =>
+  <div>
+    <TTitle>{date.toDateString()}</TTitle>
+    <div>{data.failed} events</div>
+  </div>
 
-  // const [tt, setTT] = useState(null)
+const TTitle = styled.div`
+  font-size: 1.2em;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+`
 
-  return (
-    <>
-      <CalendarHeatmap
-        startDate={new Date(data[0].day)}
-        endDate={new Date('2020-12-31')} // data[data.length - 1].day
-        showWeekdayLabels={true}
-        weekdayLabels={['Sun', 'M', 'Tues', 'W', 'Thurs', 'F', 'Sat']}
-        values={data}
-        onClick={onClick}
-        titleForValue={(obj) => obj ?
-          `${obj.day}\n\n${obj.failed} failed\n${obj.passed} passed\n${obj.percent}% failure rate`
-          : ''
-        }
-        //onMouseOver={(evt, data) => {
-        //  if (!data) {
-        //    setTT(null)
-        //    return
-        //  }
-        //}}
-        classForValue={(obj) => {
-          if (!obj) return 'color-empty'
 
-          const {failed} = obj;
-          if (failed <= 0)
-            return `success-3`;
-          else if (failed <= 5)
-            return `success-2`;
-          else if (failed <= 10)
-            return `success-1`;
-          else if (failed <= 50)
-            return `fail-1`
-          else if (failed <= 100)
-          return `fail-2`;
-          else if (failed <= 200)
-            return `fail-3`;
-          else if (failed > 200)
-            return `fail-4`;
-        }}
-      />
-    </>
-  )
+
+const calColorMap = {
+  noValue: '#f2f2f2',
+  green1: '#b2dfb0',
+  green2: '#8ed88b',
+  green3: '#4cc948',
+  green4: '#06af00',
+  red1: '#ffc5c5',
+  red2: '#ff8686',
+  red3: '#d34848',
+  red4: '#890000'
 }
-/*
-const Tooltip = styled.div`
-  visibility: hidden;
-  position: absolute;
-  background-color: #333;
-  width: 100px;
-  height: 100px;
-  z-index: 1000
-`*/
+
+
+const Calendar = ({data, onClick}) =>
+  <HeatmapCalendar
+    data={data}
+    dataKey="failed"
+    onClick={onClick}
+    tooltip={CalTooltip}
+    tooltipOutline
+    histogram={false}
+    histogramHeight={100}
+    cellW={17}
+    cellH={17}
+    colorForValue={(val) => {
+      if (val == null)
+        return color.noValue
+
+      if (val <= 0)
+        return calColorMap.green2
+      else if (val <= 5)
+        return calColorMap.red1
+      else if (val <= 10)
+        return calColorMap.red2
+      else if (val <= 50)
+        return calColorMap.red3
+      else if (val > 50)
+        return calColorMap.red4
+    }}
+  />
+
 
 const colorBy = (obj) =>
    obj.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
@@ -206,8 +203,6 @@ const formatData = (data, lastN = HOURS*60) => {
   })).slice(-lastN)
   return data;
 }
-
-
 
 
 export default function SystemStatus() {
@@ -274,13 +269,16 @@ export default function SystemStatus() {
   const getMax = (data) => Math.max(...data.map(o => o.value))
 
   const onDayClick = (evt) => {
-    // there may not be data for that date
     if (!evt) return;
 
-    const {day} = evt;
+    const {date} = evt;
 
-    const d = new Date(day)
-    const [yyyy, mm, dd] = [d.getFullYear(), ('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2)]
+    const d = date
+    const [yyyy, mm, dd] = [
+      date.getFullYear(),
+      ('0' + (date.getMonth() + 1)).slice(-2),
+      ('0' + d.getDate()).slice(-2)
+    ]
     const str = `${yyyy}-${mm}-${dd}`
     setDate(str);
   }
@@ -373,7 +371,7 @@ export default function SystemStatus() {
 
         <Grid container>
           <Grid item xs={12}>
-            <Paper className="card" style={{height: 200}}>
+            <Paper className="card" style={{height: 225}}>
               <Subtitle noUpper>Calendar</Subtitle>
               { error3 && <ErrorMsg error={error3} noContact /> }
               {
