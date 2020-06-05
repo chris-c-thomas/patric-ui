@@ -147,9 +147,9 @@ const Chart = ({data, margin, ...props}) => {
         <Selector label="view"
           value={view}
           options={[
-            {label: 'By status & duration', value: 'duration'},
-            {label: 'By status count', value: 'counts'},
-            {label: 'By total time', value: 'total'},
+            {label: 'Status & durations', value: 'duration'},
+            {label: 'Status counts', value: 'counts'},
+            {label: 'Total duration', value: 'total'},
           ]}
           onChange={v => setView(v)}
           className="pull-right"

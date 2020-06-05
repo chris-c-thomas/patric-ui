@@ -5,13 +5,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
+// import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 import Dialog from '../../src/dialogs/basic-dialog'
 import ReBrushChart from '../../src/charts/re-brush-chart'
-import HeatmapCalendar from '../../components/heatmap-calendar/src/HeatmapCalendar'
+
 
 import { getHealthReport, getCalendar, getIndexerData, getErrorLog } from '../api/log-fetcher'
 import { Typography, StepConnector } from '@material-ui/core'
@@ -21,6 +22,9 @@ import Subtitle from '../../src/home/subtitle'
 import FilterChips from '../../src/utils/ui/chip-filters'
 import config from '../config'
 import { timeToHumanTime } from '../../src/utils/units'
+
+import CalendarPanel from './calendar-panel'
+
 
 
 const HOURS = 24 // number of hours into the past to show
@@ -134,63 +138,6 @@ const BrushChart = ({data, ...props}) =>
   />
 
 
-const CalTooltip = ({date, value, data}) =>
-  <div>
-    <TTitle>{date.toDateString()}</TTitle>
-    <div>{data.failed} events</div>
-  </div>
-
-const TTitle = styled.div`
-  font-size: 1.2em;
-  border-bottom: 1px solid #fff;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
-`
-
-
-
-const calColorMap = {
-  noValue: '#f2f2f2',
-  green1: '#b2dfb0',
-  green2: '#8ed88b',
-  green3: '#4cc948',
-  green4: '#06af00',
-  red1: '#ffc5c5',
-  red2: '#ff8686',
-  red3: '#d34848',
-  red4: '#890000'
-}
-
-
-const Calendar = ({data, onClick}) =>
-  <HeatmapCalendar
-    data={data}
-    dataKey="failed"
-    onClick={onClick}
-    tooltip={CalTooltip}
-    tooltipOutline
-    histogram={false}
-    histogramHeight={100}
-    cellW={17}
-    cellH={17}
-    colorForValue={(val) => {
-      if (val == null)
-        return color.noValue
-
-      if (val <= 0)
-        return calColorMap.green2
-      else if (val <= 5)
-        return calColorMap.red1
-      else if (val <= 10)
-        return calColorMap.red2
-      else if (val <= 50)
-        return calColorMap.red3
-      else if (val > 50)
-        return calColorMap.red4
-    }}
-  />
-
-
 const colorBy = (obj) =>
    obj.status == 'P' ? 'rgb(77, 165, 78)' : 'rgb(198, 69, 66)'
 
@@ -229,7 +176,6 @@ export default function SystemStatus() {
 
   // state for displaying error log
   const [errorLog, setErrorLog] = useState(null)
-
 
   // fetch genome indexer history
   useEffect(() => {
@@ -295,6 +241,8 @@ export default function SystemStatus() {
     })
   }
 
+
+
   return (
     <div className={styles.root}>
       <Grid container>
@@ -329,7 +277,7 @@ export default function SystemStatus() {
                   <Grid container direction="row" justify="space-between">
                     <Grid item>
                       <Subtitle inline noUpper>
-                        System Health
+                        Service Health
                       </Subtitle>
                     </Grid>
 
@@ -372,14 +320,14 @@ export default function SystemStatus() {
         <Grid container>
           <Grid item xs={12}>
             <Paper className="card" style={{height: 225}}>
-              <Subtitle noUpper>Calendar</Subtitle>
+              <CalendarPanel
+                data={calData}
+                onDayClick={onDayClick}
+              />
               { error3 && <ErrorMsg error={error3} noContact /> }
-              {
-                calData &&
-                <Calendar data={calData} onClick={onDayClick}/>
-              }
             </Paper>
           </Grid>
+
 
           {/*
           <Grid item xs={3}>

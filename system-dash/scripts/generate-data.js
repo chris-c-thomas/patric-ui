@@ -4,7 +4,7 @@
  *    node -r esm generate-data.js > out.json
  */
 
-import {query} from '../../src/api/query-data-api';
+import {query} from '../../src/api/data-api-req';
 
 const total = 300000
 const limit = 25000

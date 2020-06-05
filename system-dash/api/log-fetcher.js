@@ -235,3 +235,8 @@ export function getUIPerfLog({date = null, subtract = true}) {
       })
     })
 }
+
+
+export function downloadAllStatus(start, end) {
+
+}
