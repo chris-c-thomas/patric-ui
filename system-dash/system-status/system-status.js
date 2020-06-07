@@ -1,22 +1,17 @@
-import React, {useState, useEffect, useContext} from 'react'
-import styled from 'styled-components'
+import React, {useState, useEffect} from 'react'
+
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
-// import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import CheckIcon from '@material-ui/icons/CheckCircleRounded'
 import WarningIcon from '@material-ui/icons/WarningRounded'
 import Dialog from '../../src/dialogs/basic-dialog'
 import ReBrushChart from '../../src/charts/re-brush-chart'
 
-
 import { getHealthReport, getCalendar, getIndexerData, getErrorLog } from '../api/log-fetcher'
-import { Typography, StepConnector } from '@material-ui/core'
-import { LiveStatusProvider, LiveStatusContext } from '../live-status-context'
+import LiveStatus from './live-status'
 import ErrorMsg from '../../src/error-msg'
 import Subtitle from '../../src/home/subtitle'
 import FilterChips from '../../src/utils/ui/chip-filters'
@@ -26,7 +21,6 @@ import { timeToHumanTime } from '../../src/utils/units'
 import CalendarPanel from './calendar-panel'
 
 
-
 const HOURS = 24 // number of hours into the past to show
 
 const useStyles = makeStyles(theme => ({
@@ -34,89 +28,9 @@ const useStyles = makeStyles(theme => ({
   },
   dateFilter: {
     marginRight: theme.spacing(1)
-  },
-  loadingIndicator: {
-    position: "absolute",
-    right: 3,
-    top: 2
   }
 }));
 
-
-const LiveRows = (props) => {
-  const [state, time] = useContext(LiveStatusContext);
-
-  useEffect(() => {
-    props.afterUpdate(time)
-  }, [time, state])
-
-  return (
-    <>
-      {Object.keys(config).map(key => (
-        <tr key={key}>
-          <td width="100%">
-            <a onClick={() => props.onClick(config[key].label)}>
-              {config[key].label}
-            </a>
-          </td>
-          <td align="right" style={{position: 'relative'}}>
-            {key in state && state[key] && <CheckIcon className="success" />}
-            {key in state && !state[key] &&  <WarningIcon className="failed" />}
-
-            {/* also indicate thereafter */}
-            {
-              (key in state && state[key] == 'loading') &&
-              <LoadingCircle>
-                <CircularProgress size={28} />
-              </LoadingCircle>
-            }
-          </td>
-        </tr>
-        )
-      )}
-    </>
-  )
-}
-
-const LoadingCircle = styled.span`
-  position: absolute;
-  right: 3;
-  top: 2;
-`
-
-const LiveStatus = (props) => {
-  const [time, setTime] = useState(null)
-
-  return (
-    <Paper className="card">
-      {!time && <LinearProgress className="card-progress"/>}
-      <Grid container justify="space-between" alignItems="center">
-        <Grid item>
-          <Typography variant="h6">
-            Live Status {time && <small className="muted">| as of {time}</small>}
-          </Typography>
-        </Grid>
-      </Grid>
-
-      <table className="simple dense">
-        <thead>
-          <tr>
-            <th>Service</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <LiveStatusProvider>
-            <LiveRows
-              afterUpdate={(time) => setTime(time)}
-              onClick={type => props.onClick(type)}
-            />
-          </LiveStatusProvider>
-        </tbody>
-      </table>
-    </Paper>
-  )
-}
 
 const getFilters = () => {
   return [
@@ -207,8 +121,8 @@ export default function SystemStatus() {
       setHealthData(formatData(data, 0))
       setLoading(false)
     }).catch(e => {
-      setError2(e);
-      setLoading(false);
+      setError2(e)
+      setLoading(false)
     })
   }
 
@@ -219,14 +133,13 @@ export default function SystemStatus() {
 
     const {date} = evt;
 
-    const d = date
     const [yyyy, mm, dd] = [
       date.getFullYear(),
       ('0' + (date.getMonth() + 1)).slice(-2),
-      ('0' + d.getDate()).slice(-2)
+      ('0' + date.getDate()).slice(-2)
     ]
     const str = `${yyyy}-${mm}-${dd}`
-    setDate(str);
+    setDate(str)
   }
 
   const onNodeClick = (data) => {
@@ -323,6 +236,7 @@ export default function SystemStatus() {
               <CalendarPanel
                 data={calData}
                 onDayClick={onDayClick}
+                filterBy={service}
               />
               { error3 && <ErrorMsg error={error3} noContact /> }
             </Paper>

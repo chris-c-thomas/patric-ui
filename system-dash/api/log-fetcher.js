@@ -82,12 +82,18 @@ export function getCalendar() {
         const passed = obj.services.map(s => s.passed).reduce((acc, val) => acc + val, 0)
         const failed = obj.services.map(s => s.failed).reduce((acc, val) => acc + val, 0)
 
+        // include service failed count at top level of objs
+        let byService = {}
+        obj.services.forEach(s => {
+          byService[`${s.name}_failures`] = s.failed
+        })
+
         return {
           ...obj,
           date: new Date(obj.date),
           passed,
           failed,
-          percent: (failed / (passed + failed)) * 100
+          ...byService
         }
       })
 

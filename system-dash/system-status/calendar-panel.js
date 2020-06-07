@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useReducer} from 'react'
 import styled from 'styled-components'
 
 import Subtitle from '../../src/home/subtitle'
@@ -46,42 +46,6 @@ const onDownload = (data, type) => {
 }
 
 
-const CalendarPanel = ({data, onDayClick, ...props}) => {
-
-  const [openDownloadMenu, setOpenDownloadMenu] = useState(false)
-
-  const handleDownload = (type) => {
-    setOpenDownloadMenu(false)
-    onDownload(data, type)
-  }
-
-  return (
-    <div>
-      <Subtitle noUpper inline>
-        Calendar
-      </Subtitle>
-
-      <MenuButton
-        startIcon={<DownloadIcon />}
-        label="Download"
-        size="small"
-        className="pull-right"
-        open={openDownloadMenu}
-      >
-        <MenuItem onClick={() => handleDownload('failed-percents')}>Failure percent</MenuItem>
-        <MenuItem onClick={() => handleDownload('failed-counts')}>Failure count</MenuItem>
-        <MenuItem onClick={() => handleDownload('durations')}>Duration</MenuItem>
-      </MenuButton>
-
-      {
-        data &&
-        <Calendar data={data} onClick={onDayClick} type="linear" />
-      }
-    </div>
-  )
-}
-
-
 const calColorMap = {
   noValue: '#f2f2f2',
   green1: '#b2dfb0',
@@ -95,12 +59,12 @@ const calColorMap = {
 }
 
 
-const Calendar = ({data, onClick}) =>
+const Calendar = ({data, onClick, dataKey}) =>
   <HeatmapCalendar
     data={data}
     startDate={new Date('2020-1-1')}
     endDate={new Date('2020-12-31')}
-    dataKey="failed"
+    dataKey={dataKey}
     onClick={onClick}
     tooltip={CalTooltip}
     tooltipOutline
@@ -108,7 +72,7 @@ const Calendar = ({data, onClick}) =>
     histogramHeight={100}
     cellW={17}
     cellH={17}
-    colorForValue={(val) => {
+    colorForValue={(val, obj) => {
       if (val == null)
         return calColorMap.noValue
 
@@ -144,4 +108,45 @@ const TTitle = styled.div`
 
 
 
-export default CalendarPanel
+export default function CalendarPanel({data, onDayClick, filterBy}) {
+
+  const [openDownloadMenu, setOpenDownloadMenu] = useState(false)
+  const [dataKey, setDataKey] = useState('failed');
+
+  useEffect(() => {
+    setDataKey(filterBy == 'All' ? 'failed' : filterBy + '_failures')
+  }, [filterBy])
+
+  const handleDownload = (type) => {
+    setOpenDownloadMenu(false)
+    onDownload(data, type)
+  }
+
+  return (
+    <div>
+      <Subtitle noUpper inline>
+        Calendar
+      </Subtitle>
+
+      <MenuButton
+        startIcon={<DownloadIcon />}
+        label="Download"
+        size="small"
+        className="pull-right"
+        open={openDownloadMenu}
+      >
+        <MenuItem onClick={() => handleDownload('failed-percents')}>Failure percent</MenuItem>
+        <MenuItem onClick={() => handleDownload('failed-counts')}>Failure count</MenuItem>
+        <MenuItem onClick={() => handleDownload('durations')}>Duration</MenuItem>
+      </MenuButton>
+
+      {
+        data &&
+        <Calendar data={data} onClick={onDayClick} type="linear" dataKey={dataKey}/>
+      }
+    </div>
+  )
+}
+
+
+
