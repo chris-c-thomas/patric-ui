@@ -66,7 +66,7 @@ const Calendar = ({data, onClick, dataKey}) =>
     endDate={new Date('2020-12-31')}
     dataKey={dataKey}
     onClick={onClick}
-    tooltip={CalTooltip}
+    tooltip={({date, data}) => CalTooltip(date, data, dataKey)}
     tooltipOutline
     histogram={false}
     histogramHeight={100}
@@ -90,11 +90,11 @@ const Calendar = ({data, onClick, dataKey}) =>
   />
 
 
-const CalTooltip = ({date, value, data}) =>
+const CalTooltip = (date, data, dataKey) =>
   <div>
       <TTitle>{date.toDateString()}</TTitle>
       {data &&
-        <div>{data.failed} events</div>
+        <div>{data[dataKey]} events</div>
       }
   </div>
 
@@ -135,9 +135,9 @@ export default function CalendarPanel({data, onDayClick, filterBy}) {
         className="pull-right"
         open={openDownloadMenu}
       >
-        <MenuItem onClick={() => handleDownload('failed-percents')}>Failure percent</MenuItem>
-        <MenuItem onClick={() => handleDownload('failed-counts')}>Failure count</MenuItem>
-        <MenuItem onClick={() => handleDownload('durations')}>Duration</MenuItem>
+        <MenuItem onClick={() => handleDownload('failed-percents')}>Failure percents</MenuItem>
+        <MenuItem onClick={() => handleDownload('failed-counts')}>Failure counts</MenuItem>
+        <MenuItem onClick={() => handleDownload('durations')}>Durations</MenuItem>
       </MenuButton>
 
       {
