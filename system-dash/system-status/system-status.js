@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   root: {
   },
   dateFilter: {
-    marginRight: theme.spacing(1)
+    marginLeft: theme.spacing(2)
   }
 }));
 
@@ -87,6 +87,7 @@ export default function SystemStatus() {
   // currently selected service and day state
   const [service, setService] = useState('All');
   const [date, setDate] = useState();
+  const [fullDate, setFullDate] = useState();
 
   // state for displaying error log
   const [errorLog, setErrorLog] = useState(null)
@@ -140,6 +141,13 @@ export default function SystemStatus() {
     ]
     const str = `${yyyy}-${mm}-${dd}`
     setDate(str)
+    setFullDate(date)
+  }
+
+  // Todo: cleanup dates
+  const onDeleteDate = () => {
+    setDate(null)
+    setFullDate(null)
   }
 
   const onNodeClick = (data) => {
@@ -153,8 +161,6 @@ export default function SystemStatus() {
       setErrorLog(data)
     })
   }
-
-
 
   return (
     <div className={styles.root}>
@@ -192,18 +198,18 @@ export default function SystemStatus() {
                       <Subtitle inline noUpper>
                         Service Health
                       </Subtitle>
-                    </Grid>
-
-                    <Grid item>
                       {
                         date &&
                         <Chip
                           label={date}
-                          onDelete={() => setDate(null)}
+                          onDelete={onDeleteDate}
                           color="primary"
                           className={styles.dateFilter}
                         />
                       }
+                    </Grid>
+
+                    <Grid item>
                       <FilterChips
                         items={getFilters()}
                         filterState={service}
@@ -236,6 +242,9 @@ export default function SystemStatus() {
               <CalendarPanel
                 data={calData}
                 onDayClick={onDayClick}
+                highlightDate={fullDate}
+                date={date}
+                onDeleteDate={onDeleteDate}
                 filterBy={service}
               />
               { error3 && <ErrorMsg error={error3} noContact /> }

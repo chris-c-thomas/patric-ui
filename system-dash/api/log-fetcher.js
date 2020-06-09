@@ -88,9 +88,12 @@ export function getCalendar() {
           byService[`${s.name}_failures`] = s.failed
         })
 
+        let date = new Date(obj.date);
+        date.setDate(date.getDate() + 1);
+
         return {
           ...obj,
-          date: new Date(obj.date),
+          date,
           passed,
           failed,
           ...byService

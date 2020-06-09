@@ -8,6 +8,7 @@ import { Typography } from '@material-ui/core'
 import { LiveStatusProvider, LiveStatusContext } from '../live-status-context'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CheckIcon from '@material-ui/icons/CheckCircleRounded'
+import WarningIcon from '@material-ui/icons/WarningRounded'
 
 import config from '../config'
 

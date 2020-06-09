@@ -1,15 +1,25 @@
 import React, {useState, useEffect, useReducer} from 'react'
 import styled from 'styled-components'
+import { makeStyles } from '@material-ui/core/styles'
 
 import Subtitle from '../../src/home/subtitle'
 import HeatmapCalendar from '../../components/heatmap-calendar/src/HeatmapCalendar'
 
+import Chip from '@material-ui/core/Chip'
 import MenuButton from '../../components/menu-button'
 import DownloadIcon from '@material-ui/icons/CloudDownloadOutlined'
 import MenuItem from '@material-ui/core/MenuItem'
-// import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
+
 
 import { downloadFile } from '../utils/download'
+
+const useStyles = makeStyles(theme => ({
+  root: {
+  },
+  dateFilter: {
+    marginLeft: theme.spacing(2)
+  }
+}));
 
 
 
@@ -59,15 +69,15 @@ const calColorMap = {
 }
 
 
-const Calendar = ({data, onClick, dataKey}) =>
+const Calendar = ({data, onClick, dataKey, highlightDate}) =>
   <HeatmapCalendar
     data={data}
     startDate={new Date('2020-1-1')}
     endDate={new Date('2020-12-31')}
+    highlightDate={highlightDate ? new Date(highlightDate) : null}
     dataKey={dataKey}
     onClick={onClick}
     tooltip={({date, data}) => CalTooltip(date, data, dataKey)}
-    tooltipOutline
     histogram={false}
     histogramHeight={100}
     cellW={17}
@@ -108,7 +118,10 @@ const TTitle = styled.div`
 
 
 
-export default function CalendarPanel({data, onDayClick, filterBy}) {
+export default function CalendarPanel(props) {
+  const styles = useStyles()
+
+  const {data, onDayClick, highlightDate, filterBy, onDeleteDate, date} = props
 
   const [openDownloadMenu, setOpenDownloadMenu] = useState(false)
   const [dataKey, setDataKey] = useState('failed');
@@ -127,6 +140,15 @@ export default function CalendarPanel({data, onDayClick, filterBy}) {
       <Subtitle noUpper inline>
         Calendar
       </Subtitle>
+      {
+        date &&
+        <Chip
+          label={date}
+          onDelete={onDeleteDate}
+          color="primary"
+          className={styles.dateFilter}
+        />
+       }
 
       <MenuButton
         startIcon={<DownloadIcon />}
@@ -142,7 +164,12 @@ export default function CalendarPanel({data, onDayClick, filterBy}) {
 
       {
         data &&
-        <Calendar data={data} onClick={onDayClick} type="linear" dataKey={dataKey}/>
+        <Calendar
+          data={data}
+          onClick={onDayClick}
+          highlightDate={highlightDate}
+          dataKey={dataKey}
+        />
       }
     </div>
   )
