@@ -110,10 +110,8 @@ const CalTooltip = (date, data, dataKey) =>
           <Count>{data[dataKey]} events</Count>
           {data.total !== TOTAL_TESTS &&
             <Note>
-              <i>
-                Note: there were {data.total < TOTAL_TESTS && 'only'} {data.total} tests
-                this day instead of {TOTAL_TESTS}.
-              </i>
+              Note: there were {data.total < TOTAL_TESTS && 'only'} {data.total.toLocaleString()} tests
+              this day instead of {TOTAL_TESTS.toLocaleString()}.
             </Note>
           }
         </>
@@ -132,7 +130,8 @@ const Count = styled.div`
   font-size: 1.2em;
 `
 
-const Note = styled.div`
+const Note = styled.i`
+  display: block;
   margin-top: 1em;
 `
 

@@ -21,7 +21,7 @@ import { timeToHumanTime } from '../../src/utils/units'
 import CalendarPanel from './calendar'
 
 
-const HOURS = 24 // number of hours into the past to show
+const HOURS = 24 // number of hours to show into the past
 
 const useStyles = makeStyles(theme => ({
   root: {

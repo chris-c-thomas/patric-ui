@@ -156,9 +156,9 @@ export function query(params) {
     + (select ? `&select(${select.join(',')})` : '')
     + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
     + (sort ? `&sort(${sort})` : '')
-    + (jsonQuery ?  `&json(${encodeURIComponent(JSON.stringify(jsonQuery))}` : '')
+    // + (jsonQuery ?  `&json(${encodeURIComponent(JSON.stringify(jsonQuery))}` : '')
 
-  console.log('q', q)
-  return api.get(`/${core}/${q}`).then(res => res.data)
+  return api.get(`/${core}/${q}`)
+    .then(res => solrInfo ? res : res.data)
 }
 
