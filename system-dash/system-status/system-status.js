@@ -18,7 +18,7 @@ import FilterChips from '../../src/utils/ui/chip-filters'
 import config from '../config'
 import { timeToHumanTime } from '../../src/utils/units'
 
-import CalendarPanel from './calendar-panel'
+import CalendarPanel from './calendar'
 
 
 const HOURS = 24 // number of hours into the past to show

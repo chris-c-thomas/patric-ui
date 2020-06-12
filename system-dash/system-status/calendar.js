@@ -13,6 +13,9 @@ import MenuItem from '@material-ui/core/MenuItem'
 
 import { downloadFile } from '../utils/download'
 
+
+const TOTAL_TESTS = 1440
+
 const useStyles = makeStyles(theme => ({
   root: {
   },
@@ -20,7 +23,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2)
   }
 }));
-
 
 
 const getCalendarCSV = (data, type) => {
@@ -104,7 +106,17 @@ const CalTooltip = (date, data, dataKey) =>
   <div>
       <TTitle>{date.toDateString()}</TTitle>
       {data &&
-        <div>{data[dataKey]} events</div>
+        <>
+          <Count>{data[dataKey]} events</Count>
+          {data.total !== TOTAL_TESTS &&
+            <Note>
+              <i>
+                Note: there were {data.total < TOTAL_TESTS && 'only'} {data.total} tests
+                this day instead of {TOTAL_TESTS}.
+              </i>
+            </Note>
+          }
+        </>
       }
   </div>
 
@@ -116,6 +128,13 @@ const TTitle = styled.div`
   margin-bottom: 5px;
 `
 
+const Count = styled.div`
+  font-size: 1.2em;
+`
+
+const Note = styled.div`
+  margin-top: 1em;
+`
 
 
 export default function CalendarPanel(props) {
