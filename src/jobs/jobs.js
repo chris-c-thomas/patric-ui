@@ -12,8 +12,7 @@ import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
 import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
 
-
-import Table from '../grids/mui-table';
+import Table from '../grids/grid';
 import { listJobs } from '../api/app-service';
 import { toDateTimeStr } from '../utils/units';
 
@@ -77,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     padding: '20px'
   },
   tableCard: {
-    height: 'calc(100% - 150px)',
+    height: 'calc(100% - 160px)',
     margin: '5px',
     position: 'relative'
   },
@@ -172,6 +171,7 @@ export default function Jobs() {
         {
           rows &&
           <Table
+            offsetHeight="80px"
             pagination
             columns={columns}
             rows={rows}

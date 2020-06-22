@@ -1,36 +1,24 @@
-import React from "react";
+import React from "react"
+import styled from 'styled-components'
 
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-
-import taxonIcon from '../../assets/icons/selection-Taxonomy.svg';
+import taxonIcon from '../../assets/icons/selection-Taxonomy.svg'
+import TaxonCrumbs from './taxon-crumbs'
 
 
-const useStyles = makeStyles(theme => ({
-  icon: {
-    height: '30px'
-  },
-  card: {
-    minWidth: 275,
-    margin: '10px'
-  },
-  title: {
-    fontSize: 14,
-    padding: theme.spacing(2)
-  }
-}));
+export const ActionBar = () =>
+  <Root>
+    <Image src={taxonIcon} className={`$green-icon`}/>
+    Taxon View
+    <TaxonCrumbs />
+  </Root>
 
 
-export function ActionBar() {
-  const classes = useStyles();
+const Root = styled.div`
+  padding: 1.3em 1em;
+`
 
-  return (
-    <>
-      <Typography className={classes.title} color="textSecondary" gutterBottom>
-        <img src={taxonIcon} className={`${classes.icon} green-icon`}/> Taxon View
-      </Typography>
-    </>
-  );
-};
+const Image = styled.img`
+  height: 30px;
+  float: left;
+  margin-right: 1em;
+`

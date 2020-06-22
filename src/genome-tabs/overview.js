@@ -84,7 +84,7 @@ const MetaCharts = (props) => {
       <ToggleButtonGroup
         value={type}
         exclusive
-        onChange={() => setType(newType || type)}
+        onChange={(_, val) => setType(val)}
         aria-label="meta pie chart type"
         size="small"
         className="btn-group"
@@ -191,7 +191,7 @@ export default function Overview() {
         .then(pubs => setPubs(pubs))
     } else {
       // Todo add genus/species search, etc
-      pubSearch('//')
+      pubSearch(taxonID)
         .then(pubs => setPubs(pubs))
     }
   }, [])
@@ -228,7 +228,7 @@ export default function Overview() {
               <Typography className={classes.title} color="textSecondary" gutterBottom>
                 Genomes by Antimicrobial Resistance
               </Typography>
-              {
+              {/*
                 amr &&
                 <BarChart
                   data={amr.slice(0, 10)}
@@ -236,7 +236,7 @@ export default function Overview() {
                   indexBy='drug'
                   xLabel="Antibiotic"
                 />
-              }
+              */}
             </Card>
           </Grid>
 

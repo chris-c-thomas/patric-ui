@@ -109,7 +109,6 @@ export default function GenomeTabs(props) {
         {TabButtons()}
       </Tabs>
 
-
       {view == tabs[0].view && <Overview />}
       {view == tabs[1].view && placeHolder(view)}
       {view == tabs[2].view && <Genomes />}
@@ -126,9 +125,6 @@ export default function GenomeTabs(props) {
         tabs.map(obj => obj.view).indexOf(view) == -1 &&
         <NotFound404 />
       }
-
-
-
     </div>
   )
 }

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Progress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
@@ -44,6 +45,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
+const toLocale = str => str ? str.toLocaleString() : ''
+
 export default function TableControls(props) {
   const styles = useStyles();
   const {onChange, total, columns, onColumnChange} = props;
@@ -69,6 +72,8 @@ export default function TableControls(props) {
 
   return (
     <Grid container className={styles.container}>
+      {isLoading && <Progress className="card-progress"/>}
+
       <Grid item xs={4}>
         <Input
           placeholder="Search genomes"
@@ -95,11 +100,16 @@ export default function TableControls(props) {
 
       <Grid item container xs={6} justify="flex-end" alignItems="center" spacing={3}>
         <div>
-          {start} - {start + limit - 1 > total ? total : start + limit - 1} of {total}
+          {toLocale(start)} - {start + limit - 1 > total ? toLocale(total) : toLocale(start + limit - 1)} of {toLocale(total)}
         </div>
 
-        <ButtonGroup size="small" aria-label="table paging" color="primary"
-          className={styles.btnGroup} disableRipple>
+        <ButtonGroup
+          size="small"
+          aria-label="table paging"
+          color="primary"
+          className={styles.btnGroup}
+          disableRipple
+        >
           <Button onClick={() => setPage(start - limit)} disabled={start - limit < 1}>
             <NavBeforeIcon />
           </Button>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { HotTable } from '@handsontable/react';
+// import { HotTable } from '@handsontable/react';
 import axios from 'axios';
 
 import config from '../../config';
@@ -85,7 +85,8 @@ export class PFContainer extends React.Component {
     return (
       <div>
         {!data && 'loading...'}
-        {data &&
+        {/* data &&
+
           <HotTable settings={{
             data: data,
             width: '100%',
@@ -102,6 +103,7 @@ export class PFContainer extends React.Component {
             filters: true,
             licenseKey: licenseKey
             }} />
+          */
         }
       </div>
     );

@@ -9,7 +9,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-const INTERVAL = 10000
+const INTERVAL = 1000000
 
 const useStyles = makeStyles(theme => ({
   root: {

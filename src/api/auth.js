@@ -27,9 +27,9 @@ export function isSignedIn() {
   return val !== null;
 }
 
-export function getUser() {
+export function getUser(full) {
   if (!isSignedIn()) return null;
-  return getUserName();
+  return getUsername(full);
 }
 
 export function getToken() {
@@ -76,9 +76,9 @@ export function adminSignIn(username, password) {
 /**
  * helpers
  */
-function getUserName() {
+function getUsername(full) {
   const userID = parseTokenStr(localStorage.getItem('token')).un;
-  const username = userID.split('@')[0];
+  const username = full ? userID : userID.split('@')[0];
   return username;
 }
 

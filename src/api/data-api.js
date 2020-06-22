@@ -8,11 +8,15 @@ import axios from 'axios';
 import config from '../config';
 const { dataAPI } = config;
 
+import { query as Query} from './data-api-req';
+
 import { metaObjToList } from '../charts/chart-helpers';
 
 const api = axios.create({
   baseURL: dataAPI
 })
+
+const cache = {}
 
 const solrConfigStr = 'http_content-type=application/solrquery+x-www-form-urlencoded'
 
@@ -50,6 +54,8 @@ function getSolrConfig({start = null, limit, contentType, data}) {
 /**
  * Data API helpers
  */
+
+// todo: replace with "Query"
 export function listRepresentative({taxonID,  limit=10000}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
     `&select(genome_id,reference_genome,genome_name)` +
@@ -64,7 +70,7 @@ export function listRepresentative({taxonID,  limit=10000}) {
     })
 }
 
-
+// todo: replace with "Query"
 export function getAMRCounts({genomeIDs}) {
   console.warn('Note: The AMR Overview Counts still need to be fixed.')
   const kinds = 'Resistant,Susceptible,Intermediate';
@@ -94,7 +100,7 @@ export function getAMRCounts({genomeIDs}) {
     })
 }
 
-
+// todo: replace with "Query"
 export function getOverviewMeta({taxonID}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})` +
     `&facet((field,host_name),(field,disease),(field,genome_status),(field,isolation_country),(mincount,1))` +
@@ -115,19 +121,7 @@ export function getOverviewMeta({taxonID}) {
 }
 
 
-export function listGenomes({query, start, limit = 200}) {
-  const q  = `?http_accept=application/solr+json` +
-    `&eq(taxon_lineage_ids,234)&sort(-score)` +
-    `${start ? `&limit(${limit},${start-1})` : `&limit(${limit})`}` +
-    `${query ? `&keyword(*${query}*)` : ''}`
-
-  return api.get(`/genome/${q}`)
-    .then(res => {
-      return res;
-    })
-}
-
-
+// todo: replace with "Query"
 export function queryTaxon({query, start = 0, limit = 25}) {
   const q = `?q=((taxon_name:*${query}*)%20OR%20(taxon_name:${query}))%20AND%20` +
     `(taxon_rank:(superkingdom)^7000000%20OR%20taxon_rank:(phylum)^6000000%20OR%20` +
@@ -150,3 +144,38 @@ export function queryTaxonID({query}) {
   return api.get(`/taxonomy${q}`)
     .then(res => res.data)
 }
+
+
+const cachero = (params) => {
+  const serialized = JSON.stringify(params)
+  if (serialized in cache) {
+    console.log('Using cache for', serialized)
+    return cache[serialized]
+  }
+
+  const prom = Query(params)
+  cache[serialized] = prom
+
+  return prom
+}
+
+export function listGenomes({query, start = 1, limit = 200, eq}) {
+  const params = {
+    core: 'genome',
+    sort: '-score',
+    start,
+    query,
+    limit,
+    eq,
+    solrInfo: true
+  }
+
+  return cachero(params)
+}
+
+export function getTaxon(id) {
+  return api.get(`/taxonomy/${id}`)
+    .then(res => res.data)
+}
+
+

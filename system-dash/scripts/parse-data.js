@@ -35,7 +35,7 @@ async function parseData(fileName = './out.json') {
     return byDate
 
   }).catch(err => {
-    console.log('the error was:', err)
+    console.log('error:', err)
   })
 }
 

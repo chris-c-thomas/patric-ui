@@ -4,7 +4,7 @@
   "description": "prototype",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/parcel/bin/cli.js ./src/index.html",
+    "start": "./node_modules/parcel/bin/cli.js ./src/index.html --open",
     "build": "./node_modules/parcel/bin/cli.js  build ./src/index.html",
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html --open",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html",
@@ -50,6 +50,7 @@
     "@material-ui/lab": "^4.0.0-alpha.52",
     "babel-plugin-import": "^1.13.0",
     "cssnano": "^4.1.10",
+    "eslint": "^7.2.0",
     "esm": "^3.2.25",
     "parcel": "^1.12.4",
     "parcel-plugin-bundle-visualiser": "^1.2.0",

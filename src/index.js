@@ -12,16 +12,13 @@ import { ThemeProvider } from '@material-ui/styles';
 
 // views
 import Home from './home/home';
-// import JobsTicker from './jobs/job-ticker';
-// import { JobStatusProvider } from './jobs/job-status-context';
-import Account from './my-profile';
+import Account from './user-profile/my-profile';
 import GenomeTabs from './genome-tabs/genome-tabs';
 import Jobs from './jobs/jobs';
 import Workspaces from './workspaces/workspaces';
 import SUSignIn from './auth/su-sign-in';
 import NotFound404 from './404';
 
-import * as Auth from './api/auth';
 
 import './styles/styles.scss'
 
