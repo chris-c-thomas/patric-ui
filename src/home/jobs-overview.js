@@ -9,7 +9,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import SortAlphaIcon from '@material-ui/icons/SortByAlphaRounded';
 import SortIcon from '@material-ui/icons/Sort';
 
-import Subtitle from './subtitle';
+import Subtitle from '../subtitle';
 import { getStats } from '../api/app-service';
 
 import { sortBy } from '../utils/process';
@@ -102,7 +102,7 @@ export default function JobsOverview(props) {
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
-            My Jobs <small>| <Link to="/jobs/">view all</Link></small>
+            <Link to="/jobs/">My Jobs</Link>
           </Subtitle>
         </Grid>
         <Grid item>

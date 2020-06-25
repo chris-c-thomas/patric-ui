@@ -39,7 +39,7 @@ export default function ObjectSelector(props) {
 
   if (!type) throw usageError('type', type);
   if (!dialogTitle) throw usageError('dialogTitle', dialogTitle);
-  if (!label) throw usageError('label', label);
+  // if (!label) throw usageError('label', label);
   if (typeof value == 'undefined')
     throw usageError('value', value);
 
@@ -105,41 +105,37 @@ export default function ObjectSelector(props) {
   }
 
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={11}>
-        <InputLabel shrink htmlFor={label}>
-          {label}
-        </InputLabel>
-        <AsyncSelect
-          id={label}
-          cacheOptions
-          defaultOptions
-          placeholder={placeholder}
-          loadOptions={loadOptions}
-          styles={inputStyles}
-          formatOptionLabel={formatOptionLabel}
-          noOptionsMessage={() => "No results"}
-          onInputChange={val => setQuery(val)}
-          onChange={obj => _setPath(obj.value)}
-          value={selectedPath}
-          className="object-selector"
-        />
-        {
-          error &&
-          <FormHelperText error={true}>
-            There was a problem fetching workspace data.
-            Please try refresh your browser or contact us.
-          </FormHelperText>
-        }
-      </Grid>
+    <span>
+      <InputLabel shrink htmlFor={label}>
+        {label}
+      </InputLabel>
+      <AsyncSelect
+        id={label}
+        cacheOptions
+        defaultOptions
+        placeholder={placeholder}
+        loadOptions={loadOptions}
+        styles={inputStyles}
+        formatOptionLabel={formatOptionLabel}
+        noOptionsMessage={() => "No results"}
+        onInputChange={val => setQuery(val)}
+        onChange={obj => _setPath(obj.value)}
+        value={selectedPath}
+        className="object-selector"
+      />
+      {
+        error &&
+        <FormHelperText error={true}>
+          There was a problem fetching workspace data.
+          Please try to refresh/connect your browser or contact us.
+        </FormHelperText>
+      }
 
-      <Grid item xs={1}>
-        <ObjectSelectorDialog
-          title={dialogTitle}
-          type={type}
-          onSelect={onDialogSelect}
-        />
-      </Grid>
-    </Grid>
+      <ObjectSelectorDialog
+        title={dialogTitle}
+        type={type}
+        onSelect={onDialogSelect}
+      />
+    </span>
   );
 }

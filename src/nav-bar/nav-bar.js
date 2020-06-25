@@ -150,8 +150,9 @@ const allOrganisms = [
 
 
 const services = [
-  {label: "Assembly", url: '/apps/assembly'},
-  {label: "Annotation", url: '/apps/annotation'},
+  // {label: "Assembly", url: '/apps/assembly'},
+  // {label: "Annotation", url: '/apps/annotation'},
+  {label: "SARS-CoV-2 Assembly and Annotation", url: '/apps/sars-cov-2'},
 ]
 
 const getMiddle = data => Math.round(data.length / 2);
@@ -214,13 +215,6 @@ const PatricMenus = () => {
         </div>
       }/>
 
-      <DropdownMenu label="Workspaces" menu={
-        <div>
-          <NavItem label={'My Workspaces'} url={`/files/${Auth.getUser(true)}`} />
-        </div>
-      }/>
-
-
       <DropdownMenu label="Services" menu={
         <div>
           <MenuTitle>Genomics</MenuTitle>
@@ -228,8 +222,14 @@ const PatricMenus = () => {
         </div>
       }/>
 
+      <DropdownMenu label="Workspaces" menu={
+        <div>
+          <NavItem label={'My Workspaces'} url={`/files/${Auth.getUser(true)}`} />
+        </div>
+      }/>
+
       <Button color="inherit" disableRipple component={Link} to="/jobs">
-        Jobs
+        Job Status
       </Button>
     </div>
   )

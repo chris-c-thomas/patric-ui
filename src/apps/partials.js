@@ -4,6 +4,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import UserGuideDialog from './components/user-guide-dialog';
 
+import { isSignedIn } from '../api/auth';
+
 export function AppHeader(props) {
   const {title, description, onUseExample, userGuideURL} = props;
 
@@ -16,7 +18,7 @@ export function AppHeader(props) {
         </Typography>
         </Grid>
 
-        {onUseExample &&
+        {isSignedIn() && onUseExample &&
           <Grid item>
             <small><a onClick={onUseExample}>use example</a></small>
           </Grid>

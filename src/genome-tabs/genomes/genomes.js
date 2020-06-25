@@ -109,9 +109,11 @@ export function Genomes() {
   }, [])
 
   const onTableCtrlChange = (state) => {
+    console.log('state', state)
     const params = {...state, eq: {taxon_lineage_ids: taxonID}}
     return listGenomes(params)
       .then((res) => {
+        console.log('res', res)
         updateData(res)
       }).catch((e) => {
         // Todo: implement error message
@@ -121,7 +123,7 @@ export function Genomes() {
   const updateData = (res) => {
     res = res.data.response
     let data = res.docs
-    console.log('data', data, columns)
+    console.log('data', data[0].genome_id, columns)
 
     setTotal(res.numFound)
     setData(data)

@@ -53,7 +53,7 @@ function a11yProps(index) {
 
 const useStyles = makeStyles(theme => ({
   button: {
-    margin: theme.spacing(2, 0),
+
   },
   dialog: {
   },
@@ -110,7 +110,7 @@ export default function ObjectSelectorDialog(props) {
   function next() {}
 
   return (
-    <div>
+    <>
       <Button color="primary" onClick={handleClickOpen}
         className={styles.button}
         disableRipple
@@ -183,6 +183,6 @@ export default function ObjectSelectorDialog(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }

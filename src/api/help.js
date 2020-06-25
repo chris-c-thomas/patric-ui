@@ -10,8 +10,8 @@ export function fetchOverview(url) {
     .then(res => {
       const text = res.data;
       const start = text.indexOf('##');
-      const end = text.slice(start + 2).indexOf('\n## ');
-      const overview = text.slice(start, end);
+      const end = text.slice(start + 2).search(/\n## /);
+      const overview = text.slice(start, end + start + 1);
       return overview;
     });
 }

@@ -1,4 +1,4 @@
-import React, {useState, memo} from 'react'
+import React, {useState, memo, useEffect} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -189,6 +189,11 @@ export default function Grid(props) {
   // checkbox states
   const [allSelected, setAllSelected] = useState(false)
   const [checkedRows, setCheckedRows] = useState({})
+
+
+  useEffect(() => {
+    setRows(props.rows.map((row, i) => ({...row, rowID: i + page})))
+  }, [props.rows])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)

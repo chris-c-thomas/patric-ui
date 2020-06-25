@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,6 +10,8 @@ import Draggable from 'react-draggable';
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded';
 
 import { fetchOverview } from '../../api/help';
+
+import marked from '../../../node_modules/marked/lib/marked'
 
 
 function PaperComponent(props) {
@@ -31,8 +33,13 @@ export default function UserGuideDialog(props) {
 
   if (!url) throw usageError('url', url)
 
-  fetchOverview(url)
-    .then(text => setContent(text));
+  useEffect(() => {
+    fetchOverview(url)
+      .then(text => {
+        console.log('text',text)
+        setContent(text)
+      });
+  }, [])
 
   return (
     <>
@@ -48,12 +55,13 @@ export default function UserGuideDialog(props) {
         PaperComponent={PaperComponent}
         aria-labelledby="dragable-dialog"
       >
-        <DialogTitle style={{ cursor: 'move' }} id="dragable-dialog">
+        {/*<DialogTitle style={{ cursor: 'move' }} id="dragable-dialog">
           Overview
         </DialogTitle>
+        */}
         <DialogContent>
-          <DialogContentText>
-            {content}
+          <DialogContentText dangerouslySetInnerHTML={content && {__html: marked(content)}}>
+
           </DialogContentText>
         </DialogContent>
         <DialogActions>

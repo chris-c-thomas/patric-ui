@@ -1,16 +1,18 @@
 import React, {useState, useEffect} from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Label from '@material-ui/core/InputLabel';
-import AddIcon from '@material-ui/icons/AddRounded';
+import AddIcon from '@material-ui/icons/ArrowForwardRounded';
 
 import AdvandedButton from './advanced-button'
 import ObjectSelector from './object-selector/object-selector';
 import SelectedTable from './selected-table';
+import { InputLabel } from '@material-ui/core';
 import TextInput from './text-input';
 import Selector from './selector';
 
@@ -18,10 +20,20 @@ import { parsePath } from '../../utils/paths';
 
 
 const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(2),
-  },
+
 }))
+
+
+const AddBtn = ({onAdd, disabled}) =>
+  <Button
+    aria-label="add item"
+    onClick={onAdd}
+    disableRipple
+    disabled={disabled}
+  >
+    Add <AddIcon />
+  </Button>
+
 
 
 export default function ReadSelector(props) {
@@ -87,151 +99,57 @@ export default function ReadSelector(props) {
   }
 
   return (
-    <>
-      <ToggleButtonGroup
-        value={type}
-        exclusive
-        onChange={onTypeChange}
-        aria-label="read type"
-        size="small"
-        className="btn-group"
-      >
-        <ToggleButton value="single" aria-label="left aligned" disableRipple>
-          Single Reads
-        </ToggleButton>
-        <ToggleButton value="paired" aria-label="centered" disableRipple>
-          Paired End Reads
-        </ToggleButton>
-        <ToggleButton value="SRA" aria-label="right aligned" disableRipple>
-          SRA
-        </ToggleButton>
-      </ToggleButtonGroup>
+    <Grid container justify="space-between">
+      <Grid item xs={5}>
+        <ObjectSelector
+          label="Single Read Library"
+          value={path}
+          onChange={val => setPath1(val)}
+          type="reads"
+          dialogTitle="Select read file 1"
+          placeholder="Read file 1"
+        />
 
-      {/*<UserGuideDialog url={userGuideURL} />*/}
+        <AddBtn onAdd={onAdd} disabled={!path} />
 
-      <Grid container justify="space-between">
-        <Grid item xs={10}>
-          {
-            type == 'single' &&
-            <ObjectSelector
-              label="Read File"
-              value={path}
-              onChange={val => setPath(val)}
-              type="reads"
-              dialogTitle="Select read file"
-            />
-          }
+        <ObjectSelector
+          label="Paired Read Library"
+          value={path1}
+          onChange={val => setPath(val)}
+          type="reads"
+          dialogTitle="Select read file"
+          placeholder="Read file 1"
+        />
+        <ObjectSelector
+          label=" "
+          value={path2}
+          onChange={val => setPath2(val)}
+          type="reads"
+          dialogTitle="Select read file 2"
+          placeholder="Read file 2"
+        />
 
-          {
-            type == 'paired' &&
-            <>
-              <ObjectSelector
-                label="Read File 1"
-                value={path1}
-                onChange={val => setPath1(val)}
-                type="reads"
-                dialogTitle="Select read file 1"
-              />
+        <AddBtn onAdd={onAdd} disabled={!path1 || !path2} />
 
-              <ObjectSelector
-                label="Read File 2"
-                value={path2}
-                onChange={val => setPath2(val)}
-                type="reads"
-                dialogTitle="Select read file 2"
-              />
-            </>
-          }
+        <InputLabel shrink>
+          SRA run accession
+        </InputLabel>
+        <TextInput
+          placeholder="SRR"
+          value={sraID}
+          noLabel
+        />
 
-          {
-            type == 'SRA' &&
-            <TextInput
-              label="SRA run accession"
-              value={sraID}
-            />
-          }
-        </Grid>
+        <AddBtn onAdd={onAdd} disabled={!sraID} />
 
-
-        {/* reuse "add" button for each set of forms */}
-        <Grid item xs={1}>
-          <Button
-            className={styles.button}
-            aria-label="add item"
-            onClick={onAdd}
-            disabled={
-              type == 'single' && !path ||
-              type == 'paired' && (!path1 || !path2) ||
-              type == 'SRA' && !sraID
-            }
-            disableRipple
-          >
-            <AddIcon /> Add
-          </Button>
-        </Grid>
-
-        {/* we show the advanced options for single or paired */
-          advancedOptions && type != 'SRA' &&
-          <AdvandedButton
-            onClick={open => setAdvOpen(open)}
-            label="Advanced"
-          />
-        }
-
-        {
-          advOpen &&
-          <Grid container spacing={1}>
-
-            { type == 'paired' &&
-              <>
-                <Grid item xs={4}>
-                  <Selector
-                    label="File 1 Interleaved"
-                    value={interleaved}
-                    width="150px"
-                    options={[
-                      {label: 'False', value: 'false'},
-                      {label: 'True', value: 'true'}
-                    ]}
-                  />
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Selector
-                      label="Mate Paired"
-                      value={read_orientation_outward}
-                      width="150px"
-                      options={[
-                        {label: 'False', value: 'false'},
-                        {label: 'True', value: 'true'}
-                      ]}
-                    />
-                </Grid>
-              </>
-            }
-
-            <Grid item>
-              <Selector
-                  label="Platform"
-                  value={platform}
-                  onChange={val => setPlatform(val)}
-                  options={[
-                    {label: 'Infer Platform', value: 'infer'},
-                    {label: 'Illumina', value: 'illumina'},
-                    {label: 'Ion Torrent', value: 'iontorrent'}
-                  ]}
-                />
-            </Grid>
-          </Grid>
-
-        }
-
+      </Grid>
+      <Grid item xs={5}>
         <SelectedTable
           items={reads}
           onRemove={onRemove}
         />
-
       </Grid>
-    </>
+
+    </Grid>
   )
 }

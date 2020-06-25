@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Link, useParams} from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
 
 import TextField from '@material-ui/core/TextField';
@@ -10,35 +10,44 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import Pie from '../charts/pie';
-import BarChart from '../charts/bar';
+// import BarChart from '../charts/bar';
 
-import VirtualTable from '../grids/mui-virtual-table';
+import Subtitle from '../subtitle'
+import Table from '../grids/grid';
+
+import {getTaxon} from '../api/data-api'
 
 import {listRepresentative, getOverviewMeta, getAMRCounts} from '../api/data-api';
 import {getPubSummary, pubSearch } from '../api/ncbi-eutils-api';
 
 
 const columns = [{
-  dataKey: 'reference_genome',
+  id: 'reference_genome',
   label: 'Type',
   width: 300
 }, {
-  dataKey: 'genome_id',
+  id: 'genome_id',
   label: 'Genome Name',
   width: 300,
-  format: (id, row) => <Link to={`/taxonomy/${id}/overview`}>{id}</Link>
+  format: (id, row) => <Link to={`/taxonomy/${id}/overview`}>{row.genome_name}</Link>
 }]
 
 const useStyles = makeStyles(theme => ({
   icon: {
     height: '30px'
   },
+
   overview: {
     marginBottom: theme.spacing(1),
     padding: theme.spacing(2)
   },
   card: {
     margin: theme.spacing(1)
+  },
+  tableCard: {
+    height: 'calc(100% - 160px)',
+    margin: '5px',
+    position: 'relative'
   },
 
   title: {
@@ -162,7 +171,7 @@ const Card = (props) => {
 
 
 export default function Overview() {
-  const classes = useStyles();
+  const styles = useStyles();
 
   const {taxonID} = useParams();
 
@@ -170,17 +179,20 @@ export default function Overview() {
   const [meta, setMeta] = useState(null);
   const [amr, setAMR] = useState(null);
   const [pubs, setPubs] = useState(null);
-
+  const [taxonName, setTaxonName] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     listRepresentative({taxonID})
       .then(rows => {
         setRows(rows)
 
-        // Todo: bug:  this is wrong (and is also wrong on production website)
+        // Todo: bug:  this is wrong (also wrong on prod website)
+        /*
         const genomeIDs = rows.map(r => r.genome_id);
         getAMRCounts({genomeIDs})
           .then(amr => setAMR(amr))
+        */
       })
 
     getOverviewMeta({taxonID})
@@ -196,39 +208,40 @@ export default function Overview() {
     }
   }, [])
 
+  useEffect(() => {
+    getTaxon(taxonID).then(data => {
+      setTaxonName(data.lineage_names[data.lineage_names.length - 1] )
+    })
+  }, [])
+
   return (
     <>
       <Grid container style={{height: 'calc(100% - 200px)'}}>
 
-        <Grid item container direction="column" xs={4} className={classes.overviewTable}>
+        <Grid item container direction="column" xs={4}>
 
-          <Grid item className={classes.overview}>
-            <Card className={classes.overview}>
-              <Typography className={classes.title} color="textSecondary" gutterBottom>
-                {getTitle(taxonID)}
-              </Typography>
-              <hr />
-            </Card>
 
-            <Card style={{height: '600px'}}>
-              {rows &&
-              <VirtualTable
+          <h2>{taxonName}</h2>
+          <Paper className={styles.tableCard}>
+            {!rows && !error && <LinearProgress className="card-progress" /> }
+            {rows &&
+              <Table
                 columns={columns}
                 rows={rows}
               />
-              }
-            </Card>
-          </Grid>
+            }
+          </Paper>
+
 
         </Grid>
 
         <Grid item container direction="column" xs={5}>
           <Grid item>
-            <Card className={classes.card} style={amr ? {height: '400px'} : {}}>
+            {/*
+            <div className={classes.card} style={amr ? {height: '400px'} : {}}>
               <Typography className={classes.title} color="textSecondary" gutterBottom>
                 Genomes by Antimicrobial Resistance
               </Typography>
-              {/*
                 amr &&
                 <BarChart
                   data={amr.slice(0, 10)}
@@ -236,21 +249,18 @@ export default function Overview() {
                   indexBy='drug'
                   xLabel="Antibiotic"
                 />
-              */}
-            </Card>
+            </div>
+            */}
           </Grid>
 
           <Grid item>
-            <Card className={classes.card}>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                  Genomes by Metadata
-                </Typography>
-                {meta && <MetaCharts data={meta}/>}
-              </Card>
+            <h2>Genomes by Metadata</h2>
+            {meta && <MetaCharts data={meta}/>}
           </Grid>
         </Grid>
 
         <Grid item container direction="column" xs={2}>
+          <h2>Publications</h2>
           {pubs && <Publications data={pubs} />}
         </Grid>
       </Grid>

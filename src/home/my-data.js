@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Subtitle from './subtitle';
+import Subtitle from '../subtitle';
 
 import WSTree from './ws-tree';
 
@@ -32,7 +32,7 @@ export default function MyData(props) {
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
-            My Data
+            <Link to={`/files/${getUser(true)}`}>My Data</Link>
           </Subtitle>
         </Grid>
         <Grid item>

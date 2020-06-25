@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import Subtitle from './subtitle';
+import Subtitle from '../subtitle';
 
 
 export default function Recents(props) {
@@ -23,11 +23,11 @@ export default function Recents(props) {
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
-            Recents <small>| <Link to="/jobs/">view all</Link></small>
+            <Link onClick={() => alert('not implemented')}>Recent Activity</Link>
           </Subtitle>
         </Grid>
         <Grid item>
-          Jobs
+
         </Grid>
       </Grid>
     </Paper>

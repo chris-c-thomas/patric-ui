@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Link } from "react-router-dom";
 import clsx from 'clsx'
 
-import Subtitle from './subtitle';
+import Subtitle from '../subtitle';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -271,10 +271,10 @@ export default function Home() {
           <Grid container>
             <HasAuth>
               <Grid item xs={4}>
-                <JobsOverview />
+                <MyData />
               </Grid>
               <Grid item xs={4}>
-                <MyData />
+                <JobsOverview />
               </Grid>
               <Grid item xs={4}>
                 <Recents />

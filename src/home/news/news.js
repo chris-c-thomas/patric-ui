@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Subtitle from '../subtitle';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import Subtitle from '../../subtitle';
+
 
 import {get} from 'axios';
 import MobileStepper from './stepper';
@@ -25,7 +27,9 @@ export default function News(props) {
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
-            NEWS <small>| <a href="https://docs.patricbrc.org/news/index.html" target="_blank">view all</a></small>
+            <a href="https://docs.patricbrc.org/news/index.html" target="_blank">News</a>
+            {' '}
+            <OpenInNewIcon fontSize="small" />
           </Subtitle>
         </Grid>
         <Grid item>

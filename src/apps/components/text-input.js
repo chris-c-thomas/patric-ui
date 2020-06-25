@@ -10,9 +10,12 @@ const usageError = (propName, value, label) => {
 }
 
 export default function TextInput(props) {
-  const {label, value, adornment, type, onChange, fullWidth} = props;
+  const {
+    label, value, adornment, type,
+    onChange, fullWidth, noLabel, placeholder
+  } = props;
 
-  if (!label) throw usageError('label', label);
+  if (!label && !noLabel) throw usageError('label', label);
 
   const [val, setVal] = useState(value || '')
 
@@ -34,16 +37,19 @@ export default function TextInput(props) {
       notched="true"
       className="text-input"
       fullWidth={fullWidth}
+      {...(noLabel ? {style: {margin: 0}} : {})}
     >
       <TextField
+        size="small"
         variant="outlined"
         type={type}
         value={val}
         onChange={handleChange}
-        id={label}
         label={label}
+        placeholder={placeholder}
         margin="dense"
         {...(adornment ? inputProps : {})}
+        {...(noLabel ? {style: {margin: 0}} : {})}
       />
     </FormControl>
   )

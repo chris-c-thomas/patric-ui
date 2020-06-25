@@ -23,10 +23,6 @@ import NotFound404 from './404';
 import './styles/styles.scss'
 
 
-// lazy load apps
-const Annotation = lazy(() => import('./apps/annotation'));
-const Assembly = lazy(() => import('./apps/assembly'));
-
 const colors = {
   primary: '#2e75a3',
   secondary: '#FFA750'
@@ -70,8 +66,9 @@ const App = () => {
               <Switch>
                 <Route path="/" exact component={Home} />
                 <Route path="/my-profile" exact component={Account} />
-                <Route path="/apps/annotation" exact component={Annotation} />
-                <Route path="/apps/assembly" exact component={Assembly} />
+                <Route path="/apps/annotation" exact component={lazy(() => import('./apps/annotation'))} />
+                <Route path="/apps/assembly" exact component={lazy(() => import('./apps/assembly'))} />
+                <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/sars-cov-2'))} />
                 <Route path="/jobs/:app*" component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>

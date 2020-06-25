@@ -30,6 +30,7 @@
     "@nivo/pie": "^0.61.1",
     "axios": "^0.19.2",
     "clsx": "^1.1.0",
+    "marked": "^1.1.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-calendar-heatmap": "^1.8.1",
