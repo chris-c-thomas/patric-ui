@@ -22,6 +22,7 @@ import ErrorMsg from '../error-msg';
 
 import './jobs.scss';
 import urlMapping from './url-mapping';
+import { number } from 'prop-types';
 
 
 const columns = [
@@ -42,7 +43,14 @@ const columns = [
     format: val => {
       const isAvail = Object.keys(urlMapping).indexOf(val) != -1;
       return isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val;
-    }
+    },
+    width: '20%'
+  },
+  {
+    id: 'id',
+    label: 'Job ID',
+    format: val => Number(val),
+    width: '5%'
   },
   {
     id: 'parameters',
@@ -134,24 +142,25 @@ export default function Jobs() {
   const styles = useStyles();
   const { app } = useParams();
 
-  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false)
+  const [state, setState] = useState({page: 0, start: 0, limit: 200})
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(null);
   const [error, setError] = useState(null);
 
   const [appFilter, setAppFilter] = useState(app);
 
-  const limit = 200;
-
   useEffect(() => {
-    const start = page * limit;
-    listJobs({start, limit, query: {app}}).then(data => {
+    setLoading(true)
+    listJobs({...state, query: {app}}).then(data => {
       setRows(data.jobs)
       setTotal(data.total)
+      setLoading(false)
     }).catch(err => {
       setError(err)
+      setLoading(false)
     })
-  }, [page])
+  }, [state])
 
 
   function onFilterChange(app) {
@@ -167,17 +176,18 @@ export default function Jobs() {
       </Paper>
 
       <Paper className={styles.tableCard}>
-        {!rows && !error && <LinearProgress className="card-progress" /> }
+        {loading && <LinearProgress className="card-progress" /> }
         {
           rows &&
           <Table
             offsetHeight="80px"
             pagination
+            page={state.page}
+            limit={state.limit}
             columns={columns}
             rows={rows}
-            page={page}
             total={total}
-            onPage={page => setPage(page)}
+            onPage={state => setState(state)}
           />
         }
         {error && <ErrorMsg error={error} />}

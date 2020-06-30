@@ -9,8 +9,7 @@ const TaxonCrumbs = (props) => {
   const [ids, setIds] = useState(null)
   const [count, setCount] = useState(null)
 
-  const {taxonID} = useParams()
-  console.log('taxonID', taxonID)
+  const {taxonID, view} = useParams()
 
   useEffect(() => {
     getTaxon(taxonID).then(data => {
@@ -19,7 +18,7 @@ const TaxonCrumbs = (props) => {
       setIds(data.lineage_ids.slice(1))
       setCount(data.genomes)
     })
-  }, [])
+  }, [taxonID])
 
   return (
     <div>
@@ -27,7 +26,7 @@ const TaxonCrumbs = (props) => {
         names && ids &&
           names.map((name, i) =>
             <span key={name}>
-              <Link to={`/taxonomy/${ids[i]}/overview`} key={name}>{name}</Link>
+              <Link to={`/taxonomy/${ids[i]}/${view}`} key={name}>{name}</Link>
               {i < names.length - 1 && ' > '}
             </span>
           )

@@ -1,0 +1,69 @@
+{
+  "responseHeader": {
+    "zkConnected": true,
+    "status": 0,
+    "QTime": 14,
+    "params": {
+      "q": "(* AND taxon_lineage_ids:234)",
+      "fl": "genome_name,genome_id,genome_status,contigs,patric_cds,isolation_country,host_name,collection_year,completion_date",
+      "sort": "score desc",
+      "fq": "public:true",
+      "rows": "200",
+      "wt": "json"
+    }
+  },
+  "response": {
+    "numFound": 952,
+    "start": 0,
+    "maxScore": 5.3564606,
+    "docs": [
+      {
+        "contigs": 7,
+        "genome_name": "Brucella ceti str. Cudo",
+        "genome_id": "595497.3",
+        "patric_cds": 3610,
+        "genome_status": "WGS",
+        "completion_date": "2009-03-24T00:00:00Z",
+        "host_name": "Bottlenose dolphin, Tursiops truncatus"
+      },
+      {
+        "contigs": 89,
+        "genome_name": "Brucella pinnipedialis M163/99/10",
+        "genome_id": "520463.3",
+        "patric_cds": 3453,
+        "genome_status": "WGS",
+        "completion_date": "2009-01-23T00:00:00Z"
+      },
+      {
+        "contigs": 18,
+        "genome_name": "Brucella sp. F5/99",
+        "genome_id": "437701.3",
+        "patric_cds": 3359,
+        "genome_status": "WGS",
+        "completion_date": "2009-01-23T00:00:00Z"
+      },
+      {
+        "contigs": 57,
+        "genome_name": "Brucella abortus bv. 1 str. B11-0473",
+        "genome_id": "35802.37",
+        "patric_cds": 3330,
+        "collection_year": 2011,
+        "genome_status": "WGS",
+        "isolation_country": "United States",
+        "completion_date": "2013-05-01T00:00:00Z",
+        "host_name": "American bison, Bison bison"
+      },
+      {
+        "contigs": 72,
+        "genome_name": "Brucella suis strain ML9",
+        "genome_id": "29461.80",
+        "patric_cds": 3554,
+        "collection_year": 2017,
+        "genome_status": "WGS",
+        "isolation_country": "India",
+        "completion_date": "2018-06-06T00:00:00Z",
+        "host_name": "Pig, Sus scrofa"
+      }
+    ]
+  }
+}

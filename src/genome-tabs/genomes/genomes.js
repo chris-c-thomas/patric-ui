@@ -3,29 +3,35 @@ import React, {useState, useEffect} from 'react'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Progress from '@material-ui/core/LinearProgress'
-
-// import Actions from './actions'
-import TableControls from '../../grids/table-controls'
-import { listGenomes } from '../../api/data-api'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import Grid from '../../grids/grid'
+import { listGenomes } from '../../api/data-api'
+import {toPrettyDate} from '../../utils/dates'
+
+import Actions from './actions'
 
 const columnSpec = [
   {
     type: 'text',
     id: 'genome_name',
     label: 'Genome Name',
-    format: (val, row) => <Link to={`/genome/${row.genome_id}`}>{row.genome_name}</Link>
+    format: (_, row) => <Link to={`/genome/${row.genome_id}`}>{row.genome_name}</Link>,
+    width: '25%'
   },
   {type: 'number', id: 'genome_id', label: 'Genome ID'},
   {type: 'text', id: 'genome_status', label: 'Genome Status'},
-  {type: 'number', id: 'contigs', label: 'Contigs'},
+  {type: 'number', id: 'contigs', label: 'Contigs', width: '1%'},
   {type: 'number', id: 'patric_cds', label: 'Patric CDS'},
   {type: 'text', id: 'isolation_country', label: 'Isolation Country'},
-  {type: 'text', id: 'host_name', label: 'Host Name'},
+  {type: 'text', id: 'host_name', label: 'Host Name', width: '10%' },
   {type: 'number', id: 'collection_year', label: 'Collection Year'},
-  {type: 'date', id: 'completion_date', label: 'Completion Date', dateFormat: 'MM/DD/YYYY', correctFormat: true},
+  {
+    type: 'date',
+    id: 'completion_date',
+    label: 'Completion Date',
+    format: v => toPrettyDate(v)
+  },
 
   // hide the following
   {type: 'number', id: 'plasmids', hide: true},
@@ -95,39 +101,42 @@ const columnSpec = [
 
 
 const columns = columnSpec.filter(obj => !obj.hide)
+const columnIDs = columns.map(obj => obj.id)
 
 
 export function Genomes() {
+  const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
+  const [state, setState] = useState({page: 0, start: 0, limit: 200})
+
   const [total, setTotal] = useState(null)
   const [showActions, setShowActions] = useState(false)
 
   const {taxonID} = useParams()
 
   useEffect(() => {
-
-  }, [])
+    onTableCtrlChange(state)
+  }, [taxonID, state])
 
   const onTableCtrlChange = (state) => {
+    setLoading(true)
     console.log('state', state)
-    const params = {...state, eq: {taxon_lineage_ids: taxonID}}
+
+    const params = {...state, eq: {taxon_lineage_ids: taxonID}, select: columnIDs}
     return listGenomes(params)
       .then((res) => {
-        console.log('res', res)
-        updateData(res)
+        res = res.data.response
+        let data = res.docs
+        setTotal(res.numFound)
+        setData(data)
+
+        setLoading(false)
       }).catch((e) => {
+        setLoading(false)
         // Todo: implement error message
       })
   }
 
-  const updateData = (res) => {
-    res = res.data.response
-    let data = res.docs
-    console.log('data', data[0].genome_id, columns)
-
-    setTotal(res.numFound)
-    setData(data)
-  }
 
   const onColumnChange = (i, showCol) => {
     if (showCol) {
@@ -138,39 +147,54 @@ export function Genomes() {
     setHidden([...hidden, i])
   }
 
+  const onClick = (val) => {
+    setShowActions(true)
+
+  }
+
+
   return (
     <Root>
+      <GridContainer>
+        {loading &&
+          <Progress />
+        }
 
-      {/* todo: migrate to using "pagination" option of grid */}
-      <TableControls
-        columns={columns}
-        onChange={onTableCtrlChange}
-        onColumnChange={onColumnChange}
-        total={total}
-      />
+        {data &&
+          <Grid
+            pagination
+            page={state.page}
+            limit={state.limit}
+            total={total}
+            checkboxes
+            columns={columns}
+            rows={data}
+            onPage={state => setState(state)}
+            onSearch={onTableCtrlChange}
+            onClick={onClick}
+          />
+        }
+      </GridContainer>
 
-      {!data &&
-        <Progress className="card-progress"/>
-      }
-
-      {data &&
-        <Grid
-          checkboxes
-          columns={columns}
-          rows={data}
-        />
-      }
-
-      {/*<Actions open={showActions}/> */}
+      <Actions open={showActions}/>
     </Root>
+
   )
 }
 
 
 const Root = styled.div`
-  margin: 10px;
-  flex-grow: 1;
+
 `
 
+const GridContainer = styled.div`
+  padding: 0 10px;
+  width: calc(100% - 100px);
+  display: inline-block;
+`
 
+const Progress = styled(LinearProgress)`
+  display: absolute;
+  top: 0;
+`
 

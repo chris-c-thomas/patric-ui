@@ -16,7 +16,7 @@ const api = axios.create({
   baseURL: dataAPI
 })
 
-const cache = {}
+const cache = new Map()
 
 const solrConfigStr = 'http_content-type=application/solrquery+x-www-form-urlencoded'
 
@@ -146,20 +146,36 @@ export function queryTaxonID({query}) {
 }
 
 
-const cachero = (params) => {
-  const serialized = JSON.stringify(params)
-  if (serialized in cache) {
-    console.log('Using cache for', serialized)
-    return cache[serialized]
+
+const cacheroStr = (strReq) => {
+  if (cache.has(strReq)) {
+    console.log('Using cache for', strReq)
+    return cache.get(strReq)
   }
 
-  const prom = Query(params)
-  cache[serialized] = prom
+  const prom = api.get(strReq)
+    .then(res => res.data)
+
+  cache.set(strReq, prom)
 
   return prom
 }
 
-export function listGenomes({query, start = 1, limit = 200, eq}) {
+
+const cachero = (params) => {
+  const serialized = JSON.stringify(params)
+  if (cache.has(serialized)) {
+    console.log('Using cache for', serialized)
+    return cache.get(serialized)
+  }
+
+  const prom = Query(params)
+  cache.set(serialized, prom)
+
+  return prom
+}
+
+export function listGenomes({query, start = 1, limit = 200, eq, select}) {
   const params = {
     core: 'genome',
     sort: '-score',
@@ -167,6 +183,7 @@ export function listGenomes({query, start = 1, limit = 200, eq}) {
     query,
     limit,
     eq,
+    select,
     solrInfo: true
   }
 
@@ -174,8 +191,7 @@ export function listGenomes({query, start = 1, limit = 200, eq}) {
 }
 
 export function getTaxon(id) {
-  return api.get(`/taxonomy/${id}`)
-    .then(res => res.data)
+  return cacheroStr(`/taxonomy/${id}`)
 }
 
 

@@ -36,7 +36,6 @@ export default function UserGuideDialog(props) {
   useEffect(() => {
     fetchOverview(url)
       .then(text => {
-        console.log('text',text)
         setContent(text)
       });
   }, [])

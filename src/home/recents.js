@@ -23,7 +23,7 @@ export default function Recents(props) {
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
-            <Link onClick={() => alert('not implemented')}>Recent Activity</Link>
+            <a onClick={() => alert('not implemented')}>Recent Activity</a>
           </Subtitle>
         </Grid>
         <Grid item>

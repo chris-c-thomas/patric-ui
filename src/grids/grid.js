@@ -15,7 +15,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 
-// import TableSortLabel from '@material-ui/core/TableSortLabel'
+import GridSearch from './grid-search'
 
 /*
 const exampleColumns = [
@@ -32,14 +32,15 @@ const exampleColumns = [
 */
 
 
-const Cell = React.memo(props => {
+const Cell = props => {
   const {children} = props
+
   return (
     <TableCell {...props}>
       {children}
     </TableCell>
   )
-})
+}
 
 
 const ExpandCell = ({caret, onCaret}) =>
@@ -60,11 +61,12 @@ const RowCells = ({columns, row}) => {
       {
         columns.map(col => {
           const val = row[col.id]
-          const {CellComponent} = col
+
           return (
             <Cell
               key={col.id}
               align={col.type == 'number' ? 'right' : col.align}
+              style={{width: col.width}}
             >
               {col.format ? col.format(val, row) : val}
             </Cell>
@@ -169,19 +171,25 @@ const TableRows = (props) => {
 }
 
 
+
 export default function Grid(props) {
 
   const {
-    pagination, offsetHeight,
-    expandable, expandedRowsKey, checkboxes
+    onSearch, pagination, offsetHeight, onClick,
+    expandable, expandedRowsKey, checkboxes, limit = 200
   } = props
 
   if (expandable && !expandedRowsKey) {
-    throw `StickyHeaderTable component must
-      have prop 'expandedRowsKey' when 'expandable is provided`
+    throw `Grid component must have prop 'expandedRowsKey' when 'expandable is provided`
   }
 
-  const [rows, setRows] = useState(props.rows.map((row, i) => ({...row, rowID: i})))
+  if (pagination && (props.page === undefined || !props.limit)) {
+    throw `Grid component must provide 'page' and 'limit' when 'pagination' is used.
+      page value was: ${props.page}; limit value was: ${props.limit}.`
+  }
+
+
+  const [rows, setRows] = useState(props.rows)
   const [columns, setColumns] = useState(props.columns)
   const [page, setPage] = useState(props.page)
   const [rowsPerPage, setRowsPerPage] = useState(200)
@@ -192,12 +200,14 @@ export default function Grid(props) {
 
 
   useEffect(() => {
-    setRows(props.rows.map((row, i) => ({...row, rowID: i + page})))
+    setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
   }, [props.rows])
 
-  const handleChangePage = (event, newPage) => {
+  const onChangePage = (event, newPage) => {
     setPage(newPage)
-    props.onPage(newPage)
+
+    const start = newPage * limit + 1
+    props.onPage({page: newPage, start, limit})
   }
 
   const handleChangeRowsPerPage = event => {
@@ -214,6 +224,8 @@ export default function Grid(props) {
   }
 
   const onCheck = (rowID) => {
+    if (onClick) onClick(rowID)
+
     setCheckedRows(prev => ({
       ...prev,
       [rowID]: !(rowID in checkedRows && checkedRows[rowID])
@@ -222,27 +234,33 @@ export default function Grid(props) {
 
 
   return (
-    <div>
-      {pagination &&
-        <TablePagination
-          labelRowsPerPage={''}
-          rowsPerPageOptions={[rowsPerPage]}
-          component="div"
-          rowsPerPage={200}
-          page={page}
-          backIconButtonProps={{
-            disableRipple: true,
-            'aria-label': 'previous page',
-          }}
-          nextIconButtonProps={{
-            disableRipple: true,
-            'aria-label': 'next page',
-          }}
-          count={props.total || (rows && rows.length) || 0}
-          onChangePage={handleChangePage}
-          // onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      }
+    <Root>
+      <CtrlContainer>
+        {onSearch &&
+          <GridSearch onSearch={onSearch} />
+        }
+
+        {pagination &&
+          <Pagination
+            labelRowsPerPage={''}
+            rowsPerPageOptions={[rowsPerPage]}
+            component="div"
+            rowsPerPage={200}
+            page={page}
+            backIconButtonProps={{
+              disableRipple: true,
+              'aria-label': 'previous page',
+            }}
+            nextIconButtonProps={{
+              disableRipple: true,
+              'aria-label': 'next page',
+            }}
+            count={props.total || (rows && rows.length) || 0}
+            onChangePage={onChangePage}
+            // onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        }
+      </CtrlContainer>
 
       <Container offset={offsetHeight}>
         <Table stickyHeader aria-label="table" size="small">
@@ -261,7 +279,7 @@ export default function Grid(props) {
                 <TableCell
                   key={col.label}
                   align={col.type == 'number' ? 'right' : col.align}
-                  style={{ minWidth: col.minWidth }}
+                  style={{ width: col.width }}
                 >
                   {col.label}
                 </TableCell>
@@ -270,7 +288,6 @@ export default function Grid(props) {
           </TableHead>
 
           <TableBody>
-            {/*.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)*/}
             <TableRows
               rows={rows}
               columns={columns}
@@ -281,30 +298,63 @@ export default function Grid(props) {
               expandedRowsKey={expandedRowsKey}
             />
           </TableBody>
-
         </Table>
+
+        {rows.length == 0 &&
+          <NoneFoundNotice offset={offsetHeight}>
+            No results found.
+          </NoneFoundNotice>
+        }
       </Container>
-    </div>
+    </Root>
   )
 }
 
 
+const Root = styled.div`
+
+`
+
+const CtrlContainer = styled.div`
+  margin: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+`
+
+const Pagination = styled(TablePagination)`
+  width: 500px;
+
+  & .MuiTablePagination-actions {
+    user-select: none;
+  }
+`
+
 const Container = styled(TableContainer)`
   max-height: ${props => `calc(100% - ${props.offset || '250px'})`};
   width: 100%;
-
-  & > table: {
-    width: 100%;
-  }
 
   & td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 0;
+    font-size: .85em;
   }
 
   & tr:nth-child(odd) {
     background: #fafafa;
   }
+
+  & .MuiTableCell-sizeSmall {
+    padding: 6px 24px 6px 2px;
+  }
+`
+
+const NoneFoundNotice = styled.div`
+  height: ${props => `calc(100% - ${props.offset || '500px'})`};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+  font-size: 2.0em;
 `
