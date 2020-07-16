@@ -15,16 +15,22 @@ import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 
-import GridSearch from './grid-search'
+import TableSearch from './grid-search'
 
 /*
 const exampleColumns = [
-  { id: '123', label: 'foo bar', minWidth: 170 },
-  { id: '1234', label: 'test', minWidth: 100, type: 'number'},
   {
+    id: '123',
+    label: 'foo bar',
+    width: '10%'
+  }, {
+    id: '1234',
+    label: 'test',
+    width: '200px',
+    type: 'number'}
+  }, {
     id: 'population',
     label: 'Population',
-    minWidth: 170,
     align: 'right', // or use type: 'number'
     format: value => value.toLocaleString(),
   }
@@ -236,9 +242,11 @@ export default function Grid(props) {
   return (
     <Root>
       <CtrlContainer>
-        {onSearch &&
-          <GridSearch onSearch={onSearch} />
-        }
+        <div>
+          {onSearch &&
+            <TableSearch onSearch={onSearch} />
+          }
+        </div>
 
         {pagination &&
           <Pagination

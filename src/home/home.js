@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import clsx from 'clsx'
 
 import Subtitle from '../subtitle';
@@ -18,8 +18,8 @@ import News from './news/news';
 import Recents from './recents';
 import MyData from './my-data';
 
-import images from '../../assets/imgs/services/*.jpg';
-import chipImages from '../../assets/imgs/*.png';
+import serviceImages from '../../assets/imgs/services/*.jpg';
+import chipImages from '../../assets/imgs/biology/*.png';
 
 import config from '../config.js'
 import * as Auth from '../api/auth';
@@ -126,11 +126,10 @@ const Overview = () => {
         </p>
       </NoAuth>
 
-    <div>
+      <div>
         <Subtitle inline noUpper>
           Browse
         </Subtitle>
-
         <ChipBtn label="Bacteria" src={chipImages['bacteria']} to="/taxonomy/2/overview"/>
         <ChipBtn label="Archaea" src={chipImages['archaea']} to="/taxonomy/2157/overview" />
         <ChipBtn label="Eukaryotic" src={chipImages['eukaryotic']} to="/taxonomy/2759/overview"/>
@@ -180,7 +179,7 @@ const ServiceCard = (props) => {
   // ignore all filter
   if (type == 'All') return (<></>);
 
-  const imgPath = images[name.toLowerCase().replace(/ /g, '_')];
+  const imgPath = serviceImages[name.toLowerCase().replace(/ /g, '_')];
 
   return (
     <Card className={styles.serviceCard} component={Link} to={path || '/'}>

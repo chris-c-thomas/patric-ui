@@ -1,8 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import clsx from 'clsx';
-import { Link } from "react-router-dom";
 
-import Table from '../tables/table';
+import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -27,14 +26,10 @@ const columns = [
   {
     id: 'name',
     label: 'Name',
-    format: (val, obj) =>
-      <span>{getIcon(obj.type)} {
-        obj.type == 'folder' ? <Link to={(`/files/${obj.encodedPath}`)}>{val}</Link> : val
-      }</span>
   }, {
     id: 'size',
     label: 'Size',
-    format: (val, obj) => obj.type == 'folder' ? '-' : bytesToSize(obj.size)
+    format: val => bytesToSize(val)
   },
   {
     id: 'owner',
@@ -225,13 +220,13 @@ export default function FileList(props) {
   const {type, onSelect, noBreadCrumbs} = props;
 
   const [path, setPath] = useState(props.path);
-  const [rows, setRows] = useState(null);
+  const [objs, setObjs] = useState(null);
 
   useEffect(() => {
-    setRows(null)
+    setObjs(null)
     WS.list({path})
       .then(data => {
-        setRows(data)
+        setObjs(data)
       })
   }, [props.path])
 
@@ -262,14 +257,50 @@ export default function FileList(props) {
       <br />
 
       <div className={styles.tableWrapper}>
-        {
-          rows &&
-          <Table
-            offsetHeight="80px"
-            columns={columns}
-            rows={rows}
-          />
-        }
+        <Table stickyHeader aria-label="sticky table" size="small">
+          <TableHead>
+            <TableRow>
+              {columns.map(column => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {/* if not top level, include parent folder button,  */
+              getLevel() > 1 &&
+              <TableRow onDoubleClick={backDir}>
+                <TableCell colSpan="100%">
+                  <IconButton onClick={backDir} size="small">
+                    <ArrowBack/>
+                  </IconButton>
+                  {' '}<a onClick={backDir}>Parent</a>
+                </TableCell>
+              </TableRow>
+            }
+
+            {/* render the rows */
+              objs &&
+              <FileListRecursive
+                objects={objs}
+                onNavigate={navigate}
+                allowedType={type}
+                onSelect={select}
+              />
+            }
+
+            {/* if folder is emtpy */
+              objs && objs.length == 0 &&
+              <EmptyFolder styles={styles}/>
+            }
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

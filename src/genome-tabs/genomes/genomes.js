@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-import Grid from '../../grids/grid'
+import Grid from '../../tables/table'
 import { listGenomes } from '../../api/data-api'
 import {toPrettyDate} from '../../utils/dates'
 

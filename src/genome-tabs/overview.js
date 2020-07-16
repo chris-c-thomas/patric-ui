@@ -13,7 +13,7 @@ import Pie from '../charts/pie';
 // import BarChart from '../charts/bar';
 
 import Subtitle from '../subtitle'
-import Table from '../grids/grid';
+import Table from '../tables/table';
 
 import {getTaxon} from '../api/data-api'
 

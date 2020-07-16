@@ -8,8 +8,7 @@ const plugins = [
       'camel2DashComponentName': false
     },
     'core'
-  ],
-  "@babel/plugin-proposal-class-properties"
+  ]
 ];
 
 module.exports = {plugins};

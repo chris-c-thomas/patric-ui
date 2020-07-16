@@ -11,6 +11,7 @@ const workspace = axios.create({
   }
 });
 
+
 const rpc = (cmd, params) => {
   const req = {
     "id": String(Math.random()).slice(2),
@@ -26,8 +27,10 @@ const rpc = (cmd, params) => {
 }
 
 function metaToObj(m) {
+  const path = m[2] + m[0]
   return {
-    path: m[2] + m[0],
+    encodedPath: path.split('/').map(p => encodeURIComponent(p)).join('/'),
+    path,
     name: m[0],
     parent: m[2],
     type: m[1],

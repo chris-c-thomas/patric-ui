@@ -12,7 +12,7 @@ import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
 import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
 
-import Table from '../grids/grid';
+import Table from '../tables/table';
 import { listJobs } from '../api/app-service';
 import { toDateTimeStr } from '../utils/units';
 
@@ -22,20 +22,14 @@ import ErrorMsg from '../error-msg';
 
 import './jobs.scss';
 import urlMapping from './url-mapping';
-import { number } from 'prop-types';
 
 
 const columns = [
   {
     id: 'status',
     label: 'Status',
-    format: val => {
-      return <span className={`${val} status-text`}>{val}</span>
-    }
-  }, {
-    id: 'submit_time',
-    label: 'Submitted',
-    format: val => toDateTimeStr(val)
+    format: val => <span className={`${val} status-text`}>{val}</span>,
+    width: '100px'
   },
   {
     id: 'app',
@@ -50,7 +44,7 @@ const columns = [
     id: 'id',
     label: 'Job ID',
     format: val => Number(val),
-    width: '5%'
+    width: '60px'
   },
   {
     id: 'parameters',
@@ -63,6 +57,10 @@ const columns = [
             path = `${obj.output_path}/.${name}`;
       return  <Link to={`/files${path}`}>{name}</Link>;
     }
+  }, {
+    id: 'submit_time',
+    label: 'Submitted',
+    format: val => toDateTimeStr(val)
   }, {
     id: 'start_time',
     label: 'Started',

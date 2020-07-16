@@ -4,11 +4,10 @@ import styled from 'styled-components'
 import taxonIcon from '../../assets/icons/selection-Taxonomy.svg'
 import TaxonCrumbs from './taxon-crumbs'
 
-
 export const ActionBar = () =>
   <Root>
-    <Image src={taxonIcon} className={`$green-icon`}/>
-    Taxon View
+    <Image src={taxonIcon} />
+      Taxon View
     <TaxonCrumbs />
   </Root>
 

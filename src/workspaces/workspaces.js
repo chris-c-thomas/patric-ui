@@ -1,18 +1,11 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { Link, useParams} from "react-router-dom";
+import { useParams} from "react-router-dom";
 
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
-
-import Table from '../grids/mui-table';
-
 import FileList from './file-list';
-
-import * as WS from '../api/workspace';
 
 import {bytesToSize, toDateTimeStr} from '../utils/units';
 import WSBreadCrumbs from '../utils/ui/ws-breadcrumbs';
@@ -80,7 +73,7 @@ export default function Workspaces() {
   const styles = useStyles();
 
   let { path } = useParams();
-  path = '/' + path;
+  path = '/' + decodeURIComponent(path);
 
   function onSelect() {
   }
