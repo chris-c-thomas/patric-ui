@@ -167,6 +167,7 @@ export default function ObjectSelectorDialog(props) {
             Shared with me
           </TabPanel>
           <TabPanel value={tab} index={2}>
+
             {/*<FileList path="/public/" type={type} />*/}
           </TabPanel>
           <TabPanel value={tab} index={3}>

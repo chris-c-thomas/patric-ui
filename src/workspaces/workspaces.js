@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams} from "react-router-dom";
 
@@ -11,27 +11,6 @@ import {bytesToSize, toDateTimeStr} from '../utils/units';
 import WSBreadCrumbs from '../utils/ui/ws-breadcrumbs';
 
 import './workspaces.scss';
-
-const columns = [
-  {
-    id: 'name',
-    label: 'name',
-  }, {
-    id: 'size',
-    label: 'size',
-    format: val => bytesToSize(val)
-  },
-  {
-    id: 'owner',
-    label: 'Owner',
-    format: val => val.split('@')[0]
-  },
-  {
-    id: 'created',
-    label: 'Created',
-    format: val => toDateTimeStr(val)
-  }
-]
 
 
 const useStyles = makeStyles(theme => ({
@@ -55,9 +34,6 @@ const useStyles = makeStyles(theme => ({
 
 
 function Overview(props) {
-  let { path } = useParams();
-  path = '/' + path;
-
   return (
     <Grid container>
       <Grid item xs={9}>
@@ -72,8 +48,7 @@ function Overview(props) {
 export default function Workspaces() {
   const styles = useStyles();
 
-  let { path } = useParams();
-  path = '/' + decodeURIComponent(path);
+
 
   function onSelect() {
   }
@@ -88,7 +63,6 @@ export default function Workspaces() {
         <FileList
           onSelect={onSelect}
           noBreadCrumbs={true}
-          path={path}
         />
       </Paper>
     </div>

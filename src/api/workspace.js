@@ -39,7 +39,7 @@ function metaToObj(m) {
     owner: m[5],
     size: m[6],
     priv: m[9],
-    public: m[10]
+    public: m[10] == 'r'
   };
 }
 
@@ -47,10 +47,13 @@ export function list(args) {
   if (typeof args !== 'object')
     throw Error('Workspace API: the "list" method requires an object');
 
-  const {path, type, recursive = false, showHidden = false} = args;
-
-  if (path == '/public/')
-    return listPublic(args);
+  const {
+    path,
+    type,
+    recursive = false,
+    includeHidden = false,
+    includePermissions = true
+  } = args
 
   const params = {
     "paths": [path],
@@ -64,43 +67,37 @@ export function list(args) {
       const meta = data[path];
       let objects = meta ? meta.map(m => metaToObj(m)) : [];
 
-      if (!showHidden) {
+      if (!includeHidden) {
         objects = objects.filter(obj => obj.name[0] != '.');
       }
 
-      // we want to return folders followed by files
-      const folders = objects.filter(obj => obj.type == 'folder').reverse();
-      const files = objects.filter(obj => obj.type != 'folder'). reverse();
-      return [...folders, ...files];
+      let permissionProm
+      if (includePermissions) {
+        permissionProm = listPermissions(objects.map(o => o.path))
+      }
+
+      return permissionProm.then((permHash) => {
+        // join-in permissions if requested
+        if (permHash) {
+          objects = objects.map(obj => ({...obj, permissions: permHash[obj.path]}))
+        }
+
+        // we want to return folders followed by files
+        const folders = objects.filter(obj => obj.type == 'folder').reverse();
+        const files = objects.filter(obj => obj.type != 'folder'). reverse();
+        return [...folders, ...files];
+      })
     })
 }
 
 
-export function listPublic({type, recursive = false, showHidden = false}) {
-  const params = {
-    "paths": ['/']
-  };
+function listPermissions(paths) {
+  console.log('called list permissions with', paths)
+  var objects = Array.isArray(paths) ? paths : [paths];
 
-  if (type) params.query = {type};
-
-  return rpc('ls', params)
-    .then(data => {
-      const meta = data[path];
-      let objects = meta ? meta.map(m => metaToObj(m)) : [];
-
-      if (!showHidden) {
-        objects = objects.filter(obj => obj.name[0] != '.');
-      }
-
-      // we only want truely public files (the ws api doesn't not provide this option)
-      objects = objects.filter(obj => obj.owner != auth.user)
-
-      // we want to return folders followed by files
-      const folders = objects.filter(obj => obj.type == 'folder').reverse();
-      const files = objects.filter(obj => obj.type != 'folder'). reverse();
-      return [...folders, ...files];
-    })
+  return rpc('list_permissions', {objects})
 }
+
 
 export function getUserCounts({user}) {
   const paths = [

@@ -115,6 +115,7 @@ export function Genomes() {
   const {taxonID} = useParams()
 
   useEffect(() => {
+    console.log('taxon changed:', taxonID)
     onTableCtrlChange(state)
   }, [taxonID, state])
 

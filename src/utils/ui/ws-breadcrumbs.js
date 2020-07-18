@@ -22,7 +22,6 @@ export default function BreadCrumbs() {
           const userPath = parts.slice(0, i+1).join('/')
           const path = `/files/${topLevel}/${userPath}`;
 
-
           return (
             <span key={i}>
               {i == currentLevel ? name : <Link to={path}>{name}</Link>}

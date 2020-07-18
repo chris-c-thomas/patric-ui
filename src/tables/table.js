@@ -9,7 +9,6 @@ import TableHead from '@material-ui/core/TableHead'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 
-
 import Checkbox from './checkbox'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
@@ -27,7 +26,7 @@ const exampleColumns = [
     id: '1234',
     label: 'test',
     width: '200px',
-    type: 'number'}
+    type: 'number'
   }, {
     id: 'population',
     label: 'Population',
@@ -94,7 +93,8 @@ const Row = memo(props => {
     emptyCell,
     checkboxes,
     onCheck,
-    checked
+    checked,
+    onDoubleClick
   } = props
 
   const {rowID} = row
@@ -107,7 +107,7 @@ const Row = memo(props => {
 
   return (
     <>
-      <TableRow hover tabIndex={-1} key={id} onClick={() => onCheck(rowID)}>
+      <TableRow hover tabIndex={-1} key={id} onClick={() => onCheck(rowID)} onDoubleClick={onDoubleClick}>
         {emptyCell && <Cell></Cell>}
 
         {expandable && <ExpandCell caret={caret} onCaret={onCaret} />}
@@ -151,6 +151,7 @@ const TableRows = (props) => {
     <>
       {
         rows.map((row, i) => {
+
           let subRows = []
           if (expandable && i in expanded) {
             subRows = row[expandedRowsKey].map((row, i) => {
@@ -166,7 +167,7 @@ const TableRows = (props) => {
               expandable={expandable}
               checkboxes={checkboxes}
               onExpand={onExpand}
-              {...props}
+              {...props}   /* pass on all other props else! */
             />,
             ...subRows
           ]
@@ -176,12 +177,41 @@ const TableRows = (props) => {
   )
 }
 
-
-
-export default function Grid(props) {
-
+const TableHeadComponent = (props) => {
   const {
-    onSearch, pagination, offsetHeight, onClick,
+    expandable,
+    checkboxes,
+    columns,
+    handleSelectAll,
+    allSelected
+  } = props
+
+  return (
+    <TableRow>
+      {expandable && <TableCell style={{padding: 0}} />}
+
+      {checkboxes &&
+        <TableCell style={{padding: 0}}>
+          <Checkbox checked={allSelected} onChange={handleSelectAll} />
+        </TableCell>
+      }
+
+      {columns.map((col, i) => (
+        <TableCell
+          key={col.label}
+          align={col.type == 'number' ? 'right' : col.align}
+          style={{ width: col.width }}
+        >
+          {col.label}
+        </TableCell>
+      ))}
+    </TableRow>
+  )
+}
+
+export default function TableComponent(props) {
+  const {
+    onSearch, pagination, offsetHeight, onClick, onDoubleClick,
     expandable, expandedRowsKey, checkboxes, limit = 200
   } = props
 
@@ -209,6 +239,7 @@ export default function Grid(props) {
     setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
   }, [props.rows])
 
+
   const onChangePage = (event, newPage) => {
     setPage(newPage)
 
@@ -216,10 +247,6 @@ export default function Grid(props) {
     props.onPage({page: newPage, start, limit})
   }
 
-  const handleChangeRowsPerPage = event => {
-    setRowsPerPage(+event.target.value)
-    setPage(0)
-  }
 
   const handleSelectAll = () => {
     rows.forEach(row => {
@@ -242,11 +269,11 @@ export default function Grid(props) {
   return (
     <Root>
       <CtrlContainer>
-        <div>
+        <SearchContainer>
           {onSearch &&
             <TableSearch onSearch={onSearch} />
           }
-        </div>
+        </SearchContainer>
 
         {pagination &&
           <Pagination
@@ -274,25 +301,11 @@ export default function Grid(props) {
         <Table stickyHeader aria-label="table" size="small">
 
           <TableHead style={{width: '100%'}}>
-            <TableRow>
-              {expandable && <TableCell style={{padding: 0}} />}
-
-              {checkboxes &&
-                <TableCell style={{padding: 0}}>
-                  <Checkbox checked={allSelected} onChange={handleSelectAll} />
-                </TableCell>
-              }
-
-              {columns.map((col, i) => (
-                <TableCell
-                  key={col.label}
-                  align={col.type == 'number' ? 'right' : col.align}
-                  style={{ width: col.width }}
-                >
-                  {col.label}
-                </TableCell>
-              ))}
-            </TableRow>
+            <TableHeadComponent
+              handleSelectAll={handleSelectAll}
+              allSelected={allSelected}
+              {...props}
+            />
           </TableHead>
 
           <TableBody>
@@ -300,8 +313,9 @@ export default function Grid(props) {
               rows={rows}
               columns={columns}
               checkboxes={checkboxes}
-              checked={checkedRows}
               onCheck={onCheck}
+              checked={checkedRows}
+              onDoubleClick={onDoubleClick}
               expandable={expandable}
               expandedRowsKey={expandedRowsKey}
             />
@@ -319,6 +333,7 @@ export default function Grid(props) {
 }
 
 
+
 const Root = styled.div`
 
 `
@@ -327,6 +342,10 @@ const CtrlContainer = styled.div`
   margin: 5px 10px;
   display: flex;
   justify-content: space-between;
+`
+
+const SearchContainer = styled.div`
+  width: 100%;
 `
 
 const Pagination = styled(TablePagination)`

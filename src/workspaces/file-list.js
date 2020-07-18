@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import clsx from 'clsx';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import Table from '../tables/table';
 import TableBody from '@material-ui/core/TableBody';
@@ -18,7 +18,6 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import File from '@material-ui/icons/InsertDriveFileOutlined';
 // import Contigs from '../../../../assets/icons/ws/contigs.svg';
 
-import BreadCrumbs from '../utils/ui/breadcrumbs';
 import {bytesToSize, toDateTimeStr} from '../utils/units';
 import * as WS from '../api/workspace';
 
@@ -27,21 +26,27 @@ const columns = [
   {
     id: 'name',
     label: 'Name',
+    width: '50%',
     format: (val, obj) =>
-      <span>{getIcon(obj.type)} {
-        obj.type == 'folder' ? <Link to={(`/files/${obj.encodedPath}`)}>{val}</Link> : val
-      }</span>
+      <>
+        {
+          <Link to={(`/files${obj.encodedPath}`)}>{getIcon(obj.type)} {val}</Link>
+        }
+      </>,
   }, {
     id: 'size',
     label: 'Size',
     format: (val, obj) => obj.type == 'folder' ? '-' : bytesToSize(obj.size)
-  },
-  {
+  }, {
     id: 'owner',
     label: 'Owner',
     format: val => val.split('@')[0]
-  },
-  {
+  }, {
+    id: 'permissions',
+    label: 'Members',
+    format: (perms, obj) => obj.public ?
+      'Public' : (perms.length == 1 ? 'Only me' : `${perms.length} members`)
+  }, {
     id: 'created',
     label: 'Created',
     format: val => toDateTimeStr(val)
@@ -76,13 +81,11 @@ const useStyles = makeStyles(theme => ({
 
 function getIcon(type) {
   if (type == 'folder')
-    return <span className="icon"><Folder /></span>;
-  else if (type == 'contigs') {
-    //<span style={{paddingLeft: `${24}px`}}><img src={Contigs} style={{height: '10px'}}/></span>;
-    return <span style={{paddingLeft: `${24}px`}}><File /></span>
-  } else {
-    return <span style={{paddingLeft: `${24}px`}}><File /></span>
-  }
+    return <Folder />
+  else if (type == 'contigs')
+    return <File />
+  else
+    return <File />
 }
 
 function getParentPath(path) {
@@ -222,44 +225,38 @@ function FileListRecursive(props) {
 
 export default function FileList(props) {
   const styles = useStyles();
-  const {type, onSelect, noBreadCrumbs} = props;
+  const {type, onSelect, noBreadCrumbs, isObjectSelector} = props;
 
-  const [path, setPath] = useState(props.path);
+  let path
+  if (isObjectSelector) {
+
+  } else {
+    let urlPathParam = useParams().path;
+    path = '/' + decodeURIComponent(urlPathParam)
+  }
+
   const [rows, setRows] = useState(null);
 
   useEffect(() => {
+    console.log('new path', path)
     setRows(null)
     WS.list({path})
       .then(data => {
         setRows(data)
       })
-  }, [props.path])
+  }, [path])
 
-  function navigate(path) {
-    setPath(path);
+
+  const onDoubleClick = () => {
+    console.log('here!')
   }
-
-  function select(path) {
-    if (onSelect) onSelect(path);
-  }
-
-  function backDir() {
-    setPath(getParentPath(path))
-  }
-
-  function getLevel() {
-    return path.split('/').length - 1;
-  }
-
 
   return (
     <div>
-      {
+      {/*
         !noBreadCrumbs &&
         <BreadCrumbs path={path} onNavigate={navigate}/>
-      }
-
-      <br />
+      */}
 
       <div className={styles.tableWrapper}>
         {
@@ -268,6 +265,7 @@ export default function FileList(props) {
             offsetHeight="80px"
             columns={columns}
             rows={rows}
+            onDoubleClick={onDoubleClick}
           />
         }
       </div>
