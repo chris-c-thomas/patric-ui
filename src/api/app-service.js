@@ -33,8 +33,12 @@ export function getStatus() {
 
 export function getStats() {
   return rpc('query_app_summary')
-    .then(data => {
-      return metaObjToList(data[0]);
+    .then(([data]) => {
+      return Object.keys(data).map(key => ({
+        label: `${key} (${data[key]})`,
+        value: key,
+        count: data[key],
+      })).sort((a, b) => (a.count < b.count) ? 1 : -1)
     })
 }
 

@@ -16,13 +16,13 @@ import { sortBy } from '../utils/process';
 
 import './jobs-overview.scss';
 
-const noSpaceList = ['RNA'];
 
-const formatAppName = (name) => {
-  return noSpaceList.map(str =>
-    name.replace(str, '##').replace(/([A-Z])/g, ' $1').replace('##', str)
-  )
-}
+const formatAppName = (name) =>
+  name.replace(/\w\S*/g, function(str) {
+    return str.charAt(0).toUpperCase() + str.substr(1)
+  }).replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+
 
 const facetBar = (val, max) => {
   const percent = val / max * 100;
@@ -39,21 +39,22 @@ const facetBar = (val, max) => {
   }
 }
 
+
 const JobCounts = (props) => {
   const {data} = props;
-  const max = Math.max(...data.map(o => o.value));
+  const max = Math.max(...data.map(o => o.count));
 
   return (
     <ul style={{listStyle: 'none', padding: 0}}>
       {
         data.map(obj => {
-          const {value, label, id} = obj;
+          const {label, value, count} = obj;
           return (
-            <li key={obj.id}>
-              <Link to={`/jobs/${id}`} className="flex facet">
-                <span>{formatAppName(label)}</span>
-                <span style={{marginRight: '5px'}}>{value}</span>
-                <span style={facetBar(value, max)} className="facet-bar"></span>
+            <li key={obj.label}>
+              <Link to={`/jobs/${value}`} className="flex facet">
+                <span>{formatAppName(value)}</span>
+                <span style={{marginRight: '5px'}}>{count}</span>
+                <span style={facetBar(count, max)} className="facet-bar"></span>
               </Link>
             </li>
           )

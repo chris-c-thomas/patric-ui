@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { Link, useParams } from "react-router-dom";
+import styled from 'styled-components'
+import { Link, useParams, useHistory } from "react-router-dom";
+
+import Select from 'react-select'
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -13,7 +14,7 @@ import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
 
 import Table from '../tables/table';
-import { listJobs } from '../api/app-service';
+import { listJobs, getStats } from '../api/app-service';
 import { toDateTimeStr } from '../utils/units';
 
 import { JobStatusProvider, JobStatusContext } from "./job-status-context";
@@ -73,35 +74,13 @@ const columns = [
 ]
 
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background
-  },
-  card: {
-    margin: '5px',
-    padding: '20px'
-  },
-  tableCard: {
-    height: 'calc(100% - 160px)',
-    margin: '5px',
-    position: 'relative'
-  },
-  icon: {
-    fontSize: '2em',
-    display: 'inline-block'
-  },
-}));
-
-
-function Overview(props) {
+function Toolbar(props) {
   const [state] = useContext(JobStatusContext);
-  const {app, onFilterChange} = props;
+  const {app, onFilterChange, options} = props;
 
-
-  const styles = useStyles();
   return (
-    <Grid container>
-      <Grid item xs={3}>
+    <Grid container spacing={3}>
+      <Grid item xs={2}>
         <Typography variant="h6" component="h3">
           Job Status
         </Typography>
@@ -116,41 +95,58 @@ function Overview(props) {
         }
       </Grid>
 
-      <Grid item xs={3}>
-        <QueuedIcon className={clsx(styles.icon, 'queued')}/>
-        <span className={styles.status}>{state.queued}<br/>queued</span>
+      <Grid item xs={4}>
+        <Select
+          styles={{
+            menu: (provided, state) => ({
+              ...provided,
+              zIndex: 99999
+            })
+          }}
+          options={options}
+          onChange={field => onFilterChange(field)}
+        />
       </Grid>
 
-      <Grid item xs={3}>
-        <InProgressIcon className={clsx(styles.icon, 'in-progress')}/>
-        <span className={styles.status}>{state.inProgress}<br/>in progress</span>
+      <Grid item xs={2}>
+        <Icon><QueuedIcon className="queued" /></Icon>
+        <span>{state.queued}<br/>queued</span>
       </Grid>
 
-      <Grid item xs={3}>
-        <CompletedIcon className={clsx(styles.icon, 'completed')}/>
-        <span className={styles.status}>{state.completed}<br/>completed</span>
+      <Grid item xs={2}>
+        <Icon><InProgressIcon className="in-progress" /></Icon>
+        <span>{state.inProgress}<br/>in progress</span>
+      </Grid>
+
+      <Grid item xs={2}>
+        <Icon><CompletedIcon className="completed"/></Icon>
+        <span>{state.completed}<br/>completed</span>
       </Grid>
     </Grid>
   )
 }
 
 
-
 export default function Jobs() {
-  const styles = useStyles();
   const { app } = useParams();
+  let history = useHistory();
 
   const [loading, setLoading] = useState(false)
-  const [state, setState] = useState({page: 0, start: 0, limit: 200})
+  const [state, setState] = useState({page: 0, start: 0, limit: 200, sort: null})
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(null);
   const [error, setError] = useState(null);
 
+  // param from url that filters by app
   const [appFilter, setAppFilter] = useState(app);
+
+  const [apps, setApps] = useState(null)
 
   useEffect(() => {
     setLoading(true)
-    listJobs({...state, query: {app}}).then(data => {
+
+    let params = app ? {...state, query: {app}} : state
+    listJobs(params).then(data => {
       setRows(data.jobs)
       setTotal(data.total)
       setLoading(false)
@@ -158,22 +154,41 @@ export default function Jobs() {
       setError(err)
       setLoading(false)
     })
+
   }, [state])
 
 
-  function onFilterChange(app) {
+  useEffect(() => {
+    if (!appFilter) return
 
+    history.push(`/jobs/${appFilter}`)
+  }, [appFilter])
+
+
+  useEffect(() => {
+    getStats().then(res => setApps(res))
+  }, [])
+
+  const onFilterChange = (app) => {
+    if (!app.value) return
+
+    setAppFilter(app.value)
   }
 
-  return (
-    <div className={styles.root}>
-      <Paper className={styles.card}>
-        <JobStatusProvider>
-          <Overview app={appFilter} onFilterChange={onFilterChange} />
-        </JobStatusProvider>
-      </Paper>
+  const onSort = (colObj) => {
+    setState(prev => ({...prev, sort: `+${colObj.id}`}) )
+  }
 
-      <Paper className={styles.tableCard}>
+
+  return (
+    <>
+      <Card>
+        <JobStatusProvider>
+          <Toolbar app={app} onFilterChange={onFilterChange} options={apps} />
+        </JobStatusProvider>
+      </Card>
+
+      <TableCard>
         {loading && <LinearProgress className="card-progress" /> }
         {
           rows &&
@@ -186,12 +201,29 @@ export default function Jobs() {
             rows={rows}
             total={total}
             onPage={state => setState(state)}
+            onSort={onSort}
           />
         }
         {error && <ErrorMsg error={error} />}
 
-      </Paper>
-    </div>
+      </TableCard>
+    </>
   )
 }
 
+
+const Card = styled(Paper)`
+  margin: 5px;
+  padding: 20px;
+`
+
+const TableCard = styled(Paper)`
+  height: calc(100% - 160px);
+  margin: 5px;
+  position: relative;
+`
+
+const Icon = styled.span`
+  font-size: 2em;
+  display: inline-block;
+`
