@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 
 import FileList from './file-list';
 
-import {bytesToSize, toDateTimeStr} from '../utils/units';
 import WSBreadCrumbs from '../utils/ui/ws-breadcrumbs';
 
 import './workspaces.scss';

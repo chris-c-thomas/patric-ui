@@ -104,6 +104,7 @@ const Row = memo(props => {
     setCaret(cur => !cur)
     onExpand(id)
   }
+  console.log('here')
 
   return (
     <>
@@ -183,24 +184,29 @@ const TableHeadComponent = (props) => {
     checkboxes,
     columns,
     handleSelectAll,
-    allSelected
+    allSelected,
+    onSort
   } = props
 
   return (
     <TableRow>
+      {/* if table is expandable */}
       {expandable && <TableCell style={{padding: 0}} />}
 
+      {/* if table has checkboxes (if table has sslect all checkbox) */}
       {checkboxes &&
         <TableCell style={{padding: 0}}>
           <Checkbox checked={allSelected} onChange={handleSelectAll} />
         </TableCell>
       }
 
+      {/* the main thead parts */}
       {columns.map((col, i) => (
         <TableCell
           key={col.label}
           align={col.type == 'number' ? 'right' : col.align}
           style={{ width: col.width }}
+          onClick={() => onSort(col)}
         >
           {col.label}
         </TableCell>
@@ -211,7 +217,7 @@ const TableHeadComponent = (props) => {
 
 export default function TableComponent(props) {
   const {
-    onSearch, pagination, offsetHeight, onClick, onDoubleClick,
+    onSearch, pagination, offsetHeight, onClick, onDoubleClick, onSort,
     expandable, expandedRowsKey, checkboxes, limit = 200
   } = props
 
@@ -236,6 +242,7 @@ export default function TableComponent(props) {
 
 
   useEffect(() => {
+    console.log('new data', props.rows)
     setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
   }, [props.rows])
 
@@ -365,7 +372,7 @@ const Container = styled(TableContainer)`
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 0;
-    font-size: .85em;
+    font-size: 13px;
   }
 
   & tr:nth-child(odd) {
@@ -373,7 +380,7 @@ const Container = styled(TableContainer)`
   }
 
   & .MuiTableCell-sizeSmall {
-    padding: 6px 24px 6px 2px;
+    padding: 6px 12px 6px 2px;
   }
 `
 

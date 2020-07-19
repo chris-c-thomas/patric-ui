@@ -175,19 +175,23 @@ const cachero = (params) => {
   return prom
 }
 
-export function listGenomes({query, start = 1, limit = 200, eq, select}) {
-  const params = {
-    core: 'genome',
-    sort: '-score',
-    start,
+//{core, query, start = 1, limit = 200, eq, select}
+export function listData(params) {
+  const {
+    core = 'genome',
+    sort = '-score',
+    start = 1,
     query,
     limit,
     eq,
     select,
-    solrInfo: true
-  }
+    solrInfo = true
+  } = params
 
-  return cachero(params)
+  return cachero({
+    core, sort, start, query,
+    limit, eq, select, solrInfo
+  })
 }
 
 export function getTaxon(id) {

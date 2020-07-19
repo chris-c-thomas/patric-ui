@@ -5,8 +5,8 @@ import styled from 'styled-components'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-import Grid from '../../tables/table'
-import { listGenomes } from '../../api/data-api'
+import Table from '../../tables/table'
+import { listData } from '../../api/data-api'
 import {toPrettyDate} from '../../utils/dates'
 
 import Actions from './actions'
@@ -21,7 +21,7 @@ const columnSpec = [
   },
   {type: 'number', id: 'genome_id', label: 'Genome ID'},
   {type: 'text', id: 'genome_status', label: 'Genome Status'},
-  {type: 'number', id: 'contigs', label: 'Contigs', width: '1%'},
+  {type: 'number', id: 'contigs', label: 'Contigs'},
   {type: 'number', id: 'patric_cds', label: 'Patric CDS'},
   {type: 'text', id: 'isolation_country', label: 'Isolation Country'},
   {type: 'text', id: 'host_name', label: 'Host Name', width: '10%' },
@@ -115,16 +115,11 @@ export function Genomes() {
   const {taxonID} = useParams()
 
   useEffect(() => {
-    console.log('taxon changed:', taxonID)
-    onTableCtrlChange(state)
-  }, [taxonID, state])
 
-  const onTableCtrlChange = (state) => {
     setLoading(true)
-    console.log('state', state)
 
     const params = {...state, eq: {taxon_lineage_ids: taxonID}, select: columnIDs}
-    return listGenomes(params)
+    listData(params)
       .then((res) => {
         res = res.data.response
         let data = res.docs
@@ -136,7 +131,7 @@ export function Genomes() {
         setLoading(false)
         // Todo: implement error message
       })
-  }
+  }, [state, taxonID])
 
 
   const onColumnChange = (i, showCol) => {
@@ -150,7 +145,6 @@ export function Genomes() {
 
   const onClick = (val) => {
     setShowActions(true)
-
   }
 
 
@@ -162,7 +156,7 @@ export function Genomes() {
         }
 
         {data &&
-          <Grid
+          <Table
             pagination
             page={state.page}
             limit={state.limit}
@@ -171,7 +165,7 @@ export function Genomes() {
             columns={columns}
             rows={data}
             onPage={state => setState(state)}
-            onSearch={onTableCtrlChange}
+            onSearch={state => setState(state)}
             onClick={onClick}
           />
         }
@@ -179,7 +173,6 @@ export function Genomes() {
 
       <Actions open={showActions}/>
     </Root>
-
   )
 }
 

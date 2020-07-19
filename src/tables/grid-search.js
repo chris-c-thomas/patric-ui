@@ -1,11 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Progress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
-
 
 // icons
 import Tooltip from '@material-ui/core/Tooltip';
@@ -25,7 +22,7 @@ const toLocale = str => str ? str.toLocaleString() : ''
 export default function TableControls(props) {
   const {onSearch, total, columns, onColumnChange} = props;
 
-  const [isLoading, loading] = useState(false);
+  const [isLoading, loading] = useState(props.loading);
   const limit = 200;
 
   let started = false;
@@ -36,10 +33,7 @@ export default function TableControls(props) {
   useEffect(() => {
     if (!started) return;
 
-    loading(true);
-    onSearch({query, start, limit}).then(() => {
-      loading(false);
-    })
+    onSearch({query, start, limit, page: start - 1})
   }, [debounceQuery, start]);
 
   started = true;
@@ -69,7 +63,6 @@ export default function TableControls(props) {
           </IconButton>
         </Tooltip>
 
-        {isLoading && <CircularProgress size={22} disableShrink={true} />}
       </Grid>
     </Grid>
   )
