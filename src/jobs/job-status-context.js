@@ -8,16 +8,18 @@ const JobStatusProvider = (props) => {
   const [state, setState] = useState({
     queued: '',
     inProgress: '',
-    completed: '...'
+    completed: '',
+    failed: ''
   });
 
   useEffect(() => {
     getStatus().then(status => {
       const queued = status.queued || 0,
             inProgress = status['in-progress'] || 0,
-            completed = status.completed || 0;
+            completed = status.completed || 0,
+            failed = status.failed || 0;
 
-      setState({queued, inProgress, completed})
+      setState({queued, inProgress, completed, failed})
     })
   }, [])
 

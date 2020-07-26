@@ -5,13 +5,13 @@ import { Link, useParams, useHistory } from "react-router-dom";
 import Select from 'react-select'
 
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
 import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
+import WarningIcon from '@material-ui/icons/WarningOutlined';
 
 import Table from '../tables/table';
 import { listJobs, getStats } from '../api/app-service';
@@ -21,7 +21,6 @@ import { JobStatusProvider, JobStatusContext } from "./job-status-context";
 
 import ErrorMsg from '../error-msg';
 
-import './jobs.scss';
 import urlMapping from './url-mapping';
 
 
@@ -29,7 +28,7 @@ const columns = [
   {
     id: 'status',
     label: 'Status',
-    format: val => <span className={`${val} status-text`}>{val}</span>,
+    format: val => <b className={val}>{val}</b>,
     width: '100px'
   },
   {
@@ -76,26 +75,17 @@ const columns = [
 
 function Toolbar(props) {
   const [state] = useContext(JobStatusContext);
-  const {app, onFilterChange, onDeleteChip, options} = props;
+  const {
+    onAppFilter, status, onStatusFilter, options
+  } = props;
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={2}>
-        <Typography variant="h6" component="h3">
-          Job Status
-        </Typography>
-        {
-          app && <>
-            <Chip size="small"
-              label={app}
-              onDelete={() => onDeleteChip(app)}
-              color="primary"
-            />
-          </>
-        }
+    <Grid container spacing={3} alignItems="center">
+      <Grid item xs={1}>
+        <Title>Job Status</Title>
       </Grid>
 
-      <Grid item xs={4}>
+      <Grid item xs={3}>
         <Select
           styles={{
             menu: (provided, state) => ({
@@ -103,24 +93,38 @@ function Toolbar(props) {
               zIndex: 99999
             })
           }}
+          defaultValue={{ label: "All Services", value: 'AllServices' }}
           options={options}
-          onChange={field => onFilterChange(field)}
+          onChange={field => onAppFilter(field)}
         />
       </Grid>
 
       <Grid item xs={2}>
-        <Icon><QueuedIcon className="queued" /></Icon>
-        <span>{state.queued}<br/>queued</span>
+        <StatusBtn onClick={() => onStatusFilter('queued')} active={status == 'queued'}>
+          <QueuedIcon className="queued" />
+          <p>{state.queued} queued</p>
+        </StatusBtn>
       </Grid>
 
       <Grid item xs={2}>
-        <Icon><InProgressIcon className="in-progress" /></Icon>
-        <span>{state.inProgress}<br/>in progress</span>
+        <StatusBtn onClick={() => onStatusFilter('in-progress')} active={status == 'in-progress'}>
+          <InProgressIcon className="in-progress" />
+          <p>{state.inProgress} in progress</p>
+        </StatusBtn>
       </Grid>
 
       <Grid item xs={2}>
-        <Icon><CompletedIcon className="completed"/></Icon>
-        <span>{state.completed}<br/>completed</span>
+        <StatusBtn onClick={() => onStatusFilter('completed')} active={status == 'completed'}>
+          <CompletedIcon className="completed"/>
+          <p>{state.completed} completed</p>
+        </StatusBtn>
+      </Grid>
+
+      <Grid item xs={2}>
+        <StatusBtn onClick={() => onStatusFilter('failed')} active={status == 'failed'}>
+          <WarningIcon className="failed"/>
+          <p>{state.failed} failed</p>
+        </StatusBtn>
       </Grid>
     </Grid>
   )
@@ -132,7 +136,7 @@ export default function Jobs() {
   let history = useHistory();
 
   const [loading, setLoading] = useState(false)
-  const [state, setState] = useState({page: 0, start: 0, limit: 200, sort: null})
+  const [state, setState] = useState({page: 0, start: 0, limit: 200, app: 'AllServices'})
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(null);
   const [error, setError] = useState(null);
@@ -145,7 +149,14 @@ export default function Jobs() {
   useEffect(() => {
     setLoading(true)
 
-    let params = app ? {...state, query: {app}} : state
+    let params = {
+      ...state,
+      simpleSearch: {
+        app,  // from url state
+        status: state.status,
+        search: state.query
+      }
+    }
     listJobs(params).then(data => {
       setRows(data.jobs)
       setTotal(data.total)
@@ -160,23 +171,42 @@ export default function Jobs() {
 
   useEffect(() => {
     // there may be no filter set
-    if (!appFilter) return
+    if (!appFilter) {
+      return
+    }
 
+    setState(prev => ({...prev, app: appFilter}))
     history.push(`/jobs/${appFilter}`)
   }, [appFilter])
 
 
   // data for app filter dropdown
   useEffect(() => {
-    getStats().then(res => setAppStats(res))
+    getStats().then(res => setAppStats(
+      [{label: `All Services`, value: 'AllServices'}, ...res]
+    ))
   }, [])
 
-  const onFilterChange = (filter) => {
-    setAppFilter(filter.value)
+
+  const onAppFilter = ({value}) => {
+    setAppFilter(value)
+  }
+
+  const onStatusFilter = (status) => {
+    setState(prev => ({...prev, status}))
+  }
+
+  const onRmServiceFilter = () => {
+    setState(prev => ({...prev, app: 'AllServices'}))
+    history.push(`/jobs`)
+  }
+
+  const onRmStatusFilter = () => {
+    setState(prev => ({...prev, status: ''}))
   }
 
   const onSort = (colObj) => {
-    setState(prev => ({...prev, sort: `+${colObj.id}`}) )
+    alert('no api method available')
   }
 
 
@@ -185,10 +215,11 @@ export default function Jobs() {
       <Card>
         <JobStatusProvider>
           <Toolbar
-            app={app}
             options={appStats}
-            onFilterChange={onFilterChange}
-            onDeleteChip={() => alert('need to implement')}
+            app={state.app}
+            onAppFilter={onAppFilter}
+            status={state.status}
+            onStatusFilter={onStatusFilter}
           />
         </JobStatusProvider>
       </Card>
@@ -207,6 +238,26 @@ export default function Jobs() {
             total={total}
             onPage={state => setState(state)}
             onSort={onSort}
+            onSearch={state => setState(state)}
+            searchPlaceholder={'Search files and paramaters'}
+            MiddleComponent={() => (
+              <>
+              {state.app && state.app !== 'AllServices' &&
+                <Chip size="small"
+                  label={<><b>Service:</b> {app}</>}
+                  onDelete={() => onRmServiceFilter()}
+                  color="primary"
+                />
+              }
+              {state.status &&
+                <Chip size="small"
+                  label={<><b>Status:</b> {state.status}</>}
+                  onDelete={() => onRmStatusFilter()}
+                  color="primary"
+                />
+              }
+             </>
+            )}
           />
         }
         {error && <ErrorMsg error={error} />}
@@ -228,7 +279,30 @@ const TableCard = styled(Paper)`
   position: relative;
 `
 
+const Title = styled.div`
+  font-size: 1.2em;
+`
+
+const StatusBtn = styled.a`
+  color: #444;
+  display: flex;
+  align-items: center;
+
+  & > svg {
+    font-size: 2rem;
+  }
+
+  :hover {
+    color: #444;
+    opacity: .8;
+    text-decoration: none;
+  }
+
+  ${props => props.active &&
+    'border-bottom: 3px solid #c0d3a2;'
+  }
+`
+
 const Icon = styled.span`
-  font-size: 2em;
-  display: inline-block;
+
 `

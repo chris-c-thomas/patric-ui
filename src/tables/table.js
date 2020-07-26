@@ -14,7 +14,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 
-import TableSearch from './grid-search'
+import TableSearch from './table-search'
 
 /*
 const exampleColumns = [
@@ -216,8 +216,9 @@ const TableHeadComponent = (props) => {
 
 export default function TableComponent(props) {
   const {
-    onSearch, pagination, offsetHeight, onClick, onDoubleClick, onSort,
-    expandable, expandedRowsKey, checkboxes, limit = 200
+    onSearch, pagination, offsetHeight, onClick, onDoubleClick,
+    onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
+    enableTableOptions, MiddleComponent
   } = props
 
   if (expandable && !expandedRowsKey) {
@@ -277,9 +278,21 @@ export default function TableComponent(props) {
       <CtrlContainer>
         <SearchContainer>
           {onSearch &&
-            <TableSearch onSearch={onSearch} />
+            <TableSearch
+              onSearch={onSearch}
+              enableTableOptions={enableTableOptions}
+              searchPlaceholder={props.searchPlaceholder}
+            />
           }
         </SearchContainer>
+
+
+        <MiddleComponentContainer>
+          {MiddleComponent &&
+            <MiddleComponent />
+          }
+        </MiddleComponentContainer>
+
 
         {pagination &&
           <Pagination
@@ -352,6 +365,11 @@ const CtrlContainer = styled.div`
 
 const SearchContainer = styled.div`
   width: 100%;
+`
+
+const MiddleComponentContainer = styled.div`
+  align-items: center;
+
 `
 
 const Pagination = styled(TablePagination)`

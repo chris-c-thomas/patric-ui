@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Progress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
@@ -17,10 +17,8 @@ import useDebounce from '../utils/use-debounce';
 
 
 
-const toLocale = str => str ? str.toLocaleString() : ''
-
 export default function TableControls(props) {
-  const {onSearch, total, columns, onColumnChange} = props;
+  const {onSearch, enableTableOptions, searchPlaceholder} = props;
 
   const [isLoading, loading] = useState(props.loading);
   const limit = 200;
@@ -44,26 +42,29 @@ export default function TableControls(props) {
 
       <Grid item xs={4}>
         <Input
-          placeholder="Search genomes"
+          placeholder={searchPlaceholder || 'Search keywords'}
           onChange={e => { setQuery(e.target.value); setPage(1); }}
           fullWidth
           startAdornment={<InputAdornment position="start"><SearchIcon/></InputAdornment>}
         />
       </Grid>
 
-      <Grid item xs={2}>
-        <Tooltip title="filter">
-          <IconButton aria-label="filter">
-            <FilterIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="download">
-          <IconButton aria-label="download">
-            <DownloadIcon />
-          </IconButton>
-        </Tooltip>
+      {
+        enableTableOptions &&
+        <Grid item xs={2}>
+          <Tooltip title="filter">
+            <IconButton aria-label="filter">
+              <FilterIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="download">
+            <IconButton aria-label="download">
+              <DownloadIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      }
 
-      </Grid>
     </Grid>
   )
 };

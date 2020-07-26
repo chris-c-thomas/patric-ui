@@ -167,6 +167,7 @@ export function Genomes() {
             onPage={state => setState(state)}
             onSearch={state => setState(state)}
             onClick={onClick}
+            enableTableOptions // filter and download
           />
         }
       </GridContainer>

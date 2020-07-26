@@ -40,7 +40,7 @@ export default function JobsTicker(props) {
 
   return (
     <div className={styles.root}>
-      <Box display="flex" component={Link} to="/jobs" className="no-style">
+      <Box display="flex" component={Link} to="/jobs">
         <Box m={1} className={styles.title}>
           Jobs
         </Box>

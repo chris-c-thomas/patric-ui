@@ -42,8 +42,10 @@ export function getStats() {
     })
 }
 
-export function listJobs({start = 0, limit = 200, query = {}}) {
-  return rpc('enumerate_tasks_filtered', [start, limit, query])
+
+export function listJobs({start = 0, limit = 200, simpleSearch = {}}) {
+  // note query may be null object
+  return rpc('enumerate_tasks_filtered', [start, limit, simpleSearch ? simpleSearch : {}])
     .then(data => ({
       jobs: data[0],
       total: data[1]
