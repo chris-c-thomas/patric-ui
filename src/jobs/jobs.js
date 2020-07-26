@@ -76,7 +76,7 @@ const columns = [
 
 function Toolbar(props) {
   const [state] = useContext(JobStatusContext);
-  const {app, onFilterChange, options} = props;
+  const {app, onFilterChange, onDeleteChip, options} = props;
 
   return (
     <Grid container spacing={3}>
@@ -88,7 +88,7 @@ function Toolbar(props) {
           app && <>
             <Chip size="small"
               label={app}
-              onDelete={onFilterChange(app)}
+              onDelete={() => onDeleteChip(app)}
               color="primary"
             />
           </>
@@ -140,7 +140,7 @@ export default function Jobs() {
   // param from url that filters by app
   const [appFilter, setAppFilter] = useState(app);
 
-  const [apps, setApps] = useState(null)
+  const [appStats, setAppStats] = useState(null)
 
   useEffect(() => {
     setLoading(true)
@@ -155,24 +155,24 @@ export default function Jobs() {
       setLoading(false)
     })
 
-  }, [state])
+  }, [state, app])
 
 
   useEffect(() => {
+    // there may be no filter set
     if (!appFilter) return
 
     history.push(`/jobs/${appFilter}`)
   }, [appFilter])
 
 
+  // data for app filter dropdown
   useEffect(() => {
-    getStats().then(res => setApps(res))
+    getStats().then(res => setAppStats(res))
   }, [])
 
-  const onFilterChange = (app) => {
-    if (!app.value) return
-
-    setAppFilter(app.value)
+  const onFilterChange = (filter) => {
+    setAppFilter(filter.value)
   }
 
   const onSort = (colObj) => {
@@ -184,7 +184,12 @@ export default function Jobs() {
     <>
       <Card>
         <JobStatusProvider>
-          <Toolbar app={app} onFilterChange={onFilterChange} options={apps} />
+          <Toolbar
+            app={app}
+            options={appStats}
+            onFilterChange={onFilterChange}
+            onDeleteChip={() => alert('need to implement')}
+          />
         </JobStatusProvider>
       </Card>
 

@@ -104,7 +104,6 @@ const Row = memo(props => {
     setCaret(cur => !cur)
     onExpand(id)
   }
-  console.log('here')
 
   return (
     <>
@@ -123,9 +122,9 @@ const Row = memo(props => {
       </TableRow>
     </>
   )
-}, (prev, next) =>
-  prev.row.rowID == next.row.rowID &&
-  prev.checked[prev.row.rowID] == next.checked[next.row.rowID]
+}, (prev, next) => false
+  // prev.row.rowID == next.row.rowID &&
+  // prev.checked[prev.row.rowID] == next.checked[next.row.rowID]
 )
 
 
