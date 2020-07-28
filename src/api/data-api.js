@@ -188,6 +188,7 @@ export function listData(params) {
     solrInfo = true
   } = params
 
+  console.log('calling api with start:', start)
   return cachero({
     core, sort, start, query,
     limit, eq, select, solrInfo

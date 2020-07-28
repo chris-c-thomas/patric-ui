@@ -19,12 +19,14 @@ export default function Actions({open}) {
   }, [open])
 
   return (
-    <Root >
-
+    <Root>
+      {/*
       <Button disableRipple>
-        <GroupIcon /><br/>
+        <GroupIcon />
         Group
       </Button>
+      */}
+
     </Root>
   )
 }
@@ -33,9 +35,8 @@ export default function Actions({open}) {
 const Root = styled.div`
   background: green;
   width: 80px;
-  height: calc(100% - 180px); /* todo: address this by using parent */
+  height: calc(100% - 170px); /* todo: address this by using parent */
   float: right;
-
 
   & button {
     color: #fff;

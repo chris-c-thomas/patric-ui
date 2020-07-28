@@ -1,6 +1,6 @@
 
 import React, {useState, useEffect} from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useLocation, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
@@ -105,20 +105,32 @@ const columnIDs = columns.map(obj => obj.id)
 
 
 export function Genomes() {
+  const {taxonID} = useParams()
+
+  const history = useHistory()
+  const params = new URLSearchParams(useLocation().search)
+
+  const sort = params.get('sort') || '-score'
+  const page = params.get('page') || 0
+  const query = params.get('query') || ''
+  const limit = params.get('limit') || 200
+
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
-  const [state, setState] = useState({page: 0, start: 0, limit: 200})
-
   const [total, setTotal] = useState(null)
   const [showActions, setShowActions] = useState(false)
 
-  const {taxonID} = useParams()
-
   useEffect(() => {
-
     setLoading(true)
 
-    const params = {...state, eq: {taxon_lineage_ids: taxonID}, select: columnIDs}
+    const params = {
+      sort,
+      start: page * limit,
+      query,
+      limit,
+      eq: {taxon_lineage_ids: taxonID},
+      select: columnIDs
+    }
     listData(params)
       .then((res) => {
         res = res.data.response
@@ -131,7 +143,25 @@ export function Genomes() {
         setLoading(false)
         // Todo: implement error message
       })
-  }, [state, taxonID])
+  }, [sort, page, query])
+
+  const onSort = (sortStr) => {
+    params.set('sort', sortStr)
+    history.push({search: params.toString()})
+  }
+
+  const onPage = ({page}) => {
+    params.set('page', page)
+    history.push({search: params.toString()})
+  }
+
+  const onSearch = ({query}) => {
+    // don't search if query is null
+    if (!query) return;
+
+    params.set('query', `*${query}*`)
+    history.push({search: params.toString()})
+  }
 
 
   const onColumnChange = (i, showCol) => {
@@ -158,15 +188,17 @@ export function Genomes() {
         {data &&
           <Table
             pagination
-            page={state.page}
-            limit={state.limit}
+            page={page}
+            limit={limit}
             total={total}
             checkboxes
             columns={columns}
             rows={data}
-            onPage={state => setState(state)}
-            onSearch={state => setState(state)}
+            onPage={state => onPage(state)}
+            onSearch={state => onSearch(state)}
             onClick={onClick}
+            sort={sort}
+            onSort={onSort}
             enableTableOptions // filter and download
           />
         }

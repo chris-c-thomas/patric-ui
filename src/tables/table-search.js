@@ -21,18 +21,16 @@ export default function TableControls(props) {
   const {onSearch, enableTableOptions, searchPlaceholder} = props;
 
   const [isLoading, loading] = useState(props.loading);
-  const limit = 200;
 
   let started = false;
   const [query, setQuery] = useState(null);
-  const [start, setPage] = useState(1);
   const debounceQuery = useDebounce(query, 300);
 
   useEffect(() => {
     if (!started) return;
 
-    onSearch({query, start, limit, page: start - 1})
-  }, [debounceQuery, start]);
+    onSearch({query})
+  }, [debounceQuery]);
 
   started = true;
 
@@ -43,7 +41,7 @@ export default function TableControls(props) {
       <Grid item xs={4}>
         <Input
           placeholder={searchPlaceholder || 'Search keywords'}
-          onChange={e => { setQuery(e.target.value); setPage(1); }}
+          onChange={e => { setQuery(e.target.value); }}
           fullWidth
           startAdornment={<InputAdornment position="start"><SearchIcon/></InputAdornment>}
         />

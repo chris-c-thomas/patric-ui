@@ -13,6 +13,7 @@ import Checkbox from './checkbox'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowRight from '@material-ui/icons/ArrowRight'
+import ArrowUp from '@material-ui/icons/ArrowDropUp'
 
 import TableSearch from './table-search'
 
@@ -177,6 +178,10 @@ const TableRows = (props) => {
   )
 }
 
+const getSortArrow = (colID, sort) =>
+  colID in sort && (sort[colID] == 'dsc' ? <ArrowDown /> : <ArrowUp />)
+
+
 const TableHeadComponent = (props) => {
   const {
     expandable,
@@ -184,7 +189,9 @@ const TableHeadComponent = (props) => {
     columns,
     handleSelectAll,
     allSelected,
-    onSort
+    enableSorting,
+    sortBy,
+    handleSort
   } = props
 
   return (
@@ -204,15 +211,29 @@ const TableHeadComponent = (props) => {
         <TableCell
           key={col.label}
           align={col.type == 'number' ? 'right' : col.align}
-          style={{ width: col.width }}
-          onClick={() => onSort(col)}
+          style={{ width: col.width, cursor: enableSorting ? 'pointer' : '' }}
+          onClick={() => handleSort(col)}
         >
-          {col.label}
+          {col.label} {getSortArrow(col.id, sortBy)}
         </TableCell>
       ))}
     </TableRow>
   )
 }
+
+
+const parseSort = (str) => ({
+  [str.slice(1)]: str.charAt(0) == '-' ? 'dsc' : 'asc'
+})
+
+const decodeSort = (sortObj) => {
+  if (!sortObj) return ''
+
+  const id = Object.keys(sortObj)[0],
+        order = sortObj[id]
+  return `${order == 'dsc' ? '-' : '+'}${id}`
+}
+
 
 export default function TableComponent(props) {
   const {
@@ -220,6 +241,8 @@ export default function TableComponent(props) {
     onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
     enableTableOptions, MiddleComponent
   } = props
+
+  const sort = props.sort && parseSort(props.sort)
 
   if (expandable && !expandedRowsKey) {
     throw `Grid component must have prop 'expandedRowsKey' when 'expandable is provided`
@@ -234,6 +257,8 @@ export default function TableComponent(props) {
   const [rows, setRows] = useState(props.rows)
   const [columns, setColumns] = useState(props.columns)
   const [page, setPage] = useState(props.page)
+  const [sortBy, setSortBy] = useState(sort || {})
+
   const [rowsPerPage, setRowsPerPage] = useState(200)
 
   // checkbox states
@@ -242,16 +267,22 @@ export default function TableComponent(props) {
 
 
   useEffect(() => {
-    console.log('new data', props.rows)
+    // todo: refactor/cleanup
     setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
   }, [props.rows])
+
+
+  useEffect(() => {
+    if (onSort)
+      onSort(decodeSort(sortBy))
+
+  }, [sortBy])
 
 
   const onChangePage = (event, newPage) => {
     setPage(newPage)
 
-    const start = newPage * limit + 1
-    props.onPage({page: newPage, start, limit})
+    props.onPage({page: newPage, limit})
   }
 
 
@@ -270,6 +301,10 @@ export default function TableComponent(props) {
       ...prev,
       [rowID]: !(rowID in checkedRows && checkedRows[rowID])
     }))
+  }
+
+  const handleSort = (colObj) => {
+    setSortBy(prev => ({[colObj.id]: prev[colObj.id] == 'asc' ? 'dsc' : 'asc' }))
   }
 
 
@@ -321,9 +356,14 @@ export default function TableComponent(props) {
 
           <TableHead style={{width: '100%'}}>
             <TableHeadComponent
-              handleSelectAll={handleSelectAll}
+              columns={columns}
               allSelected={allSelected}
-              {...props}
+              handleSelectAll={handleSelectAll}
+              expandable={expandable}
+              checkboxes={checkboxes}
+              enableSorting
+              sortBy={sortBy}
+              handleSort={handleSort}
             />
           </TableHead>
 
