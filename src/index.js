@@ -69,7 +69,7 @@ const App = () => {
                 <Route path="/apps/annotation" exact component={lazy(() => import('./apps/annotation'))} />
                 <Route path="/apps/assembly" exact component={lazy(() => import('./apps/assembly'))} />
                 <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/sars-cov-2'))} />
-                <Route path="/jobs/:app*" component={Jobs}/>
+                <Route path="/jobs*" component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                   <GenomeTabs />

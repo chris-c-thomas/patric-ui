@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 
-import Progress from '@material-ui/core/LinearProgress';
 import Grid from '@material-ui/core/Grid';
 
 // icons
@@ -20,24 +19,15 @@ import useDebounce from '../utils/use-debounce';
 export default function TableControls(props) {
   const {onSearch, enableTableOptions, searchPlaceholder} = props;
 
-  const [isLoading, loading] = useState(props.loading);
-
-  let started = false;
   const [query, setQuery] = useState(null);
   const debounceQuery = useDebounce(query, 300);
 
   useEffect(() => {
-    if (!started) return;
-
     onSearch({query})
   }, [debounceQuery]);
 
-  started = true;
-
   return (
     <Grid container>
-      {isLoading && <Progress className="card-progress"/>}
-
       <Grid item xs={4}>
         <Input
           placeholder={searchPlaceholder || 'Search keywords'}

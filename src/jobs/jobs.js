@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import styled from 'styled-components'
-import { Link, useParams, useHistory } from "react-router-dom";
+import { Link, useParams, useHistory, useLocation} from "react-router-dom";
 
 import Select from 'react-select'
 
@@ -76,7 +76,7 @@ const columns = [
 function Toolbar(props) {
   const [state] = useContext(JobStatusContext);
   const {
-    onAppFilter, status, onStatusFilter, options
+    app, onAppFilter, status, onStatusFilter, options
   } = props;
 
   return (
@@ -93,7 +93,7 @@ function Toolbar(props) {
               zIndex: 99999
             })
           }}
-          defaultValue={{ label: "All Services", value: 'AllServices' }}
+          defaultValue={app ? {label: app, value: app} : { label: "All Services", value: 'AllServices' }}
           options={options}
           onChange={field => onAppFilter(field)}
         />
@@ -132,29 +132,33 @@ function Toolbar(props) {
 
 
 export default function Jobs() {
-  const { app } = useParams();
   let history = useHistory();
+  const params = new URLSearchParams(useLocation().search)
+
+  const appFilter = params.get('app')
+  const app = appFilter == 'AllServices' ? null : appFilter
+  const status = params.get('status')
+  const page = params.get('page') || 0
+  const query = params.get('query') || ''
+  const limit = params.get('limit') || 200
 
   const [loading, setLoading] = useState(false)
-  const [state, setState] = useState({page: 0, start: 0, limit: 200, app: 'AllServices'})
+  // const [state, setState] = useState({app: 'AllServices'}) //page: 0, start: 0, limit: 200,
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(null);
   const [error, setError] = useState(null);
-
-  // param from url that filters by app
-  const [appFilter, setAppFilter] = useState(app);
-
   const [appStats, setAppStats] = useState(null)
+
 
   useEffect(() => {
     setLoading(true)
 
     let params = {
-      ...state,
+      start: page * limit,
       simpleSearch: {
         app,  // from url state
-        status: state.status,
-        search: state.query
+        status,
+        search: query
       }
     }
     listJobs(params).then(data => {
@@ -166,18 +170,7 @@ export default function Jobs() {
       setLoading(false)
     })
 
-  }, [state, app])
-
-
-  useEffect(() => {
-    // there may be no filter set
-    if (!appFilter) {
-      return
-    }
-
-    setState(prev => ({...prev, app: appFilter}))
-    history.push(`/jobs/${appFilter}`)
-  }, [appFilter])
+  }, [page, status, app, query])
 
 
   // data for app filter dropdown
@@ -189,20 +182,34 @@ export default function Jobs() {
 
 
   const onAppFilter = ({value}) => {
-    setAppFilter(value)
+    params.set('app', value)
+    history.push({search: params.toString()})
   }
 
-  const onStatusFilter = (status) => {
-    setState(prev => ({...prev, status}))
+  const onRmAppFilter = () => {
+    params.delete('app')
+    history.push({search: params.toString()})
   }
 
-  const onRmServiceFilter = () => {
-    setState(prev => ({...prev, app: 'AllServices'}))
-    history.push(`/jobs`)
+  const onStatusFilter = (value) => {
+    params.set('status', value)
+    history.push({search: params.toString()})
   }
 
   const onRmStatusFilter = () => {
-    setState(prev => ({...prev, status: ''}))
+    params.delete('status')
+    history.push({search: params.toString()})
+  }
+
+  const onPage = ({page}) => {
+    params.set('page', page)
+    history.push({search: params.toString()})
+  }
+
+  const onSearch = ({query}) => {
+    if (!query) params.delete('query')
+    else params.set('query', `${query}`)
+    history.push({search: params.toString()})
   }
 
   const onSort = (colObj) => {
@@ -216,9 +223,9 @@ export default function Jobs() {
         <JobStatusProvider>
           <Toolbar
             options={appStats}
-            app={state.app}
+            app={app}
             onAppFilter={onAppFilter}
-            status={state.status}
+            status={status}
             onStatusFilter={onStatusFilter}
           />
         </JobStatusProvider>
@@ -231,28 +238,28 @@ export default function Jobs() {
           <Table
             offsetHeight="80px"
             pagination
-            page={state.page}
-            limit={state.limit}
+            page={page}
+            limit={limit}
             columns={columns}
             rows={rows}
             total={total}
-            onPage={state => setState(state)}
+            onPage={onPage}
             onSort={onSort}
-            onSearch={state => setState(state)}
+            onSearch={onSearch}
             searchPlaceholder={'Search files and paramaters'}
             MiddleComponent={() => (
               <>
-              {state.app && state.app !== 'AllServices' &&
+              {app && app !== 'AllServices' &&
                 <Chip size="small"
                   label={<><b>Service:</b> {app}</>}
-                  onDelete={() => onRmServiceFilter()}
+                  onDelete={onRmAppFilter}
                   color="primary"
                 />
               }
-              {state.status &&
+              {status &&
                 <Chip size="small"
-                  label={<><b>Status:</b> {state.status}</>}
-                  onDelete={() => onRmStatusFilter()}
+                  label={<><b>Status:</b> {status}</>}
+                  onDelete={onRmStatusFilter}
                   color="primary"
                 />
               }

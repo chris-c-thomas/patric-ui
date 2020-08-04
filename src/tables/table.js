@@ -9,12 +9,13 @@ import TableHead from '@material-ui/core/TableHead'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 
-import Checkbox from './checkbox'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 
+import ColumnMenu from './column-menu'
+import Checkbox from './checkbox'
 import TableSearch from './table-search'
 
 /*
@@ -239,7 +240,8 @@ export default function TableComponent(props) {
   const {
     onSearch, pagination, offsetHeight, onClick, onDoubleClick,
     onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
-    enableTableOptions, MiddleComponent
+    enableTableOptions, columnMenu, onColumnMenuChange,
+    MiddleComponent
   } = props
 
   const sort = props.sort && parseSort(props.sort)
@@ -255,9 +257,10 @@ export default function TableComponent(props) {
 
 
   const [rows, setRows] = useState(props.rows)
-  const [columns, setColumns] = useState(props.columns)
-  const [page, setPage] = useState(props.page)
+  const [columns, setColumns] = useState(props.columns.filter(o => !o.hide))
+  const [page, setPage] = useState(Number(props.page))
   const [sortBy, setSortBy] = useState(sort || {})
+  console.log('sortBy', sortBy)
 
   const [rowsPerPage, setRowsPerPage] = useState(200)
 
@@ -273,6 +276,8 @@ export default function TableComponent(props) {
 
 
   useEffect(() => {
+    if (!Object.keys(sortBy).length) return;
+
     if (onSort)
       onSort(decodeSort(sortBy))
 
@@ -307,6 +312,10 @@ export default function TableComponent(props) {
     setSortBy(prev => ({[colObj.id]: prev[colObj.id] == 'asc' ? 'dsc' : 'asc' }))
   }
 
+  const handelColumnChange = (col, showCol) => {
+    //setColumns(props.columns.filter(o => !o.hide && (col.id == o.id && showCol == true)))
+    onColumnMenuChange(col, showCol)
+  }
 
   return (
     <Root>
@@ -349,6 +358,15 @@ export default function TableComponent(props) {
             // onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         }
+
+        {onColumnMenuChange &&
+          <ColumnMenu
+            columns={props.columns} // all columns
+            onChange={onColumnMenuChange}>
+            blah
+          </ColumnMenu>
+        }
+
       </CtrlContainer>
 
       <Container offset={offsetHeight}>

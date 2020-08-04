@@ -51,7 +51,7 @@ const JobCounts = (props) => {
           const {label, value, count} = obj;
           return (
             <li key={obj.label}>
-              <Link to={`/jobs/${value}`} className="flex facet">
+              <Link to={`/jobs/?app=${value}`} className="flex facet">
                 <span>{formatAppName(value)}</span>
                 <span style={{marginRight: '5px'}}>{count}</span>
                 <span style={facetBar(count, max)} className="facet-bar"></span>
