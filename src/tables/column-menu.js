@@ -1,53 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-  Button, Paper, Checkbox, ClickAwayListener, FormControlLabel
-} from '@material-ui/core';
+/**
+ * Todo: add column search
+ *
+*/
+import React, { useState, useEffect} from 'react';
+import styled from 'styled-components'
 
-import { grey } from '@material-ui/core/colors';
+import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
+import ClickAwayListener  from '@material-ui/core/ClickAwayListener'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 import SettingsIcon from '@material-ui/icons/Settings';
 import Caret from '@material-ui/icons/ArrowDropDown';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    position: 'relative',
-    zIndex: 9999
-  },
-  paper: {
-    position: 'absolute',
-    top: 36,
-    right: 0,
-    minWidth: '300px',
-    maxHeight: '400px',
-    overflow: 'scroll',
-    padding: theme.spacing(1)
-  },
-  fake: {
-    backgroundColor: grey[200],
-    height: theme.spacing(1),
-    margin: theme.spacing(2),
-    // Selects every two elements among any group of siblings.
-    '&:nth-child(2n)': {
-      marginRight: theme.spacing(3),
-    },
-  },
-}));
+import Checkbox from './checkbox'
 
-export default function ColumnMenu(props) {
-  const classes = useStyles();
-
+export default function ColumnMenu({columns, onChange}) {
   const [open, setOpen] = useState(false);
-  const [columns, setColumns] = useState(props.columns)
 
   const initSelected = columns.reduce((obj, col) => {
-    obj[col.data] = !col.hide || false;
+    obj[col.id] = !col.hide || false
     return obj;
   }, {})
   const [selected, setSelected] = useState(initSelected);
-
 
   const handleClick = () => {
     setOpen(prev => !prev);
@@ -57,53 +32,61 @@ export default function ColumnMenu(props) {
     setOpen(false);
   };
 
-  const handleChange = (name, i) => event => {
-    let checked = event.target.checked
+  const handleChange = (col) => {
+    const showCol = !selected[col.id]
+    const newState = {...selected, [col.id]: showCol}
+    setSelected(newState)
 
-    setSelected({...selected, [name]: checked});
-
-    // don't delay checkbox
+    // don't delete checkbox
     setTimeout(() => {
-      props.onColumnChange(i, checked);
-    });
+      onChange(col, showCol)
+    })
   };
 
-  const fake = <div className={classes.fake} />;
 
-  const controls = columns.map((col, i) => {
+  const controls = columns.map((col) => {
     return (
-      <div key={i}>
+      <div key={col.id}>
         <FormControlLabel
-          key={i}
           control={
-            <Checkbox
-              checked={selected[col.data]}
-              onChange={handleChange(col.data, i)}
-              color="primary"
-              icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-              checkedIcon={<CheckBoxIcon fontSize="small" />}
-              disableRipple
-            />
+            <Checkbox checked={selected[col.id]} onChange={() => handleChange(col)}/>
           }
-          label={col.label || col.data}
+          label={col.label || col.id}
         />
-      </div>)
+      </div>
+    )
   })
 
   return (
-    <div className={classes.root}>
+    <Root>
       <ClickAwayListener onClickAway={handleClickAway}>
         <div>
-        <Button onClick={handleClick} size="small" variant="outlined" disableRipple>
-          <SettingsIcon /> <Caret />
-        </Button>
-          {open ? (
-            <Paper className={classes.paper}>
-              {controls}
-            </Paper>
-          ) : null}
+          <Button onClick={handleClick} size="small" variant="outlined" disableRipple>
+            <SettingsIcon /> <Caret />
+          </Button>
+            {open ? (
+              <DropDown>
+                {controls}
+              </DropDown>
+            ) : null}
         </div>
       </ClickAwayListener>
-    </div>
+    </Root>
   );
 }
+
+
+const Root = styled.div`
+  position: relative;
+  z-index: 9999;
+`
+
+const DropDown = styled(Paper)`
+  position: absolute;
+  top: 36;
+  right: 0;
+  min-width: 300px;
+  max-height: 400px;
+  overflow: scroll;
+  padding: 10px;
+`

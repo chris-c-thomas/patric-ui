@@ -39,15 +39,11 @@ const exampleColumns = [
 */
 
 
-const Cell = props => {
-  const {children} = props
+const Cell = props =>
+  <TableCell {...props}>
+    {props.children}
+  </TableCell>
 
-  return (
-    <TableCell {...props}>
-      {children}
-    </TableCell>
-  )
-}
 
 
 const ExpandCell = ({caret, onCaret}) =>
@@ -228,10 +224,12 @@ const parseSort = (str) => ({
 })
 
 const decodeSort = (sortObj) => {
-  if (!sortObj) return ''
+  if (!sortObj)
+    return ''
 
   const id = Object.keys(sortObj)[0],
         order = sortObj[id]
+
   return `${order == 'dsc' ? '-' : '+'}${id}`
 }
 
@@ -278,6 +276,7 @@ export default function TableComponent(props) {
   useEffect(() => {
     if (!Object.keys(sortBy).length) return;
 
+    // sort callback
     if (onSort)
       onSort(decodeSort(sortBy))
 
@@ -286,8 +285,7 @@ export default function TableComponent(props) {
 
   const onChangePage = (event, newPage) => {
     setPage(newPage)
-
-    props.onPage({page: newPage, limit})
+    props.onPage(newPage)
   }
 
 
@@ -320,23 +318,17 @@ export default function TableComponent(props) {
   return (
     <Root>
       <CtrlContainer>
-        <SearchContainer>
-          {onSearch &&
-            <TableSearch
-              onSearch={onSearch}
-              enableTableOptions={enableTableOptions}
-              searchPlaceholder={props.searchPlaceholder}
-            />
-          }
-        </SearchContainer>
+        {onSearch &&
+          <TableSearch
+            onSearch={onSearch}
+            enableTableOptions={enableTableOptions}
+            searchPlaceholder={props.searchPlaceholder}
+          />
+        }
 
-
-        <MiddleComponentContainer>
-          {MiddleComponent &&
-            <MiddleComponent />
-          }
-        </MiddleComponentContainer>
-
+        {MiddleComponent &&
+          <MiddleComponent />
+        }
 
         {pagination &&
           <Pagination
@@ -366,13 +358,12 @@ export default function TableComponent(props) {
             blah
           </ColumnMenu>
         }
-
       </CtrlContainer>
 
       <Container offset={offsetHeight}>
         <Table stickyHeader aria-label="table" size="small">
 
-          <TableHead style={{width: '100%'}}>
+          <TableHead>
             <TableHeadComponent
               columns={columns}
               allSelected={allSelected}
@@ -418,15 +409,11 @@ const Root = styled.div`
 const CtrlContainer = styled.div`
   margin: 5px 10px;
   display: flex;
-  justify-content: space-between;
-`
-
-const SearchContainer = styled.div`
-  width: 100%;
+  align-items: center;
+  justify-content: stretch;
 `
 
 const MiddleComponentContainer = styled.div`
-  align-items: center;
 
 `
 

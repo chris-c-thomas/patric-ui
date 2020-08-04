@@ -16,30 +16,36 @@ export function signIn(username, password) {
     })
 }
 
+
 export function signOut() {
   localStorage.removeItem('token');
   if (isAdmin()) localStorage.removeItem('su-token');
   window.location.reload();
 }
 
+
 export function isSignedIn() {
   const val = localStorage.getItem('token');
   return val !== null;
 }
+
 
 export function getUser(full) {
   if (!isSignedIn()) return null;
   return getUsername(full);
 }
 
+
 export function getToken() {
   return localStorage.getItem('token');
 }
+
 
 export function isAdmin() {
   const val = localStorage.getItem('su-token');
   return val !== null;
 }
+
 
 export function suSignIn(username, password, targetUser) {
   const params = queryParams({username, password, targetUser});
@@ -53,6 +59,7 @@ export function suSignIn(username, password, targetUser) {
       window.location.reload();
     })
 }
+
 
 export function suSwitchBack() {
   storeToken('token', localStorage.getItem('su-token'));

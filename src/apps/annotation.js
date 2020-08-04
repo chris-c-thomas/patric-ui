@@ -9,7 +9,9 @@ import Selector from './components/selector';
 import TextInput from './components/text-input';
 import TaxonNameInput from './components/taxon-name';
 import TaxonIDInput from './components/taxon-id';
-import { Step, StepIcon, StepLabel } from '@material-ui/core';
+import Step from '@material-ui/core/Step';
+import StepIcon from '@material-ui/core/StepIcon';
+import StepLabel from '@material-ui/core/StepLabel';
 
 import './apps.scss';
 

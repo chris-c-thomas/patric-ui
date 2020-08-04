@@ -1,8 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react';
 import styled from 'styled-components'
-import { Link, useParams, useHistory, useLocation} from "react-router-dom";
+import { Link, useHistory, useLocation} from "react-router-dom";
 
 import Select from 'react-select'
+
+// import 'date-fns';
+// import {KeyboardDatePicker, MuiPickersUtilsProvider}  from '@material-ui/pickers';
+// import DateFnsUtils from '@date-io/date-fns';
 
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -97,6 +101,37 @@ function Toolbar(props) {
           options={options}
           onChange={field => onAppFilter(field)}
         />
+
+        {/*
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            label="Date picker inline"
+            // value={selectedDate}
+            onChange={onStartDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            label="Date picker inline"
+            // value={selectedDate}
+            onChange={onEndDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+        </MuiPickersUtilsProvider>
+        */}
+
       </Grid>
 
       <Grid item xs={2}>
@@ -192,6 +227,11 @@ export default function Jobs() {
   }
 
   const onStatusFilter = (value) => {
+    // allow deselect
+    if (status == value) {
+      onRmStatusFilter()
+      return
+    }
     params.set('status', value)
     history.push({search: params.toString()})
   }
@@ -201,7 +241,7 @@ export default function Jobs() {
     history.push({search: params.toString()})
   }
 
-  const onPage = ({page}) => {
+  const onPage = (page) => {
     params.set('page', page)
     history.push({search: params.toString()})
   }
@@ -246,7 +286,7 @@ export default function Jobs() {
             onPage={onPage}
             onSort={onSort}
             onSearch={onSearch}
-            searchPlaceholder={'Search files and paramaters'}
+            searchPlaceholder={'Search files and parameters'}
             MiddleComponent={() => (
               <>
               {app && app !== 'AllServices' &&

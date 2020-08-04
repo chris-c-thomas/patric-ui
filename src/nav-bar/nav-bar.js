@@ -15,7 +15,6 @@ import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 import SUIcon from '@material-ui/icons/SupervisedUserCircle';
 
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItem from '@material-ui/core/ListItem';
 
 
@@ -90,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const PatricLogo = () => {
+const LogoComponent = () => {
   const styles = useStyles();
   return (
     <Typography variant="h5" className={styles.brand} component={Link} to="/">
@@ -302,7 +301,7 @@ export function NavBar(props) {
     <AppBar position="static" className={styles.appBar}>
       <Toolbar variant="dense" className={styles.toolbar}>
 
-        {Logo ? <Logo /> : <PatricLogo />}
+        {Logo ? <Logo /> : <LogoComponent />}
 
         <div className={clsx(styles.menu, 'nav-bar')}>
           {spinOff ? <MenuComponnt/> : <PatricMenus />}

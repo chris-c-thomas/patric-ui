@@ -3,6 +3,7 @@ $primary-color: #2e75a3;
 body {
     font-family: 'Roboto';
     font-size: 14px;
+    background-color: #efefef;
 }
 
 p {
@@ -28,13 +29,10 @@ a.no-style {
     text-decoration: none;
 }
 
-.p4-ui {
-    background-color: #efefef;
 
-    @import './nav-bar.scss';
-    @import './general.scss';
-    @import './layout.scss';
-    @import './tables.scss';
-    @import './mui-overrides.scss';
-    @import './hottable-overrides.scss';
-}
+@import './nav-bar.scss';
+@import './general.scss';
+@import './layout.scss';
+@import './tables.scss';
+@import './mui-overrides.scss';
+

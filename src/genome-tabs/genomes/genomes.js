@@ -9,9 +9,12 @@ import Table from '../../tables/table'
 import { listData } from '../../api/data-api'
 import {toPrettyDate} from '../../utils/dates'
 
+import ErrorMsg from '../../error-msg'
 import Actions from './actions'
 
-const columnSpec = [
+
+
+const columns = [
   {
     type: 'text',
     id: 'genome_name',
@@ -41,7 +44,6 @@ const columnSpec = [
   {type: 'text', id: 'oxygen_requirement', hide: true},
   {type: 'text', id: 'owner', hide: true},
   {type: 'text', id: 'strain', hide: true},
-  {type: 'text', id: 'patric_cds', hide: true},
   {type: 'text', id: 'gc_content', hide: true},
   {type: 'text', id: 'refseq_cds', hide: true},
   {type: 'text', id: 'gram_stain', hide: true},
@@ -50,7 +52,6 @@ const columnSpec = [
   {type: 'text', id: 'sequencing_depth', hide: true},
   {type: 'text', id: 'organism_name', hide: true},
   {type: 'text', id: 'isolation_source', hide: true},
-  {type: 'text', id: 'genome_name', hide: true},
   {type: 'text', id: 'sequencing_centers', hide: true},
   {type: 'text', id: 'genome_length', hide: true},
   {type: 'text', id: 'cell_shape', hide: true},
@@ -100,8 +101,8 @@ const columnSpec = [
 ]
 
 
-const columns = columnSpec.filter(obj => !obj.hide)
-const columnIDs = columns.map(obj => obj.id)
+const _initialColumns = columns.filter(obj => !obj.hide)
+const columnIDs = _initialColumns.map(obj => obj.id)
 
 
 export function Genomes() {
@@ -115,10 +116,14 @@ export function Genomes() {
   const query = params.get('query') || ''
   const limit = params.get('limit') || 200
 
+  const [colIDs, setColIDs] = useState(columnIDs) // currently enabled columns
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
+  const [error, setError] = useState(null)
+
   const [showActions, setShowActions] = useState(false)
+
 
   useEffect(() => {
     setLoading(true)
@@ -126,10 +131,10 @@ export function Genomes() {
     const params = {
       sort,
       start: page * limit,
-      query,
       limit,
+      query,
       eq: {taxon_lineage_ids: taxonID},
-      select: columnIDs
+      select: colIDs
     }
     listData(params)
       .then((res) => {
@@ -141,36 +146,38 @@ export function Genomes() {
         setLoading(false)
       }).catch((e) => {
         setLoading(false)
-        // Todo: implement error message
+        setError(e)
       })
-  }, [sort, page, query])
+  }, [taxonID, sort, page, query, colIDs])
+
 
   const onSort = (sortStr) => {
     params.set('sort', sortStr)
     history.push({search: params.toString()})
   }
 
-  const onPage = ({page}) => {
+  const onPage = (page) => {
     params.set('page', page)
     history.push({search: params.toString()})
   }
 
   const onSearch = ({query}) => {
     // don't search if query is null
-    if (!query) return;
+    if (!query) params.delete('query')
+    else params.set('query', `*${query}*`)
 
-    params.set('query', `*${query}*`)
     history.push({search: params.toString()})
   }
 
 
-  const onColumnChange = (i, showCol) => {
-    if (showCol) {
-      setHidden(hidden.filter(idx => idx !== i))
-      return
-    }
+  const onColumnChange = (col, showCol) => {
+    setColIDs(prev => {
+      if (showCol)
+        return [...prev, col.id]
 
-    setHidden([...hidden, i])
+      prev.splice(prev.indexOf(col.id), 1)
+      return prev
+    })
   }
 
   const onClick = (val) => {
@@ -188,20 +195,23 @@ export function Genomes() {
         {data &&
           <Table
             pagination
+            onColumnMenuChange={onColumnChange}
             page={page}
             limit={limit}
             total={total}
             checkboxes
             columns={columns}
             rows={data}
-            onPage={state => onPage(state)}
-            onSearch={state => onSearch(state)}
+            onPage={onPage}
+            onSearch={onSearch}
             onClick={onClick}
             sort={sort}
             onSort={onSort}
             enableTableOptions // filter and download
           />
         }
+
+        {error && <ErrorMsg error={error} />}
       </GridContainer>
 
       <Actions open={showActions}/>

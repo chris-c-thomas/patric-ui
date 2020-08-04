@@ -26,14 +26,13 @@ export default function Actions({open}) {
         Group
       </Button>
       */}
-
     </Root>
   )
 }
 
 
 const Root = styled.div`
-  background: green;
+  background: #6e9633;
   width: 80px;
   height: calc(100% - 170px); /* todo: address this by using parent */
   float: right;

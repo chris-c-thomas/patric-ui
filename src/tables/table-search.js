@@ -9,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
 import DownloadIcon from '@material-ui/icons/CloudDownloadOutlined';
 import FilterIcon from '@material-ui/icons/FilterListRounded';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import useDebounce from '../utils/use-debounce';
@@ -29,11 +29,15 @@ export default function TableControls(props) {
   return (
     <Grid container>
       <Grid item xs={4}>
-        <Input
+        <TextField
           placeholder={searchPlaceholder || 'Search keywords'}
           onChange={e => { setQuery(e.target.value); }}
           fullWidth
-          startAdornment={<InputAdornment position="start"><SearchIcon/></InputAdornment>}
+          InputProps={{
+            style: {height: 36},
+            startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
+          }}
+          variant="outlined"
         />
       </Grid>
 
