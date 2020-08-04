@@ -10,11 +10,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import BarChart from '../../src/charts/bar';
-import Table from '../../src/table/mui-table'
+import Table from '../../src/tables/mui-table'
 import Selector from '../../src/apps/components/selector';
 import { getUIPerfLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
-import Subtitle from '../../src/home/subtitle';
+import Subtitle from '../../src/subtitle';
 import Dialog from '../../src/dialogs/basic-dialog';
 import ErrorMsg from '../../src/error-msg';
 

@@ -2,7 +2,7 @@ import React, {useState, useEffect, useReducer} from 'react'
 import styled from 'styled-components'
 import { makeStyles } from '@material-ui/core/styles'
 
-import Subtitle from '../../src/home/subtitle'
+import Subtitle from '../../src/subtitle'
 import HeatmapCalendar from '../../components/heatmap-calendar/src/HeatmapCalendar'
 
 import Chip from '@material-ui/core/Chip'

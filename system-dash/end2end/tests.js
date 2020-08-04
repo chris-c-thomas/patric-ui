@@ -8,10 +8,10 @@ import WarningIcon from '@material-ui/icons/WarningRounded'
 import Chip from '@material-ui/core/Chip'
 
 import BarChart from '../../src/charts/bar';
-import Table from '../../src/table/mui-table'
+import Table from '../../src/tables/mui-table'
 import { getEnd2EndLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
-import Subtitle from '../../src/home/subtitle';
+import Subtitle from '../../src/subtitle';
 import Dialog from '../../src/dialogs/basic-dialog';
 import ErrorMsg from '../../src/error-msg';
 
