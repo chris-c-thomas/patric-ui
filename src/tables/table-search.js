@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
 import Grid from '@material-ui/core/Grid'
@@ -16,16 +16,31 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 
 import useDebounce from '../utils/use-debounce'
 
-
+// expand out to sophisticated parsing
+const parseRegexSearch = (search) => {
+  if (search[0] == '*')
+    search = search.slice(1)
+  if (search[search.length - 1] == '*')
+    search = search.slice(0, -1)
+  return search
+}
 
 
 export default function TableControls(props) {
-  const {onSearch, enableTableOptions, searchPlaceholder} = props
+  const didMountdRef = useRef()
 
-  const [query, setQuery] = useState(null)
+  const {search, onSearch, enableTableOptions, searchPlaceholder} = props
+
+  const [query, setQuery] = useState(parseRegexSearch(search))
   const debounceQuery = useDebounce(query, 300)
 
+
   useEffect(() => {
+    if (!didMountdRef.current) {
+      didMountdRef.current = true
+      return
+    }
+
     onSearch({query})
   }, [debounceQuery])
 
@@ -46,6 +61,7 @@ export default function TableControls(props) {
       <Grid item xs={5}>
         <TextField
           placeholder={searchPlaceholder || 'Search keywords'}
+          value={query}
           onChange={e => { setQuery(e.target.value) }}
           fullWidth
           InputProps={{

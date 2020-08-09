@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect} from 'react'
+import React, {useState, memo, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -197,7 +197,6 @@ const TableHeadComponent = (props) => {
     sortBy,
     handleSort
   } = props
-  console.log('new columns', columns)
 
   return (
     <TableRow>
@@ -254,14 +253,14 @@ const getVisibleColumns = (columns, activeColumns = null) => {
 
 
 export default function TableComponent(props) {
+  const didMountRef = useRef();
+
   const {
     onSearch, pagination, offsetHeight, onClick, onDoubleClick,
     onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
     enableTableOptions, onColumnMenuChange,
     MiddleComponent
   } = props
-
-  const sort = props.sort && parseSort(props.sort)
 
   if (expandable && !expandedRowsKey) {
     throw `Grid component must have prop 'expandedRowsKey' when 'expandable is provided`
@@ -272,10 +271,11 @@ export default function TableComponent(props) {
       page value was: ${props.page}; limit value was: ${props.limit}.`
   }
 
+
   const [rows, setRows] = useState(props.rows)
   const [columns, setColumns] = useState(getVisibleColumns(props.columns))
   const [page, setPage] = useState(Number(props.page))
-  const [sortBy, setSortBy] = useState(sort || {})
+  const [sortBy, setSortBy] = useState((props.sort && parseSort(props.sort)) || {})
 
   // keep state on shown/hidden columns
   // initial columns are defined in `columns` spec.
@@ -289,32 +289,28 @@ export default function TableComponent(props) {
 
 
   useEffect(() => {
-    // todo: refactor/cleanup
+    // todo: refactor/cleanup?
     setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
   }, [props.rows])
 
+  useEffect(() => {
+    setPage(Number(props.page))
+  }, [props.page])
 
   useEffect(() => {
-    console.log('updating columns', props.columns, activeColumns)
+    if (!props.sort) return;
+    setSortBy(parseSort(props.sort))
+  }, [props.sort])
+
+  useEffect(() => {
     setColumns(getVisibleColumns(props.columns, activeColumns))
   }, [activeColumns])
-
-
-  useEffect(() => {
-    if (!Object.keys(sortBy).length) return;
-
-    // sort callback
-    if (onSort)
-      onSort(decodeSort(sortBy))
-
-  }, [sortBy])
 
 
   const onChangePage = (event, newPage) => {
     setPage(newPage)
     props.onPage(newPage)
   }
-
 
   const handleSelectAll = () => {
     rows.forEach(row => {
@@ -334,7 +330,9 @@ export default function TableComponent(props) {
   }
 
   const handleSort = (colObj) => {
-    setSortBy(prev => ({[colObj.id]: prev[colObj.id] == 'asc' ? 'dsc' : 'asc' }))
+    const newState = {[colObj.id]: sortBy[colObj.id] == 'asc' ? 'dsc' : 'asc' }
+    if (onSort)
+      onSort(decodeSort(newState))
   }
 
   const onColumnChange = (activeCols) => {
@@ -348,6 +346,7 @@ export default function TableComponent(props) {
       <CtrlContainer>
         {onSearch &&
           <TableSearch
+            search={props.search}
             onSearch={onSearch}
             enableTableOptions={enableTableOptions}
             searchPlaceholder={props.searchPlaceholder}

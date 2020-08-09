@@ -174,9 +174,7 @@ export function Genomes() {
     history.push({search: params.toString()})
   }
 
-
   const onColumnChange = (cols) => {
-    console.log('cols', cols)
     setColIDs(cols.map(col => col.id))
   }
 
@@ -194,19 +192,21 @@ export function Genomes() {
 
         {data &&
           <Table
+            columns={columns}
+            rows={data}
             pagination
             onColumnMenuChange={onColumnChange}
             page={page}
             limit={limit}
             total={total}
-            checkboxes
-            columns={columns}
-            rows={data}
+            sort={sort}
+            search={query}
             onPage={onPage}
             onSearch={onSearch}
             onClick={onClick}
-            sort={sort}
             onSort={onSort}
+            checkboxes
+            pagination
             enableTableOptions // filter and download
           />
         }
