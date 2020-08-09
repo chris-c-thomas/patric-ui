@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/parcel/bin/cli.js serve ./src/index.html --no-autoinstall --open",
-    "build": "./node_modules/parcel/bin/cli.js build ./src/index.html --experimental-scope-hoisting --no-autoinstall",
+    "build": "./node_modules/parcel/bin/cli.js build ./src/index.html --no-autoinstall",
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html --no-autoinstall --open",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html --no-autoinstall",
     "p4-build": "parcel build ./build-p4/apps.js --no-content-hash --no-autoinstall",

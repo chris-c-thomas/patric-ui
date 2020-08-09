@@ -58,27 +58,24 @@ const ExpandCell = ({caret, onCaret}) =>
   </Cell>
 
 
-const RowCells = ({columns, row}) => {
-  return (
-    <>
-      {
-        columns.map(col => {
-          const val = row[col.id]
+const RowCells = ({columns, row}) =>
+  <>
+    {
+      columns.map(col => {
+        const val = row[col.id]
 
-          return (
-            <Cell
-              key={col.id}
-              align={col.type == 'number' ? 'right' : col.align}
-              style={{width: col.width}}
-            >
-              {col.format ? col.format(val, row) : val}
-            </Cell>
-          )
-        })
-      }
-    </>
-  )
-}
+        return (
+          <Cell
+            key={col.id}
+            align={col.type == 'number' ? 'right' : col.align}
+            style={{width: col.width}}
+          >
+            {col.format ? col.format(val, row) : (val ? val : '-')}
+          </Cell>
+        )
+      })
+    }
+  </>
 
 
 const Row = memo(props => {
@@ -176,7 +173,17 @@ const TableRows = (props) => {
 }
 
 const getSortArrow = (colID, sort) =>
-  colID in sort && (sort[colID] == 'dsc' ? <ArrowDown /> : <ArrowUp />)
+  <SortArrow>
+    {colID in sort && (sort[colID] == 'dsc' ? <ArrowDown /> : <ArrowUp />)}
+  </SortArrow>
+
+const SortArrow = styled.span`
+  position: absolute;
+  & svg {
+    width: .9em;
+    height: .9em;
+  }
+`
 
 
 const TableHeadComponent = (props) => {
@@ -190,6 +197,7 @@ const TableHeadComponent = (props) => {
     sortBy,
     handleSort
   } = props
+  console.log('new columns', columns)
 
   return (
     <TableRow>
@@ -204,9 +212,9 @@ const TableHeadComponent = (props) => {
       }
 
       {/* the main thead parts */}
-      {columns.map((col, i) => (
+      {columns.map(col => (
         <TableCell
-          key={col.label}
+          key={col.id}
           align={col.type == 'number' ? 'right' : col.align}
           style={{ width: col.width, cursor: enableSorting ? 'pointer' : '' }}
           onClick={() => handleSort(col)}
@@ -233,12 +241,23 @@ const decodeSort = (sortObj) => {
   return `${order == 'dsc' ? '-' : '+'}${id}`
 }
 
+// initial state of columns includes "hide", then shown columns is
+// controlled by showColumns (a list of column ids)
+const getVisibleColumns = (columns, activeColumns = null) => {
+  if (activeColumns) {
+    const activeIDs = activeColumns.map(o => o.id)
+    return columns.filter(o => activeIDs.includes(o.id))
+  }
+
+  return columns.filter(o => !o.hide)
+}
+
 
 export default function TableComponent(props) {
   const {
     onSearch, pagination, offsetHeight, onClick, onDoubleClick,
     onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
-    enableTableOptions, columnMenu, onColumnMenuChange,
+    enableTableOptions, onColumnMenuChange,
     MiddleComponent
   } = props
 
@@ -253,12 +272,14 @@ export default function TableComponent(props) {
       page value was: ${props.page}; limit value was: ${props.limit}.`
   }
 
-
   const [rows, setRows] = useState(props.rows)
-  const [columns, setColumns] = useState(props.columns.filter(o => !o.hide))
+  const [columns, setColumns] = useState(getVisibleColumns(props.columns))
   const [page, setPage] = useState(Number(props.page))
   const [sortBy, setSortBy] = useState(sort || {})
-  console.log('sortBy', sortBy)
+
+  // keep state on shown/hidden columns
+  // initial columns are defined in `columns` spec.
+  const [activeColumns, setActiveColumns] = useState(null)
 
   const [rowsPerPage, setRowsPerPage] = useState(200)
 
@@ -271,6 +292,12 @@ export default function TableComponent(props) {
     // todo: refactor/cleanup
     setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
   }, [props.rows])
+
+
+  useEffect(() => {
+    console.log('updating columns', props.columns, activeColumns)
+    setColumns(getVisibleColumns(props.columns, activeColumns))
+  }, [activeColumns])
 
 
   useEffect(() => {
@@ -310,10 +337,11 @@ export default function TableComponent(props) {
     setSortBy(prev => ({[colObj.id]: prev[colObj.id] == 'asc' ? 'dsc' : 'asc' }))
   }
 
-  const handelColumnChange = (col, showCol) => {
-    //setColumns(props.columns.filter(o => !o.hide && (col.id == o.id && showCol == true)))
-    onColumnMenuChange(col, showCol)
+  const onColumnChange = (activeCols) => {
+    setActiveColumns(activeCols)
+    onColumnMenuChange(activeCols)
   }
+
 
   return (
     <Root>
@@ -354,9 +382,8 @@ export default function TableComponent(props) {
         {onColumnMenuChange &&
           <ColumnMenu
             columns={props.columns} // all columns
-            onChange={onColumnMenuChange}>
-            blah
-          </ColumnMenu>
+            onChange={onColumnChange}
+          />
         }
       </CtrlContainer>
 
@@ -441,8 +468,11 @@ const Container = styled(TableContainer)`
     background: #fafafa;
   }
 
-  & .MuiTableCell-sizeSmall {
+  & td.MuiTableCell-sizeSmall {
     padding: 6px 12px 6px 2px;
+  }
+  & th.MuiTableCell-sizeSmall {
+    padding: 6px 15px 6px 2px;
   }
 `
 
