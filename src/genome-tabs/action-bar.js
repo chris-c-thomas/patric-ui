@@ -1,13 +1,15 @@
 import React from "react"
 import styled from 'styled-components'
 
+import genomeIcon from '../../assets/icons/selection-Genome.svg'
 import taxonIcon from '../../assets/icons/selection-Taxonomy.svg'
+
 import TaxonCrumbs from './taxon-crumbs'
 
-export const ActionBar = () =>
+export const ActionBar = (props) =>
   <Root>
-    <Image src={taxonIcon} />
-      Taxon View
+    <Image src={props.title.includes('Genome') ? genomeIcon : taxonIcon} />
+      {props.title}
     <TaxonCrumbs />
   </Root>
 

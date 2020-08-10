@@ -101,7 +101,7 @@ export function getAMRCounts({genomeIDs}) {
 }
 
 // todo: replace with "Query"
-export function getOverviewMeta({taxonID}) {
+export function getTaxonOverview({taxonID}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})` +
     `&facet((field,host_name),(field,disease),(field,genome_status),(field,isolation_country),(mincount,1))` +
     `&limit(1)&json(nl,map)` +
@@ -120,6 +120,10 @@ export function getOverviewMeta({taxonID}) {
     })
 }
 
+export function getGenomeMeta(genome_id) {
+  return Query({eq: {genome_id}})
+    .then(data => data[0])
+}
 
 // todo: replace with "Query"
 export function queryTaxon({query, start = 0, limit = 25}) {

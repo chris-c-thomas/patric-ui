@@ -1,24 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import { Link, useParams} from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Grid from '@material-ui/core/Grid';
+import React, {useEffect, useState} from 'react'
+import { Link, useParams} from "react-router-dom"
+import { makeStyles } from '@material-ui/core/styles'
+import styled from 'styled-components'
+import Paper from '@material-ui/core/Paper'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import Grid from '@material-ui/core/Grid'
 
-import TextField from '@material-ui/core/TextField';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import TextField from '@material-ui/core/TextField'
+import ToggleButton from '@material-ui/lab/ToggleButton'
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 
-import Pie from '../charts/pie';
-// import BarChart from '../charts/bar';
+import Pie from '../../charts/pie'
 
-import Subtitle from '../subtitle'
-import Table from '../tables/table';
+import Subtitle from '../../subtitle'
+import Table from '../../tables/table'
 
-import {getTaxon} from '../api/data-api'
+import {getTaxon} from '../../api/data-api'
 
-import {listRepresentative, getOverviewMeta, getAMRCounts} from '../api/data-api';
-import {getPubSummary, pubSearch } from '../api/ncbi-eutils-api';
+import {listRepresentative, getTaxonOverview, getAMRCounts} from '../../api/data-api'
+import {getPubSummary, pubSearch } from '../../api/ncbi-eutils-api'
 
 
 const columns = [{
@@ -29,7 +29,7 @@ const columns = [{
   id: 'genome_id',
   label: 'Genome Name',
   width: 300,
-  format: (id, row) => <Link to={`/taxonomy/${id}/overview`}>{row.genome_name}</Link>
+  format: (id, row) => <Link to={`/genome/${id}/overview`}>{row.genome_name}</Link>
 }]
 
 const useStyles = makeStyles(theme => ({
@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
       marginBottom: theme.spacing(1)
     }
   }
-}));
+}))
 
 const getTitle = taxonID => (
   <>
@@ -81,15 +81,15 @@ const getTitle = taxonID => (
 
 
 const MetaCharts = (props) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
-  const {host_name, disease, isolation_country, genome_status} = props.data;
+  const {host_name, disease, isolation_country, genome_status} = props.data
 
-  const [type, setType] = useState('host');
-  const [topN, setTopN] = useState(10);
+  const [type, setType] = useState('host')
+  const [topN, setTopN] = useState(10)
 
   return (
-    <Grid container>
+    <div>
       <ToggleButtonGroup
         value={type}
         exclusive
@@ -125,30 +125,31 @@ const MetaCharts = (props) => {
         variant="outlined"
       />
 
-      <Grid item xs={12} style={{height: '350'}}>
+      <div style={{height: 350}}>
         {type == 'host' && <Pie data={host_name.slice(0,topN)} /> }
         {type == 'disease' && <Pie data={disease.slice(0,topN)} /> }
         {type == 'country' && <Pie data={isolation_country.slice(0,topN)} /> }
         {type == 'status' && <Pie data={genome_status.slice(0,topN)} /> }
-      </Grid>
-    </Grid>
+      </div>
+
+    </div>
   )
 }
 
 const AMRChart = (props) => {
-  const {data} = props;
+  const {data} = props
 
 }
 
 const Publications = (props) => {
-  const {data} = props;
-  const classes = useStyles();
+  const {data} = props
+  const classes = useStyles()
 
   return (
     <ul className={classes.publications}>
       {
         data.map((pub, i) => {
-          const authors = pub.authors.map(author => author.name).slice(0, 3);
+          const authors = pub.authors.map(author => author.name).slice(0, 3)
 
           return (
             <li key={i}>
@@ -171,32 +172,35 @@ const Card = (props) => {
 
 
 export default function Overview() {
-  const styles = useStyles();
+  const styles = useStyles()
 
-  const {taxonID} = useParams();
+  const {taxonID} = useParams()
 
-  const [rows, setRows] = useState(null);
-  const [meta, setMeta] = useState(null);
-  const [amr, setAMR] = useState(null);
-  const [pubs, setPubs] = useState(null);
-  const [taxonName, setTaxonName] = useState(null);
-  const [error, setError] = useState(null);
+  const [rows, setRows] = useState(null)
+  const [meta, setMeta] = useState(null)
+  const [amr, setAMR] = useState(null)
+  const [pubs, setPubs] = useState(null)
+  const [taxonName, setTaxonName] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     listRepresentative({taxonID})
       .then(rows => {
+        console.log('rows', rows)
         setRows(rows)
 
         // Todo: bug:  this is wrong (also wrong on prod website)
         /*
-        const genomeIDs = rows.map(r => r.genome_id);
+        const genomeIDs = rows.map(r => r.genome_id)
         getAMRCounts({genomeIDs})
           .then(amr => setAMR(amr))
         */
       })
 
-    getOverviewMeta({taxonID})
-      .then(meta => setMeta(meta))
+    getTaxonOverview({taxonID})
+      .then(meta => {
+        setMeta(meta)
+      })
 
     if (taxonID in [2, 2157, 2759, 10239]) {
       getPubSummary()
@@ -206,7 +210,7 @@ export default function Overview() {
       pubSearch(taxonID)
         .then(pubs => setPubs(pubs))
     }
-  }, [])
+  }, [taxonID])
 
   useEffect(() => {
     getTaxon(taxonID).then(data => {
@@ -215,55 +219,47 @@ export default function Overview() {
   }, [])
 
   return (
-    <>
-      <Grid container style={{height: 'calc(100% - 200px)'}}>
+    <Root>
+      <Meta>
+        <h2>{taxonName}</h2>
+        {!rows && !error && <LinearProgress className="card-progress" /> }
+        {rows &&
+          <Table
+            columns={columns}
+            rows={rows}
+            offsetHeight="100px"
+          />
+        }
+      </Meta>
 
-        <Grid item container direction="column" xs={4}>
+      <Charts>
+        <h2>Genomes by Metadata</h2>
+        {meta && <MetaCharts data={meta}/>}
+      </Charts>
 
+      <Pubs>
+        <h2>Publications</h2>
+        {pubs && <Publications data={pubs} />}
+      </Pubs>
+    </Root>
+  )
+}
 
-          <h2>{taxonName}</h2>
-          <Paper className={styles.tableCard}>
-            {!rows && !error && <LinearProgress className="card-progress" /> }
-            {rows &&
-              <Table
-                columns={columns}
-                rows={rows}
-              />
-            }
-          </Paper>
+const Root = styled.div`
+  display: flex;
 
+  & > div {
+    margin: 10px;
+  }
+`
 
-        </Grid>
+const Meta = styled.div`
+  flex: 1.2;
+`
+const Charts = styled.div`
+  flex: 2;
+`
+const Pubs = styled.div`
+  flex: 1;
+`
 
-        <Grid item container direction="column" xs={5}>
-          <Grid item>
-            {/*
-            <div className={classes.card} style={amr ? {height: '400px'} : {}}>
-              <Typography className={classes.title} color="textSecondary" gutterBottom>
-                Genomes by Antimicrobial Resistance
-              </Typography>
-                amr &&
-                <BarChart
-                  data={amr.slice(0, 10)}
-                  keys={['Resistant','Susceptible','Intermediate']}
-                  indexBy='drug'
-                  xLabel="Antibiotic"
-                />
-            </div>
-            */}
-          </Grid>
-
-          <Grid item>
-            <h2>Genomes by Metadata</h2>
-            {meta && <MetaCharts data={meta}/>}
-          </Grid>
-        </Grid>
-
-        <Grid item container direction="column" xs={2}>
-          <h2>Publications</h2>
-          {pubs && <Publications data={pubs} />}
-        </Grid>
-      </Grid>
-    </>
-  );
-};

@@ -5,14 +5,14 @@ import styled from 'styled-components'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-import Table from '../../tables/table'
-import { listData } from '../../api/data-api'
-import {toPrettyDate} from '../../utils/dates'
+import Table from '../../../tables/table'
+import { listData } from '../../../api/data-api'
+import {toPrettyDate} from '../../../utils/dates'
 
-import ErrorMsg from '../../error-msg'
+import ErrorMsg from '../../../error-msg'
 import Actions from './actions'
 
-import FilterSidebar from '../sidebar'
+import FilterSidebar from '../../sidebar'
 
 
 const columns = [
@@ -20,7 +20,7 @@ const columns = [
     type: 'text',
     id: 'genome_name',
     label: 'Genome Name',
-    format: (_, row) => <Link to={`/genome/${row.genome_id}`}>{row.genome_name}</Link>,
+    format: (_, row) => <Link to={`/genome/${row.genome_id}/overview`}>{row.genome_name}</Link>,
     width: '20%'
   },
   {type: 'number', id: 'genome_id', label: 'Genome ID', width: '8%'},
@@ -64,6 +64,7 @@ const columns = [
   {type:'text', id: 'assembly_accession', label: 'Assembly Accession', hide: true},
   {type:'text', id: 'genbank_accessions', label: 'GenBank Accessions', hide: true},
   {type:'text', id: 'refseq_accessions', label: 'RefSeq Accessions', hide: true},
+  {type:'text', id: 'sequencing_status', label: 'Sequencing Status', hide: true},
   {type:'text', id: 'sequencing_platform', label: 'Sequencing Platform', hide: true},
   {type:'text', id: 'sequencing_depth', label: 'Sequencing Depth', hide: true},
   {type:'text', id: 'assembly_method', label: 'Assembly Method', hide: true},
@@ -106,6 +107,8 @@ const columns = [
   {type:'text', id: 'checkm_contamination', label: 'CheckM Contamination', hide: true}
 ]
 
+export {columns}
+
 let filters =  [
   {id: 'public', hideSearch: true},
   {id: 'genome_status',  hideSearch: true},
@@ -121,7 +124,6 @@ let filters =  [
 
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)
-
 
 
 
@@ -158,6 +160,7 @@ export function Genomes() {
     }
 
     setLoading(true)
+
     listData(params)
       .then((res) => {
         res = res.data.response
@@ -191,7 +194,8 @@ export function Genomes() {
   }
 
   const onFacetFilter = (query, queryStr) => {
-    params.set('filter', queryStr)
+    if (!queryStr.length) params.delete('filter')
+    else params.set('filter', queryStr)
     history.push({search: params.toString()})
   }
 

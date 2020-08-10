@@ -132,16 +132,16 @@ const Count = styled.div`
 
 
 const buildFilterString = (state) =>
-  'and(' +
+  ('and(' +
     Object.keys(state).map(field =>
       'or(' +
         Object.keys(state[field])
-          .map(name =>
-            state[field][name] ? [...acc, `eq(${field},${encodeURI(name)})`] : acc
-          , []).join(',') +
+          .map(name => `eq(${field},${encodeURI(name)})`)
+          .join(',') +
       ')'
     ).join(',') +
-  ')'.replace(/or(),/g, '')
+  ')').replace(/or\(\),*/g, '')
+      .replace(/and\(\),*/g, '')
 
 
 

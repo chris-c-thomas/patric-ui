@@ -9,15 +9,23 @@ const TaxonCrumbs = (props) => {
   const [ids, setIds] = useState(null)
   const [count, setCount] = useState(null)
 
-  const {taxonID, view} = useParams()
+  const {taxonID, view, genomeID} = useParams()
 
   useEffect(() => {
-    getTaxon(taxonID).then(data => {
+
+    // support both taxon ids and taxon id from genome_id
+    const taxID = taxonID || genomeID.split('.')[0]
+    getTaxon(taxID).then(data => {
+
       // ignore 'celluar organisms'
       setNames(data.lineage_names.slice(1))
       setIds(data.lineage_ids.slice(1))
-      setCount(data.genomes)
+
+      if (taxonID) {
+        setCount(data.genomes)
+      }
     })
+
   }, [taxonID])
 
   return (

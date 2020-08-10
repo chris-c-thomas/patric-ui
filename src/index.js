@@ -13,7 +13,8 @@ import { ThemeProvider } from '@material-ui/styles';
 // views
 import Home from './home/home';
 import Account from './user-profile/my-profile';
-import GenomeTabs from './genome-tabs/genome-tabs';
+import TaxonTabs from './genome-tabs/taxon/tabs';
+import GenomeTabs from './genome-tabs/genome/tabs';
 import Jobs from './jobs/jobs';
 import Workspaces from './workspaces/workspaces';
 import SUSignIn from './auth/su-sign-in';
@@ -72,6 +73,9 @@ const App = () => {
                 <Route path="/jobs*" component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>
+                  <TaxonTabs />
+                } />
+                <Route path="/genome/:genomeID/:view" render={() =>
                   <GenomeTabs />
                 } />
 

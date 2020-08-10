@@ -31,7 +31,6 @@ const MenuButton = ({children, open, ...props}) => {
         {props.label}
       </Button>
       <Menu
-        id="simple-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl) || Boolean(props.open)}
