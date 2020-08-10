@@ -136,8 +136,7 @@ export function query(params) {
     limit = 25,
     start,
     sort,
-    freeText, // free form
-    json
+    filter, // free rql
   } = params
 
   const eqQuery = eq ? getCompareStr('eq', eq) : null
@@ -156,6 +155,7 @@ export function query(params) {
     + (select ? `&select(${select.join(',')})` : '')
     + (start ? `&limit(${limit},${start-1})` : `&limit(${limit})`)
     + (sort ? `&sort(${sort})` : '')
+    + (filter ? `&${filter}` : '')
     // + (jsonQuery ?  `&json(${encodeURIComponent(JSON.stringify(jsonQuery))}` : '')
 
   return api.get(`/${core}/${q}`)

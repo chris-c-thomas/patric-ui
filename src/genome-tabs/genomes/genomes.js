@@ -12,6 +12,8 @@ import {toPrettyDate} from '../../utils/dates'
 import ErrorMsg from '../../error-msg'
 import Actions from './actions'
 
+import FilterSidebar from '../sidebar'
+
 
 const columns = [
   {
@@ -104,10 +106,23 @@ const columns = [
   {type:'text', id: 'checkm_contamination', label: 'CheckM Contamination', hide: true}
 ]
 
-
+let filters =  [
+  {id: 'public', hideSearch: true},
+  {id: 'genome_status',  hideSearch: true},
+  {id: 'reference_genome',  hideSearch: true},
+  {id: 'antimicrobial_resistance'},
+  {id: 'isolation_country'},
+  {id: 'host_name'},
+  {id: 'collection_year'},
+  {id: 'genome_quality'}
+].map(o =>
+  ({label: columns.filter(obj => obj.id == o.id)[0].label, ...o})
+)
 
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)
+
+
 
 
 export function Genomes() {
@@ -120,6 +135,7 @@ export function Genomes() {
   const page = params.get('page') || 0
   const query = params.get('query') || ''
   const limit = params.get('limit') || 200
+  const filter = params.get('filter') || ''
 
   const [colIDs, setColIDs] = useState(columnIDs) // currently enabled columns
   const [loading, setLoading] = useState(true)
@@ -131,16 +147,17 @@ export function Genomes() {
 
 
   useEffect(() => {
-    setLoading(true)
-
     const params = {
       sort,
       start: page * limit,
       limit,
       query,
       eq: {taxon_lineage_ids: taxonID},
+      filter: filter,
       select: colIDs
     }
+
+    setLoading(true)
     listData(params)
       .then((res) => {
         res = res.data.response
@@ -153,7 +170,7 @@ export function Genomes() {
         setLoading(false)
         setError(e)
       })
-  }, [taxonID, sort, page, query, colIDs])
+  }, [taxonID, sort, page, query, colIDs, filter])
 
 
   const onSort = (sortStr) => {
@@ -167,10 +184,14 @@ export function Genomes() {
   }
 
   const onSearch = ({query}) => {
-    // don't search if query is null
     if (!query) params.delete('query')
     else params.set('query', `*${query}*`)
 
+    history.push({search: params.toString()})
+  }
+
+  const onFacetFilter = (query, queryStr) => {
+    params.set('filter', queryStr)
     history.push({search: params.toString()})
   }
 
@@ -185,10 +206,15 @@ export function Genomes() {
 
   return (
     <Root>
+      <FilterSidebar
+        core="genome"
+        taxonID={taxonID}
+        filters={filters}
+        onChange={onFacetFilter}
+      />
+
       <GridContainer>
-        {loading &&
-          <Progress />
-        }
+        {loading && <Progress />}
 
         {data &&
           <Table
@@ -207,7 +233,7 @@ export function Genomes() {
             onSort={onSort}
             checkboxes
             pagination
-            enableTableOptions // filter and download
+            enableTableOptions
           />
         }
 
@@ -226,7 +252,12 @@ const Root = styled.div`
 
 const GridContainer = styled.div`
   padding: 0 10px;
-  width: calc(100% - 100px);
+  width: calc(100% - 340px);
+
+  @media (max-width: 960px) {
+    width: calc(100% - 90px);
+  }
+
   display: inline-block;
 `
 

@@ -15,7 +15,7 @@ import ArrowRight from '@material-ui/icons/ArrowRight'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 
 import ColumnMenu from './column-menu'
-import Checkbox from './checkbox'
+import Checkbox from '../forms/checkbox'
 import TableSearch from './table-search'
 
 /*

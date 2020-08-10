@@ -31,7 +31,7 @@ export default function TableControls(props) {
 
   const {search, onSearch, enableTableOptions, searchPlaceholder} = props
 
-  const [query, setQuery] = useState(parseRegexSearch(search))
+  const [query, setQuery] = useState(search ? parseRegexSearch(search) : '')
   const debounceQuery = useDebounce(query, 300)
 
 

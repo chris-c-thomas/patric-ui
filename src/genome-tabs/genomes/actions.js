@@ -8,8 +8,6 @@ import Button from '@material-ui/core/Button';
 import GroupIcon from '@material-ui/icons/CollectionsBookmarkOutlined'
 
 
-
-
 export default function Actions({open}) {
 
   const [show, setShow] = useState(open);
@@ -33,7 +31,7 @@ export default function Actions({open}) {
 
 const Root = styled.div`
   background: #6e9633;
-  width: 80px;
+  width: 70px;
   height: calc(100% - 170px); /* todo: address this by using parent */
   float: right;
 

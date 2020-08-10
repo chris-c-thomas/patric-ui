@@ -31,6 +31,7 @@ const useStyles = makeStyles({
     },
     'input:hover ~ &': {
       backgroundColor: '#ebf1f5',
+      outline: '2px auto rgba(0,0,0,.2)'
     },
     'input:disabled ~ &': {
       boxShadow: 'none',
@@ -70,6 +71,7 @@ const StyledCheckbox = memo((props) => {
       inputProps={{ 'aria-label': 'checkbox' }}
       checked={props.checked || false}
       onChange={props.onChange}
+      style={{padding: '0 9px'}}
     />
   );
 }, (prev, next) => prev.checked == next.checked)

@@ -138,6 +138,35 @@ export function queryTaxon({query, start = 0, limit = 25}) {
 }
 
 
+const parseFacets = (facetList) => {
+  const data = []
+
+  let obj = {}
+  for (let i = 0; i < facetList.length; i++) {
+    if (i % 2 == 0) {
+      obj.name = facetList[i]
+    } else {
+      obj.count = facetList[i]
+      data.push(obj)
+      obj = {}
+    }
+  }
+
+  return data
+}
+
+
+export function getFacets({core, taxonID, field}) {
+  const q =
+    `?eq(taxon_lineage_ids,${taxonID})&limit(1)&facet((field,${field}),(mincount,1))` +
+    `&http_accept=application/solr+json`;
+
+    return api.get(`/${core}/${q}`)
+      .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
+
+}
+
+
 export function queryTaxonID({query}) {
   const q = `?eq(taxon_id,${query})&select(taxon_id,taxon_name,lineage_names)&sort(+taxon_id)`;
 
@@ -175,6 +204,7 @@ const cachero = (params) => {
   return prom
 }
 
+
 //{core, query, start = 1, limit = 200, eq, select}
 export function listData(params) {
   const {
@@ -185,13 +215,14 @@ export function listData(params) {
     limit,
     eq,
     select,
-    solrInfo = true
+    solrInfo = true,
+    filter // free form rql
   } = params
 
   console.log('calling api with start:', start)
   return cachero({
     core, sort, start, query,
-    limit, eq, select, solrInfo
+    limit, eq, select, solrInfo, filter
   })
 }
 
