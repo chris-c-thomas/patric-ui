@@ -97,7 +97,7 @@ const App = () => {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
 
-        <NavBar spinOff MenuComponnt={SystemMenu}/>
+        <NavBar adminApp MenuComponnt={SystemMenu}/>
 
         <div className={styles.content}>
           <Switch>

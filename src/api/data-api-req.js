@@ -7,12 +7,16 @@
  **/
 
 import axios from 'axios';
-
 import config from '../config';
 const { dataAPI } = config;
+import {getToken} from './auth';
+
 
 const api = axios.create({
-  baseURL: dataAPI
+  baseURL: dataAPI,
+  headers: {
+    Authorization: getToken()
+  }
 })
 
 /**

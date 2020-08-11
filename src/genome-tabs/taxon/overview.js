@@ -263,3 +263,17 @@ const Pubs = styled.div`
   flex: 1;
 `
 
+
+
+/*
+eq(genome_id,223283.9)&limit(1)&in(annotation,(PATRIC,RefSeq))&ne(feature_type,source)&facet((pivot,(annotation,feature_type)),(mincount,0))
+eq(genome_id,223283.9)&and(eq(product,hypothetical+protein),eq(feature_type,CDS))&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&and(ne(product,hypothetical+protein),eq(feature_type,CDS))&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(property,EC*)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(go,*)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(property,Pathway)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(property,Subsystem)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(plfam_id,PLF*)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(pgfam_id,PGF*)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+eq(genome_id,223283.9)&eq(figfam_id,*)&in(annotation,(PATRIC,RefSeq))&limit(1)&facet((field,annotation),(mincount,1))&json(nl,map)
+*/

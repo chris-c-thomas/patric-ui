@@ -1,14 +1,18 @@
 import React, {useState } from "react";
 import clsx from 'clsx';
 import { Link } from "react-router-dom";
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+
+import { makeStyles } from '@material-ui/core/styles';
 import styled from 'styled-components'
+
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+
+import TextField from '@material-ui/core/TextField';
 
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
@@ -26,92 +30,27 @@ import SignInDialog from '../auth/sign-in-dialog';
 import DropdownMenu from './menu';
 
 
-const color = '#efefef';
-
-const useStyles = makeStyles(theme => ({
-  appBar: {
-    flexGrow: 1,
-    background: '#2e76a3',
-    borderTop: '3px solid #154e72',
-    position: 'fixed',
-    top: 0
-  },
-  toolbar: {
-    height: 38
-  },
-  brand: {
-    marginRight: theme.spacing(2),
-  },
-  version: {
-    fontSize: '50%',
-    color: '#e57200',
-    marginBottom: 20
-  },
-  logoImg: {
-    marginBottom: 2,
-    height: '24px'
-  },
-  menuButton: {
-    marginRight: theme.spacing(2)
-  },
-  menu: {
-    flexGrow: 1,
-    color,
-    fontSize: '.9em',
-    marginRight: '5px',
-    '& span': {
-      marginLeft: '5px',
-      color: '#fff'
-    },
-    '& svg': {
-      fontSize: '1.4em',
-
-    }
-  },
-  signInBtn: {
-    marginBottom: 2,
-    color: '#f2f2f2',
-    background: '#1e98bb',
-    '&:hover': {
-      background: '#157f9d'
-    }
-  },
-  account: {
-    color,
-    '& svg': {
-      fontSize: '1.4em'
-    }
-  },
-  accountMenu: {
-    '& svg': {
-      marginRight: 5
-    }
-  }
-}))
 
 const LogoComponent = () => {
-  const styles = useStyles();
   return (
-    <Typography variant="h5" className={styles.brand} component={Link} to="/">
-      <img src={logo} className={styles.logoImg} />
-      <span className={styles.version}></span>
+    <Typography variant="h5" className="brand" component={Link} to="/">
+      <Logo src={logo} />
+      <Version></Version>
     </Typography>
   )
 }
 
+const Logo = styled.img`
+  margin-bottom: 2px;
+  height: 24px;
+`
 
-const StyledMenuItem = withStyles((theme) => ({
-  root: {
-    'font-size': '1.05em',
-    'padding': theme.spacing(.5, 2),
-    '&:focus': {
-      backgroundColor: theme.palette.primary.main,
-      '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-        color: theme.palette.common.white,
-      },
-    },
-  },
-}))(MenuItem);
+const Version = styled.span`
+  font-size: 50%;
+  color: #e57200;
+  margin-bottom: 20;
+`
+
 
 const organisms = [
   {label: "Acinetobacter", taxon: 469},
@@ -156,7 +95,6 @@ const services = [
 
 const getMiddle = data => Math.round(data.length / 2);
 
-
 const OrganismsColumn = ({data}) =>
   <Column>
     {
@@ -169,38 +107,30 @@ const OrganismsColumn = ({data}) =>
 const ServicesColumn = ({data}) =>
   <Column>
     {
-      data.map(({label, url}) => <NavItem label={label} url={url} key={label}/>)
+      data.map(({label, url}) =>
+        <NavItem label={label} url={url} key={label}/>
+      )
     }
   </Column>
-
-
-const NavItem = ({label, url}) =>
-  <StyledMenuItem>
-    <ListItem button
-      component={Link}
-      to={url}
-      disableRipple
-      disableGutters
-    >
-      {label}
-    </ListItem>
-  </StyledMenuItem>
-
 
 const Column = styled.div`
   display: inline-block;
 `
 
-const MenuTitle = styled.div`
-  font-size: 1em;
-  background: #2e76a3;
-  color: #f2f2f2;
-  padding: 5px;
-`
+const NavItem = ({label, url}) =>
+  <ListItem button
+    component={Link}
+    to={url}
+    disableRipple
+  >
+    {label}
+  </ListItem>
+
+
 
 const PatricMenus = () => {
   return (
-    <div style={{display: 'inline-block'}}>
+    <>
       <DropdownMenu label="Organisms" menu={
         <div>
           <MenuTitle>Bacteria Pathogens</MenuTitle>
@@ -230,14 +160,43 @@ const PatricMenus = () => {
       <Button color="inherit" disableRipple component={Link} to="/jobs">
         Job Status
       </Button>
-    </div>
+    </>
   )
 }
+
+const MenuTitle = styled.div`
+  font-size: 1em;
+  background: #2e76a3;
+  color: #f2f2f2;
+  padding: 5px;
+`
+
+const useStyles = makeStyles(theme => ({
+  menu: {
+    flexGrow: 1,
+    fontSize: '.9em',
+    marginRight: '5px',
+    '& span': {
+      marginLeft: '5px',
+      color: '#fff'
+    },
+    '& svg': {
+      fontSize: '1.4em',
+
+    }
+  },
+  accountMenu: {
+    '& svg': {
+      marginRight: 5
+    }
+  }
+}))
+
 
 export function NavBar(props) {
   const styles = useStyles();
 
-  const {spinOff, MenuComponnt, Logo} = props;
+  const {isAdminApp, MenuComponnt, Logo} = props;
 
   const [openSignIn, setOpenSignIn] = useState(false);
 
@@ -298,39 +257,75 @@ export function NavBar(props) {
   );
 
   return (
-    <AppBar position="static" className={styles.appBar}>
-      <Toolbar variant="dense" className={styles.toolbar}>
+    <NavBarRoot>
+      <Toolbar variant="dense" style={{height: 38}}>
 
         {Logo ? <Logo /> : <LogoComponent />}
 
         <div className={clsx(styles.menu, 'nav-bar')}>
-          {spinOff ? <MenuComponnt/> : <PatricMenus />}
+          {isAdminApp ? <MenuComponnt/> : <PatricMenus />}
         </div>
 
-        <div className={styles.account}>
-          {Auth.isSignedIn() &&
-            <Button color="inherit" onClick={openAccountMenu} disableRipple>
-              <AccountIcon/>&nbsp;{Auth.getUser()} <CaretIcon/>
-            </Button>
-          }
+        {!isAdminApp &&
+          <Button color="inherit" onClick={openAccountMenu} disableRipple>
+            About <CaretIcon/>
+          </Button>
+        }
 
-          {!Auth.isSignedIn() && !spinOff &&
-            <Button size="small"
-              className={styles.signInBtn}
-              style={{background: "rgb(214, 137, 0)", color: '#fff'}}
-              variant="contained"
-              onClick={() => setOpenSignIn(true)}
-              disableRipple
-            >
-              Sign in&nbsp;<ExitIcon/>
-            </Button>
-          }
-        </div>
+        {Auth.isSignedIn() &&
+          <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
+            <AccountIcon/>&nbsp;{Auth.getUser()}
+          </AccountBtn>
+        }
 
-        {spinOff ? adminAccount() : userAccount()}
+        {!Auth.isSignedIn() && !isAdminApp &&
+          <SignInBtn
+            size="small"
+            style={{background: "rgb(214, 137, 0)", color: '#fff'}}
+            variant="contained"
+            onClick={() => setOpenSignIn(true)}
+            disableRipple
+          >
+            Sign in&nbsp;<ExitIcon/>
+          </SignInBtn>
+        }
+
+        {isAdminApp ? adminAccount() : userAccount()}
       </Toolbar>
 
       <SignInDialog open={openSignIn} onClose={() => setOpenSignIn(false)}/>
-    </AppBar>
+    </NavBarRoot>
   );
 };
+
+const NavBarRoot = styled(AppBar)`
+  flex-grow: 1;
+  background: '#2e76a3';
+  border-top: 3px solid #154e72;
+  position: fixed;
+  top: 0;
+
+  & .brand {
+    margin-right: 10px;
+  }
+`
+
+const SignInBtn = styled(Button)`
+  margin-bottom: 2px;
+  color: #f2f2f2;
+  background: #1e98bb;
+
+  &:hover: {
+    background: #157f9d;
+  }
+`
+
+
+const AccountBtn = styled(Button)`
+  min-width: 30px;
+`
+
+const SearchField = styled(TextField)`
+
+`
+

@@ -173,7 +173,7 @@ export default function Overview() {
   return (
     <Root>
       <Meta>
-        <Icon src={genomeIcon} /> {name}
+        <Icon src={genomeIcon} /> <MetaTitle>{name}</MetaTitle>
         {
           meta &&
           Object.keys(metaSpec).map(headerName =>
@@ -197,6 +197,11 @@ const Root = styled.div`
   & > div {
     margin: 10px;
   }
+`
+
+const MetaTitle = styled.span`
+  font-size: 1.5em;
+  margin-left: 5px;
 `
 
 const Icon = styled.img`

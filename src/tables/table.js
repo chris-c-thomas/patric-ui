@@ -448,6 +448,7 @@ const Pagination = styled(TablePagination)`
 
   & .MuiTablePagination-actions {
     user-select: none;
+    margin: 0;
   }
 `
 

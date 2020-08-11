@@ -22,6 +22,7 @@ const FilterComponent = (props) => {
   useEffect(() => {
     getFacets({field, core, taxonID})
       .then(data => {
+        console.log('data', data)
         setData(data)
       })
   }, [])
@@ -36,7 +37,10 @@ const FilterComponent = (props) => {
 
 
   return (
-    <Container>
+    <FilterRoot>
+
+      {data && data.length > 0 &&
+      <>
       <Header>
         {!enableQuery &&
           <Title>
@@ -56,7 +60,7 @@ const FilterComponent = (props) => {
           />
         }
 
-        {!enableQuery && !hideSearch &&
+        {!enableQuery && !hideSearch && data && data.length > 0 &&
           <Button onClick={() => setEnableQuery(true)}>
             <SearchIcon/>
           </Button>
@@ -65,7 +69,7 @@ const FilterComponent = (props) => {
 
       <Filters>
         {
-          data &&
+          data && data.length > 0 &&
           data.slice(0, 10).map(obj =>
             <div key={obj.name}>
               <CBContainer
@@ -84,11 +88,13 @@ const FilterComponent = (props) => {
           )
         }
       </Filters>
-    </Container>
+      </>
+      }
+    </FilterRoot>
   )
 }
 
-const Container = styled.div`
+const FilterRoot = styled.div`
   margin-bottom: 10px;
 `
 
@@ -165,25 +171,27 @@ const Sidebar = (props) => {
   }
 
   return (
-    <Root>
-      {
-        filters.map(({id, label, hideSearch}) =>
-          <FilterComponent
-            key={id}
-            field={id}
-            label={label}
-            hideSearch={hideSearch}
-            onCheck={onCheck}
-            {...props}
-          />
-        )
-      }
-    </Root>
+    <SidebarRoot>
+      <Container>
+        {
+          filters.map(({id, label, hideSearch}) =>
+            <FilterComponent
+              key={id}
+              field={id}
+              label={label}
+              hideSearch={hideSearch}
+              onCheck={onCheck}
+              {...props}
+            />
+          )
+        }
+      </Container>
+    </SidebarRoot>
   )
 }
 
 
-const Root = styled.div`
+const SidebarRoot = styled.div`
   overflow: scroll;
   background: #fff;
   width: 249px;
@@ -196,5 +204,8 @@ const Root = styled.div`
   }
 `
 
+const Container = styled.div`
+  margin-top: 30px;
+`
 
 export default Sidebar

@@ -31,12 +31,15 @@ export function isSignedIn() {
 
 
 export function getUser(full) {
-  if (!isSignedIn()) return null;
+  if (!isSignedIn())
+    return null;
   return getUsername(full);
 }
 
 
 export function getToken() {
+  if (isAdmin())
+    return localStorage.getItem('su-token');
   return localStorage.getItem('token');
 }
 

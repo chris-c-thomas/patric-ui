@@ -4,16 +4,19 @@
 */
 
 import axios from 'axios';
-
 import config from '../config';
 const { dataAPI } = config;
+import {getToken} from './auth';
 
 import { query as Query} from './data-api-req';
 
 import { metaObjToList } from '../charts/chart-helpers';
 
 const api = axios.create({
-  baseURL: dataAPI
+  baseURL: dataAPI,
+  headers: {
+    Authorization: getToken()
+  }
 })
 
 const cache = new Map()

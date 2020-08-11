@@ -16,6 +16,7 @@ export const ActionBar = (props) =>
 
 const Root = styled.div`
   padding: 1.3em 1em;
+  min-height: 30px;
 `
 
 const Image = styled.img`

@@ -127,17 +127,18 @@ const Overview = () => {
       </NoAuth>
 
       <div>
-        <Subtitle inline noUpper>
+        <Subtitle inline>
           Browse
         </Subtitle>
         <ChipBtn label="Bacteria" src={chipImages['bacteria']} to="/taxonomy/2/overview"/>
+        <ChipBtn label="Viruses" src={chipImages['bacteria']} to="/taxonomy/10239/overview"/>
         <ChipBtn label="Archaea" src={chipImages['archaea']} to="/taxonomy/2157/overview" />
         <ChipBtn label="Eukaryotic" src={chipImages['eukaryotic']} to="/taxonomy/2759/overview"/>
         <ChipBtn label="Phages" src={chipImages['phages']} to="/taxonomy/10239/overview" />
       </div>
 
       <div>
-        <Subtitle inline noUpper>
+        <Subtitle inline>
           Search
         </Subtitle>
         <TextField
