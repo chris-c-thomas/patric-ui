@@ -15,7 +15,7 @@ import { NavBar } from '../src/nav-bar/nav-bar'
 import AdminSignInForm from '../src/auth/admin-sign-in-form'
 import PrivateRoute from './private-route'
 
-// view
+// views
 import SystemStatus from './system-status/system-status'
 import Performance from './performance/ui-pref'
 import Tests from './end2end/tests'

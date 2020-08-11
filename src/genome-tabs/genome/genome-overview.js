@@ -193,6 +193,7 @@ export default function Overview() {
 
 const Root = styled.div`
   display: flex;
+  height: calc(100% - 170px);
 
   & > div {
     margin: 10px;

@@ -1,88 +1,30 @@
 import React, {useEffect, useState} from 'react'
 import { Link, useParams} from "react-router-dom"
-import { makeStyles } from '@material-ui/core/styles'
 import styled from 'styled-components'
-import Paper from '@material-ui/core/Paper'
-import LinearProgress from '@material-ui/core/LinearProgress'
-import Grid from '@material-ui/core/Grid'
 
+import LinearProgress from '@material-ui/core/LinearProgress'
 import TextField from '@material-ui/core/TextField'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 
 import Pie from '../../charts/pie'
-
-import Subtitle from '../../subtitle'
 import Table from '../../tables/table'
 
-import {getTaxon} from '../../api/data-api'
-
-import {listRepresentative, getTaxonOverview, getAMRCounts} from '../../api/data-api'
+import {getTaxon, listRepresentative, getTaxonOverview, getAMRCounts} from '../../api/data-api'
 import {getPubSummary, pubSearch } from '../../api/ncbi-eutils-api'
 
 
 const columns = [{
   id: 'reference_genome',
   label: 'Type',
-  width: 300
 }, {
   id: 'genome_id',
   label: 'Genome Name',
-  width: 300,
   format: (id, row) => <Link to={`/genome/${id}/overview`}>{row.genome_name}</Link>
 }]
 
-const useStyles = makeStyles(theme => ({
-  icon: {
-    height: '30px'
-  },
-
-  overview: {
-    marginBottom: theme.spacing(1),
-    padding: theme.spacing(2)
-  },
-  card: {
-    margin: theme.spacing(1)
-  },
-  tableCard: {
-    height: 'calc(100% - 160px)',
-    margin: '5px',
-    position: 'relative'
-  },
-
-  title: {
-    fontSize: 14,
-  },
-  overviewTable: {
-    margin: theme.spacing(1),
-    width: '100%',
-    height: '400px'
-  },
-  topN: {
-    marginLeft: theme.spacing(1),
-    marginTop: 0,
-    width: 100,
-  },
-  publications: {
-    '& li': {
-      marginBottom: theme.spacing(1)
-    }
-  }
-}))
-
-const getTitle = taxonID => (
-  <>
-    {taxonID == 2 && 'Bacteria'}
-    {taxonID == 2157 && 'Archaea'}
-    {taxonID == 2759 && 'Eukaryotic'}
-    {taxonID == 10239 && 'Viruses'}
-  </>
-)
-
 
 const MetaCharts = (props) => {
-  const classes = useStyles()
-
   const {host_name, disease, isolation_country, genome_status} = props.data
 
   const [type, setType] = useState('host')
@@ -112,12 +54,11 @@ const MetaCharts = (props) => {
         </ToggleButton>
       </ToggleButtonGroup>
 
-      <TextField
+      <TopNField
         label="Showing Top"
         value={topN}
         onChange={evt => setTopN(evt.target.value)}
         type="number"
-        className={classes.topN}
         InputLabelProps={{
           shrink: true,
         }}
@@ -136,6 +77,11 @@ const MetaCharts = (props) => {
   )
 }
 
+const TopNField = styled(TextField)`
+  margin-left: 5px;
+  margin-top: 0;
+`
+
 const AMRChart = (props) => {
   const {data} = props
 
@@ -143,10 +89,9 @@ const AMRChart = (props) => {
 
 const Publications = (props) => {
   const {data} = props
-  const classes = useStyles()
 
   return (
-    <ul className={classes.publications}>
+    <ul>
       {
         data.map((pub, i) => {
           const authors = pub.authors.map(author => author.name).slice(0, 3)
@@ -164,16 +109,8 @@ const Publications = (props) => {
   )
 }
 
-const Card = (props) => {
-  return (
-    <Paper {...props} className="no-elevation">{props.children}</Paper>
-  )
-}
-
 
 export default function Overview() {
-  const styles = useStyles()
-
   const {taxonID} = useParams()
 
   const [rows, setRows] = useState(null)
@@ -186,7 +123,6 @@ export default function Overview() {
   useEffect(() => {
     listRepresentative({taxonID})
       .then(rows => {
-        console.log('rows', rows)
         setRows(rows)
 
         // Todo: bug:  this is wrong (also wrong on prod website)
@@ -247,6 +183,7 @@ export default function Overview() {
 
 const Root = styled.div`
   display: flex;
+  height: calc(100% - 170px);
 
   & > div {
     margin: 10px;
@@ -254,7 +191,7 @@ const Root = styled.div`
 `
 
 const Meta = styled.div`
-  flex: 1.2;
+  flex: 1.4;
 `
 const Charts = styled.div`
   flex: 2;
