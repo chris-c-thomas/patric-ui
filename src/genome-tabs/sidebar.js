@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
 import Button from '@material-ui/core/Button'
@@ -12,7 +12,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '../forms/checkbox'
 
 const FilterComponent = (props) => {
-  const {field, label, core, taxonID, hideSearch, onCheck} = props
+  const {
+    field, label, core, taxonID, hideSearch,
+    onCheck, facetQueryStr = null
+  } = props
 
   const [enableQuery, setEnableQuery] = useState(false)
 
@@ -20,12 +23,12 @@ const FilterComponent = (props) => {
   const [checked, setChecked] = useState({})
 
   useEffect(() => {
-    getFacets({field, core, taxonID})
-      .then(data => {
-        console.log('data', data)
-        setData(data)
-      })
-  }, [])
+    // if facetQueryString includes field, don't update (a little bit hacky)
+    if (facetQueryStr && facetQueryStr.includes(field)) return
+
+    getFacets({field, core, taxonID, facetQueryStr: unescape(facetQueryStr)})
+      .then(data => setData(data))
+  }, [facetQueryStr])
 
   useEffect(() => {
     onCheck({field, value: checked})
@@ -136,32 +139,81 @@ const Count = styled.div`
   font-size: .8rem;
 `
 
+const getFilterCount = (obj) =>
+  Object.keys(obj).filter(k => obj[k]).length
 
-const buildFilterString = (state) =>
-  ('and(' +
-    Object.keys(state).map(field =>
-      'or(' +
-        Object.keys(state[field])
-          .map(name => `eq(${field},${encodeURI(name)})`)
+const getORStr = (state, field) =>
+  ('or(' +
+    Object.keys(state[field])
+      .reduce((acc, name) =>
+        state[field][name] ?
+          [...acc, `eq(${field},"${encodeURIComponent(name.replace(/,/g, '%2C'))}")`] : acc
+      , [])
+      .join(',') +
+  ')').replace(/,*or\(\),*/g, '')
+
+
+// todo: refactor?  lists may actually be better after all.
+const buildFilterString = (state) => {
+  let queryStr;
+
+  // first get fields that have facet filters
+  const fields = Object.keys(state)
+    .reduce((acc, k) => getFilterCount(state[k]) > 0 ? [...acc, k] : acc, [])
+
+  // eq(field,val)
+  if (fields.length == 1 && getFilterCount(state[fields[0]]) == 1) {
+    const field = fields[0]
+    const [query, _] = Object.entries(state[field])[0]
+    queryStr = `eq(${field},"${encodeURIComponent(query.replace(/,/g, '%2C'))}")`
+
+  // or(eq(field,val), ..., eq(field_n,val_n))
+  } else if (fields.length == 1) {
+    queryStr =
+      fields.map(field => getORStr(state, field))
+        .join(',')
+
+  // and(or(...), ..., or(...))
+  } else {
+    queryStr =
+      ('and(' +
+        fields.map(field => getORStr(state, field))
           .join(',') +
-      ')'
-    ).join(',') +
-  ')').replace(/or\(\),*/g, '')
-      .replace(/and\(\),*/g, '')
+      ')').replace(/,*and\(\),*/g, '')
+  }
+
+  return queryStr
+}
 
 
 
 const Sidebar = (props) => {
-  const {filters, onChange} = props
+  const {
+    filters,  // list of objects
+    onChange
+  } = props
 
   if (!onChange)
     throw '`onChange` is required a prop for the sidebar component'
 
+  let didMountRef = useRef()
+
+  // {fieldA: {facet1: true, facet2: false}, fieldB: {facet3, facet4}}
   const [query, setQuery] = useState({})
 
+  // and(or(eq(...),...))
+  const [queryStr, setQueryStr] = useState(props.facetQueryStr)
+
   useEffect(() => {
-    onChange(query, buildFilterString(query))
-  }, [query])
+    if (!didMountRef.current) {
+      didMountRef.current = true
+      return
+    }
+
+    const qStr = buildFilterString(query)
+    setQueryStr(qStr)
+    onChange(query, qStr)
+  }, [query, props.facetQueryStr])
 
   const onCheck = ({field, value}) => {
     setQuery(prev => ({
@@ -181,6 +233,7 @@ const Sidebar = (props) => {
               label={label}
               hideSearch={hideSearch}
               onCheck={onCheck}
+              facetQueryStr={queryStr}
               {...props}
             />
           )

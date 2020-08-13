@@ -160,7 +160,6 @@ export function Genomes() {
     }
 
     setLoading(true)
-
     listData(params)
       .then((res) => {
         res = res.data.response
@@ -193,10 +192,12 @@ export function Genomes() {
     history.push({search: params.toString()})
   }
 
-  const onFacetFilter = (query, queryStr) => {
+  const onFacetFilter = (queryObj, queryStr) => {
     if (!queryStr.length) params.delete('filter')
     else params.set('filter', queryStr)
-    history.push({search: params.toString()})
+
+    // note: we don't want to escape parens and commas for rql
+    history.push({search: unescape(params.toString())})
   }
 
   const onColumnChange = (cols) => {
@@ -215,6 +216,7 @@ export function Genomes() {
         taxonID={taxonID}
         filters={filters}
         onChange={onFacetFilter}
+        facetQueryStr={filter}
       />
 
       <GridContainer>

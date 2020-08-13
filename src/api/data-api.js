@@ -163,10 +163,16 @@ const parseFacets = (facetList) => {
 }
 
 
-export function getFacets({core, taxonID, field}) {
-  const q =
-    `?eq(taxon_lineage_ids,${taxonID})&limit(1)&facet((field,${field}),(mincount,1))` +
-    `&http_accept=application/solr+json`;
+export function getFacets({core, taxonID, field, facetQueryStr}) {
+  let q
+  if (facetQueryStr) {
+    q = `?and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})`
+  } else {
+    q = `?eq(taxon_lineage_ids,${taxonID})`
+  }
+
+  q += `&limit(1)&facet((field,${field}),(mincount,1))&http_accept=application/solr+json`
+
 
     return api.get(`/${core}/${q}`)
       .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
