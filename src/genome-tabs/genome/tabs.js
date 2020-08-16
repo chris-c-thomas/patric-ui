@@ -77,7 +77,6 @@ const placeHolder = (view) => <div>{view} goes here</div>
 
 export default function GenomeTabs(props) {
   const {view} = useParams()
-  console.log('view', view)
 
   return (
     <Root>

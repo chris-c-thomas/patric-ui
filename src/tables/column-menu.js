@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
 
-import Button from '@material-ui/core/button'
+import Button from '@material-ui/core/Button'
 
 import Select from 'react-select'
 import { defaultTheme } from 'react-select'
@@ -67,7 +67,7 @@ export default class ColumnMenu extends Component {
           target={
             <Button
               size="small"
-              variant="outlined"
+              variant="text"
               onClick={this.toggleOpen}
               disableRipple
             >

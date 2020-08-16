@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import Grid from '@material-ui/core/Grid'
 
 // icons
-import filterIcon from '../../assets/icons/filter.svg'
 import downloadIcon from '../../assets/icons/download.svg'
 
 import Tooltip from '@material-ui/core/Tooltip'
@@ -46,26 +45,14 @@ export default function TableControls(props) {
 
   return (
     <Grid container>
-      {
-        enableTableOptions &&
-        <Grid item>
-          <FilterBtnContainer>
-            <Tooltip title="filter">
-              <Button aria-label="filter">
-                <Icon src={filterIcon} />
-              </Button>
-            </Tooltip>
-          </FilterBtnContainer>
-        </Grid>
-      }
       <Grid item xs={5}>
-        <TextField
+        <Search
           placeholder={searchPlaceholder || 'Search keywords'}
           value={query}
           onChange={e => { setQuery(e.target.value) }}
           fullWidth
           InputProps={{
-            style: {marginTop: 4, height: 36},
+            style: {marginTop: 7, height: 30},
             startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
           }}
           variant="outlined"
@@ -87,7 +74,10 @@ export default function TableControls(props) {
   )
 }
 
-const FilterBtnContainer = styled.div`
+const Search = styled(TextField)`
+  .MuiOutlinedInput-adornedStart {
+    padding-left: 8px;
+  }
 `
 
 const Icon = styled.img`

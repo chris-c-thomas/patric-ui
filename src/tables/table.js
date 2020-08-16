@@ -8,11 +8,13 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
+import filterIcon from '../../assets/icons/filter.svg'
 
 import ColumnMenu from './column-menu'
 import Checkbox from '../forms/checkbox'
@@ -344,6 +346,16 @@ export default function TableComponent(props) {
   return (
     <Root>
       <CtrlContainer>
+
+        { enableTableOptions && props.openFilters &&
+          <Tooltip title="Show filter">
+            <ActionBtn aria-label="filter" onClick={props.onOpenFilters}>
+              <Icon src={filterIcon} />
+              <div>Filters</div>
+            </ActionBtn>
+          </Tooltip>
+        }
+
         {onSearch &&
           <TableSearch
             search={props.search}
@@ -429,11 +441,9 @@ export default function TableComponent(props) {
 
 
 const Root = styled.div`
-
 `
 
 const CtrlContainer = styled.div`
-  margin: 5px 10px;
   display: flex;
   align-items: center;
   justify-content: stretch;
@@ -472,9 +482,40 @@ const Container = styled(TableContainer)`
     padding: 6px 12px 6px 2px;
   }
   & th.MuiTableCell-sizeSmall {
-    padding: 6px 15px 6px 2px;
+    padding: 1px 15px 6px 2px;
   }
 `
+
+const ActionBtn = styled.button`
+  color: #34698e;
+  background: 0;
+  border: none;
+  margin: 1px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 3px;
+  outline: none;
+  cursor: pointer;
+
+  :hover {
+    border: 1px solid #aaa;
+    opacity: .9;
+  }
+
+  div {
+    font-size: 9px;
+    margin: 0;
+    text-align: center;
+    white-space: normal;
+    overflow: hidden;
+  }
+`
+
+
+const Icon = styled.img`
+  height: 20px;
+`
+
 
 const NoneFoundNotice = styled.div`
   height: ${props => `calc(100% - ${props.offset || '500px'})`};
@@ -483,4 +524,8 @@ const NoneFoundNotice = styled.div`
   align-items: center;
   color: #666;
   font-size: 2.0em;
+`
+
+const OpenFiltersBtn = styled.a`
+
 `

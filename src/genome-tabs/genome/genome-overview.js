@@ -110,42 +110,36 @@ for (const key of Object.keys(metaSpec)) {
   })
 }
 
-const metaTable = (headerName, spec, data) => {
+const metaTableBody = (headerName, spec, data) => {
   return (
     <>
       <MetaHeader>
-        {headerName}
+        <td colspan="2">{headerName}</td>
       </MetaHeader>
-      <MetaTable>
-        <tbody>
-          {
-            spec.map(o => data[o.id] ?
-              <tr key={o.id}>
-                <td><b>{o.label}</b></td>
-                <td>{data[o.id]}</td>
-              </tr>
-              : <></>
-            )
-          }
-        </tbody>
-      </MetaTable>
+      {
+        spec.map(o => data[o.id] ?
+          <tr key={o.id}>
+            <td style={{width: '40%'}}><b>{o.label}</b></td>
+            <td>{data[o.id]}</td>
+          </tr>
+          : <></>
+        )
+      }
     </>
   )
 }
 
-const MetaHeader = styled.div`
-  margin: 10px 0 5px 0;
-  background: #f2f2f2;
-  padding: 3px 5px;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  font-family: "Didact Gothic", Arial, Helvetica, sans-serif;
-  font-size: 1em;
+const MetaHeader = styled.tr`
+  td {
+    margin: 10px 0 5px 0;
+    background: #f2f2f2;
+    padding: 3px 5px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    font-size: 1em;
+  }
 `
 
-const MetaTable = styled.table`
-  font-size: 1em;
-`
 
 export default function Overview() {
 
@@ -165,7 +159,6 @@ export default function Overview() {
 
   useEffect(() => {
     getTaxon(genomeID.split('.')[0]).then(data => {
-      console.log('taxon data', data)
       setName(data.lineage_names[data.lineage_names.length - 1] )
     })
   }, [])
@@ -176,11 +169,13 @@ export default function Overview() {
         <Icon src={genomeIcon} /> <MetaTitle>{name}</MetaTitle>
         {
           meta &&
-          Object.keys(metaSpec).map(headerName =>
-            <div key={headerName}>
-              {metaTable(headerName, metaSpec[headerName], meta)}
-            </div>
-          )
+          <MetaTable>
+            <tbody>
+              {Object.keys(metaSpec).map(headerName =>
+                metaTableBody(headerName, metaSpec[headerName], meta)
+              )}
+            </tbody>
+          </MetaTable>
         }
       </Meta>
 
@@ -203,6 +198,10 @@ const Root = styled.div`
 const MetaTitle = styled.span`
   font-size: 1.5em;
   margin-left: 5px;
+`
+
+const MetaTable = styled.table`
+  font-size: 1em;
 `
 
 const Icon = styled.img`

@@ -13,11 +13,14 @@ div.MuiToolbar-dense {
 
 .MuiTabs-root {
   background: #fff !important;
+  min-height: 30px ;
 }
 
 .MuiTab-root {
   text-transform: none !important;
   min-width: inherit !important;
+  min-height: 30px;
+
 }
 
 .MuiButtonBase-root.Mui-selected {
@@ -25,8 +28,8 @@ div.MuiToolbar-dense {
 }
 
 .MuiTabs-indicator {
-  background-color: $primary-color !important; /* primary color */
-  transform: translateY(-45px);
+  background-color: $secondary-color;
+  transform: translateY(-35px);
 }
 
 .MuiTabs-indicator {
@@ -42,20 +45,6 @@ div.MuiToolbar-dense {
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.125);
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
-}
-
-.MuiPaper-elevation1 {
-  /* Fixme(nc): hack to make paper above selector label hack */
-  z-index: 2 !important;
-}
-
-.MuiTabs-root[orientation="vertical"] .MuiTabs-flexContainer {
-  /* Fixme(nc): hack to fix vertical tab bug */
-  flex-direction: column;
-}
-
-.MuiTabs-root[orientation="vertical"] .MuiTabs-indicator {
-  display: none;
 }
 
 .MuiButton-root,

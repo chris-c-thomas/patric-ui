@@ -1,11 +1,14 @@
 import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
+import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
+import ArrowLeft from '@material-ui/icons/KeyboardArrowLeftRounded'
 
+import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 import { getFacets } from '../api/data-api'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -190,7 +193,8 @@ const buildFilterString = (state) => {
 const Sidebar = (props) => {
   const {
     filters,  // list of objects
-    onChange
+    onChange,
+    onCollapse
   } = props
 
   if (!onChange)
@@ -204,6 +208,9 @@ const Sidebar = (props) => {
   // and(or(eq(...),...))
   const [queryStr, setQueryStr] = useState(props.facetQueryStr)
 
+  const [collapsed, setCollapsed] = useState(props.collapsed)
+  const [showApplyBtn, setShowApplyBtn] = useState(null)
+
   useEffect(() => {
     if (!didMountRef.current) {
       didMountRef.current = true
@@ -213,7 +220,15 @@ const Sidebar = (props) => {
     const qStr = buildFilterString(query)
     setQueryStr(qStr)
     onChange(query, qStr)
+
+    if (queryStr) {
+      setShowApplyBtn(true)
+    }
   }, [query, props.facetQueryStr])
+
+  useEffect(() => {
+    setCollapsed(props.collapsed)
+  }, [props.collapsed])
 
   const onCheck = ({field, value}) => {
     setQuery(prev => ({
@@ -222,8 +237,38 @@ const Sidebar = (props) => {
     }))
   }
 
+
+  const onAddFilter = () => {
+
+  }
+
+  const onApplyFilters = () => {
+
+  }
+
+  const handleCollapse = () => {
+    setCollapsed(!collapsed)
+    onCollapse(!collapsed)
+  }
+
   return (
-    <SidebarRoot>
+    <SidebarRoot collapsed={collapsed}>
+      <Options>
+        <AddFilterBtn onClick={onAddFilter}>
+          add filter
+        </AddFilterBtn>
+        {showApplyBtn &&
+          <Tooltip title="Apply filters to all views" >
+            <Button onClick={onApplyFilters} size="small">
+              <Icon src={applyIcon} /> Apply
+            </Button>
+          </Tooltip>
+        }
+        <CollapseBtn onClick={handleCollapse}>
+          <ArrowLeft />
+        </CollapseBtn>
+      </Options>
+
       <Container>
         {
           filters.map(({id, label, hideSearch}) =>
@@ -255,10 +300,29 @@ const SidebarRoot = styled.div`
   @media (max-width: 960px) {
     display: none;
   }
+
+  ${props => props.collapsed ? 'display: none' : ''}
 `
 
 const Container = styled.div`
-  margin-top: 30px;
+  margin-top: 10px;
 `
 
+const Options = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+const CollapseBtn = styled.a`
+  margin: 5px;
+  color: #444;
+`
+
+const AddFilterBtn = styled.a`
+  margin: 10px;
+`
+
+const Icon = styled.img`
+  height: 20px;
+`
 export default Sidebar

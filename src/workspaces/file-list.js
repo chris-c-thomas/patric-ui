@@ -248,7 +248,7 @@ export default function FileList(props) {
 
 
   const onDoubleClick = () => {
-    console.log('here!')
+    console.log('double click')
   }
 
   return (

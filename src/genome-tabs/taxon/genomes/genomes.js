@@ -23,12 +23,12 @@ const columns = [
     format: (_, row) => <Link to={`/genome/${row.genome_id}/overview`}>{row.genome_name}</Link>,
     width: '20%'
   },
-  {type: 'number', id: 'genome_id', label: 'Genome ID', width: '8%'},
+  {type: 'number', id: 'genome_id', label: 'Genome ID', width: '9%'},
   {type: 'text', id: 'genome_status', label: 'Genome Status', width: '8%'},
   {type: 'number', id: 'contigs', label: 'Contigs'},
   {type: 'number', id: 'patric_cds', label: 'Patric CDS'},
   {type: 'text', id: 'isolation_country', label: 'Isolation Country'},
-  {type: 'text', id: 'host_name', label: 'Host Name', width: '10%' },
+  {type: 'text', id: 'host_name', label: 'Host Name', width: '15%' },
   {type: 'number', id: 'collection_year', label: 'Collection Year'},
   {
     type: 'date',
@@ -146,6 +146,7 @@ export function Genomes() {
   const [error, setError] = useState(null)
 
   const [showActions, setShowActions] = useState(false)
+  const [fullWidth, setFullWidth] = useState(false)
 
 
   useEffect(() => {
@@ -216,14 +217,17 @@ export function Genomes() {
         taxonID={taxonID}
         filters={filters}
         onChange={onFacetFilter}
+        collapsed={fullWidth}
+        onCollapse={val => setFullWidth(val)}
         facetQueryStr={filter}
       />
 
-      <GridContainer>
+      <GridContainer fullWidth={fullWidth}>
         {loading && <Progress />}
 
         {data &&
           <Table
+            offsetHeight="220px"
             columns={columns}
             rows={data}
             pagination
@@ -240,13 +244,15 @@ export function Genomes() {
             checkboxes
             pagination
             enableTableOptions
+            openFilters={fullWidth}
+            onOpenFilters={() => setFullWidth(false)}
           />
         }
 
         {error && <ErrorMsg error={error} />}
       </GridContainer>
 
-      <Actions open={showActions}/>
+      {/*<Actions open={showActions}/>*/}
     </Root>
   )
 }
@@ -258,7 +264,7 @@ const Root = styled.div`
 
 const GridContainer = styled.div`
   padding: 0 10px;
-  width: calc(100% - 340px);
+  width: calc(100% - ${(props) => props.fullWidth ? '5px' : '270px'} );
 
   @media (max-width: 960px) {
     width: calc(100% - 90px);
@@ -271,4 +277,5 @@ const Progress = styled(LinearProgress)`
   display: absolute;
   top: 0;
 `
+
 

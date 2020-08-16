@@ -86,15 +86,7 @@ const useStyles = makeStyles(theme => ({
       background: '#eee',
       borderRadius: '10px'
     }
-  },
-  /*
-  overview: {
-    backgroundColor: '#1e98bb !important', //#ecf8ff
-    color: '#fff',
-    '& input, & [role="button"]': {
-      background: '#fff'
-    },
-  }*/
+  }
 }));
 
 const NoAuth = props => !Auth.isSignedIn() ? [props.children] : <></>;

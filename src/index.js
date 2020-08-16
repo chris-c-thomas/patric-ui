@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   root: {
   },
   content: {
-    marginTop: '40px',
+    marginTop: '38px',
     paddingTop: '10px'
   }
 }));

@@ -188,6 +188,16 @@ export function queryTaxonID({query}) {
 }
 
 
+export function getPhyloData({taxonID}, ) {
+  return api.get(`/taxonomy/${taxonID}`, {headers: {Accept: 'application/newick+json'} } )
+    .then(res => res.data)
+}
+
+
+
+/**
+ * general purpose solr cached request
+ */
 
 const cacheroStr = (strReq) => {
   if (cache.has(strReq)) {
