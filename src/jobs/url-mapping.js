@@ -1,4 +1,5 @@
 export default {
-  GenomeAssembly: 'assembly',
-  GenomeAnnotation: 'annotation'
+  Assembly2: 'assembly',
+  Annotation: 'annotation',
+  ComprehensiveSARS2Analysis: 'sars-cov-2'
 }

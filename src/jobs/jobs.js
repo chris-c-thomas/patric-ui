@@ -276,7 +276,7 @@ export default function Jobs() {
         {
           rows &&
           <Table
-            offsetHeight="80px"
+            offsetHeight="60px"
             pagination
             page={page}
             limit={limit}
@@ -323,6 +323,7 @@ const Card = styled(Paper)`
 const TableCard = styled(Paper)`
   height: calc(100% - 160px);
   margin: 5px;
+  padding: 0 10px;
   position: relative;
 `
 

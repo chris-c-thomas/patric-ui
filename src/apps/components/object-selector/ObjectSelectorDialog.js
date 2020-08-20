@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import styled from 'styled-components'
+
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -6,17 +8,16 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import { makeStyles } from '@material-ui/core/styles';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import Box from '@material-ui/core/Box'
 
-import FolderIcon  from '@material-ui/icons/FolderOutlined';
-import MyIcon from '@material-ui/icons/AccountCircleOutlined';
-import SharedIcon from '@material-ui/icons/PeopleOutline';
-import PublicIcon from '@material-ui/icons/PublicOutlined';
+import FolderIcon  from '@material-ui/icons/FolderOutlined'
+import MyIcon from '@material-ui/icons/AccountCircleOutlined'
+import SharedIcon from '@material-ui/icons/PeopleOutline'
+import PublicIcon from '@material-ui/icons/PublicOutlined'
 
 // import { ButtonGroup } from '@material-ui/core';
 // import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
@@ -30,16 +31,15 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <Typography
-      component="div"
+    <div
       role="tabpanel"
       hidden={value !== index}
       id={`vertical-tabpanel-${index}`}
       aria-labelledby={`vertical-tab-${index}`}
       {...other}
     >
-      <Box p={3}>{children}</Box>
-    </Typography>
+      {children}
+    </div>
   );
 }
 
@@ -51,30 +51,7 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles(theme => ({
-  button: {
-
-  },
-  dialog: {
-  },
-  tabRoot: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-    display: 'flex',
-  },
-  tabs: {
-    borderRight: `1px solid ${theme.palette.divider}`,
-  },
-  tab: {
-    overflow: 'scroll',
-    width: '100%'
-  }
-}));
-
-
-
 export default function ObjectSelectorDialog(props) {
-  const styles = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const path = `/${Auth.getUser()}@patricbrc.org/home`;
@@ -111,14 +88,14 @@ export default function ObjectSelectorDialog(props) {
 
   return (
     <>
-      <Button color="primary" onClick={handleClickOpen}
-        className={styles.button}
+      <FolderBtn color="primary" onClick={handleClickOpen}
         disableRipple
       >
         <FolderIcon />
-      </Button>
-      <Dialog
-        className={styles.dialog}
+      </FolderBtn>
+
+      <DialogRoot
+        className="dialog"
         fullWidth
         maxWidth={"xl"}
         fullScreen={fullScreen}
@@ -134,13 +111,13 @@ export default function ObjectSelectorDialog(props) {
           {title}
         </DialogTitle>
 
-        <DialogContent className={styles.tabRoot}>
+        <DialogContent className="dialog-content">
           <Tabs
             orientation="vertical"
             value={tab}
             onChange={onTabChange}
-            aria-label="Vertical tabs example"
-            className={styles.tabs}
+            aria-label="Workspace tabs"
+            className="tabs"
           >
             <Tab
               label={<span><MyIcon/>My files</span>}
@@ -160,15 +137,19 @@ export default function ObjectSelectorDialog(props) {
             <Tab label="Sample Data" {...a11yProps(3)} disableRipple/>
           </Tabs>
 
-          <TabPanel value={tab} index={0} className={styles.tab}>
-            <FileList type={type} onSelect={onSelect} path={path}/>
+          <TabPanel value={tab} index={0} className="tab">
+            <FileList
+              offsetHeight="10px"
+              type={type}
+              onSelect={onSelect}
+              isObjectSelector
+              path={path}
+            />
           </TabPanel>
           <TabPanel value={tab} index={1}>
             Shared with me
           </TabPanel>
           <TabPanel value={tab} index={2}>
-
-            {/*<FileList path="/public/" type={type} />*/}
           </TabPanel>
           <TabPanel value={tab} index={3}>
             Sample Data
@@ -179,11 +160,34 @@ export default function ObjectSelectorDialog(props) {
           <Button onClick={handleClose} color="primary" disableRipple autoFocus>
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" disableRipple disabled={!selectedPath}>
+          <Button onClick={handleClose} color="primary" variant="contained" disableRipple disabled={!selectedPath}>
             OK
           </Button>
         </DialogActions>
-      </Dialog>
+
+      </DialogRoot>
     </>
   );
 }
+
+
+const DialogRoot = styled(Dialog)`
+  .dialog-content {
+    display: flex;
+  }
+
+  .tabs {
+    border-right: 1px solid #aaa;
+  }
+
+  .tab {
+    width: 100%;
+  }
+`
+
+const FolderBtn = styled(Button)`
+  &.MuiButton-root {
+    min-width: 0;
+    margin-left: 2px;
+  }
+`

@@ -1,6 +1,7 @@
 
 
 import axios from 'axios';
+import {getRepGenomeIDs} from './data-api'
 
 const api = axios.create({
   baseURL: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
@@ -14,14 +15,18 @@ const defaultIDs = [
   31588498,31587689
 ]
 
-export function getPubSummary({ids, max = 5} = {}) {
-  return api.get(`esummary.fcgi?id=${ids || defaultIDs.join(',')}&retmax=${max}&retmode=json&db=pubmed`)
-    .then(res => {
-      return res.data.result.uids.map(k => res.data.result[k]);
-    })
+const _getPubs = (ids, max) => {
+  return api.get(`esummary.fcgi?id=${ids.join(',')}&db=pubmed&retmax=${max}&retmode=json`)
+      .then(res => res.data.result.uids.map(k => res.data.result[k]))
 }
 
-export function pubSearch(term) {
-  return api.get(`esearch.fcgi?term=${term}&retmode=jsonu&usehistory=y&db=pubmed`)
-    .then(res => res.data.result.uids.map(k => res.data.result[k]))
+
+export function getPublications(taxonID, max = 5) {
+  if (taxonID in [2, 2157, 2759, 10239]) {
+    return _getPubs(defaultIDs)
+  }
+
+  return getRepGenomeIDs(taxonID).then(ids => {
+    return _getPubs(ids, max)
+  })
 }

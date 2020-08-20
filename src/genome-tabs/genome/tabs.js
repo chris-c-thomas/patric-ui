@@ -9,6 +9,7 @@ import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 
 import { ActionBar } from '../action-bar'
 import Overview from './genome-overview'
+import Phylogeny from '../phylogeny'
 // import { Genomes } from './genomes'
 // import { PFContainer } from './protein-families/protein-families'
 
@@ -18,7 +19,7 @@ import NotFound404 from '../../404'
 
 const tabs = [{
   label: 'Overview',
-  view: 'overview'
+  view: 'overview',
 }, {
   label: 'AMR Phenotypes',
   view: 'amr-phenotypes'
@@ -94,7 +95,7 @@ export default function GenomeTabs(props) {
       <Content>
         {view == tabs[0].view && <Overview />}
         {view == tabs[1].view && placeHolder(view)}
-        {view == tabs[2].view && placeHolder(view)}
+        {view == tabs[2].view && <Phylogeny />}
         {/*view == tabs[3].view && <PFContainer />*/}
         {view == tabs[4].view && placeHolder(view)}
         {view == tabs[5].view && placeHolder(view)}

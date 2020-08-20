@@ -12,7 +12,7 @@ import LockIcon from '@material-ui/icons/LockOutlined';
 import { Step, StepIcon, StepLabel } from '@material-ui/core';
 
 
-import TextInput from '../apps/components/text-input';
+import TextInput from '../apps/components/TextInput';
 
 import * as Auth from '../api/auth';
 

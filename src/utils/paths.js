@@ -4,7 +4,7 @@
 //  returns an object
 export function parsePath(path) {
   return {
-    name: path.slice(path.lastIndexOf('/')),
+    name: path.slice(path.lastIndexOf('/') + 1),
     path: path,
     label: pathToLabel(path)
   };
@@ -15,6 +15,9 @@ export function parsePath(path) {
  * pathToOptionObj: helper used for dropdown options
  */
 export function pathToOptionObj(path) {
+  if (!path)
+    return null
+
   return {
     label: pathToLabel(path),
     value: path

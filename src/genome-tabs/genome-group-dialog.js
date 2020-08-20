@@ -7,11 +7,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
-import HelpIcon from '@material-ui/icons/HelpOutlineRounded';
-
-import { fetchOverview } from '../../api/help';
-
-import marked from '../../../node_modules/marked/lib/marked'
 
 
 function PaperComponent(props) {
@@ -22,46 +17,27 @@ function PaperComponent(props) {
   );
 }
 
-const usageError = (propName, value) => (
-  `AdvancedButton component must have prop: ${propName}.  Value was: ${value}`
-)
-
-export default function UserGuideDialog(props) {
-  const { url } = props;
-  const [open, setOpen] = useState(false);
-  const [content, setContent] = useState(null);
-
-  if (!url) throw usageError('url', url)
+export default function GenomeGroupDialog(props) {
+  const [open, setOpen] = useState(props.open);
 
   useEffect(() => {
-    fetchOverview(url)
-      .then(text => {
-        setContent(text)
-      });
-  }, [])
+    setOpen(props.open)
+  }, [props.open])
 
   return (
     <>
-      <HelpIcon
-        onClick={() => setOpen(true)}
-        fontSize="small"
-        color="primary"
-        className="help hover"
-      />
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
         PaperComponent={PaperComponent}
         aria-labelledby="dragable-dialog"
       >
-        {/*<DialogTitle style={{ cursor: 'move' }} id="dragable-dialog">
-          Overview
+        <DialogTitle style={{ cursor: 'move' }} id="dragable-dialog">
+          Create Genome Group
         </DialogTitle>
-        */}
-        <DialogContent>
-          <DialogContentText dangerouslySetInnerHTML={content && {__html: marked(content)}}>
 
-          </DialogContentText>
+        <DialogContent>
+          Not yet implemented
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">

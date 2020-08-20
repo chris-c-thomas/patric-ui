@@ -30,7 +30,7 @@ export function isSignedIn() {
 }
 
 
-export function getUser(full) {
+export function getUser(full = false) {
   if (!isSignedIn())
     return null;
   return getUsername(full);

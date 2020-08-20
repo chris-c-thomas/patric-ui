@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 
-import TextInput from '../apps/components/text-input';
+import TextInput from '../apps/components/TextInput';
 
 import {suSignIn, getUser} from '../api/auth';
 import { Typography } from '@material-ui/core';

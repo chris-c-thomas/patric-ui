@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { Link, useParams} from 'react-router-dom';
 
-import {getTaxon} from '../api/data-api'
+import {getTaxon, getGenomeCount} from '../api/data-api'
 
 const TaxonCrumbs = (props) => {
 
@@ -16,17 +16,15 @@ const TaxonCrumbs = (props) => {
     // support both taxon ids and taxon id from genome_id
     const taxID = taxonID || genomeID.split('.')[0]
     getTaxon(taxID).then(data => {
-
       // ignore 'celluar organisms'
       setNames(data.lineage_names.slice(1))
       setIds(data.lineage_ids.slice(1))
-
-      if (taxonID) {
-        setCount(data.genomes)
-      }
     })
 
+    getGenomeCount(taxID)
+      .then(count => setCount(count))
   }, [taxonID])
+
 
   return (
     <div>

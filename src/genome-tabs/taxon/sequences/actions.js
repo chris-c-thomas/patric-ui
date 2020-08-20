@@ -2,38 +2,33 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components'
 
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
-import genomeGroupIcon from '../../../../assets/icons/object-group.svg'
+import featuresIcon from '../../../../assets/icons/selection-FeatureList.svg'
+import browserIcon from '../../../../assets/icons/genome-browser.svg'
 
 import ActionBtn from '../../../tables/ActionBtn'
 
-import GenomeGroupDialog from '../../genome-group-dialog'
 
 export default function Actions(props) {
 
   const [show, setShow] = useState(props.show);
-  const [showGroupDialog, setShowGroupDialog] = useState(false);
 
   useEffect(() => {
     setShow(props.show);
   }, [props.show])
 
-  const onGroup = () => {
-    setShowGroupDialog(true)
-  }
 
   return (
     <>
     {show ?
       <Root>
-        <ActionBtn aria-label="filter" onClick={onGroup}>
-          <img src={genomeGroupIcon} />
-          <div>Group</div>
+        <ActionBtn aria-label="feature viewer">
+          <img src={featuresIcon} />
+          <div>Features</div>
         </ActionBtn>
-
-        <GenomeGroupDialog open={showGroupDialog}/>
-
+        <ActionBtn aria-label="genome browser">
+          <img src={browserIcon} />
+          <div>Browser</div>
+        </ActionBtn>
       </Root>
       : <></>
     }

@@ -9,13 +9,13 @@ import Button from '@material-ui/core/Button';
 import Label from '@material-ui/core/InputLabel';
 import AddIcon from '@material-ui/icons/AddRounded';
 
-import AdvandedButton from './advanced-button'
+import AdvandedButton from '../AdvancedButton'
 import ObjectSelector from './object-selector/object-selector';
 import SelectedTable from './selected-table';
-import TextInput from './text-input';
-import Selector from './selector';
+import TextInput from '../TextInput';
+import Selector from '../selector';
 
-import { parsePath } from '../../utils/paths';
+import { parsePath } from '../../../utils/paths';
 
 
 const useStyles = makeStyles(theme => ({

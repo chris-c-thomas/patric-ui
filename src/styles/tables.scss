@@ -28,11 +28,9 @@ table.simple.table-hover tr:not(.no-hover):not(.selected):hover {
   background: #f5f5f5;
 }
 
-// no hover on headers
-table.simple.table-hover thead:hover {
+table.simple.table-hover thead *:hover {
   background: none;
 }
-
 
 table.simple tr.selected:hover,
 table.simple tr.selected,
@@ -43,6 +41,14 @@ table.simple tr.selected a {
 
 table.dense th,
 table.dense td {
-  font-size: .9em;
+  font-size: .85em;
   padding: 0.3rem;
+}
+
+table.bordered {
+  border: 1px solid #ccc;
+}
+
+table.striped tbody tr:nth-of-type(odd) {
+  background: rgba(0,0,0,.03);
 }

@@ -1,206 +1,173 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useReducer } from 'react';
 
-import { Paper, Grid } from '@material-ui/core';
+import { Root, Section, Row } from './FormLayout'
 
-import { AppHeader, SubmitBtns } from './partials';
-import ObjectSelector from './components/object-selector/object-selector';
-import Selector from './components/selector';
-import TextInput from './components/text-input';
-import TaxonNameInput from './components/taxon-name';
-import TaxonIDInput from './components/taxon-id';
-import Step from '@material-ui/core/Step';
-import StepIcon from '@material-ui/core/StepIcon';
-import StepLabel from '@material-ui/core/StepLabel';
+import ObjectSelector from './components/object-selector/ObjectSelector'
+import Selector from './components/selector'
+import TextInput from './components/TextInput'
+import TaxonSelector from './components/TaxonSelector'
 
-import './apps.scss';
+import Step from './components/Step'
+
+import { AppHeader, SubmitBtns } from './partials'
 
 // auth is required
-import { isSignedIn } from '../api/auth';
-import SignInForm from '../auth/sign-in-form';
-
+import { isSignedIn, getUser } from '../api/auth'
+import SignInForm from '../auth/sign-in-form'
 import config from '../config.js'
-const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`;
-const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`;
 
-import { getUser } from '../api/auth'
+const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`
+const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    margin: theme.spacing(4, 30),
-    padding: theme.spacing(3, 2),
-  },
-  progress: {
-    margin: theme.spacing(2),
-  }
-}));
 
 const example = {
   contigs: '/PATRIC@patricbrc.org/PATRIC Workshop/Annotation/Staphylococcus_aureus_VB4283.fna',
   domain: 'Bacteria',
-  scientific_name: 'Staphylococcus auresus',
+  scientific_name: 'Staphylococcus aureus',
   tax_id: 1280,
   code: 11,
-  output_path: `/${getUser()}@patricbrc.org/home`,
+  output_path: `/${getUser(true)}/home`,
   output_file: 'example',
   recipe: 'default'
 }
 
+const initialState = {
+  contigs: null,
+  domain: 'Bacteria',
+  scientific_name: null,
+  tax_id: null,
+  code: 11,
+  output_path: null,
+  output_file: null,
+  recipe: 'default'
+}
+
+const reducer = (state, action) => {
+  if (action == 'RESET')
+    return initialState
+  else if (action == 'EXAMPLE')
+    return example
+  else {
+    return {...state, [action.field]: action.val}
+  }
+}
 
 export default function Annotation() {
-  const styles = useStyles();
+  const [form, dispatch] = useReducer(reducer, initialState)
 
-  const [contigs, setContigs] = useState(null);
-  const [domain, setDomain] = useState('Bacteria');
-  const [taxName, setTaxName] = useState(null);
-  const [taxID, setTaxID] = useState(null);
-  const [genCode, setGencode] = useState(11);
-  const [recipe, setRecipe] = useState('default');
-  const [folder, setFolder] = useState(null);
-  const [fileName, setFileName] = useState(null);
-
-
-  const [filePrefix, setFilePrefix] = useState('')
-
-
-  function useExample() {
-    const obj = example;
-    setContigs(obj.contigs);
-    setDomain(obj.contigs);
-    setTaxName(obj.scientific_name);
-    setTaxID(obj.tax_id);
-    setGencode(obj.code);
-    setRecipe(obj.recipe);
-    setFolder(obj.output_path);
-    setFileName(obj.output_file);
+  const onSubmit = () => {
+    alert(JSON.stringify(form, null, 4))
   }
 
-  function onSubmit() {
-
-  }
-
-  function onReset() {
-
-  }
-
-  let serviceForm = (
+  const serviceForm = (
     <>
-      <Step active={true} completed={contigs && domain && genCode && recipe}>
-        <StepIcon icon={1} />
-        <StepLabel>Set Parameters</StepLabel>
-      </Step>
+      <Step number="1" label="Set Parameters"
+        completed={form.contigs && form.domain && form.genCode && form.recipe} />
 
-      <Grid container className="app-section">
-        <Grid item xs={12}>
+      <Section column padRows>
+        <Row>
           <ObjectSelector
             placeholder="Select a contigs file..."
             label="Contigs"
             type="contigs"
-            value={contigs}
-            onChange={val => setContigs(val)}
+            value={form.contigs}
+            onChange={val => dispatch({field: 'contigs', val})}
             dialogTitle="Select a contigs file"
           />
-        </Grid>
+        </Row>
 
-        <Grid item>
+        <Row>
           <Selector
             label="Domain"
-            value={domain}
-            onChange={val => setDomain(val)}
+            value={form.domain}
+            onChange={val => dispatch({field: 'domain', val})}
+            width="200px"
             options={[
               {value: 'Bacteria', label: 'Bacteria'},
               {value: 'Archea', label: 'Archea'},
               {value: 'Viruses', label: 'Viruses'}
             ]}
           />
-        </Grid>
+        </Row>
 
-        <Grid container item spacing={1} xs={12} >
-          <Grid item xs={8}>
-            {/*
-            <TaxonNameInput
-              value={taxName}
-              placeholder="e.g. Brucella Cereus"
-              noQueryText="Type to search for a taxonomy name..."
-              onChange={({taxon_name}) => setFilePrefix(taxon_name)}
-            />
-            */}
-          </Grid>
+        <Row>
+          <TaxonSelector
+            taxonName={form.scientific_name}
+            taxonId={form.tax_id}
+            namePlaceholder="e.g. Brucella Cereus"
+            onNameChange={({taxon_name}) => dispatch({field: 'scientific_name', val: taxon_name})}
+            onIdChange={({taxon_id}) => dispatch({field: 'tax_id', val: taxon_id})}
+          />
+        </Row>
 
-          <Grid item xs={4}>
-            {/*
-            <TaxonIDInput
-              placeholder=""
-              noQueryText="Type to search by taxonomy ID..."
-            />
-            */}
-          </Grid>
-        </Grid>
-
-        <Grid container item xs={12}>
+        <Row>
           <Selector
             label="Genetic Code"
-            value={genCode}
-            onChange={val => setGencode(val)}
+            value={form.code}
+            onChange={val => dispatch({field: 'code', val})}
+            width="200px"
             options={[
               {value: '11', label: '11 (Archaea & most bacteria)'},
               {value: '4', label: '4 (Mycoplasma, Spiroplasma & Ureaplasma)'},
               {value: '25', label: '25 (Candidate Divsion SR1 & Gracilibacteria)'},
             ]}
           />
-        </Grid>
+        </Row>
 
-        <Grid container item xs={12}>
+        <Row>
           <Selector
             label="Annotation Recipe"
-            value={recipe}
-            onChange={val => setRecipe(val)}
             width="200px"
+            value={form.recipe}
+            onChange={val => dispatch({field: 'recipe', val})}
             options={[
-              {value: 'default', label: 'Default'},
-              {value: 'phage', label: 'Phage'},
+              {value: 'default', label: 'Bacteria/Archaea'},
+              {value: 'phage', label: 'Bacteriophage'},
             ]}
           />
-        </Grid>
-      </Grid>
+        </Row>
+      </Section>
 
-      <Step active={true} completed={false}>
-        <StepIcon icon={2} />
-        <StepLabel>Select Output</StepLabel>
-      </Step>
+      <Step number="2" label="Select Output" completed={false} />
 
-      <Grid container className="app-section">
-        <Grid container item xs={12}>
+      <Section column padRows>
+        <Row>
           <ObjectSelector
-            value={folder}
+            value={form.output_path}
             placeholder="Select a folder..."
             label="Output Folder"
             type="Folder"
             dialogTitle="Select a folder"
           />
-        </Grid>
+        </Row>
 
-        <Grid item xs={6}>
+        <Row>
           <TextInput
-            value={fileName}
+            value={form.output_file}
+            onChange={val => dispatch({field: 'output_file', val})}
             label="Output Name"
-            adornment={filePrefix}
+            adornment={form.filePrefix}
+            width="200px"
           />
-        </Grid>
+        </Row>
+      </Section>
 
+
+      <Section>
         <SubmitBtns
+          disabled={!(form.contigs && form.output_file)}
           onSubmit={onSubmit}
-          onReset={onReset}
+          onReset={() => dispatch('RESET')}
         />
-      </Grid>
+      </Section>
     </>
   )
 
   return (
-    <Paper className={styles.root}>
+    <Root small>
       <AppHeader
         title="Genome Annotation"
-        onUseExample={useExample}
+        onUseExample={() => dispatch('EXAMPLE')}
         description={
           <>
             The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
@@ -212,7 +179,6 @@ export default function Annotation() {
 
       <br/>
       {isSignedIn() ? serviceForm : <SignInForm forApp />}
-
-    </Paper>
+    </Root>
   )
-};
+}

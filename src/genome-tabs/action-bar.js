@@ -39,7 +39,7 @@ const Image = styled.img`
 
 const P3Link = styled.a`
   position: absolute;
-  top: 60;
+  top: 50;
   right: 10;
   opacity: .7;
 `

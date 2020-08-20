@@ -2,13 +2,9 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components'
 
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
 import genomeGroupIcon from '../../../../assets/icons/object-group.svg'
 
 import ActionBtn from '../../../tables/ActionBtn'
-
-import GenomeGroupDialog from '../../genome-group-dialog'
 
 export default function Actions(props) {
 
@@ -31,8 +27,6 @@ export default function Actions(props) {
           <img src={genomeGroupIcon} />
           <div>Group</div>
         </ActionBtn>
-
-        <GenomeGroupDialog open={showGroupDialog}/>
 
       </Root>
       : <></>

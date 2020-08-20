@@ -2,8 +2,6 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components'
 
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
 import genomeGroupIcon from '../../../../assets/icons/object-group.svg'
 
 import ActionBtn from '../../../tables/ActionBtn'

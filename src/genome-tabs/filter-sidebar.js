@@ -9,6 +9,7 @@ import SearchIcon from '@material-ui/icons/SearchOutlined'
 import ArrowLeft from '@material-ui/icons/KeyboardArrowLeftRounded'
 
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
+import plusIcon from '../../assets/icons/plus-circle.svg'
 import { getFacets } from '../api/data-api'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -26,8 +27,11 @@ const FilterComponent = (props) => {
   const [checked, setChecked] = useState({})
 
   useEffect(() => {
-    // if facetQueryString includes field, don't update (a little bit hacky)
-    if (facetQueryStr && facetQueryStr.includes(field)) return
+    // if facetQueryString includes field, don't update (a little bit hacky?)
+    if (facetQueryStr && facetQueryStr.includes(field)) {
+      console.log(`field '${field} found in in filter string; skipping FilterComponent update`)
+      return
+    }
 
     getFacets({field, core, taxonID, facetQueryStr: unescape(facetQueryStr)})
       .then(data => setData(data))
@@ -41,37 +45,34 @@ const FilterComponent = (props) => {
     setChecked(prev => ({...prev, [id]: !prev[id]}))
   }
 
+  // only render if there's actually facet data
+  if (data && !data.length) return <></>
 
   return (
     <FilterRoot>
-
-      {data && data.length > 0 &&
-      <>
       <Header>
-        {!enableQuery &&
-          <Title>
-            {label}
-          </Title>
-        }
+        <Title>
+          {label}
+        </Title>
 
-        {enableQuery &&
-          <TextField
-            placeholder={`Filter ${label}`}
-            onChange={() => {}}
-            InputProps={{
-              style: {marginTop: 4, height: 26},
-              startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
-            }}
-            variant="outlined"
-          />
-        }
-
-        {!enableQuery && !hideSearch && data && data.length > 0 &&
-          <Button onClick={() => setEnableQuery(true)}>
+        {!hideSearch && data && data.length > 0 &&
+          <SearchBtn onClick={() => setEnableQuery(!enableQuery)} disableRipple>
             <SearchIcon/>
-          </Button>
+          </SearchBtn>
         }
       </Header>
+
+      {enableQuery &&
+        <TextField
+          autoFocus
+          placeholder={`Filter ${label}`}
+          onChange={() => {}}
+          InputProps={{
+            style: {margin: '5px 10px', height: 26}
+          }}
+          variant="outlined"
+        />
+      }
 
       <Filters>
         {
@@ -86,7 +87,8 @@ const FilterComponent = (props) => {
                   />}
                 label={
                   <>
-                    <CBLabel>{obj.name}</CBLabel> <Count>{obj.count.toLocaleString()}</Count>
+                    <FacetLabel>{obj.name}</FacetLabel>
+                    <Count>{obj.count.toLocaleString()}</Count>
                   </>
                 }
               />
@@ -94,8 +96,6 @@ const FilterComponent = (props) => {
           )
         }
       </Filters>
-      </>
-      }
     </FilterRoot>
   )
 }
@@ -123,6 +123,7 @@ const CBContainer = styled(FormControlLabel)`
 
   &.MuiFormControlLabel-root {
     width: 225px;
+    margin-left: 0;
   }
 
   & .MuiTypography-root {
@@ -132,8 +133,7 @@ const CBContainer = styled(FormControlLabel)`
     align-items: center;
   }
 `
-
-const CBLabel = styled.div`
+const FacetLabel = styled.div`
   font-size: .8rem;
 `
 
@@ -142,8 +142,21 @@ const Count = styled.div`
   font-size: .8rem;
 `
 
+const SearchBtn = styled(Button)`
+  margin-right: 10px;
+  padding: 0;
+  min-width: 0;
+`
+
+
+const getFacetFields = (state) =>
+  Object.keys(state)
+    .reduce((acc, k) => getFilterCount(state[k]) > 0 ? [...acc, k] : acc, [])
+
+
 const getFilterCount = (obj) =>
   Object.keys(obj).filter(k => obj[k]).length
+
 
 const getORStr = (state, field) =>
   ('or(' +
@@ -161,8 +174,7 @@ const buildFilterString = (state) => {
   let queryStr;
 
   // first get fields that have facet filters
-  const fields = Object.keys(state)
-    .reduce((acc, k) => getFilterCount(state[k]) > 0 ? [...acc, k] : acc, [])
+  const fields = getFacetFields(state)
 
   // eq(field,val)
   if (fields.length == 1 && getFilterCount(state[fields[0]]) == 1) {
@@ -216,15 +228,20 @@ const Sidebar = (props) => {
       didMountRef.current = true
       return
     }
+    const fields = getFacetFields(query)
 
-    const qStr = buildFilterString(query)
-    setQueryStr(qStr)
-    onChange(query, qStr)
+    // only build string and do callback if necessary
+    if (fields.length) {
+      const qStr = buildFilterString(query)
+      setQueryStr(qStr)
+      onChange(query, qStr)
+    }
 
     if (queryStr) {
       setShowApplyBtn(true)
     }
   }, [query, props.facetQueryStr])
+
 
   useEffect(() => {
     setCollapsed(props.collapsed)
@@ -254,12 +271,17 @@ const Sidebar = (props) => {
   return (
     <SidebarRoot collapsed={collapsed}>
       <Options>
-        <AddFilterBtn onClick={onAddFilter}>
-          add filter
+        <AddFilterBtn>
+          <Tooltip title="Add a filter below" >
+            <Button onClick={onAddFilter} size="small" color="primary" disableRipple>
+              <Icon src={plusIcon} /> Add Filter
+            </Button>
+          </Tooltip>
         </AddFilterBtn>
+
         {showApplyBtn &&
           <Tooltip title="Apply filters to all views" >
-            <Button onClick={onApplyFilters} size="small">
+            <Button onClick={onApplyFilters} size="small" color="primary">
               <Icon src={applyIcon} /> Apply
             </Button>
           </Tooltip>
@@ -288,13 +310,13 @@ const Sidebar = (props) => {
   )
 }
 
+const sidebarWidth = '249px'
+const optionsHeight = '30px'
 
 const SidebarRoot = styled.div`
   overflow: scroll;
   background: #fff;
-  width: 249px;
-  height: calc(100% - 170px);
-  float: left;
+  width: ${sidebarWidth};
   border-right: 1px solid #e9e9e9;
 
   @media (max-width: 960px) {
@@ -305,24 +327,31 @@ const SidebarRoot = styled.div`
 `
 
 const Container = styled.div`
-  margin-top: 10px;
+  margin-top: calc(20px + ${optionsHeight});
 `
 
 const Options = styled.div`
+  position: fixed;
+  height: ${optionsHeight};
+  width: ${sidebarWidth};
   display: flex;
   justify-content: space-between;
+  padding: 5px 0;
+  background-image: linear-gradient(to right, rgba(240,240,240,1), rgba(255,255,255,1));
+  z-index: 100;
 `
 
 const CollapseBtn = styled.a`
-  margin: 5px;
+  margin-top: 5px;
   color: #444;
 `
 
-const AddFilterBtn = styled.a`
-  margin: 10px;
+const AddFilterBtn = styled.div`
+  margin-left: 5px;
 `
 
 const Icon = styled.img`
-  height: 20px;
+  height: 18px;
+  margin-right: 5px;
 `
 export default Sidebar

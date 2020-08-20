@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
@@ -18,7 +17,6 @@ import SUIcon from '@material-ui/icons/SupervisedUserCircle';
 
 import ListItem from '@material-ui/core/ListItem';
 
-
 import logo from '../../assets/imgs/patric-logo-88h.png';
 
 import * as Auth from '../api/auth';
@@ -28,14 +26,12 @@ import DropdownMenu from './menu';
 
 
 
-const LogoComponent = () => {
-  return (
-    <Typography variant="h5" className="brand" component={Link} to="/">
-      <Logo src={logo} />
-      <Version></Version>
-    </Typography>
-  )
-}
+const LogoComponent = () =>
+  <Link to="/">
+    <Logo src={logo} />
+    <Version></Version>
+  </Link>
+
 
 const Logo = styled.img`
   margin-bottom: 2px;
@@ -109,8 +105,8 @@ const allOrganisms = [
 
 
 const services = [
-  // {label: "Assembly", url: '/apps/assembly'},
-  // {label: "Annotation", url: '/apps/annotation'},
+  {label: "Assembly", url: '/apps/assembly'},
+  {label: "Annotation", url: '/apps/annotation'},
   {label: "SARS-CoV-2 Assembly and Annotation", url: '/apps/sars-cov-2'},
 ]
 
@@ -139,14 +135,9 @@ const Column = styled.div`
 `
 
 const NavItem = ({label, url}) =>
-  <Item button component={Link} to={url} disableRipple>
+  <ListItem button component={Link} to={url} disableRipple>
     {label}
-  </Item>
-
-
-const Item = styled(ListItem)`
-  padding: 5px 10px;
-`
+  </ListItem>
 
 
 const PatricMenus = () =>
@@ -173,17 +164,25 @@ const PatricMenus = () =>
     }/>
 
     <DropdownMenu label="Services" menu={
-      <div>
-        <MenuTitle>Genomics</MenuTitle>
-        <ServicesColumn data={services} />
-      </div>
+      <DropDown>
+        <MenuSection>
+          <MenuTitle>Genomics</MenuTitle>
+          <ServicesColumn data={services} />
+        </MenuSection>
+      </DropDown>
     }/>
 
+    {/*
     <DropdownMenu label="Workspaces" menu={
       <div>
         <NavItem label={'My Workspaces'} url={`/files/${Auth.getUser(true)}`} />
       </div>
     }/>
+    */}
+
+    <Button color="inherit" disableRipple component={Link} to={`/files/${Auth.getUser(true)}`}>
+      Workspaces
+    </Button>
 
     <Button color="inherit" disableRipple component={Link} to="/jobs">
       Job Status
@@ -193,13 +192,17 @@ const PatricMenus = () =>
 const DropDown = styled.div`
   display: flex;
   align-items: stretch;
+
+  .MuiListItem-root {
+    padding: 5px 10px;
+  }
 `
 
 const MenuTitle = styled.div`
   font-size: .9em;
   background: #2e76a3;
   color: #f2f2f2;
-  padding: 5px;
+  padding: 4px 5px;
 `
 
 const MenuSection = styled.div`
@@ -296,12 +299,12 @@ export function NavBar(props) {
         {!Auth.isSignedIn() && !isAdminApp &&
           <SignInBtn
             size="small"
-            style={{background: "rgb(214, 137, 0)", color: '#fff'}}
+            color="secondary"
             variant="contained"
             onClick={() => setOpenSignIn(true)}
             disableRipple
           >
-            Sign in&nbsp;<ExitIcon/>
+            Sign In&nbsp;<ExitIcon/>
           </SignInBtn>
         }
 
@@ -327,8 +330,7 @@ const NavBarRoot = styled(AppBar)`
 
 const SignInBtn = styled(Button)`
   margin-bottom: 2px;
-  color: #f2f2f2;
-  background: #1e98bb;
+  color: #fff;
 
   &:hover: {
     background: #157f9d;

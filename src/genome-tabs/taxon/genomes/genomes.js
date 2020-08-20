@@ -12,21 +12,30 @@ import {toPrettyDate} from '../../../utils/dates'
 import ErrorMsg from '../../../error-msg'
 import Actions from './actions'
 
-import FilterSidebar from '../../sidebar'
+import FilterSidebar from '../../filter-sidebar'
 
+const core = 'genome'
 
 const columns = [
   {
     type: 'text',
     id: 'genome_name',
     label: 'Genome Name',
-    format: (_, row) => <Link to={`/genome/${row.genome_id}/overview`}>{row.genome_name}</Link>,
+    format: (_, row) =>
+      <Link to={`/genome/${row.genome_id}/overview`}>{row.genome_name}</Link>,
     width: '20%'
   },
   {type: 'number', id: 'genome_id', label: 'Genome ID', width: '9%'},
   {type: 'text', id: 'genome_status', label: 'Genome Status', width: '8%'},
-  {type: 'number', id: 'contigs', label: 'Contigs'},
-  {type: 'number', id: 'patric_cds', label: 'Patric CDS'},
+  {
+    type: 'number', id: 'contigs', label: 'Contigs',
+    format: (v, row) =>
+      <Link to={`/genome/${row.genome_id}/sequences`}>{v}</Link>,
+  }, {
+    type: 'number', id: 'patric_cds', label: 'Patric CDS',
+    format: (v, row) =>
+      <Link to={`/genome/${row.genome_id}/sequences`}>{v}</Link>,
+  },
   {type: 'text', id: 'isolation_country', label: 'Isolation Country'},
   {type: 'text', id: 'host_name', label: 'Host Name', width: '15%' },
   {type: 'number', id: 'collection_year', label: 'Collection Year'},
@@ -127,7 +136,7 @@ const columnIDs = _initialColumns.map(obj => obj.id)
 
 
 
-export function Genomes() {
+export default function Genomes() {
   const {taxonID} = useParams()
 
   const history = useHistory()
@@ -139,7 +148,7 @@ export function Genomes() {
   const limit = params.get('limit') || 200
   const filter = params.get('filter') || ''
 
-  const [colIDs, setColIDs] = useState(columnIDs) // currently enabled columns
+  const [colIDs, setColIDs] = useState(columnIDs)
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
   const [total, setTotal] = useState(null)
@@ -151,12 +160,13 @@ export function Genomes() {
 
   useEffect(() => {
     const params = {
+      core,
       sort,
       start: page * limit,
       limit,
       query,
       eq: {taxon_lineage_ids: taxonID},
-      filter: filter,
+      filter,
       select: colIDs
     }
 
@@ -195,7 +205,7 @@ export function Genomes() {
 
   const onFacetFilter = (queryObj, queryStr) => {
     if (!queryStr.length) params.delete('filter')
-    else params.set('filter', queryStr)
+    params.set('filter', queryStr)
 
     // note: we don't want to escape parens and commas for rql
     history.push({search: unescape(params.toString())})
@@ -206,14 +216,16 @@ export function Genomes() {
   }
 
   const onClick = (val) => {
+    // todo: work on selection
     setShowActions(true)
   }
 
 
   return (
     <Root>
+              {loading && <Progress />}
       <FilterSidebar
-        core="genome"
+        core={core}
         taxonID={taxonID}
         filters={filters}
         onChange={onFacetFilter}
@@ -223,14 +235,12 @@ export function Genomes() {
       />
 
       <GridContainer fullWidth={fullWidth}>
-        {loading && <Progress />}
+
 
         {data &&
           <Table
-            offsetHeight="220px"
             columns={columns}
             rows={data}
-            pagination
             onColumnMenuChange={onColumnChange}
             page={page}
             limit={limit}
@@ -246,35 +256,35 @@ export function Genomes() {
             enableTableOptions
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
+            MiddleComponent={() => <Actions show={showActions} />}
           />
         }
 
         {error && <ErrorMsg error={error} />}
       </GridContainer>
-
-      {/*<Actions open={showActions}/>*/}
     </Root>
   )
 }
 
 
 const Root = styled.div`
-
+  display: flex;
+  max-height: calc(100% - 150px);
+  height: 100%;
 `
 
 const GridContainer = styled.div`
-  padding: 0 10px;
+  position: relative;
+  margin: 0 10px;
   width: calc(100% - ${(props) => props.fullWidth ? '5px' : '270px'} );
 
   @media (max-width: 960px) {
-    width: calc(100% - 90px);
+    width: calc(100% - 2px);
   }
-
-  display: inline-block;
 `
 
 const Progress = styled(LinearProgress)`
-  display: absolute;
+  position: absolute;
   top: 0;
 `
 

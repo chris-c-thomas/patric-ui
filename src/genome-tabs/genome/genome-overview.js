@@ -188,7 +188,8 @@ export default function Overview() {
 
 const Root = styled.div`
   display: flex;
-  height: calc(100% - 170px);
+  height: calc(100% - 160px);
+  overflow: scroll;
 
   & > div {
     margin: 10px;

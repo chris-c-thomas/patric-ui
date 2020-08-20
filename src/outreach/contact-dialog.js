@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Grid from '@material-ui/core/Grid';
 
-import TextInput from '../apps/components/text-input';
+import TextInput from '../apps/components/TextInput';
 import TextField from '@material-ui/core/TextField';
 
 import Button from '@material-ui/core/Button';

@@ -8,10 +8,14 @@ import Tab from '@material-ui/core/Tab'
 import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 
 import { ActionBar } from '../action-bar'
-import Overview from './overview'
-import { Genomes } from './genomes/genomes'
-import Phylogeny from '../phylogeny'
 
+import Overview from './overview'
+import Genomes from './genomes/genomes'
+import Phylogeny from '../phylogeny'
+// import Sequences from './sequences/sequences'
+// import Features from './features/features'
+// import SpecialtyGenes from './specialty-genes/specialty-genes'
+// import AMRPhenotypes from './amr-phenotypes/amr-phenotypes'
 
 
 import NotFound404 from '../../404'
@@ -26,10 +30,7 @@ const tabs = [{
 }, {
   label: 'Genomes',
   view: 'genomes'
-}, /*{
-  label: 'Protein Families',
-  view: 'protein-families'
-}*/, {
+}, {
   label: 'AMR Phenotypes',
   view: 'amr-phenotypes'
 }, {
@@ -55,6 +56,10 @@ const tabs = [{
   view: 'interactions'
 }]
 
+ /*{
+  label: 'Protein Families',
+  view: 'protein-families'
+}*/
 
 const TabButtons = () => {
   const tabItemStyles = plainTabsStylesHook.useTabItem()
@@ -96,7 +101,7 @@ export default function GenomeTabs() {
         {view == tabs[0].view && <Overview />}
         {view == tabs[1].view && <Phylogeny />}
         {view == tabs[2].view && <Genomes />}
-        {/*view == tabs[3].view && <PFContainer />*/}
+        {view == tabs[3].view && placeHolder(view)}
         {view == tabs[4].view && placeHolder(view)}
         {view == tabs[5].view && placeHolder(view)}
         {view == tabs[6].view && placeHolder(view)}
@@ -104,7 +109,6 @@ export default function GenomeTabs() {
         {view == tabs[8].view && placeHolder(view)}
         {view == tabs[9].view && placeHolder(view)}
         {view == tabs[10].view && placeHolder(view)}
-        {view == tabs[11].view && placeHolder(view)}
         {
           tabs.map(obj => obj.view).indexOf(view) == -1 &&
           <NotFound404 />
@@ -121,4 +125,5 @@ const Root = styled.div`
 const Content = styled.div`
   border-top: 1px solid #e9e9e9;
   margin-top: -1px;
+  background: #fff;
 `

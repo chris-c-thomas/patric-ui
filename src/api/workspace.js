@@ -92,7 +92,6 @@ export function list(args) {
 
 
 function listPermissions(paths) {
-  console.log('called list permissions with', paths)
   var objects = Array.isArray(paths) ? paths : [paths];
 
   return rpc('list_permissions', {objects})

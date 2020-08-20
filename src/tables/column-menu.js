@@ -5,7 +5,8 @@ import Button from '@material-ui/core/Button'
 
 import Select from 'react-select'
 import { defaultTheme } from 'react-select'
-import SettingsIcon from '@material-ui/icons/Settings'
+// import SettingsIcon from '@material-ui/icons/Settings'
+import settingsIcon from '../../assets/icons/plus-circle.svg'
 
 
 /* example options
@@ -60,7 +61,7 @@ export default class ColumnMenu extends Component {
   render() {
     const { isOpen, options, value} = this.state
     return (
-      <div>
+      <>
         <Dropdown
           isOpen={isOpen}
           onClose={this.toggleOpen}
@@ -71,12 +72,12 @@ export default class ColumnMenu extends Component {
               onClick={this.toggleOpen}
               disableRipple
             >
-              <SettingsIcon/> <ChevronDown/>
+              <img src={settingsIcon} style={{height: 18}}/> <ChevronDown/>
             </Button>
           }
         >
           <Select
-            //autoFocus
+            autoFocus
             isMulti
             backspaceRemovesValue={false}
             components={{ DropdownIndicator, IndicatorSeparator: null }}
@@ -94,7 +95,7 @@ export default class ColumnMenu extends Component {
             styles={customStyles}
           />
         </Dropdown>
-      </div>
+      </>
     )
   }
 }

@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
 
 import { InputLabel } from '@material-ui/core';
 import AsyncSelect from 'react-select/async';
@@ -14,14 +13,23 @@ const inputStyles = {
     zIndex: 9999
   }),
   input: styles => ({
-    ...styles
+    ...styles,
+    width: '125px'
   })
 }
 
 export default function TaxonIDInput(props) {
-  const {placeholder, label, noQueryText, onChange} = props;
-  const [value, setValue] = useState(null);
+  const {placeholder, noQueryText, onChange} = props;
+
+  const [value, setValue] = useState(props.value ? {taxon_id: props.value} : null);
   const [query, setQuery] = useState(null);
+
+
+  useEffect(() => {
+    if (!props.value) return;
+
+    _setTaxonId({taxon_id: props.value} )
+  }, [props.value])
 
   const loadOptions = (query, callback) => {
     if (!query) return;
@@ -31,16 +39,21 @@ export default function TaxonIDInput(props) {
   };
 
   const formatOptionLabel = opt => (
-    <div>{highlightText(opt.taxon_id, query)} [{opt.taxon_name}]</div>
+    <div>
+      {highlightText(opt.taxon_id, query || '')}{' '}
+      {opt.taxon_name && `[${opt.taxon_name}]`}
+    </div>
   )
 
-  function handleChange(obj) {
+  const _setTaxonId = (obj) => {
+    // note obj may be null
     setValue(obj)
     if (onChange) onChange(obj);
   }
 
+
   return (
-    <>
+    <div>
       <InputLabel shrink htmlFor="taxon-id">
         Taxonomy ID
       </InputLabel>
@@ -53,9 +66,9 @@ export default function TaxonIDInput(props) {
         formatOptionLabel={formatOptionLabel}
         noOptionsMessage={() => !query ? noQueryText : "No results"}
         onInputChange={val => setQuery(val)}
-        onChange={obj => handleChange(obj)}
+        onChange={obj => _setTaxonId(obj)}
         value={value}
       />
-    </>
+    </div>
   );
 }

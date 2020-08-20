@@ -31,6 +31,8 @@ const rqlReqConfig =  {
   }
 }
 
+const acceptSolr = `http_accept=application/solr+json`
+
 
 // helper for when Solr query strings are used.
 function getSolrConfig({start = null, limit, contentType, data}) {
@@ -64,7 +66,7 @@ export function listRepresentative({taxonID,  limit=10000}) {
     `&select(genome_id,reference_genome,genome_name)` +
     `&facet((field,reference_genome),(mincount,1))&json(nl,map)` +
     `&limit(${limit})` +
-    `&http_accept=application/solr+json`;
+    `&${acceptSolr}`
 
   return api.get(`/genome/${q}`)
     .then(res => {
@@ -104,11 +106,11 @@ export function getAMRCounts({genomeIDs}) {
 }
 
 // todo: replace with "Query"
-export function getTaxonOverview({taxonID}) {
+export function getTaxonChartData({taxonID}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})` +
     `&facet((field,host_name),(field,disease),(field,genome_status),(field,isolation_country),(mincount,1))` +
     `&limit(1)&json(nl,map)` +
-    `&http_accept=application/solr+json`;
+    `&${acceptSolr}`
 
   return api.get(`/genome/${q}`)
     .then(res => {
@@ -165,18 +167,37 @@ const parseFacets = (facetList) => {
 
 export function getFacets({core, taxonID, field, facetQueryStr}) {
   let q
-  if (facetQueryStr) {
+
+  // if faceting the genome core, facet everything below taxon
+  if (core == 'genome' && facetQueryStr) {
     q = `?and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})`
-  } else {
+  } else if (core == 'genome') {
     q = `?eq(taxon_lineage_ids,${taxonID})`
+
+  // otherwise, get reference genomes
+  } else if (facetQueryStr) {
+    return getRepGenomeIDs(taxonID)
+      .then(genomeIDs => {
+        q = `?and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
+        q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+
+        return api.get(`/${core}/${q}`)
+          .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
+      })
+  } else {
+    return getRepGenomeIDs(taxonID)
+      .then(genomeIDs => {
+        q = `?and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
+        q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+        return api.get(`/${core}/${q}`)
+        .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
+      })
   }
 
-  q += `&limit(1)&facet((field,${field}),(mincount,1))&http_accept=application/solr+json`
+  q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}`
 
-
-    return api.get(`/${core}/${q}`)
-      .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
-
+  return api.get(`/${core}/${q}`)
+    .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
 }
 
 
@@ -239,10 +260,12 @@ export function listData(params) {
     eq,
     select,
     solrInfo = true,
-    filter // free form rql
+    filter
   } = params
 
-  console.log('calling api with start:', start)
+  if (filter)
+    console.log('calling api with free-form rql filter:', filter)
+
   return cachero({
     core, sort, start, query,
     limit, eq, select, solrInfo, filter
@@ -250,7 +273,36 @@ export function listData(params) {
 }
 
 export function getTaxon(id) {
-  return cacheroStr(`/taxonomy/${id}`)
+  return api.get(`/taxonomy/${id}`)
+    .then(res => res.data)
 }
+
+
+export function getGenomeCount(taxonID) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&select(genome_id)&limit(100001)&${acceptSolr}`
+  return api.get(`/genome/${q}`)
+    .then(res => res.data.response.numFound)
+}
+
+export function getGenomeIDs(taxonID) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&select(genome_id)&limit(100001)&${acceptSolr}`
+  return api.get(`/genome/${q}`)
+    .then(res => res.data.response.docs.map(o => o.genome_id))
+}
+
+export function getRepGenomeIDs(taxonID) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
+    `&select(genome_id)` +
+    `&facet((field,reference_genome),(mincount,1))&json(nl,map)` +
+    `&limit(100001)` +
+    `&${acceptSolr}`
+
+  return api.get(`/genome/${q}`)
+    .then(res => {
+      return res.data.response.docs.map(o => o.genome_id)
+    })
+}
+
+
 
 

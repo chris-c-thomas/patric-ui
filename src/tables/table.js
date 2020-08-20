@@ -20,6 +20,9 @@ import ColumnMenu from './column-menu'
 import Checkbox from '../forms/checkbox'
 import TableSearch from './table-search'
 
+import ActionBtn from './ActionBtn'
+import downloadIcon from '../../assets/icons/download.svg'
+
 /*
 const exampleColumns = [
   {
@@ -111,7 +114,7 @@ const Row = memo(props => {
 
         {checkboxes &&
           <Cell key={id + '-checkbox'} style={{padding: 0}}>
-            <Checkbox checked={checked[rowID]} onChange={() => onCheck(rowID)} />
+            <Checkbox checked={checked[rowID]} onChange={() => onCheck(rowID)}/>
           </Cell>
         }
 
@@ -260,7 +263,7 @@ export default function TableComponent(props) {
   const {
     onSearch, pagination, offsetHeight, onClick, onDoubleClick,
     onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
-    enableTableOptions, onColumnMenuChange,
+    enableTableOptions, onColumnMenuChange, emptyNotice,
     MiddleComponent
   } = props
 
@@ -348,12 +351,23 @@ export default function TableComponent(props) {
       <CtrlContainer>
 
         { enableTableOptions && props.openFilters &&
-          <Tooltip title="Show filter">
+          <Tooltip title="Show filters">
             <ActionBtn aria-label="filter" onClick={props.onOpenFilters}>
-              <Icon src={filterIcon} />
+              <img src={filterIcon} />
               <div>Filters</div>
             </ActionBtn>
           </Tooltip>
+        }
+
+        {enableTableOptions &&
+          <DownloadContainer>
+          <Tooltip title="download">
+            <ActionBtn aria-label="download" >
+              <img src={downloadIcon} />
+              <div>Download</div>
+            </ActionBtn>
+          </Tooltip>
+          </DownloadContainer>
         }
 
         {onSearch &&
@@ -430,7 +444,7 @@ export default function TableComponent(props) {
 
         {rows.length == 0 &&
           <NoneFoundNotice offset={offsetHeight}>
-            No results found.
+            {emptyNotice || 'No results found'}
           </NoneFoundNotice>
         }
       </Container>
@@ -444,9 +458,17 @@ const Root = styled.div`
 `
 
 const CtrlContainer = styled.div`
+  border-bottom: 2px solid #f2f2f2;
   display: flex;
+  flex: 1;
   align-items: center;
-  justify-content: stretch;
+  justify-content: left;
+`
+
+const DownloadContainer = styled.div`
+  margin-right: 10px;
+  padding-right: 5px;
+  border-right: 2px solid #f2f2f2;
 `
 
 const MiddleComponentContainer = styled.div`
@@ -454,7 +476,8 @@ const MiddleComponentContainer = styled.div`
 `
 
 const Pagination = styled(TablePagination)`
-  width: 500px;
+  justify-self: right;
+  flex: 1;
 
   & .MuiTablePagination-actions {
     user-select: none;
@@ -463,7 +486,9 @@ const Pagination = styled(TablePagination)`
 `
 
 const Container = styled(TableContainer)`
-  max-height: ${props => `calc(100% - ${props.offset || '250px'})`};
+  /* remove height of control panel */
+  max-height: ${props => `calc(100% - ${props.offset || '60px'})`};
+  height: 100%;
   width: 100%;
 
   & td {
@@ -486,44 +511,13 @@ const Container = styled(TableContainer)`
   }
 `
 
-const ActionBtn = styled.button`
-  color: #34698e;
-  background: 0;
-  border: none;
-  margin: 1px;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  padding: 3px;
-  outline: none;
-  cursor: pointer;
-
-  :hover {
-    border: 1px solid #aaa;
-    opacity: .9;
-  }
-
-  div {
-    font-size: 9px;
-    margin: 0;
-    text-align: center;
-    white-space: normal;
-    overflow: hidden;
-  }
-`
-
-
-const Icon = styled.img`
-  height: 20px;
-`
-
-
 const NoneFoundNotice = styled.div`
   height: ${props => `calc(100% - ${props.offset || '500px'})`};
   display: flex;
   justify-content: center;
-  align-items: center;
+  transform: translate(0%, 20%);
   color: #666;
-  font-size: 2.0em;
+  font-size: 1.5em;
 `
 
 const OpenFiltersBtn = styled.a`

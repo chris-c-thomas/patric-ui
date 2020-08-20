@@ -12,7 +12,7 @@ const usageError = (propName, value, label) => {
 export default function TextInput(props) {
   const {
     label, value, adornment, type,
-    onChange, fullWidth, noLabel, placeholder
+    onChange, style, noLabel, placeholder
   } = props;
 
   if (!label && !noLabel) throw usageError('label', label);
@@ -32,26 +32,19 @@ export default function TextInput(props) {
   }
 
   return (
-    <FormControl
+    <TextField
+      size="small"
+      variant="outlined"
+      type={type}
+      value={val}
+      onChange={handleChange}
+      label={label}
+      placeholder={placeholder}
       margin="dense"
-      notched="true"
-      className="text-input"
-      fullWidth={fullWidth}
+      {...(adornment ? inputProps : {})}
       {...(noLabel ? {style: {margin: 0}} : {})}
-    >
-      <TextField
-        size="small"
-        variant="outlined"
-        type={type}
-        value={val}
-        onChange={handleChange}
-        label={label}
-        placeholder={placeholder}
-        margin="dense"
-        {...(adornment ? inputProps : {})}
-        {...(noLabel ? {style: {margin: 0}} : {})}
-      />
-    </FormControl>
+      {...(style ? {style} : {})}
+    />
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid'
 
-import TextInput from '../src/apps/components/text-input'
+import TextInput from '../src/apps/components/TextInput'
 import '../src/styles/styles'
 
 export const textInput = () => (
