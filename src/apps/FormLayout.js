@@ -7,7 +7,7 @@ const Root = styled.div`
   max-width: ${props => props.small ? '560px' : '800px'};
   background: #fff;
   margin: auto;
-  padding: 30px 20px 15px 20px;
+  padding: 30px 20px 10px 20px;
 `
 
 const Row = styled.div`

@@ -1,43 +1,32 @@
 
-import React, {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react'
+import styled from 'styled-components'
 
-import { Select } from '@material-ui/core';
-import { FormControl, InputLabel, OutlinedInput, MenuItem } from '@material-ui/core';
-
-
-const useStyles = makeStyles(theme => ({
-  label: {
-    // Fixme(nc): likely a bug with material-ui
-    background: '#fff',
-    padding: '0 3px'
-  }
-}));
+import { Select } from '@material-ui/core'
+import { FormControl, InputLabel, OutlinedInput, MenuItem } from '@material-ui/core'
 
 
 export default function Selector(props) {
-  const styles = useStyles()
+  const {options, label, value, width} = props
 
-  const {options, label, value, width} = props;
-
-  if (!options) throw ('Selector component must have prop: options');
-  if (!label) throw ('Selector component must have prop: label');
+  if (!options) throw ('Selector component must have prop: options')
+  if (!label) throw ('Selector component must have prop: label')
   if (typeof value == 'undefined')
-    throw (`Selector component must have prop: value.  Was: ${value}`);
+    throw (`Selector component must have prop: value.  Was: ${value}`)
 
-  const [val, setVal] = useState(value || props.default);
+  const [val, setVal] = useState(value || props.default)
 
   const handleChange = (evt) => {
-    const val = evt.target.value;
-    setVal(val);
-    if (props.onChange) props.onChange(val);
+    const val = evt.target.value
+    setVal(val)
+    if (props.onChange) props.onChange(val)
   }
 
   return (
     <FormControl variant="outlined" margin="dense" notched="true" className="selector">
-      <InputLabel htmlFor={label} className={styles.label}>
+      <Label htmlFor={label}>
         {label}
-      </InputLabel>
+      </Label>
       <Select
         value={val}
         style={{minWidth: width}}
@@ -51,4 +40,9 @@ export default function Selector(props) {
     </FormControl>
   )
 }
+
+const Label = styled(InputLabel)`
+  background: #fff;
+  padding: 0 3px !important;
+`
 

@@ -99,6 +99,7 @@ export default function Assembly() {
           <Selector
             label="Assembly Strategy"
             value={form.recipe}
+            onChange={val => dispatch({field: 'recipe', val})}
             width="200px"
             options={[
               {label: 'auto', value: 'auto'},
@@ -122,12 +123,14 @@ export default function Assembly() {
                 label="RACON Interations"
                 type="number"
                 value={form.racon_iter}
+                onChange={val => dispatch({field: 'racon_iter', val})}
               />
 
               <TextInput
                 label="Pilon Interations"
                 type="number"
                 value={form.pilon_iter}
+                onChange={val => dispatch({field: 'pilon_iter', val})}
               />
             </Row>
 
@@ -135,12 +138,14 @@ export default function Assembly() {
               <TextInput
                 type="number"
                 label="Min. Contig Length"
-                value={form.min_contig_cov}
+                value={form.min_contig_len}
+                onChange={val => dispatch({field: 'min_contig_len', val})}
               />
               <TextInput
                 label="Min. Contig Coverage"
                 type="number"
-                value={form.minContigCoverage}
+                value={form.min_contig_cov}
+                onChange={val => dispatch({field: 'min_contig_cov', val})}
               />
             </Row>
           </>
@@ -153,6 +158,7 @@ export default function Assembly() {
         <Row>
           <ObjectSelector
             value={form.output_path}
+            onChange={val => dispatch({field: 'output_path', val})}
             placeholder="Select a folder..."
             label="Output Folder"
             type="Folder"
@@ -164,6 +170,7 @@ export default function Assembly() {
           <TextInput
             value={form.output_file}
             label="Output Name"
+            onChange={val => dispatch({field: 'output_file', val})}
           />
         </Row>
       </Section>

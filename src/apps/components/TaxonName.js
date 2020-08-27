@@ -10,6 +10,7 @@ import highlightText from '../../utils/text'
 import { queryTaxon } from '../../api/data-api'
 
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 
 export default function TaxonName(props) {
@@ -98,3 +99,17 @@ const inputStyles = {
 const Root = styled.div`
   margin-right: 10px;
 `
+
+/*
+const Label = styled(InputLabel)`
+  &.MuiInputLabel-root {
+    position: relative;
+    transform:  translate(14px, 10px) scale(0.75);
+    position: relative;
+    background: #fff;
+    z-index: 10;
+    width: min-content;
+    white-space: nowrap;
+  }
+`
+*/

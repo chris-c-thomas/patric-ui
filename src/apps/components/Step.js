@@ -28,7 +28,7 @@ const StepComponent = (props) => {
           {label}
         </StepLabel>
         <CheckMark>
-          {completed && <CheckIcon color="primary" />}
+          {completed && <CheckIcon color="secondary" />}
         </CheckMark>
       </Step>
     </>

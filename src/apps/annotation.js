@@ -3,8 +3,8 @@ import React, { useReducer } from 'react';
 import { Root, Section, Row } from './FormLayout'
 
 import ObjectSelector from './components/object-selector/ObjectSelector'
-import Selector from './components/selector'
-import TextInput from './components/TextInput'
+import Selector from './components/Selector'
+import WSFileName from './components/WSFileName'
 import TaxonSelector from './components/TaxonSelector'
 
 import Step from './components/Step'
@@ -23,23 +23,26 @@ const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.htm
 const example = {
   contigs: '/PATRIC@patricbrc.org/PATRIC Workshop/Annotation/Staphylococcus_aureus_VB4283.fna',
   domain: 'Bacteria',
+  recipe: 'default',
   scientific_name: 'Staphylococcus aureus',
   tax_id: 1280,
   code: 11,
   output_path: `/${getUser(true)}/home`,
-  output_file: 'example',
-  recipe: 'default'
+  my_label: 'example',
+  output_file: null
 }
+//example.output_file = `${example.scientific_name} ${example.my_label}`
 
 const initialState = {
   contigs: null,
   domain: 'Bacteria',
+  recipe: 'default',
   scientific_name: null,
   tax_id: null,
   code: 11,
   output_path: null,
-  output_file: null,
-  recipe: 'default'
+  my_label: null,
+  output_file: null
 }
 
 const reducer = (state, action) => {
@@ -47,7 +50,14 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else {
+  else if (action.field == 'my_label') {
+    const fullName = state.scientific_name + ' ' + state.my_label
+    return {
+      ...state,
+      my_label: action.val,
+      outName: fullName,
+    }
+  } else {
     return {...state, [action.field]: action.val}
   }
 }
@@ -59,10 +69,17 @@ export default function Annotation() {
     alert(JSON.stringify(form, null, 4))
   }
 
+  const isStep1Complete = () =>
+    form.contigs && form.domain && form.scientific_name && form.tax_id
+    form.genCode && form.recipe
+
+  const isStep2Complete = () =>
+    form.output_file && form.output_path
+
+
   const serviceForm = (
     <>
-      <Step number="1" label="Set Parameters"
-        completed={form.contigs && form.domain && form.genCode && form.recipe} />
+      <Step number="1" label="Set Parameters" completed={isStep1Complete()}/>
 
       <Section column padRows>
         <Row>
@@ -128,7 +145,7 @@ export default function Annotation() {
         </Row>
       </Section>
 
-      <Step number="2" label="Select Output" completed={false} />
+      <Step number="2" label="Select Output" completed={isStep2Complete()} />
 
       <Section column padRows>
         <Row>
@@ -142,11 +159,12 @@ export default function Annotation() {
         </Row>
 
         <Row>
-          <TextInput
-            value={form.output_file}
-            onChange={val => dispatch({field: 'output_file', val})}
-            label="Output Name"
-            adornment={form.filePrefix}
+          <WSFileName
+            value={form.my_label}
+            onChange={val => dispatch({field: 'my_label', val})}
+            label="My Label"
+            placeholder="My identifier 123"
+            prefix={form.scientific_name}
             width="200px"
           />
         </Row>
@@ -155,7 +173,7 @@ export default function Annotation() {
 
       <Section>
         <SubmitBtns
-          disabled={!(form.contigs && form.output_file)}
+          disabled={!(isStep1Complete() && isStep2Complete())}
           onSubmit={onSubmit}
           onReset={() => dispatch('RESET')}
         />
