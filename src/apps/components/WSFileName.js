@@ -1,7 +1,6 @@
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import InputLabel from '@material-ui/core/InputLabel'
 import TextField from '@material-ui/core/TextField'
 import FormHelperText from '@material-ui/core/FormHelperText'
 
@@ -20,9 +19,13 @@ export default function WSFileName(props) {
   if (!label && !noLabel)
     throw usageError('label', label);
 
-  console.log('val', val)
   const [val, setVal] = useState(value || '')
   const [error, setError] = useState(false)
+
+  useEffect(() => {
+    if (!value) return
+    setVal(value)
+  }, [value])
 
   let inputProps = {
     InputProps: {
@@ -38,9 +41,7 @@ export default function WSFileName(props) {
 
   return (
     <div>
-
       <TextField
-        id="ws-file-name"
         size="small"
         variant="outlined"
         type={type}
@@ -55,14 +56,17 @@ export default function WSFileName(props) {
         {...(adornment ? inputProps : {})}
         {...(noLabel ? {style: {margin: 0}} : {})}
         {...(style ? {style} : {})}
-        helperText={prefix && `Output Name: ${prefix} ${val}`}
       />
+      {(prefix || value) &&
+        <FormHelperText>
+         <b>Output Name</b>: {prefix} {val}
+        </FormHelperText>
+      }
       {error &&
         <FormHelperText error={true}>
           File name already exists
         </FormHelperText>
       }
-
     </div>
   )
 }

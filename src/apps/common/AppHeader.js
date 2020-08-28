@@ -3,13 +3,12 @@ import {useLocation} from 'react-router-dom'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import UserGuideDialog from './components/UserGuideDialog'
+import UserGuideDialog from '../components/UserGuideDialog'
 
-import { isSignedIn } from '../api/auth';
+import { isSignedIn } from '../../api/auth';
 
 
-import urlMapping from '../jobs/url-mapping'
+import urlMapping from '../../jobs/url-mapping'
 const p3Url = 'https://alpha.bv-brc.org'
 
 
@@ -23,7 +22,7 @@ const getP3Url = (name) => {
 }
 
 
-export function AppHeader(props) {
+export default function AppHeader(props) {
   const {title, description, onUseExample, userGuideURL} = props;
 
   const appName = useLocation().pathname.split('/').pop()
@@ -66,28 +65,3 @@ const P3Link = styled.a`
   right: 50;
   opacity: .7;
 `
-
-
-export function SubmitBtns({onSubmit, onReset, disabled = false}) {
-  return (
-    <Grid container spacing={1} justify="space-between" className="submit-bar">
-      <Grid item>
-        <Button
-          onClick={onSubmit}
-          variant="contained"
-          color="primary"
-          className="no-raised"
-          disableRipple
-          disabled={disabled}
-          >
-          Submit
-        </Button>
-      </Grid>
-      <Grid item>
-        <Button onClick={onReset} disableRipple>
-          Reset
-        </Button>
-      </Grid>
-    </Grid>
-  )
-}

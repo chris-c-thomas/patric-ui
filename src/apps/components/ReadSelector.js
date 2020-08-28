@@ -8,7 +8,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
-import {Title, TableTitle} from '../FormLayout'
+import {Title, TableTitle} from '../common/FormLayout'
 import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'

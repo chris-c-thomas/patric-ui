@@ -1,6 +1,10 @@
 import React, { useState, useReducer } from 'react'
 
-import { Root, Section, Row } from './FormLayout'
+import { Root, Section, Row } from './common/FormLayout'
+import AppHeader from './common/AppHeader'
+import SubmitBtns from './common/SubmitBtns'
+import AppStatus from './common/AppStatus'
+
 import Step from './components/Step'
 import ReadSelector from './components/ReadSelector'
 import ObjectSelector from './components/object-selector/ObjectSelector'
@@ -8,16 +12,16 @@ import Selector from './components/selector'
 import TextInput from './components/TextInput'
 import AdvandedButton from './components/AdvancedButton'
 
-import { AppHeader, SubmitBtns } from './partials'
-
 // auth is required
 import { isSignedIn } from '../api/auth'
 import SignInForm from '../auth/sign-in-form'
 
+import { submitApp } from '../api/app-service'
+
 import config from '../config.js'
+const appName = 'Assembly2'
 const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
-
 
 
 const example = {
@@ -50,8 +54,7 @@ const initialState = {
   min_contig_len: 300,
   min_contig_cov: 5,
   trim: false,
-  output_path: null,
-  output_file: null
+  output_path: null
 }
 
 const reducer = (state, action) => {
@@ -75,16 +78,21 @@ const reducer = (state, action) => {
 
 export default function Assembly() {
   const [form, dispatch] = useReducer(reducer, initialState)
+  const [status, setStatus] = useState(null)
 
   const [advParams, setAdvParams] = useState(false)
 
-  function onSubmit() {
-    alert(JSON.stringify(form, null, 4))
+  const onSubmit = () => {
+    setStatus('starting')
+    submitApp(appName, form)
+      .then(() => setStatus('success'))
+      .catch(error => setStatus(error))
   }
 
   const serviceForm = (
     <>
       <Step number="1" label="Input File(s)" completed={form.reads.length > 0} />
+
       <Section>
         <ReadSelector
           reads={form.reads}
@@ -94,6 +102,7 @@ export default function Assembly() {
       </Section>
 
       <Step number="2" label="Set Parameters" completed={form.reads.length > 0} />
+
       <Section column>
         <Row>
           <Selector
@@ -175,12 +184,13 @@ export default function Assembly() {
         </Row>
       </Section>
 
-      <Section>
-        <SubmitBtns
-          onSubmit={onSubmit}
-          onChange={() => dispatch('RESET')}
-        />
-      </Section>
+      <SubmitBtns
+        onSubmit={onSubmit}
+        onChange={() => dispatch('RESET')}
+        status={status}
+      />
+
+      <AppStatus name={appName} status={status} />
     </>
   )
 

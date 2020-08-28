@@ -28,7 +28,7 @@ export default function TaxonName(props) {
 
 
   useEffect(() => {
-    if (!props.value) return;
+    if (!props.value) return
 
     _setTaxonName({taxon_name: props.value} )
   }, [props.value])

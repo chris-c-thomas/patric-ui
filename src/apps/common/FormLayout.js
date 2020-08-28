@@ -13,6 +13,11 @@ const Root = styled.div`
 const Row = styled.div`
   display: flex;
   align-items: flex-end;
+
+  /* spaceBetween; usefor for submit buttons */
+  ${props => props.spaceBetween &&
+    'justify-content: space-between;'
+  }
 `
 
 const Column = styled.div`
