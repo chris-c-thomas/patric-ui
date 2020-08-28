@@ -8,7 +8,7 @@ import Table from '../../tables/table';
 import {getTaxon} from '../../api/data-api'
 
 import { getGenomeMeta }  from '../../api/data-api';
-import { getPubSummary, pubSearch } from '../../api/ncbi-eutils-api';
+import { getPubSummary, pubSearch } from '../../api/ncbi-eutils';
 import genomeIcon from '../../../assets/icons/genome.svg'
 
 

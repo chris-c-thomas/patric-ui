@@ -4,7 +4,7 @@ const { appServiceAPI } = config;
 
 import {getToken} from './auth';
 
-import { metaObjToList } from '../charts/chart-helpers';
+
 
 const api = axios.create({
   headers: {
@@ -14,10 +14,10 @@ const api = axios.create({
 
 const rpc = (cmd, params) => {
   const req = {
-    "id": String(Math.random()).slice(2),
-    "method": `AppService.${cmd}`,
-    "params": params || [],
-    "jsonrpc": "2.0"
+    id: String(Math.random()).slice(2),
+    method: `AppService.${cmd}`,
+    params: params || [],
+    jsonrpc: "2.0"
   }
 
   return api.post(appServiceAPI, req)
@@ -26,10 +26,12 @@ const rpc = (cmd, params) => {
     });
 }
 
+
 export function getStatus() {
   return rpc('query_task_summary')
     .then(data => data[0])
 }
+
 
 export function getStats() {
   return rpc('query_app_summary')
@@ -52,4 +54,8 @@ export function listJobs({start = 0, limit = 200, simpleSearch = {}}) {
     }))
 }
 
+
+export function submitApp(appName, values) {
+  return rpc('start_app', [appName, values])
+}
 

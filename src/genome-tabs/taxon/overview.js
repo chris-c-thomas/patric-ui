@@ -11,7 +11,7 @@ import Pie from '../../charts/pie'
 import Table from '../../tables/table'
 
 import {getTaxon, listRepresentative, getTaxonChartData, getAMRCounts} from '../../api/data-api'
-import {getPublications } from '../../api/ncbi-eutils-api'
+import {getPublications } from '../../api/ncbi-eutils'
 
 
 const columns = [{
