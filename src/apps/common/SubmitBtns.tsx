@@ -9,8 +9,15 @@ const usageError = (propName, value) => (
   `must have prop '${propName}' so that the user is notified of submission progress.  Value was: ${value}`
 )
 
-export default function SubmitBtns(props) {
-  const {onSubmit, onReset, disabled = false, status} = props
+type Props = {
+  disabled: boolean;
+  status: string | {error: object};
+  onSubmit: () => void;
+  onReset: () => void;
+}
+
+export default function SubmitBtns(props: Props) {
+  const {disabled = false, status, onSubmit, onReset} = props
 
   if (typeof disabled == 'undefined')
     throw usageError('disabled', disabled)
@@ -33,7 +40,7 @@ export default function SubmitBtns(props) {
           className="no-raised"
           disableRipple
           disabled={disabled || status == 'starting'}
-          >
+        >
           {state == 'starting' ? 'Submitting...' : 'Submit'}
         </Button>
 

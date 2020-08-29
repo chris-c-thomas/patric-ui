@@ -17,8 +17,7 @@ import SignInForm from '../auth/sign-in-form'
 
 import { submitApp } from '../api/app-service'
 
-
-import config from '../config.js'
+import config from '../config'
 const appName = 'GenomeAnnotation'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`
@@ -61,7 +60,6 @@ const reducer = (state, action) => {
 const getValues = (form) => {
   let params = Object.assign({}, form)
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
-  delete params.reads
   return params;
 }
 
@@ -70,7 +68,7 @@ export default function Annotation() {
   const [status, setStatus] = useState(null)
 
   const onSubmit = () => {
-
+    const values = getValues(form)
     setStatus('starting')
     submitApp(appName, form)
       .then(() => setStatus('success'))
@@ -192,15 +190,15 @@ export default function Annotation() {
   return (
     <Root small>
       <AppHeader
-        title={appName}
+        title="Genome Annottion"
         onUseExample={() => dispatch('EXAMPLE')}
         description={
           <>
             The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
-            For further explanation, please see the Genome Annotation <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">Tutorial</a>.
           </>
         }
         userGuideURL={userGuideURL}
+        tutorialURL={tutorialURL}
       />
 
       <br/>

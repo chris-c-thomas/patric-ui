@@ -18,7 +18,7 @@ import SignInForm from '../auth/sign-in-form'
 
 import { submitApp } from '../api/app-service'
 
-import config from '../config.js'
+import config from '../config'
 const appName = 'Assembly2'
 const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
@@ -203,11 +203,11 @@ export default function Assembly() {
         description={
           <>
             This service allows single or multiple assemblers to be invoked to compare results.
-            The service attempts to select the best assembly. For further explanation, please see
-            the <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">Tutorial</a>.
+            The service attempts to select the best assembly.
           </>
         }
         userGuideURL={userGuideURL}
+        tutorialURL={tutorialURL}
       />
 
       <br/>

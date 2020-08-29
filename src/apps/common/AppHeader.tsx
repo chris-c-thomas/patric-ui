@@ -1,11 +1,11 @@
-import React from 'react';
-import {useLocation} from 'react-router-dom'
+import React from 'react'
 import styled from 'styled-components'
-import { Grid } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+import {useLocation} from 'react-router-dom'
+import { Grid } from '@material-ui/core'
+import Typography from '@material-ui/core/Typography'
 import UserGuideDialog from '../components/UserGuideDialog'
 
-import { isSignedIn } from '../../api/auth';
+import { isSignedIn } from '../../api/auth'
 
 
 import urlMapping from '../../jobs/url-mapping'
@@ -13,17 +13,27 @@ const p3Url = 'https://alpha.bv-brc.org'
 
 
 const getP3Url = (name) => {
-  const invert = {};
+  const invert = {}
   for(const key in urlMapping){
     invert[urlMapping[key]] = key
   }
 
-  return `${p3Url}/app/${invert[name]}`;
+  return `${p3Url}/app/${invert[name]}`
 }
 
+type Props = {
+  title: string;
+  description: string;
+  tutorialURL: string;
+  userGuideURL: string;
+  onUseExample: () => void;
+}
 
-export default function AppHeader(props) {
-  const {title, description, onUseExample, userGuideURL} = props;
+export default function AppHeader(props: Props) {
+  const {
+    title, description,
+    userGuideURL, onUseExample, tutorialURL
+  } = props
 
   const appName = useLocation().pathname.split('/').pop()
 
@@ -48,6 +58,9 @@ export default function AppHeader(props) {
       <Grid item>
         <AppDescription>
           {description}
+          For further explanation, please see the{' '}
+          <a href={userGuideURL} target="_blank" rel="noopener noreferrer">User Guide </a> and{' '}
+          <a href={tutorialURL} target="_blank" rel="noopener noreferrer">Tutorial</a>.
         </AppDescription>
       </Grid>
     </Grid>
@@ -55,7 +68,7 @@ export default function AppHeader(props) {
 }
 
 const AppDescription = styled.span`
-font-size: .9em;
+  font-size: .9em;
 `
 
 

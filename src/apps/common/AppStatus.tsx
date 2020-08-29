@@ -7,13 +7,13 @@ import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
 const usageError = (name, status) => (
-  `AppStatus component must have props 'name' and 'status' ` +
-  `so that the user is notified of submission progress. ` +
+  'AppStatus component must have props \'name\' and \'status\' ' +
+  'so that the user is notified of submission progress. ' +
   `'name' was: ${name}. 'status' was ${status}`
 )
 
 const getErrorMsg = (errorObj) => {
-  const res = errorObj.response;
+  const res = errorObj.response
   if (res && res.data != '') {
     return res.data.error.message
   } else if (res && 'statusText' in res) {
@@ -22,16 +22,16 @@ const getErrorMsg = (errorObj) => {
   return null
 }
 
-const AppStatus = ({
-  name,  // name of application
-  status
-}) => {
+type Props = {
+  name: string;
+  status: string | {error: object};
+}
 
+const AppStatus = ({name, status} : Props) => {
   if (!name || typeof status == 'undefined')
     throw usageError(name, status)
 
   const [state, setState] = useState(status)
-  const [showMore, setShowMore] = useState(false)
 
   useEffect(() => {
     // only update if success or error

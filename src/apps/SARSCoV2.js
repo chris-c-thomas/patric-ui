@@ -19,14 +19,14 @@ import SignInForm from '../auth/sign-in-form'
 
 import { submitApp } from '../api/app-service'
 
-import config from '../config.js'
+import config from '../config'
 const appName = 'ComprehensiveSARS2Analysis'
 const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
 
 
 const example = {
-  input_type: "reads",
+  input_type: 'reads',
   skip_indexing: true,
   reads: [{ // not sent to server
     type: 'srr_ids',
@@ -36,7 +36,7 @@ const example = {
   srr_ids: ['ERR4208068'],
   recipe: 'auto',
   domain: 'Viruses',
-  code: "1",
+  code: '1',
   scientific_name: 'Severe acute respiratory syndrome coronavirus 2',
   taxonomy_id: '2697049',
   output_path: `/${getUser(true)}/home`,
@@ -46,7 +46,7 @@ const example = {
 
 
 const initialState = {
-  input_type: "reads",
+  input_type: 'reads',
   skip_indexing: true,
   reads: [],  // not sent to server
   paired_end_libs: [],
@@ -54,7 +54,7 @@ const initialState = {
   srr_ids: [],
   contigs: null,
   domain: 'Viruses',
-  code: "1",
+  code: '1',
   scientific_name: 'Severe acute respiratory syndrome coronavirus 2',
   taxonmy_id: '2697049',
   recipe: 'auto',
@@ -106,7 +106,7 @@ export default function SARSCoV2() {
     form.input_type == 'contigs' && form.contigs
 
   const isStep2Complete = () => {
-   return form.scientific_name && form.taxonomy_id
+    return form.scientific_name && form.taxonomy_id
   }
 
   const isStep3Complete = () =>
@@ -150,7 +150,7 @@ export default function SARSCoV2() {
               value={form.contigs}
               onChange={val => dispatch({field: 'contigs', val})}
               dialogTitle="Select a contigs file"
-          />
+            />
           </Row>
         </Section>
       }
@@ -230,11 +230,11 @@ export default function SARSCoV2() {
         description={
           <>
             This service allows single or multiple assemblers to be invoked to compare results.
-            The service attempts to select the best assembly. For further explanation, please see
-            the <a href={userGuideURL} target="_blank">User Guide</a> and <a href={tutorialURL} target="_blank">Tutorial</a>.
+            The service attempts to select the best assembly.
           </>
         }
         userGuideURL={userGuideURL}
+        tutorialURL={tutorialURL}
       />
 
       <br/>

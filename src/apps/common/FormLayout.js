@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-const indentPad = '10px'; // 35px ?
+const indentPad = '10px' // 35px ?
 
 
 const Root = styled.div`
@@ -16,8 +16,7 @@ const Row = styled.div`
 
   /* spaceBetween; usefor for submit buttons */
   ${props => props.spaceBetween &&
-    'justify-content: space-between;'
-  }
+    'justify-content: space-between;'}
 `
 
 const Column = styled.div`
@@ -31,14 +30,12 @@ const Section = styled.div`
   margin-bottom: 20px;
 
   ${props => props.column &&
-    'flex-direction: column;'
-  }
+    'flex-direction: column;'}
 
   /* pad all <Row> components if "padRows" */
   > div {
     ${props => props.padRows &&
-      'margin-bottom: 10px;'
-    }
+      'margin-bottom: 10px;'}
   }
 `
 

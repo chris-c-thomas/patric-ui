@@ -21,7 +21,7 @@ import MyData from './my-data';
 import serviceImages from '../../assets/imgs/services/*.jpg';
 import chipImages from '../../assets/imgs/biology/*.png';
 
-import config from '../config.js'
+import config from '../config'
 import * as Auth from '../api/auth';
 import SignInDialog from '../auth/sign-in-dialog';
 import JobsOverview from './jobs-overview';
