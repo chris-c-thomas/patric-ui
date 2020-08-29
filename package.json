@@ -4,7 +4,7 @@
   "description": "prototype",
   "main": "index.js",
   "scripts": {
-    "start": "(./node_modules/parcel/bin/cli.js serve ./src/index.html --no-autoinstall --open) & npx tsc --noEmit --watch",
+    "start": "(./node_modules/parcel/bin/cli.js serve ./src/index.html --no-autoinstall) & npx tsc --noEmit --watch",
     "build": "./node_modules/parcel/bin/cli.js build ./src/index.html --no-autoinstall",
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html --no-autoinstall --open",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html --no-autoinstall",
@@ -56,6 +56,7 @@
     "babel-plugin-transform-glob-import": "^1.0.1",
     "eslint": "^7.7.0",
     "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react-hooks": "^4.1.0",
     "esm": "^3.2.25",
     "parcel": "^1.12.4",
     "react-draggable": "^4.4.3",

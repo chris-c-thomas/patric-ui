@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, {useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -8,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
+import Badge from '@material-ui/core/Badge'
 
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
@@ -23,6 +23,7 @@ import SignInDialog from '../auth/sign-in-dialog'
 
 import DropdownMenu from './menu'
 
+import { JobStatusProvider, JobStatusContext } from '../jobs/job-status-context'
 
 
 const LogoComponent = () =>
@@ -139,54 +140,62 @@ const NavItem = ({label, url}) =>
   </ListItem>
 
 
-const PatricMenus = () =>
-  <>
-    <DropdownMenu label="Organisms" menu={
-      <DropDown>
-        <MenuSection>
-          <MenuTitle>Bacteria Pathogens</MenuTitle>
-          <TaxonColumn data={organisms.slice(0, getMiddle(organisms))} />
-          <TaxonColumn data={organisms.slice(getMiddle(organisms))} />
+const PatricMenus = () => {
+  const [jobs] = useContext(JobStatusContext)
+  console.log('jobs', jobs)
 
-          <br/>
-          <br/>
-          <TaxonColumn data={allOrganisms.slice(0, getMiddle(allOrganisms))} />
-          <TaxonColumn data={allOrganisms.slice(getMiddle(allOrganisms))} />
-        </MenuSection>
+  return (
+    <>
+      <DropdownMenu label="Organisms" menu={
+        <DropDown>
+          <MenuSection>
+            <MenuTitle>Bacteria Pathogens</MenuTitle>
+            <TaxonColumn data={organisms.slice(0, getMiddle(organisms))} />
+            <TaxonColumn data={organisms.slice(getMiddle(organisms))} />
 
-        <MenuSection>
-          <MenuTitle>Viral Families</MenuTitle>
-          <TaxonColumn data={viruses.slice(0, getMiddle(viruses))} />
-          <TaxonColumn data={viruses.slice(getMiddle(viruses))} />
-        </MenuSection>
-      </DropDown>
-    }/>
+            <br/>
+            <br/>
+            <TaxonColumn data={allOrganisms.slice(0, getMiddle(allOrganisms))} />
+            <TaxonColumn data={allOrganisms.slice(getMiddle(allOrganisms))} />
+          </MenuSection>
 
-    <DropdownMenu label="Services" menu={
-      <DropDown>
-        <MenuSection>
-          <MenuTitle>Genomics</MenuTitle>
-          <ServicesColumn data={services} />
-        </MenuSection>
-      </DropDown>
-    }/>
+          <MenuSection>
+            <MenuTitle>Viral Families</MenuTitle>
+            <TaxonColumn data={viruses.slice(0, getMiddle(viruses))} />
+            <TaxonColumn data={viruses.slice(getMiddle(viruses))} />
+          </MenuSection>
+        </DropDown>
+      }/>
 
-    {/*
-    <DropdownMenu label="Workspaces" menu={
-      <div>
-        <NavItem label={'My Workspaces'} url={`/files/${Auth.getUser(true)}`} />
-      </div>
-    }/>
-    */}
+      <DropdownMenu label="Services" menu={
+        <DropDown>
+          <MenuSection>
+            <MenuTitle>Genomics</MenuTitle>
+            <ServicesColumn data={services} />
+          </MenuSection>
+        </DropDown>
+      }/>
 
-    <Button color="inherit" disableRipple component={Link} to={`/files/${Auth.getUser(true)}`}>
-      Workspaces
-    </Button>
+      {/*
+      <DropdownMenu label="Workspaces" menu={
+        <div>
+          <NavItem label={'My Workspaces'} url={`/files/${Auth.getUser(true)}`} />
+        </div>
+      }/>
+      */}
 
-    <Button color="inherit" disableRipple component={Link} to="/jobs">
-      Job Status
-    </Button>
-  </>
+      <Button color="inherit" disableRipple component={Link} to={`/files/${Auth.getUser(true)}`}>
+        Workspaces
+      </Button>
+
+      <JobCount badgeContent={jobs.queued + jobs.inProgress} max={999} color="secondary">
+        <Button color="inherit" disableRipple component={Link} to="/jobs">
+          Job Status
+        </Button>
+      </JobCount>
+    </>
+  )
+}
 
 const DropDown = styled.div`
   display: flex;
@@ -206,6 +215,15 @@ const MenuTitle = styled.div`
 
 const MenuSection = styled.div`
   margin-right: 5px;
+`
+
+const JobCount = styled(Badge)`
+  .MuiBadge-badge {
+    right: -2;
+    top: 10;
+    border: 2px solid #2e75a3;
+    padding: 0 4px;
+  }
 `
 
 
@@ -279,9 +297,16 @@ export function NavBar(props) {
 
         {Logo ? <Logo /> : <LogoComponent />}
 
-        <div className="nav-bar">
-          {isAdminApp ? <MenuComponnt/> : <PatricMenus />}
-        </div>
+        {isAdminApp ?
+          <div className="nav-bar">
+            <MenuComponnt/>
+          </div> :
+          <div className="nav-bar">
+            <JobStatusProvider>
+              <PatricMenus />
+            </JobStatusProvider>
+          </div>
+        }
 
         {!isAdminApp &&
           <Button color="inherit" onClick={openAboutMenu} disableRipple>
