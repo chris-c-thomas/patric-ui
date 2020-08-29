@@ -190,7 +190,7 @@ export default function Annotation() {
   return (
     <Root small>
       <AppHeader
-        title="Genome Annottion"
+        title="Genome Annotation"
         onUseExample={() => dispatch('EXAMPLE')}
         description={
           <>

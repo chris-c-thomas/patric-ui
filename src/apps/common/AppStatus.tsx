@@ -22,10 +22,12 @@ const getErrorMsg = (errorObj) => {
   return null
 }
 
+
 type Props = {
   name: string;
   status: string | {error: object};
 }
+
 
 const AppStatus = ({name, status} : Props) => {
   if (!name || typeof status == 'undefined')
