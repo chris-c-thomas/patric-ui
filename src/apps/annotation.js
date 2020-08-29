@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer } from 'react'
 
 import { Root, Section, Row } from './common/FormLayout'
 import AppHeader from './common/AppHeader'
@@ -60,7 +60,7 @@ const reducer = (state, action) => {
 const getValues = (form) => {
   let params = Object.assign({}, form)
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
-  return params;
+  return params
 }
 
 export default function Annotation() {
@@ -70,13 +70,13 @@ export default function Annotation() {
   const onSubmit = () => {
     const values = getValues(form)
     setStatus('starting')
-    submitApp(appName, form)
+    submitApp(appName, values)
       .then(() => setStatus('success'))
       .catch(error => setStatus(error))
   }
 
   const isStep1Complete = () =>
-    form.contigs && form.domain && form.scientific_name && form.taxonomy_id
+    form.contigs && form.domain && form.scientific_name && form.taxonomy_id &&
     form.genCode && form.recipe
 
   const isStep2Complete = () =>

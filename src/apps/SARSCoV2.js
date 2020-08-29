@@ -85,7 +85,7 @@ const getValues = (form) => {
   let params = Object.assign({}, form)
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
   delete params.reads
-  return params;
+  return params
 }
 
 
