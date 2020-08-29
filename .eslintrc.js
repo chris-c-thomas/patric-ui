@@ -17,7 +17,6 @@ module.exports = {
     'enforceDynamicLinks': 'never'
   },
   'plugins': [
-    'react',
     '@typescript-eslint'
   ],
   'rules': {
@@ -27,6 +26,7 @@ module.exports = {
     'semi': ['error', 'never']
   },
   'globals': {
-    'document': true
+    'document': true,
+    'alert': true
   }
 }

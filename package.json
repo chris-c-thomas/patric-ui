@@ -4,7 +4,7 @@
   "description": "prototype",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/parcel/bin/cli.js serve ./src/index.html --no-autoinstall --open",
+    "start": "(./node_modules/parcel/bin/cli.js serve ./src/index.html --no-autoinstall --open) & npx tsc --noEmit --watch",
     "build": "./node_modules/parcel/bin/cli.js build ./src/index.html --no-autoinstall",
     "start:dash": "./node_modules/parcel/bin/cli.js ./system-dash/index.html --no-autoinstall --open",
     "build:dash": "./node_modules/parcel/bin/cli.js  build ./system-dash/index.html --no-autoinstall",
@@ -42,7 +42,7 @@
     "react-swipeable-views": "^0.13.9",
     "react-swipeable-views-utils": "^0.13.9",
     "react-virtualized": "^9.21.2",
-    "recharts": "^2.0.0-beta.5",
+    "recharts": "2.0.0-beta.6",
     "styled-components": "^5.1.0"
   },
   "devDependencies": {

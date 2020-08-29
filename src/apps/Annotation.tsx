@@ -192,11 +192,7 @@ export default function Annotation() {
       <AppHeader
         title="Genome Annotation"
         onUseExample={() => dispatch('EXAMPLE')}
-        description={
-          <>
-            The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features.
-          </>
-        }
+        description="The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features."
         userGuideURL={userGuideURL}
         tutorialURL={tutorialURL}
       />

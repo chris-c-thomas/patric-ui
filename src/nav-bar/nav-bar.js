@@ -1,28 +1,27 @@
-import React, {useState } from "react";
-import { Link } from "react-router-dom";
+/* eslint-disable react/prop-types */
+import React, {useState } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Button from '@material-ui/core/Button'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
 
-import TextField from '@material-ui/core/TextField';
+import AccountIcon from '@material-ui/icons/AccountCircle'
+import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
+import ExitIcon from '@material-ui/icons/ExitToApp'
+import SUIcon from '@material-ui/icons/SupervisedUserCircle'
 
-import AccountIcon from '@material-ui/icons/AccountCircle';
-import CaretIcon from '@material-ui/icons/ArrowDropDownRounded';
-import ExitIcon from '@material-ui/icons/ExitToApp';
-import SUIcon from '@material-ui/icons/SupervisedUserCircle';
+import ListItem from '@material-ui/core/ListItem'
 
-import ListItem from '@material-ui/core/ListItem';
+import logo from '../../assets/imgs/patric-logo-88h.png'
 
-import logo from '../../assets/imgs/patric-logo-88h.png';
+import * as Auth from '../api/auth'
+import SignInDialog from '../auth/sign-in-dialog'
 
-import * as Auth from '../api/auth';
-import SignInDialog from '../auth/sign-in-dialog';
-
-import DropdownMenu from './menu';
+import DropdownMenu from './menu'
 
 
 
@@ -105,12 +104,12 @@ const allOrganisms = [
 
 
 const services = [
-  {label: "Assembly", url: '/apps/assembly'},
-  {label: "Annotation", url: '/apps/annotation'},
-  {label: "SARS-CoV-2 Assembly and Annotation", url: '/apps/sars-cov-2'},
+  {label: 'Assembly', url: '/apps/assembly'},
+  {label: 'Annotation', url: '/apps/annotation'},
+  {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/sars-cov-2'},
 ]
 
-const getMiddle = data => Math.round(data.length / 2);
+const getMiddle = data => Math.round(data.length / 2)
 
 const TaxonColumn = ({data}) =>
   <Column>
@@ -211,28 +210,28 @@ const MenuSection = styled.div`
 
 
 export function NavBar(props) {
-  const {isAdminApp, MenuComponnt, Logo} = props;
+  const {isAdminApp, MenuComponnt, Logo} = props
 
-  const [openSignIn, setOpenSignIn] = useState(false);
+  const [openSignIn, setOpenSignIn] = useState(false)
 
   // accunt menu
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   /**
    * account menu pieces
    */
   const openAccountMenu = (evt) => {
-    setAnchorEl(evt.currentTarget);
+    setAnchorEl(evt.currentTarget)
     setIsMenuOpen(true)
   }
 
   const closeMenu = () => {
-    setAnchorEl(null);
+    setAnchorEl(null)
     setIsMenuOpen(false)
   }
 
-  const openAboutMenu = (evt) => {
+  const openAboutMenu = () => {
     alert('Not implemented yet')
   }
 
@@ -247,19 +246,19 @@ export function NavBar(props) {
       </MenuItem>
       {
         Auth.isAdmin() ?
-        <MenuItem onClick={Auth.suSwitchBack} disableRipple>
-          <ExitIcon/> SU switch Back
-        </MenuItem> :
-        <MenuItem component={Link} to="/susignin" onClick={closeMenu} disableRipple>
-          <SUIcon/> SU sign in
-        </MenuItem>
+          <MenuItem onClick={Auth.suSwitchBack} disableRipple>
+            <ExitIcon/> SU switch Back
+          </MenuItem> :
+          <MenuItem component={Link} to="/susignin" onClick={closeMenu} disableRipple>
+            <SUIcon/> SU sign in
+          </MenuItem>
       }
 
       <MenuItem onClick={Auth.signOut} disableRipple>
         <ExitIcon/> Sign out
       </MenuItem>
     </AccountMenu>
-  );
+  )
 
   // used for one-off applications likee the system-status
   const adminAccount = () => (
@@ -272,7 +271,7 @@ export function NavBar(props) {
         <ExitIcon/> Sign out
       </MenuItem>
     </AccountMenu>
-  );
+  )
 
   return (
     <NavBarRoot>
@@ -313,8 +312,8 @@ export function NavBar(props) {
 
       <SignInDialog open={openSignIn} onClose={() => setOpenSignIn(false)}/>
     </NavBarRoot>
-  );
-};
+  )
+}
 
 const NavBarRoot = styled(AppBar)`
   flex-grow: 1;
@@ -332,7 +331,7 @@ const SignInBtn = styled(Button)`
   margin-bottom: 2px;
   color: #fff;
 
-  &:hover: {
+  &:hover {
     background: #157f9d;
   }
 `
@@ -348,7 +347,7 @@ const AccountBtn = styled(Button)`
   min-width: 30px;
 `
 
-const SearchField = styled(TextField)`
+//const SearchField = styled(TextField)`
 
-`
+//`
 

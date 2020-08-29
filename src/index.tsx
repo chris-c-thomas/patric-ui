@@ -58,7 +58,7 @@ const App = () => {
                 <Route path="/my-profile" exact component={Account} />
                 <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
                 <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
-                <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/SARSCoV2'))} />
+                <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/ComprehensiveSARS2Analysis'))} />
                 <Route path="/jobs*" component={Jobs}/>
                 <Route path="/files/:path*" exact component={Workspaces} />
                 <Route path="/taxonomy/:taxonID/:view" exact render={() =>
