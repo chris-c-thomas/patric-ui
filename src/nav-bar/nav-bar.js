@@ -23,7 +23,7 @@ import SignInDialog from '../auth/sign-in-dialog'
 
 import DropdownMenu from './menu'
 
-import { JobStatusProvider, JobStatusContext } from '../jobs/job-status-context'
+import { JobStatusContext } from '../jobs/job-status-context'
 
 
 const LogoComponent = () =>
@@ -142,7 +142,6 @@ const NavItem = ({label, url}) =>
 
 const PatricMenus = () => {
   const [jobs] = useContext(JobStatusContext)
-  console.log('jobs', jobs)
 
   return (
     <>
@@ -302,9 +301,8 @@ export function NavBar(props) {
             <MenuComponnt/>
           </div> :
           <div className="nav-bar">
-            <JobStatusProvider>
-              <PatricMenus />
-            </JobStatusProvider>
+
+            <PatricMenus />
           </div>
         }
 

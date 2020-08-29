@@ -23,6 +23,8 @@ import NotFound404 from './404'
 
 import './styles/styles.scss'
 
+import { JobStatusProvider } from './jobs/job-status-context'
+
 
 const colors = {
   primary: '#2e75a3',
@@ -46,35 +48,36 @@ const App = () => {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
+        <JobStatusProvider>
+          {<NavBar />}
 
-        {<NavBar />}
+          <Root>
 
-        <Root>
+            <Main>
+              <Suspense fallback={<div>loading...</div>}>
+                <Switch>
+                  <Route path="/" exact component={Home} />
+                  <Route path="/my-profile" exact component={Account} />
+                  <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
+                  <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
+                  <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
+                  <Route path="/jobs*" component={Jobs}/>
+                  <Route path="/files/:path*" exact component={Workspaces} />
+                  <Route path="/taxonomy/:taxonID/:view" exact render={() =>
+                    <TaxonTabs />
+                  } />
+                  <Route path="/genome/:genomeID/:view" render={() =>
+                    <GenomeTabs />
+                  } />
 
-          <Main>
-            <Suspense fallback={<div>loading...</div>}>
-              <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path="/my-profile" exact component={Account} />
-                <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
-                <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
-                <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
-                <Route path="/jobs*" component={Jobs}/>
-                <Route path="/files/:path*" exact component={Workspaces} />
-                <Route path="/taxonomy/:taxonID/:view" exact render={() =>
-                  <TaxonTabs />
-                } />
-                <Route path="/genome/:genomeID/:view" render={() =>
-                  <GenomeTabs />
-                } />
+                  <Route path="/susignin" exact component={SUSignIn} />
+                  <Route path="*" component={NotFound404} />
 
-                <Route path="/susignin" exact component={SUSignIn} />
-                <Route path="*" component={NotFound404} />
-
-              </Switch>
-            </Suspense>
-          </Main>
-        </Root>
+                </Switch>
+              </Suspense>
+            </Main>
+          </Root>
+        </JobStatusProvider>
 
       </ThemeProvider>
     </BrowserRouter>

@@ -6,20 +6,24 @@ import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+/*
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+import ArrowRightIcon from '@material-ui/icons/ArrowRight'
 
-import Public from '@material-ui/icons/PublicRounded';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import FolderIcon from '@material-ui/icons/FolderOutlined';
-import FolderFav from '@material-ui/icons/FolderSpecialRounded';
+import Public from '@material-ui/icons/PublicRounded'
+import FolderOpenIcon from '@material-ui/icons/FolderOpen'
+import FolderIcon from '@material-ui/icons/FolderOutlined'
+import FolderFav from '@material-ui/icons/FolderSpecialRounded'
+*/
 
-import FileList from './file-list'
-
+import FileList from './FileList'
 import WSBreadCrumbs from '../utils/ui/ws-breadcrumbs'
 
-
 import './workspaces.scss'
+
+// stuff only for testing
+import config from '../config'
+import {useParams} from 'react-router-dom'
 
 const BreadCrumbs = () =>
   <Grid container>
@@ -31,7 +35,7 @@ const BreadCrumbs = () =>
 
 
 
-const Sidebar = (props) => {
+const Sidebar = () => {
 
   const handleChange = (val) => {
     console.log('val', val)
@@ -79,10 +83,10 @@ export default function Workspaces() {
   return (
     <Root>
       <Card>
+
         <Sidebar />
 
         <Main>
-
           <BreadCrumbContainer>
             <BreadCrumbs />
           </BreadCrumbContainer>
@@ -96,6 +100,13 @@ export default function Workspaces() {
         </Main>
 
       </Card>
+
+      <P3Link
+        href={`${config.p3URL}/workspace/${useParams().path}`}
+        target="_blank"
+      >
+        p3
+      </P3Link>
     </Root>
   )
 }
@@ -123,5 +134,12 @@ const BreadCrumbContainer = styled.div`
 `
 
 const FileListContainer = styled.div`
+`
+
+const P3Link = styled.a`
+  position: absolute;
+  top: 50;
+  right: 50;
+  opacity: .7;
 `
 

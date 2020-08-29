@@ -25,7 +25,7 @@ import PublicIcon from '@material-ui/icons/PublicOutlined'
 
 import * as Auth from '../../../api/auth';
 
-import FileList from '../../../workspaces/file-list';
+import FileList from '../../../workspaces/FileList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

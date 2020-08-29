@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
-import { Link } from "react-router-dom";
-import { makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
-import Box from '@material-ui/core/Box';
-import Badge from '@material-ui/core/Badge';
-import QueuedIcon from '@material-ui/icons/PlaylistAddRounded';
-import InProgressIcon from '@material-ui/icons/PlaylistPlayRounded';
-import CompletedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
+import React, { useContext } from 'react'
+import { Link } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
+import Tooltip from '@material-ui/core/Tooltip'
+import Box from '@material-ui/core/Box'
+import Badge from '@material-ui/core/Badge'
+import QueuedIcon from '@material-ui/icons/PlaylistAddRounded'
+import InProgressIcon from '@material-ui/icons/PlaylistPlayRounded'
+import CompletedIcon from '@material-ui/icons/PlaylistAddCheckRounded'
 
 
-import { JobStatusContext} from "./job-status-context";
+import { JobStatusContext} from '../job-status-context'
 
 const useStyles = makeStyles({
   root: {
@@ -21,7 +21,6 @@ const useStyles = makeStyles({
     borderTopLeftRadius: '4px',
     borderTopRightRadius: '4px',
     display: 'inline',
-    position: 'fixed',
     zIndex: 9999
   },
   title: {
@@ -30,13 +29,13 @@ const useStyles = makeStyles({
   icon: {
     fontSize: '2em'
   }
-});
+})
 
 
 export default function JobsTicker(props) {
-  const styles = useStyles();
+  const styles = useStyles()
 
-  const [state] = useContext(JobStatusContext);
+  const [state] = useContext(JobStatusContext)
 
   return (
     <div className={styles.root}>
@@ -54,7 +53,7 @@ export default function JobsTicker(props) {
         </Box>
 
         <Box m={1}>
-          <Tooltip title={`${status.inProgress} in-progress jobs`}>
+          <Tooltip title={`${state.inProgress} in-progress jobs`}>
             <Badge badgeContent={state.inProgress} max={999999} color="primary">
               <InProgressIcon className={styles.icon} />
             </Badge>
@@ -70,5 +69,5 @@ export default function JobsTicker(props) {
         </Box>
       </Box>
     </div>
-  );
+  )
 }

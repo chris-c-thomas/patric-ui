@@ -1,6 +1,7 @@
-import React, {useEffect, useState, useContext} from 'react';
+/* eslint-disable react/display-name */
+import React, {useEffect, useState, useContext} from 'react'
 import styled from 'styled-components'
-import { Link, useHistory, useLocation} from "react-router-dom";
+import { Link, useHistory, useLocation} from 'react-router-dom'
 
 import Select from 'react-select'
 
@@ -8,24 +9,24 @@ import Select from 'react-select'
 // import {KeyboardDatePicker, MuiPickersUtilsProvider}  from '@material-ui/pickers';
 // import DateFnsUtils from '@date-io/date-fns';
 
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Chip from '@material-ui/core/Chip';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import QueuedIcon from '@material-ui/icons/PlaylistAddTwoTone';
-import InProgressIcon from '@material-ui/icons/PlaylistPlayTwoTone';
-import CompletedIcon from '@material-ui/icons/PlaylistAddCheckTwoTone';
-import WarningIcon from '@material-ui/icons/WarningOutlined';
+import Paper from '@material-ui/core/Paper'
+import Button from '@material-ui/core/Button'
+import Chip from '@material-ui/core/Chip'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import QueuedIcon from '@material-ui/icons/List'
+import InProgressIcon from '@material-ui/icons/PlayCircleOutlineRounded'
+import CompletedIcon from '@material-ui/icons/CheckOutlined'
+import WarningIcon from '@material-ui/icons/WarningOutlined'
 
-import Table from '../tables/table';
-import { listJobs, getStats } from '../api/app-service';
-import { toDateTimeStr } from '../utils/units';
+import Table from '../tables/table'
+import { listJobs, getStats } from '../api/app-service'
+import { isoToHumanDateTime } from '../utils/units'
 
-import { JobStatusProvider, JobStatusContext } from "./job-status-context";
+import { JobStatusContext } from './job-status-context'
 
-import ErrorMsg from '../error-msg';
+import ErrorMsg from '../error-msg'
 
-import urlMapping from './url-mapping';
+import urlMapping from './url-mapping'
 
 
 const columns = [
@@ -39,8 +40,8 @@ const columns = [
     id: 'app',
     label: 'Service',
     format: val => {
-      const isAvail = Object.keys(urlMapping).indexOf(val) != -1;
-      return isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val;
+      const isAvail = Object.keys(urlMapping).indexOf(val) != -1
+      return isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val
     },
     width: '20%'
   },
@@ -52,136 +53,157 @@ const columns = [
   },
   {
     id: 'parameters',
-    label: 'Output Name',
+    label: 'Output',
     format: obj => {
-      const isAvail = 'output_file' in obj;
-      if (!isAvail) return '-';
+      const isAvail = 'output_file' in obj
+      if (!isAvail) return '-'
 
       const name = obj.output_file,
-            path = `${obj.output_path}/.${name}`;
-      return  <Link to={`/files${path}`}>{name}</Link>;
+        path = `${obj.output_path}/.${name}`
+      return  <Link to={`/files${path}`}>{name}</Link>
     }
   }, {
     id: 'submit_time',
     label: 'Submitted',
-    format: val => toDateTimeStr(val)
+    format: val => isoToHumanDateTime(val)
   }, {
     id: 'start_time',
     label: 'Started',
-    format: val => toDateTimeStr(val)
+    format: val => isoToHumanDateTime(val)
   }, {
     id: 'completed_time',
     label: 'Completed',
-    format: val => toDateTimeStr(val)
+    format: val => isoToHumanDateTime(val)
   }
 ]
 
 
 function Toolbar(props) {
-  const [state] = useContext(JobStatusContext);
+  const [state] = useContext(JobStatusContext)
   const {
     app, onAppFilter, status, onStatusFilter, options
-  } = props;
+  } = props
+
 
   return (
-    <Grid container spacing={3} alignItems="center">
-      <Grid item xs={1}>
+    <div className="row">
+      <MainOptions className="flex align-items-center">
         <Title>Job Status</Title>
-      </Grid>
+        <div style={{width: 300}}>
+          <Select
+            styles={{
+              menu: (provided) => ({
+                ...provided,
+                zIndex: 99999,
+              })
+            }}
+            defaultValue={app ? {label: app, value: app} : { label: 'All Services', value: 'AllServices' }}
+            options={options}
+            onChange={field => onAppFilter(field)}
+          />
+        </div>
+      </MainOptions>
 
-      <Grid item xs={3}>
-        <Select
-          styles={{
-            menu: (provided, state) => ({
-              ...provided,
-              zIndex: 99999
-            })
+      {/*
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          disableToolbar
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          label="Date picker inline"
+          // value={selectedDate}
+          onChange={onStartDateChange}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
           }}
-          defaultValue={app ? {label: app, value: app} : { label: "All Services", value: 'AllServices' }}
-          options={options}
-          onChange={field => onAppFilter(field)}
         />
 
-        {/*
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            label="Date picker inline"
-            // value={selectedDate}
-            onChange={onStartDateChange}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />
-
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            label="Date picker inline"
-            // value={selectedDate}
-            onChange={onEndDateChange}
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-          />
-        </MuiPickersUtilsProvider>
-        */}
-
-      </Grid>
-
-      <Grid item xs={2}>
-        <StatusBtn onClick={() => onStatusFilter('queued')} active={status == 'queued'}>
+        <KeyboardDatePicker
+          disableToolbar
+          variant="inline"
+          format="MM/dd/yyyy"
+          margin="normal"
+          label="Date picker inline"
+          // value={selectedDate}
+          onChange={onEndDateChange}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+        />
+      </MuiPickersUtilsProvider>
+      */}
+      <StatusBtns className="flex align-items-end">
+        <StatusBtn onClick={() => onStatusFilter('queued')} isactive={status == 'queued'} disableRipple>
           <QueuedIcon className="queued" />
-          <p>{state.queued} queued</p>
+          {state.queued} queued
         </StatusBtn>
-      </Grid>
 
-      <Grid item xs={2}>
-        <StatusBtn onClick={() => onStatusFilter('in-progress')} active={status == 'in-progress'}>
+        <StatusBtn onClick={() => onStatusFilter('in-progress')} isactive={status == 'in-progress'} disableRipple>
           <InProgressIcon className="in-progress" />
-          <p>{state.inProgress} in progress</p>
+          {state.inProgress} running
         </StatusBtn>
-      </Grid>
 
-      <Grid item xs={2}>
-        <StatusBtn onClick={() => onStatusFilter('completed')} active={status == 'completed'}>
+        <StatusBtn onClick={() => onStatusFilter('completed')} isactive={status == 'completed'} disableRipple>
           <CompletedIcon className="completed"/>
-          <p>{state.completed} completed</p>
+          {state.completed} completed
         </StatusBtn>
-      </Grid>
 
-      <Grid item xs={2}>
-        <StatusBtn onClick={() => onStatusFilter('failed')} active={status == 'failed'}>
+        <StatusBtn onClick={() => onStatusFilter('failed')} isactive={status == 'failed'} disableRipple>
           <WarningIcon className="failed"/>
-          <p>{state.failed} failed</p>
+          {state.failed} failed
         </StatusBtn>
-      </Grid>
-    </Grid>
+      </StatusBtns>
+    </div>
   )
 }
 
+const MainOptions = styled.div`
+  flex-grow: 3;
+`
+
+const Title = styled.div`
+  font-size: 1.2em;
+  margin-right: 20px;
+`
+
+const StatusBtns = styled.div`
+  flex-grow: 1;
+
+  & > * {
+    margin-right: 40px;
+  }
+`
+
+const StatusBtn = styled(Button)`
+  padding: 0;
+  color: #444;
+  &.MuiButton-root { margin-right: 20px;}
+
+  :hover { opacity: .8;}
+
+  ${props => props.isactive &&
+    'border-bottom: 10px solid #c0d3a2;'}
+`
+
+
 
 export default function Jobs() {
-  let history = useHistory();
+  let history = useHistory()
   const params = new URLSearchParams(useLocation().search)
 
   const appFilter = params.get('app')
   const app = appFilter == 'AllServices' ? null : appFilter
-  const status = params.get('status')
-  const page = params.get('page') || 0
+  const status = params.get('status') || false
+  const page = Number(params.get('page')) || 0
   const query = params.get('query') || ''
-  const limit = params.get('limit') || 200
+  const limit = Number(params.get('limit')) || 200
 
   const [loading, setLoading] = useState(false)
   // const [state, setState] = useState({app: 'AllServices'}) //page: 0, start: 0, limit: 200,
-  const [rows, setRows] = useState(null);
-  const [total, setTotal] = useState(null);
-  const [error, setError] = useState(null);
+  const [rows, setRows] = useState(null)
+  const [total, setTotal] = useState(null)
+  const [error, setError] = useState(null)
   const [appStats, setAppStats] = useState(null)
 
 
@@ -205,7 +227,7 @@ export default function Jobs() {
       setLoading(false)
     })
 
-  }, [page, status, app, query])
+  }, [page, status, app, query, limit])
 
 
   // data for app filter dropdown
@@ -232,6 +254,7 @@ export default function Jobs() {
       onRmStatusFilter()
       return
     }
+
     params.set('status', value)
     history.push({search: params.toString()})
   }
@@ -252,7 +275,7 @@ export default function Jobs() {
     history.push({search: params.toString()})
   }
 
-  const onSort = (colObj) => {
+  const onSort = (/*colObj*/) => {
     alert('no api method available')
   }
 
@@ -260,15 +283,14 @@ export default function Jobs() {
   return (
     <>
       <Card>
-        <JobStatusProvider>
-          <Toolbar
-            options={appStats}
-            app={app}
-            onAppFilter={onAppFilter}
-            status={status}
-            onStatusFilter={onStatusFilter}
-          />
-        </JobStatusProvider>
+        <Toolbar
+          options={appStats}
+          app={app}
+          onAppFilter={onAppFilter}
+          status={status}
+          onStatusFilter={onStatusFilter}
+        />
+
       </Card>
 
       <TableCard>
@@ -276,7 +298,6 @@ export default function Jobs() {
         {
           rows &&
           <Table
-            offsetHeight="60px"
             pagination
             page={page}
             limit={limit}
@@ -288,22 +309,22 @@ export default function Jobs() {
             onSearch={onSearch}
             searchPlaceholder={'Search files and parameters'}
             MiddleComponent={() => (
-              <>
-              {app && app !== 'AllServices' &&
-                <Chip size="small"
-                  label={<><b>Service:</b> {app}</>}
-                  onDelete={onRmAppFilter}
-                  color="primary"
-                />
-              }
-              {status &&
-                <Chip size="small"
-                  label={<><b>Status:</b> {status}</>}
-                  onDelete={onRmStatusFilter}
-                  color="primary"
-                />
-              }
-             </>
+              <Filters>
+                {app && app !== 'AllServices' &&
+                  <Chip size="small"
+                    label={<><b>Service:</b> {app}</>}
+                    onDelete={onRmAppFilter}
+                    color="primary"
+                  />
+                }
+                {status &&
+                  <Chip size="small"
+                    label={<><b>Status:</b> {status}</>}
+                    onDelete={onRmStatusFilter}
+                    color="primary"
+                  />
+                }
+              </Filters>
             )}
           />
         }
@@ -317,40 +338,20 @@ export default function Jobs() {
 
 const Card = styled(Paper)`
   margin: 5px;
-  padding: 20px;
+  padding: 10px;
 `
 
 const TableCard = styled(Paper)`
-  height: calc(100% - 160px);
+  height: calc(100% - 120px);
   margin: 5px;
   padding: 0 10px;
   position: relative;
 `
 
-const Title = styled.div`
-  font-size: 1.2em;
-`
-
-const StatusBtn = styled.a`
-  color: #444;
-  display: flex;
-  align-items: center;
-
-  & > svg {
-    font-size: 2rem;
-  }
-
-  :hover {
-    color: #444;
-    opacity: .8;
-    text-decoration: none;
-  }
-
-  ${props => props.active &&
-    'border-bottom: 3px solid #c0d3a2;'
+const Filters = styled.div`
+  margin-left: 10px;
+  > .MuiChip-root {
+    margin-right: 10px;
   }
 `
 
-const Icon = styled.span`
-
-`

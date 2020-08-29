@@ -1,24 +1,34 @@
-import React, {useState, useEffect, createContext} from 'react'
+import React, {useState, useEffect, createContext, useCallback} from 'react'
 
 import { getStatus } from '../api/app-service'
+
+const TIME_OUT = 5000
+
+/*
+interface State {
+  queued: number,
+  inProgress: number,
+  completed: number,
+  failed: number
+}
+*/
 
 const JobStatusContext = createContext([{}])
 
 const JobStatusProvider = (props) => {
   const [state, setState] = useState({
-    queued: '',
-    inProgress: '',
-    completed: '',
-    failed: ''
+    queued: null,
+    inProgress: null,
+    completed: null,
+    failed: null
   })
 
   useEffect(() => {
     const timer = poll()
-    return () => clearTimeout(timer)
-  }, [])
+    return () => timer.then(to => clearTimeout(to))
+  }, [poll])
 
-  const poll = () => {
-    console.log('fetching jobs status')
+  const poll = useCallback(() => {
     return getStatus().then(status => {
       const queued = status.queued || 0,
         inProgress = status['in-progress'] || 0,
@@ -28,9 +38,10 @@ const JobStatusProvider = (props) => {
       setState({queued, inProgress, completed, failed})
       return setTimeout(() => {
         poll()
-      }, 5000)
+      }, TIME_OUT)
     })
-  }
+  }, [])
+
 
 
   return (

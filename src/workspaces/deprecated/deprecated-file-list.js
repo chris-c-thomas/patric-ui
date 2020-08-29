@@ -17,9 +17,9 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import File from '@material-ui/icons/InsertDriveFileOutlined';
 // import Contigs from '../../../../assets/icons/ws/contigs.svg';
 
-import BreadCrumbs from '../utils/ui/deprecated-breadcrumbs';
-import {bytesToSize, toDateTimeStr} from '../utils/units';
-import * as WS from '../api/workspace';
+import BreadCrumbs from '../../utils/ui/deprecated-breadcrumbs';
+import {bytesToSize, toDateTimeStr} from '../../utils/units';
+import * as WS from '../../api/workspace';
 
 
 const columns = [

@@ -1,17 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import { Link, useParams } from "react-router-dom";
+/* eslint-disable react/display-name */
+import React, {useEffect, useState} from 'react'
+import { Link, useParams } from 'react-router-dom'
 
-import Table from '../tables/table';
+import Table from '../tables/table'
 
-import { makeStyles } from '@material-ui/core/styles';
+import Folder from '@material-ui/icons/FolderOutlined'
+// import ArrowDown from '@material-ui/icons/ArrowDropDown'
+// import ArrowBack from '@material-ui/icons/ArrowBack'
+import File from '@material-ui/icons/InsertDriveFileOutlined'
 
-import Folder from '@material-ui/icons/FolderOutlined';
-import ArrowDown from '@material-ui/icons/ArrowDropDown';
-import ArrowBack from '@material-ui/icons/ArrowBack';
-import File from '@material-ui/icons/InsertDriveFileOutlined';
-
-import {bytesToSize, toDateTimeStr} from '../utils/units';
-import * as WS from '../api/workspace';
+import {bytesToSize, toDateTimeStr} from '../utils/units'
+import * as WS from '../api/workspace'
 
 
 const columns = [
@@ -42,7 +41,6 @@ const columns = [
 ]
 
 
-
 function getIcon(type) {
   if (type == 'folder')
     return <Folder />
@@ -53,13 +51,22 @@ function getIcon(type) {
 }
 
 function getParentPath(path) {
-  const parts = path.split('/');
+  const parts = path.split('/')
   return parts.slice(0, parts.length - 1).join('/')
 }
 
+type Props = {
+  fileType?: string;
+  noBreadCrumbs?: boolean;
+  isObjectSelector?: boolean;
+  path?: string;
+  onSelect: () => void;
+}
 
-export default function FileList(props) {
-  const {type, onSelect, noBreadCrumbs, isObjectSelector} = props;
+export default function FileList(props: Props) {
+  const {fileType, noBreadCrumbs, isObjectSelector, onSelect} = props
+
+  let urlPathParam = useParams().path
 
   let path
   if (isObjectSelector) {
@@ -69,11 +76,10 @@ export default function FileList(props) {
     columns[0].format = (val, obj) =>
       <a onClick={() => onClick(obj)}>{getIcon(obj.type)} {val}</a>
   } else {
-    let urlPathParam = useParams().path;
     path = '/' + decodeURIComponent(urlPathParam)
   }
 
-  const [rows, setRows] = useState(null);
+  const [rows, setRows] = useState(null)
 
   useEffect(() => {
     setRows(null)
@@ -97,7 +103,6 @@ export default function FileList(props) {
       {
         rows &&
         <Table
-          offsetHeight="80px"
           columns={columns}
           rows={rows}
           onDoubleClick={onDoubleClick}

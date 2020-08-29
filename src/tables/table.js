@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect, useRef} from 'react'
+import React, {useState, memo, useEffect} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -86,7 +86,6 @@ const RowCells = ({columns, row}) =>
 const Row = memo(props => {
   const {
     row,
-    columns,
     id,
     expandable,
     onExpand,
@@ -122,10 +121,12 @@ const Row = memo(props => {
       </TableRow>
     </>
   )
-}, (prev, next) => false
+}, () => false
   // prev.row.rowID == next.row.rowID &&
   // prev.checked[prev.row.rowID] == next.checked[next.row.rowID]
 )
+
+Row.displayName = 'TableComponent-Row'
 
 
 const TableRows = (props) => {
@@ -141,9 +142,9 @@ const TableRows = (props) => {
 
   const onExpand = (id) => {
     setExpanded(prev => ({
-        ...prev,
-        [id]: !(id in prev)
-      })
+      ...prev,
+      [id]: !(id in prev)
+    })
     )
   }
 
@@ -240,7 +241,7 @@ const decodeSort = (sortObj) => {
     return ''
 
   const id = Object.keys(sortObj)[0],
-        order = sortObj[id]
+    order = sortObj[id]
 
   return `${order == 'dsc' ? '-' : '+'}${id}`
 }
@@ -258,8 +259,6 @@ const getVisibleColumns = (columns, activeColumns = null) => {
 
 
 export default function TableComponent(props) {
-  const didMountRef = useRef();
-
   const {
     onSearch, pagination, offsetHeight, onClick, onDoubleClick,
     onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
@@ -286,7 +285,7 @@ export default function TableComponent(props) {
   // initial columns are defined in `columns` spec.
   const [activeColumns, setActiveColumns] = useState(null)
 
-  const [rowsPerPage, setRowsPerPage] = useState(200)
+  const [rowsPerPage] = useState(200)
 
   // checkbox states
   const [allSelected, setAllSelected] = useState(false)
@@ -361,12 +360,12 @@ export default function TableComponent(props) {
 
         {enableTableOptions &&
           <DownloadContainer>
-          <Tooltip title="download">
-            <ActionBtn aria-label="download" >
-              <img src={downloadIcon} />
-              <div>Download</div>
-            </ActionBtn>
-          </Tooltip>
+            <Tooltip title="download">
+              <ActionBtn aria-label="download" >
+                <img src={downloadIcon} />
+                <div>Download</div>
+              </ActionBtn>
+            </Tooltip>
           </DownloadContainer>
         }
 
@@ -471,10 +470,6 @@ const DownloadContainer = styled.div`
   border-right: 2px solid #f2f2f2;
 `
 
-const MiddleComponentContainer = styled.div`
-
-`
-
 const Pagination = styled(TablePagination)`
   justify-self: right;
   flex: 1;
@@ -518,8 +513,4 @@ const NoneFoundNotice = styled.div`
   transform: translate(0%, 20%);
   color: #666;
   font-size: 1.5em;
-`
-
-const OpenFiltersBtn = styled.a`
-
 `

@@ -1,29 +1,29 @@
-import axios from 'axios';
-import config from '../config';
+import axios from 'axios'
+import config from '../config'
 
-import { getToken } from './auth';
+import { getToken } from './auth'
 
-const { wsAPI } = config;
+const { wsAPI } = config
 
 const workspace = axios.create({
   headers: {
     Authorization: getToken()
   }
-});
+})
 
 
 const rpc = (cmd, params) => {
   const req = {
-    "id": String(Math.random()).slice(2),
-    "method": `Workspace.${cmd}`,
-    "params": [params],
-    "jsonrpc": "2.0"
+    'id': String(Math.random()).slice(2),
+    'method': `Workspace.${cmd}`,
+    'params': [params],
+    'jsonrpc': '2.0'
   }
 
   return workspace.post(wsAPI, req)
     .then(res => {
-      return res.data.result[0];
-    });
+      return res.data.result[0]
+    })
 }
 
 function metaToObj(m) {
@@ -40,12 +40,12 @@ function metaToObj(m) {
     size: m[6],
     priv: m[9],
     public: m[10] == 'r'
-  };
+  }
 }
 
 export function list(args) {
   if (typeof args !== 'object')
-    throw Error('Workspace API: the "list" method requires an object');
+    throw Error('Workspace API: the "list" method requires an object')
 
   const {
     path,
@@ -56,19 +56,19 @@ export function list(args) {
   } = args
 
   const params = {
-    "paths": [path],
-    "recursive": recursive
-  };
+    'paths': [path],
+    'recursive': recursive
+  }
 
-  if (type) params.query = {type};
+  if (type) params.query = {type}
 
   return rpc('ls', params)
     .then(data => {
-      const meta = data[path];
-      let objects = meta ? meta.map(m => metaToObj(m)) : [];
+      const meta = data[path]
+      let objects = meta ? meta.map(m => metaToObj(m)) : []
 
       if (!includeHidden) {
-        objects = objects.filter(obj => obj.name[0] != '.');
+        objects = objects.filter(obj => obj.name[0] != '.')
       }
 
       let permissionProm
@@ -83,16 +83,16 @@ export function list(args) {
         }
 
         // we want to return folders followed by files
-        const folders = objects.filter(obj => obj.type == 'folder').reverse();
-        const files = objects.filter(obj => obj.type != 'folder'). reverse();
-        return [...folders, ...files];
+        const folders = objects.filter(obj => obj.type == 'folder').reverse()
+        const files = objects.filter(obj => obj.type != 'folder'). reverse()
+        return [...folders, ...files]
       })
     })
 }
 
 
 function listPermissions(paths) {
-  var objects = Array.isArray(paths) ? paths : [paths];
+  var objects = Array.isArray(paths) ? paths : [paths]
 
   return rpc('list_permissions', {objects})
 }
@@ -107,14 +107,14 @@ export function getUserCounts({user}) {
   ]
 
   const params = {
-    "paths": paths
-  };
+    'paths': paths
+  }
 
   return rpc('ls', params)
     .then(data => {
       return paths.reduce((accum, path) => {
-        accum[path] = (path in data && data[path]).length || 0;
-        return accum;
+        accum[path] = (path in data && data[path]).length || 0
+        return accum
       }, {})
     })
 }
