@@ -18,7 +18,7 @@ import InProgressIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 import CompletedIcon from '@material-ui/icons/CheckOutlined'
 import WarningIcon from '@material-ui/icons/WarningOutlined'
 
-import Table from '../tables/table'
+import Table from '../tables/Table'
 import { listJobs, getStats } from '../api/app-service'
 import { isoToHumanDateTime } from '../utils/units'
 

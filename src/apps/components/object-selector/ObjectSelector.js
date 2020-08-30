@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
+// import styled from 'styled-components'
 
 import InputLabel from '@material-ui/core/InputLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
@@ -71,24 +71,24 @@ export default function ObjectSelector(props) {
       return
     }
 
-    let path = '/nconrad@patricbrc.org/home';
+    let path = '/nconrad@patricbrc.org/home'
     WS.list({path, type, recursive: true, showHidden: false})
       .then(data => {
-        const items = data.map(obj => pathToOptionObj(obj.path));
+        const items = data.map(obj => pathToOptionObj(obj.path))
 
         setItems(items)
         callback(items)
       }).catch(err => {
-        setError(err);
-        callback([]);
+        setError(err)
+        callback([])
       })
-  };
+  }
 
   const formatOptionLabel = (opt) => {
     let label = opt.label,
       i = label.lastIndexOf('/') + 1,
-      path = label.slice(0, i)
-      name = label.slice(i);
+      path = label.slice(0, i),
+      name = label.slice(i)
 
     return (
       <div>
@@ -101,9 +101,9 @@ export default function ObjectSelector(props) {
   }
 
   const _setPath = (path) => {
-    const obj = pathToOptionObj(path);
-    setSelectedPath(obj);
-    if (onChange) onChange(path);
+    const obj = pathToOptionObj(path)
+    setSelectedPath(obj)
+    if (onChange) onChange(path)
   }
 
   return (
@@ -120,7 +120,7 @@ export default function ObjectSelector(props) {
           loadOptions={loadOptions}
           styles={inputStyles}
           formatOptionLabel={formatOptionLabel}
-          noOptionsMessage={() => "No results"}
+          noOptionsMessage={() => 'No results'}
           onInputChange={val => setQuery(val)}
           onChange={obj => _setPath(obj.value)}
           value={selectedPath}
@@ -140,14 +140,8 @@ export default function ObjectSelector(props) {
         onSelect={onDialogSelect}
       />
     </>
-  );
+  )
 }
-
-
-
-const Root = styled.div`
-
-`
 
 
 

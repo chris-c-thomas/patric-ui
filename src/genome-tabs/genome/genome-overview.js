@@ -3,7 +3,7 @@ import { Link, useParams} from 'react-router-dom';
 import styled from 'styled-components'
 
 import Subtitle from '../../subtitle'
-import Table from '../../tables/table';
+import Table from '../../tables/Table';
 
 import {getTaxon} from '../../api/data-api'
 

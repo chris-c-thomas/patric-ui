@@ -22,7 +22,7 @@ import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import useDebounce from '../../utils/use-debounce';
-import ColumnMenu from '../column-menu';
+import ColumnMenu from '../ColumnMenu';
 
 const useStyles = makeStyles(theme => ({
   btnGroup: {

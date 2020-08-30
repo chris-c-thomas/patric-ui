@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, {useState} from 'react'
+import {useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
 import Paper from '@material-ui/core/Paper'
-import Grid from '@material-ui/core/Grid'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
@@ -17,28 +17,17 @@ import FolderFav from '@material-ui/icons/FolderSpecialRounded'
 */
 
 import FileList from './FileList'
-import WSBreadCrumbs from '../utils/ui/ws-breadcrumbs'
+import BreadCrumbs from './BreadCrumbs'
 
 import './workspaces.scss'
 
 // stuff only for testing
 import config from '../config'
-import {useParams} from 'react-router-dom'
-
-const BreadCrumbs = () =>
-  <Grid container>
-    <Grid item xs={9}>
-      <WSBreadCrumbs/>
-    </Grid>
-  </Grid>
-
-
-
 
 const Sidebar = () => {
 
   const handleChange = (val) => {
-    console.log('val', val)
+    alert('Need to implement')
   }
 
   return (
@@ -76,8 +65,12 @@ const SidebarRoot = styled.div`
 `
 
 export default function Workspaces() {
+  const path = decodeURIComponent('/' + useParams().path)
 
-  const onSelect = () => {
+  const [selected, setSelected] = useState(null)
+
+  const onSelect = (state) => {
+    setSelected(state.objs)
   }
 
   return (
@@ -88,17 +81,16 @@ export default function Workspaces() {
 
         <Main>
           <BreadCrumbContainer>
-            <BreadCrumbs />
+            <BreadCrumbs path={path} selected={selected}/>
           </BreadCrumbContainer>
 
           <FileListContainer>
             <FileList
+              wsPath={path}
               onSelect={onSelect}
-              noBreadCrumbs={true}
             />
           </FileListContainer>
         </Main>
-
       </Card>
 
       <P3Link
@@ -110,6 +102,7 @@ export default function Workspaces() {
     </Root>
   )
 }
+
 
 const Root = styled.div`
   .main-container {
@@ -123,17 +116,17 @@ const Main = styled.div`
 
 const Card = styled(Paper)`
   display: flex;
-  height: calc(100% - 60px);
+  height: calc(100% - 50px);
   margin: 5px;
-`
 
+`
 const BreadCrumbContainer = styled.div`
-  margin: 5px;
   padding: 20px 10px;
   border-bottom: 1px solid rgba(224, 224, 224, 1);
 `
 
 const FileListContainer = styled.div`
+  padding: 0 5px;
 `
 
 const P3Link = styled.a`

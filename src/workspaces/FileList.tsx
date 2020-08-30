@@ -1,15 +1,15 @@
 /* eslint-disable react/display-name */
 import React, {useEffect, useState} from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
-import Table from '../tables/table'
+import Table from '../tables/Table'
 
 import Folder from '@material-ui/icons/FolderOutlined'
 // import ArrowDown from '@material-ui/icons/ArrowDropDown'
 // import ArrowBack from '@material-ui/icons/ArrowBack'
 import File from '@material-ui/icons/InsertDriveFileOutlined'
 
-import {bytesToSize, toDateTimeStr} from '../utils/units'
+import {bytesToSize, isoToHumanDateTime} from '../utils/units'
 import * as WS from '../api/workspace'
 
 
@@ -17,7 +17,7 @@ const columns = [
   {
     id: 'name',
     label: 'Name',
-    width: '50%',
+    width: '45%',
     format: (val, obj) =>
       <Link to={(`/files${obj.encodedPath}`)}>{getIcon(obj.type)} {val}</Link>
   }, {
@@ -36,7 +36,7 @@ const columns = [
   }, {
     id: 'created',
     label: 'Created',
-    format: val => toDateTimeStr(val)
+    format: val => isoToHumanDateTime(val)
   }
 ]
 
@@ -55,47 +55,55 @@ function getParentPath(path) {
   return parts.slice(0, parts.length - 1).join('/')
 }
 
+
 type Props = {
+  wsPath: string;
   fileType?: string;
-  noBreadCrumbs?: boolean;
   isObjectSelector?: boolean;
-  path?: string;
-  onSelect: () => void;
+  onSelect: (obj: object) => void;
 }
 
+
 export default function FileList(props: Props) {
-  const {fileType, noBreadCrumbs, isObjectSelector, onSelect} = props
+  const {wsPath, fileType, isObjectSelector, onSelect} = props
 
-  let urlPathParam = useParams().path
+  if (fileType) {
+    // pass
+  }
 
-  let path
+  const history = useHistory()
+  const [path, setPath] = useState(wsPath)
+
+  useEffect(() => {
+    setPath(wsPath)
+  }, [wsPath])
+
   if (isObjectSelector) {
-    path = props.path
-
-    // if object selector, we'll want to use a click event instead of routing system
+    // if object selector, we'll want to (somehow) use a
+    // click event instead of routing
     columns[0].format = (val, obj) =>
-      <a onClick={() => onClick(obj)}>{getIcon(obj.type)} {val}</a>
-  } else {
-    path = '/' + decodeURIComponent(urlPathParam)
+      <a onClick={() => navigate(obj)}>{getIcon(obj.type)} {val}</a>
   }
 
   const [rows, setRows] = useState(null)
 
   useEffect(() => {
     setRows(null)
-    WS.list({path})
+    WS.list({path,})
       .then(data => {
+        console.log('data', data)
         setRows(data)
       })
   }, [path])
 
   // use event for object select
-  const onClick = (obj) => {
-    alert(JSON.stringify(obj, null, 4))
+  const handleSelect = (state) => {
+    if (onSelect) onSelect(state)
   }
 
-  const onDoubleClick = () => {
-    console.log('double click')
+  const navigate = (obj) => {
+    if (isObjectSelector) return
+    history.push(`/files${obj.encodedPath}`)
   }
 
   return (
@@ -105,7 +113,8 @@ export default function FileList(props: Props) {
         <Table
           columns={columns}
           rows={rows}
-          onDoubleClick={onDoubleClick}
+          onClick={handleSelect}
+          onDoubleClick={navigate}
         />
       }
     </>

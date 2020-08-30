@@ -8,7 +8,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 
 import Pie from '../../charts/pie'
-import Table from '../../tables/table'
+import Table from '../../tables/Table'
 
 import {getTaxon, listRepresentative, getTaxonChartData, getAMRCounts} from '../../api/data-api'
 import {getPublications } from '../../api/ncbi-eutils'

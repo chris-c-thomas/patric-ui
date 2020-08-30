@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@material-ui/core/styles'
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
 import MyIcon from '@material-ui/icons/AccountCircleOutlined'
@@ -23,12 +21,12 @@ import PublicIcon from '@material-ui/icons/PublicOutlined'
 // import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
 // import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
 
-import * as Auth from '../../../api/auth';
+import * as Auth from '../../../api/auth'
 
-import FileList from '../../../workspaces/FileList';
+import FileList from '../../../workspaces/FileList'
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -40,7 +38,7 @@ function TabPanel(props) {
     >
       {children}
     </div>
-  );
+  )
 }
 
 
@@ -48,38 +46,39 @@ function a11yProps(index) {
   return {
     id: `vertical-tab-${index}`,
     'aria-controls': `vertical-tabpanel-${index}`,
-  };
+  }
 }
 
 export default function ObjectSelectorDialog(props) {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const path = `/${Auth.getUser()}@patricbrc.org/home`;
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const path = `/${Auth.getUser()}@patricbrc.org/home`
+  console.log('path', path)
 
-  const {title, type} = props;
+  const {title, type} = props
 
-  const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState(0);
-  const [selectedPath, setSelectedPath] = useState(null);
+  const [open, setOpen] = useState(false)
+  const [tab, setTab] = useState(0)
+  const [selectedPath, setSelectedPath] = useState(null)
 
 
   function handleClickOpen() {
-    setOpen(true);
+    setOpen(true)
   }
 
   function handleClose() {
-    setOpen(false);
+    setOpen(false)
   }
 
   function onTabChange(event, newValue) {
-    setTab(newValue);
+    setTab(newValue)
   }
 
   function onSelect(path) {
-    setSelectedPath(path);
+    setSelectedPath(path)
 
     // callback for setting input box
-    props.onSelect(path);
+    props.onSelect(path)
   }
 
   // could implment history here, if desired.
@@ -97,7 +96,7 @@ export default function ObjectSelectorDialog(props) {
       <DialogRoot
         className="dialog"
         fullWidth
-        maxWidth={"xl"}
+        maxWidth={'xl'}
         fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
@@ -139,11 +138,10 @@ export default function ObjectSelectorDialog(props) {
 
           <TabPanel value={tab} index={0} className="tab">
             <FileList
-              offsetHeight="10px"
               type={type}
               onSelect={onSelect}
               isObjectSelector
-              path={path}
+              wsPath={path}
             />
           </TabPanel>
           <TabPanel value={tab} index={1}>
@@ -167,7 +165,7 @@ export default function ObjectSelectorDialog(props) {
 
       </DialogRoot>
     </>
-  );
+  )
 }
 
 

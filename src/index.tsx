@@ -16,7 +16,7 @@ import Account from './user-profile/my-profile'
 import TaxonTabs from './genome-tabs/taxon/tabs'
 import GenomeTabs from './genome-tabs/genome/tabs'
 import Jobs from './jobs/jobs'
-import Workspaces from './workspaces/workspaces'
+import Workspaces from './workspaces/Workspaces'
 import SUSignIn from './auth/su-sign-in'
 import NotFound404 from './404'
 

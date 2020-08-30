@@ -12,12 +12,12 @@ const workspace = axios.create({
 })
 
 
-const rpc = (cmd, params) => {
+const rpc = (cmd: string, params: { paths?: any[] | string[]; recursive?: any; objects?: any[] }) => {
   const req = {
-    'id': String(Math.random()).slice(2),
-    'method': `Workspace.${cmd}`,
-    'params': [params],
-    'jsonrpc': '2.0'
+    id: String(Math.random()).slice(2),
+    method: `Workspace.${cmd}`,
+    params: [params],
+    jsonrpc: '2.0'
   }
 
   return workspace.post(wsAPI, req)
@@ -26,10 +26,11 @@ const rpc = (cmd, params) => {
     })
 }
 
-function metaToObj(m) {
+function metaToObj(m: string[]) {
   const path = m[2] + m[0]
   return {
-    encodedPath: path.split('/').map(p => encodeURIComponent(p)).join('/'),
+    // encode everything but user's root
+    encodedPath: path.split('/').map((p: string | number | boolean, i: number) => i == 1 ? p : encodeURIComponent(p)).join('/'),
     path,
     name: m[0],
     parent: m[2],
@@ -41,6 +42,15 @@ function metaToObj(m) {
     priv: m[9],
     public: m[10] == 'r'
   }
+}
+
+type Args = {
+  path: string;
+  type?: string;
+  recursive?: boolean;
+  showHidden?: boolean;
+  includeHidden?: boolean;
+  includePermissions?: boolean;
 }
 
 export function list(args) {
@@ -60,38 +70,39 @@ export function list(args) {
     'recursive': recursive
   }
 
-  if (type) params.query = {type}
+  if (type)
+    params.query = {type}
 
   return rpc('ls', params)
     .then(data => {
       const meta = data[path]
-      let objects = meta ? meta.map(m => metaToObj(m)) : []
+      let objects = meta ? meta.map((m: any) => metaToObj(m)) : []
 
       if (!includeHidden) {
-        objects = objects.filter(obj => obj.name[0] != '.')
+        objects = objects.filter((obj: { name: string[] }) => obj.name[0] != '.')
       }
 
-      let permissionProm
+      let permissionProm: Promise<any>
       if (includePermissions) {
-        permissionProm = listPermissions(objects.map(o => o.path))
+        permissionProm = listPermissions(objects.map((o: { path: any }) => o.path))
       }
 
-      return permissionProm.then((permHash) => {
+      return permissionProm.then((permHash: { [x: string]: any }) => {
         // join-in permissions if requested
         if (permHash) {
-          objects = objects.map(obj => ({...obj, permissions: permHash[obj.path]}))
+          objects = objects.map((obj: { path: string | number }) => ({...obj, permissions: permHash[obj.path]}))
         }
 
         // we want to return folders followed by files
-        const folders = objects.filter(obj => obj.type == 'folder').reverse()
-        const files = objects.filter(obj => obj.type != 'folder'). reverse()
+        const folders = objects.filter((obj: { type: string }) => obj.type == 'folder').reverse()
+        const files = objects.filter((obj: { type: string }) => obj.type != 'folder'). reverse()
         return [...folders, ...files]
       })
     })
 }
 
 
-function listPermissions(paths) {
+function listPermissions(paths: any) {
   var objects = Array.isArray(paths) ? paths : [paths]
 
   return rpc('list_permissions', {objects})

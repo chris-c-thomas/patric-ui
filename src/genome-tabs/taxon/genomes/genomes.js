@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
 
-import Table from '../../../tables/table'
+import Table from '../../../tables/Table'
 import { listData } from '../../../api/data-api'
 import {toPrettyDate} from '../../../utils/dates'
 

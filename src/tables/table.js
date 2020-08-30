@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect} from 'react'
+import React, {useState, memo, useEffect, useReducer, useRef} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -16,12 +16,13 @@ import ArrowRight from '@material-ui/icons/ArrowRight'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 import filterIcon from '../../assets/icons/filter.svg'
 
-import ColumnMenu from './column-menu'
+import ColumnMenu from './ColumnMenu'
 import Checkbox from '../forms/checkbox'
-import TableSearch from './table-search'
-
+import TableSearch from './TableSearch'
 import ActionBtn from './ActionBtn'
 import downloadIcon from '../../assets/icons/download.svg'
+
+import selectedReducer from './selectedReducer'
 
 /*
 const exampleColumns = [
@@ -91,8 +92,8 @@ const Row = memo(props => {
     onExpand,
     emptyCell,
     checkboxes,
-    onCheck,
-    checked,
+    onSelect,
+    selected,
     onDoubleClick
   } = props
 
@@ -105,21 +106,25 @@ const Row = memo(props => {
   }
 
   return (
-    <>
-      <TableRow hover tabIndex={-1} key={id} onClick={() => onCheck(rowID)} onDoubleClick={onDoubleClick}>
-        {emptyCell && <Cell></Cell>}
+    <TableRow hover
+      tabIndex={-1}
+      key={id}
+      onClick={() => onSelect(rowID, row)}
+      onDoubleClick={() => onDoubleClick(row)}
+      selected={selected.ids.includes(rowID)}
+    >
+      {emptyCell && <Cell></Cell>}
 
-        {expandable && <ExpandCell caret={caret} onCaret={onCaret} />}
+      {expandable && <ExpandCell caret={caret} onCaret={onCaret} />}
 
-        {checkboxes &&
-          <Cell key={id + '-checkbox'} style={{padding: 0}}>
-            <Checkbox checked={checked[rowID]} onChange={() => onCheck(rowID)}/>
-          </Cell>
-        }
+      {checkboxes &&
+        <Cell key={id + '-checkbox'} style={{padding: 0}}>
+          <Checkbox checked={selected.ids.includes(rowID)} onChange={() => onSelect(rowID)}/>
+        </Cell>
+      }
 
-        <RowCells {...props}/>
-      </TableRow>
-    </>
+      <RowCells {...props}/>
+    </TableRow>
   )
 }, () => false
   // prev.row.rowID == next.row.rowID &&
@@ -258,10 +263,16 @@ const getVisibleColumns = (columns, activeColumns = null) => {
 }
 
 
+const selectionState = {
+  lastSelected: null,
+  ids: [],
+  objs: [],
+}
+
 export default function TableComponent(props) {
   const {
     onSearch, pagination, offsetHeight, onClick, onDoubleClick,
-    onSort, expandable, expandedRowsKey, checkboxes, limit = 200,
+    onSort, expandable, expandedRowsKey, checkboxes,
     enableTableOptions, onColumnMenuChange, emptyNotice,
     MiddleComponent
   } = props
@@ -275,6 +286,7 @@ export default function TableComponent(props) {
       page value was: ${props.page}; limit value was: ${props.limit}.`
   }
 
+  const mounted = useRef(false)
 
   const [rows, setRows] = useState(props.rows)
   const [columns, setColumns] = useState(getVisibleColumns(props.columns))
@@ -289,12 +301,12 @@ export default function TableComponent(props) {
 
   // checkbox states
   const [allSelected, setAllSelected] = useState(false)
-  const [checkedRows, setCheckedRows] = useState({})
+  const [selected, dispatch] = useReducer(selectedReducer, selectionState)
 
 
   useEffect(() => {
     // todo: refactor/cleanup?
-    setRows(props.rows.map((row, i) => ({...row, rowID: page * limit + i})))
+    setRows(props.rows.map((row, i) => ({...row, rowID: i})))
   }, [props.rows])
 
   useEffect(() => {
@@ -308,7 +320,16 @@ export default function TableComponent(props) {
 
   useEffect(() => {
     setColumns(getVisibleColumns(props.columns, activeColumns))
-  }, [activeColumns])
+  }, [activeColumns, props.columns])
+
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true
+      return
+    }
+
+    if (onClick) onClick(selected)
+  }, [selected])
 
 
   const onChangePage = (event, newPage) => {
@@ -316,21 +337,15 @@ export default function TableComponent(props) {
     props.onPage(newPage)
   }
 
+  // rewrite
   const handleSelectAll = () => {
-    rows.forEach(row => {
-      setCheckedRows(prev => ({...prev, [row.rowID]: !allSelected}) )
-    })
+    alert('reimplement handleSelectAll')
 
     setAllSelected(prev => !prev)
   }
 
-  const onCheck = (rowID) => {
-    if (onClick) onClick(rowID)
-
-    setCheckedRows(prev => ({
-      ...prev,
-      [rowID]: !(rowID in checkedRows && checkedRows[rowID])
-    }))
+  const onSelect = (rowID, obj) => {
+    dispatch({type: 'SET', id: rowID, obj, rows })
   }
 
   const handleSort = (colObj) => {
@@ -432,8 +447,8 @@ export default function TableComponent(props) {
               rows={rows}
               columns={columns}
               checkboxes={checkboxes}
-              onCheck={onCheck}
-              checked={checkedRows}
+              onSelect={onSelect}
+              selected={selected}
               onDoubleClick={onDoubleClick}
               expandable={expandable}
               expandedRowsKey={expandedRowsKey}
@@ -494,15 +509,25 @@ const Container = styled(TableContainer)`
     font-size: 13px;
   }
 
+  /*
   & tr:nth-child(odd) {
     background: #fafafa;
-  }
+  }*/
 
   & td.MuiTableCell-sizeSmall {
     padding: 6px 12px 6px 2px;
   }
   & th.MuiTableCell-sizeSmall {
     padding: 1px 15px 6px 2px;
+  }
+
+  & tr.MuiTableRow-root:hover {
+    background-color: #f5f5f5;
+  }
+
+  & tr.MuiTableRow-root.Mui-selected,
+  & tr.MuiTableRow-root.Mui-selected:hover {
+    background-color: #ecf4fb;
   }
 `
 
