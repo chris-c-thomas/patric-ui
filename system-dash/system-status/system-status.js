@@ -7,7 +7,7 @@ import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import WarningIcon from '@material-ui/icons/WarningRounded'
-import Dialog from '../../src/dialogs/basic-dialog'
+import Dialog from '../../src/dialogs/BasicDialog'
 import ReBrushChart from '../../src/charts/re-brush-chart'
 
 import { getHealthReport, getCalendar, getIndexerData, getErrorLog } from '../api/log-fetcher'

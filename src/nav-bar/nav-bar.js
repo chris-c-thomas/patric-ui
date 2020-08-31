@@ -187,7 +187,7 @@ const PatricMenus = () => {
         Workspaces
       </Button>
 
-      <JobCount badgeContent={jobs.queued + jobs.inProgress} max={999} color="secondary">
+      <JobCount badgeContent={jobs.queued + jobs.inProgress} max={999}>
         <Button color="inherit" disableRipple component={Link} to="/jobs">
           Job Status
         </Button>
@@ -222,6 +222,7 @@ const JobCount = styled(Badge)`
     top: 10;
     border: 2px solid #2e75a3;
     padding: 0 4px;
+    background-color: #de9302;
   }
 `
 

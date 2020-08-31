@@ -1,8 +1,7 @@
-import React, {useState} from 'react'
-import {useParams} from 'react-router-dom'
+import React, {useState, useEffect, useCallback} from 'react'
+import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
-import Paper from '@material-ui/core/Paper'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 
@@ -17,7 +16,9 @@ import FolderFav from '@material-ui/icons/FolderSpecialRounded'
 */
 
 import FileList from './FileList'
-import BreadCrumbs from './BreadCrumbs'
+import ActionBar from './ActionBar'
+
+import * as WS from '../api/ws-api'
 
 import './workspaces.scss'
 
@@ -26,7 +27,7 @@ import config from '../config'
 
 const Sidebar = () => {
 
-  const handleChange = (val) => {
+  const handleChange = () => {
     alert('Need to implement')
   }
 
@@ -66,32 +67,62 @@ const SidebarRoot = styled.div`
 
 export default function Workspaces() {
   const path = decodeURIComponent('/' + useParams().path)
+  const history = useHistory()
 
+  const [rows, setRows] = useState(null)
   const [selected, setSelected] = useState(null)
 
-  const onSelect = (state) => {
+  const updateList = useCallback(() => {
+    setRows(null)
+    WS.list({path})
+      .then(data => {
+        console.log('data', data)
+        setRows(data)
+
+        // also need to remove actions
+        setSelected([])
+      })
+  }, [path])
+
+  // update workspace list whenever path changes
+  useEffect(() => {
+    updateList()
+  }, [path, updateList])
+
+
+  const handleSelect = (state) => {
     setSelected(state.objs)
+  }
+
+  const onNavigate = (obj) => {
+    history.push(`/files${obj.encodedPath}`)
   }
 
   return (
     <Root>
-      <Card>
+      <Container>
 
         <Sidebar />
 
         <Main>
-          <BreadCrumbContainer>
-            <BreadCrumbs path={path} selected={selected}/>
-          </BreadCrumbContainer>
+          <ActionBarContainer>
+            <ActionBar
+              path={path}
+              selected={selected}
+              onClearActions={() => setSelected([])}
+              onUpdateList={() => updateList()}
+            />
+          </ActionBarContainer>
 
           <FileListContainer>
             <FileList
-              wsPath={path}
-              onSelect={onSelect}
+              rows={rows}
+              onSelect={handleSelect}
+              onNavigate={onNavigate}
             />
           </FileListContainer>
         </Main>
-      </Card>
+      </Container>
 
       <P3Link
         href={`${config.p3URL}/workspace/${useParams().path}`}
@@ -105,22 +136,21 @@ export default function Workspaces() {
 
 
 const Root = styled.div`
-  .main-container {
-    display: flex;
-  }
+
 `
 
 const Main = styled.div`
   width: calc(100% - ${sidebarWidth});
 `
 
-const Card = styled(Paper)`
+const Container = styled.div`
   display: flex;
   height: calc(100% - 50px);
-  margin: 5px;
-
+  padding: 5px;
+  background: #fff;
 `
-const BreadCrumbContainer = styled.div`
+
+const ActionBarContainer = styled.div`
   padding: 20px 10px;
   border-bottom: 1px solid rgba(224, 224, 224, 1);
 `
@@ -131,8 +161,8 @@ const FileListContainer = styled.div`
 
 const P3Link = styled.a`
   position: absolute;
-  top: 50;
-  right: 50;
+  top: 40;
+  right: 5;
   opacity: .7;
 `
 

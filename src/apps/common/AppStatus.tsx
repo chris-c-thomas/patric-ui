@@ -6,11 +6,6 @@ import Alert from '@material-ui/lab/Alert'
 import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
-const usageError = (name, status) => (
-  'AppStatus component must have props \'name\' and \'status\' ' +
-  'so that the user is notified of submission progress. ' +
-  `'name' was: ${name}. 'status' was ${status}`
-)
 
 const getErrorMsg = (errorObj) => {
   const res = errorObj.response
@@ -30,9 +25,6 @@ type Props = {
 
 
 const AppStatus = ({name, status} : Props) => {
-  if (!name || typeof status == 'undefined')
-    throw usageError(name, status)
-
   const [state, setState] = useState(status)
 
   useEffect(() => {

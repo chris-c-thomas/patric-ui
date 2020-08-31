@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import ObjectSelectorDialog from './object-selector-dialog';
 
-import * as WS from '../../../api/workspace';
+import * as WS from '../../../api/ws-api';
 
 const useStyles = makeStyles(theme => ({
   root: {

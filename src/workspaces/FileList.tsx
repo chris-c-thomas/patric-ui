@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
-import React, {useEffect, useState} from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import Table from '../tables/Table'
 
@@ -8,9 +8,10 @@ import Folder from '@material-ui/icons/FolderOutlined'
 // import ArrowDown from '@material-ui/icons/ArrowDropDown'
 // import ArrowBack from '@material-ui/icons/ArrowBack'
 import File from '@material-ui/icons/InsertDriveFileOutlined'
+import WSIcon from '../../assets/icons/hdd-o.svg'
+import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
 
 import {bytesToSize, isoToHumanDateTime} from '../utils/units'
-import * as WS from '../api/workspace'
 
 
 const columns = [
@@ -19,7 +20,7 @@ const columns = [
     label: 'Name',
     width: '45%',
     format: (val, obj) =>
-      <Link to={(`/files${obj.encodedPath}`)}>{getIcon(obj.type)} {val}</Link>
+      <Link to={(`/files${obj.encodedPath}`)}>{getIcon(obj)} {val}</Link>
   }, {
     id: 'size',
     label: 'Size',
@@ -41,42 +42,50 @@ const columns = [
 ]
 
 
-function getIcon(type) {
-  if (type == 'folder')
-    return <Folder />
+function getIcon({type, isWS, permissions}) {
+  if (isWS && permissions.length > 1)
+    return <img src={WSSharedIcon} className="icon"/>
+  else if (isWS)
+    return <img src={WSIcon} className="icon"/>
+  else if (type == 'folder')
+    return <Folder className="icon" />
   else if (type == 'contigs')
-    return <File />
+    return <File className="icon"/>
   else
-    return <File />
+    return <File className="icon"/>
 }
 
+
+/* probably not even needed
 function getParentPath(path) {
   const parts = path.split('/')
   return parts.slice(0, parts.length - 1).join('/')
 }
+*/
 
 
 type Props = {
-  wsPath: string;
+  rows: object[];
   fileType?: string;
   isObjectSelector?: boolean;
   onSelect: (obj: object) => void;
+  onNavigate: (obj: object) => void;
 }
 
 
 export default function FileList(props: Props) {
-  const {wsPath, fileType, isObjectSelector, onSelect} = props
+  const {
+    rows,
+    fileType,
+    isObjectSelector,
+    onSelect,
+    onNavigate
+  } = props
 
   if (fileType) {
     // pass
   }
 
-  const history = useHistory()
-  const [path, setPath] = useState(wsPath)
-
-  useEffect(() => {
-    setPath(wsPath)
-  }, [wsPath])
 
   if (isObjectSelector) {
     // if object selector, we'll want to (somehow) use a
@@ -85,16 +94,6 @@ export default function FileList(props: Props) {
       <a onClick={() => navigate(obj)}>{getIcon(obj.type)} {val}</a>
   }
 
-  const [rows, setRows] = useState(null)
-
-  useEffect(() => {
-    setRows(null)
-    WS.list({path,})
-      .then(data => {
-        console.log('data', data)
-        setRows(data)
-      })
-  }, [path])
 
   // use event for object select
   const handleSelect = (state) => {
@@ -103,7 +102,7 @@ export default function FileList(props: Props) {
 
   const navigate = (obj) => {
     if (isObjectSelector) return
-    history.push(`/files${obj.encodedPath}`)
+    if (onNavigate) onNavigate(obj)
   }
 
   return (
@@ -113,7 +112,7 @@ export default function FileList(props: Props) {
         <Table
           columns={columns}
           rows={rows}
-          onClick={handleSelect}
+          onSelect={handleSelect}
           onDoubleClick={navigate}
         />
       }

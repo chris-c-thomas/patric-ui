@@ -12,7 +12,7 @@ import Table from '../../src/tables/deprecated/mui-table'
 import { getEnd2EndLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
 import Subtitle from '../../src/subtitle';
-import Dialog from '../../src/dialogs/basic-dialog';
+import Dialog from '../../src/dialogs/BasicDialog';
 import ErrorMsg from '../../src/error-msg';
 
 import HumanTime from '../utils/components/human-time';

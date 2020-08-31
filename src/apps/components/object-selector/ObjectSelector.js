@@ -10,8 +10,8 @@ import highlightText from '../../../utils/text'
 import ObjectSelectorDialog from './ObjectSelectorDialog'
 
 import { pathToOptionObj } from '../../../utils/paths'
-import * as WS from '../../../api/workspace'
-
+import * as WS from '../../../api/ws-api'
+import {getUser} from '../../../api/auth'
 
 const inputStyles = {
   menu: styles => ({
@@ -71,7 +71,7 @@ export default function ObjectSelector(props) {
       return
     }
 
-    let path = '/nconrad@patricbrc.org/home'
+    let path = `/${getUser(true)}/home`
     WS.list({path, type, recursive: true, showHidden: false})
       .then(data => {
         const items = data.map(obj => pathToOptionObj(obj.path))

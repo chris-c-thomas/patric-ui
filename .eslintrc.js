@@ -29,6 +29,8 @@ module.exports = {
   },
   'globals': {
     'document': true,
-    'alert': true
+    'alert': true,
+    'localStorage': true,
+    'window': true
   }
 }

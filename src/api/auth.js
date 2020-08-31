@@ -1,73 +1,73 @@
-import axios from 'axios';
-import config from '../config';
-const { authAPI } = config;
+import axios from 'axios'
+import config from '../config'
+const { authAPI } = config
 
 import {parseTokenStr} from '../utils/parse'
-import {queryParams} from '../utils/query-params';
+import {queryParams} from '../utils/query-params'
 
 
 export function signIn(username, password) {
-  const params = queryParams({username, password});
+  const params = queryParams({username, password})
   return axios.post(authAPI, params)
     .then(res => {
-      const token = res.data;
-      storeToken('token', token);
-      window.location.reload();
+      const token = res.data
+      storeToken('token', token)
+      window.location.reload()
     })
 }
 
 
 export function signOut() {
-  localStorage.removeItem('token');
-  if (isAdmin()) localStorage.removeItem('su-token');
-  window.location.reload();
+  localStorage.removeItem('token')
+  if (isAdmin()) localStorage.removeItem('su-token')
+  window.location.reload()
 }
 
 
 export function isSignedIn() {
-  const val = localStorage.getItem('token');
-  return val !== null;
+  const val = localStorage.getItem('token')
+  return val !== null
 }
 
 
 export function getUser(full = false) {
   if (!isSignedIn())
-    return null;
-  return getUsername(full);
+    return null
+  return getUsername(full)
 }
 
 
 export function getToken() {
   if (isAdmin())
-    return localStorage.getItem('su-token');
-  return localStorage.getItem('token');
+    return localStorage.getItem('su-token')
+  return localStorage.getItem('token')
 }
 
 
 export function isAdmin() {
-  const val = localStorage.getItem('su-token');
-  return val !== null;
+  const val = localStorage.getItem('su-token')
+  return val !== null
 }
 
 
 export function suSignIn(username, password, targetUser) {
-  const params = queryParams({username, password, targetUser});
+  const params = queryParams({username, password, targetUser})
   return axios.post(`${authAPI}/sulogin`, params)
     .then(res => {
-      const token = res.data;
-      const adminToken = localStorage.getItem('token');
+      const token = res.data
+      const adminToken = localStorage.getItem('token')
 
-      storeToken('su-token', adminToken);
-      storeToken('token', token);
-      window.location.reload();
+      storeToken('su-token', adminToken)
+      storeToken('token', token)
+      window.location.reload()
     })
 }
 
 
 export function suSwitchBack() {
-  storeToken('token', localStorage.getItem('su-token'));
-  localStorage.removeItem('su-token');
-  window.location.reload();
+  storeToken('token', localStorage.getItem('su-token'))
+  localStorage.removeItem('su-token')
+  window.location.reload()
 }
 
 /**
@@ -75,11 +75,11 @@ export function suSwitchBack() {
  *  - this function is currently only used for systems dashboard prototype
  */
 export function adminSignIn(username, password) {
-  const params = queryParams({username, password, targetUser: username});
+  const params = queryParams({username, password, targetUser: username})
   return axios.post(`${authAPI}/sulogin`, params)
     .then(res => {
-      const token = res.data;
-      storeToken('token', token);
+      const token = res.data
+      storeToken('token', token)
     })
 }
 
@@ -87,13 +87,13 @@ export function adminSignIn(username, password) {
  * helpers
  */
 function getUsername(full) {
-  const userID = parseTokenStr(localStorage.getItem('token')).un;
-  const username = full ? userID : userID.split('@')[0];
-  return username;
+  const userID = parseTokenStr(localStorage.getItem('token')).un
+  const username = full ? userID : userID.split('@')[0]
+  return username
 }
 
 function storeToken(key, token) {
-  localStorage.setItem(key, token);
+  localStorage.setItem(key, token)
 }
 
 

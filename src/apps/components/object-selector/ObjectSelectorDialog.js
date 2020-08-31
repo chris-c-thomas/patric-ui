@@ -53,7 +53,6 @@ export default function ObjectSelectorDialog(props) {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const path = `/${Auth.getUser()}@patricbrc.org/home`
-  console.log('path', path)
 
   const {title, type} = props
 

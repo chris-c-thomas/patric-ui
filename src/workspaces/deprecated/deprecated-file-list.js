@@ -19,7 +19,7 @@ import File from '@material-ui/icons/InsertDriveFileOutlined';
 
 import BreadCrumbs from '../../utils/ui/deprecated-breadcrumbs';
 import {bytesToSize, toDateTimeStr} from '../../utils/units';
-import * as WS from '../../api/workspace';
+import * as WS from '../../api/ws-api';
 
 
 const columns = [

@@ -1,21 +1,31 @@
 
 import React, {useState, useEffect} from 'react'
-
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+
+import Options from './Options'
 import Actions from './Actions'
 
+import {WSObject} from '../api/ws-api'
+
+
+type Props = {
+  path: string;
+  selected: WSObject[];
+  onClearActions: () => void;
+  onUpdateList: () => void;
+}
 
 /**
- * Workspace-specific breadcrumbs.
+ * Workspace-specific ActionBar / breadcrumbs.
  */
-export default function BreadCrumbs(props) {
-  const {path} = props
+export default function ActionBar(props: Props) {
+  const {path, onClearActions, onUpdateList} = props
 
-  const [filePath, setFilePath] = useState(path)
+  const [currentPath, setCurrentPath] = useState(path)
   const [parts, setParts] = useState([])
   const [topLevel, setTopLevel] = useState('/')
   const [currentLevel, setCurrentLevel] = useState(null)
-  const [fileName, setFileName] = useState(null)
 
   const [selected, setSelected] = useState(props.selected)
 
@@ -27,8 +37,7 @@ export default function BreadCrumbs(props) {
     setParts(parts)
     setTopLevel(top)
     setCurrentLevel(parts.length - 1)  // subtract 1 for leading "/"
-    setFilePath(path)
-    setFileName(parts[parts.length - 1])
+    setCurrentPath(path)
   }, [path])
 
 
@@ -38,17 +47,18 @@ export default function BreadCrumbs(props) {
 
 
   return (
-    <div>
-      {selected &&
+    <Root className="row align-items-center space-between">
+      {selected && selected.length != 0 &&
         <Actions
-          currentPath={filePath}
-          currentName={fileName}
+          path={currentPath}
           selected={selected}
+          onClear={onClearActions}
+          onUpdateList={onUpdateList}
         />
       }
 
-      {!selected &&
-        <>
+      {(!selected || selected.length == 0) &&
+        <Crumbs>
           {' / '}
           <Link to={`/files/${topLevel}`}>{topLevel.split('@')[0]}</Link>
           {' / '}
@@ -65,15 +75,34 @@ export default function BreadCrumbs(props) {
               )
             })
           }
-        </>
+        </Crumbs>
       }
-      <Options>
 
-      </Options>
-    </div>
+      {(!selected || selected.length == 0) &&
+        <Opts>
+          <Options
+            path={currentPath}
+            onUpdateList={onUpdateList}
+          />
+        </Opts>
+      }
+    </Root>
   )
 }
 
-const Options = styled.div`
+
+const Root = styled.div`
+  /* styling for all children buttons */
+  button {
+    margin-right: 10px;
+  }
+`
+
+
+const Crumbs = styled.div`
+
+`
+
+const Opts = styled.div`
 
 `

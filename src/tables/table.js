@@ -271,7 +271,7 @@ const selectionState = {
 
 export default function TableComponent(props) {
   const {
-    onSearch, pagination, offsetHeight, onClick, onDoubleClick,
+    onSearch, pagination, offsetHeight, onSelect, onDoubleClick,
     onSort, expandable, expandedRowsKey, checkboxes,
     enableTableOptions, onColumnMenuChange, emptyNotice,
     MiddleComponent
@@ -328,7 +328,7 @@ export default function TableComponent(props) {
       return
     }
 
-    if (onClick) onClick(selected)
+    if (onSelect) onSelect(selected)
   }, [selected])
 
 
@@ -344,7 +344,7 @@ export default function TableComponent(props) {
     setAllSelected(prev => !prev)
   }
 
-  const onSelect = (rowID, obj) => {
+  const handleSelect = (rowID, obj) => {
     dispatch({type: 'SET', id: rowID, obj, rows })
   }
 
@@ -447,7 +447,7 @@ export default function TableComponent(props) {
               rows={rows}
               columns={columns}
               checkboxes={checkboxes}
-              onSelect={onSelect}
+              onSelect={handleSelect}
               selected={selected}
               onDoubleClick={onDoubleClick}
               expandable={expandable}

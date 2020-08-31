@@ -11,7 +11,7 @@ import Subtitle from '../subtitle';
 import WSTree from './ws-tree';
 
 import { getUser } from '../api/auth';
-import {getUserCounts} from '../api/workspace';
+import {getUserCounts} from '../api/ws-api';
 
 
 
