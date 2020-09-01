@@ -71,7 +71,6 @@ export default function Workspaces() {
             <ActionBar
               path={path}
               selected={selected}
-              onClearActions={() => setSelected([])}
               onUpdateList={() => updateList()}
             />
           </ActionBarContainer>

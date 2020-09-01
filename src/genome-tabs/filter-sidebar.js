@@ -13,7 +13,7 @@ import plusIcon from '../../assets/icons/plus-circle.svg'
 import { getFacets } from '../api/data-api'
 
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '../forms/checkbox'
+import Checkbox from '../forms/Checkbox'
 
 const FilterComponent = (props) => {
   const {

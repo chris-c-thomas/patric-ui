@@ -12,7 +12,6 @@ import { WSObject } from '../api/ws-api'
 type Props = {
   path: string;
   selected: WSObject[];
-  onClearActions: () => void;
   onUpdateList: () => void;
 }
 
@@ -20,7 +19,7 @@ type Props = {
  * Workspace-specific ActionBar / breadcrumbs.
  */
 export default function ActionBar(props: Props) {
-  const {path, onClearActions, onUpdateList} = props
+  const {path, onUpdateList} = props
 
   const [currentPath, setCurrentPath] = useState(path)
   const [parts, setParts] = useState([])
@@ -52,7 +51,6 @@ export default function ActionBar(props: Props) {
         <Actions
           path={currentPath}
           selected={selected}
-          onClear={onClearActions}
           onUpdateList={onUpdateList}
         />
       }

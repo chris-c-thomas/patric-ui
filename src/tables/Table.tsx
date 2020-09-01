@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect, useReducer, useRef} from 'react'
+import React, {useState, useEffect, useReducer, useRef} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -10,14 +10,12 @@ import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import Tooltip from '@material-ui/core/Tooltip'
 
-import IconButton from '@material-ui/core/IconButton'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
-import ArrowRight from '@material-ui/icons/ArrowRight'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 import filterIcon from '../../assets/icons/filter.svg'
 
 import ColumnMenu from './ColumnMenu'
-import Checkbox from '../forms/checkbox'
+import Checkbox from '../forms/Checkbox'
 import TableSearch from './TableSearch'
 import ActionBtn from './ActionBtn'
 import downloadIcon from '../../assets/icons/download.svg'
@@ -54,18 +52,6 @@ const Cell = props =>
 
 
 
-const ExpandCell = ({caret, onCaret}) =>
-  <Cell style={{padding: 0}}>
-    <IconButton
-      onClick={() => onCaret(id)}
-      style={{padding: 0}}
-      aria-label="expand"
-    >
-      {caret ? <ArrowDown /> : <ArrowRight />}
-    </IconButton>
-  </Cell>
-
-
 const RowCells = ({columns, row}) =>
   <>
     {
@@ -85,27 +71,31 @@ const RowCells = ({columns, row}) =>
     }
   </>
 
+type RowProps = {
+  rows: object[]
+  columns: object[]
+  row: object,
+  id: number,
+  emptyCell: boolean,
+  selected: any, //todo: type
+  checkboxes: boolean,
+  onSelect?: (id: number, row: object) => void
+  onDoubleClick: (row: object) => void
+}
 
-const Row = memo(props => {
+const Row = (props: RowProps) => {
   const {
+    columns,
     row,
     id,
-    expandable,
-    onExpand,
     emptyCell,
+    selected,
     checkboxes,
     onSelect,
-    selected,
-    onDoubleClick
+    onDoubleClick,
   } = props
 
   const {rowID} = row
-  const [caret, setCaret] = useState(false)
-
-  const onCaret = (id) => {
-    setCaret(cur => !cur)
-    onExpand(id)
-  }
 
   return (
     <TableRow hover
@@ -117,21 +107,19 @@ const Row = memo(props => {
     >
       {emptyCell && <Cell></Cell>}
 
-      {expandable && <ExpandCell caret={caret} onCaret={onCaret} />}
-
       {checkboxes &&
         <Cell key={id + '-checkbox'} style={{padding: 0}}>
-          <Checkbox checked={selected.ids.includes(rowID)} onChange={() => onSelect(rowID)}/>
+          <Checkbox checked={selected.ids.includes(rowID)} onChange={() => onSelect(rowID, row)}/>
         </Cell>
       }
 
-      <RowCells {...props}/>
+      <RowCells
+        columns={columns}
+        row={row}
+      />
     </TableRow>
   )
-}, () => false
-  // prev.row.rowID == next.row.rowID &&
-  // prev.checked[prev.row.rowID] == next.checked[next.row.rowID]
-)
+}
 
 Row.displayName = 'TableComponent-Row'
 
@@ -140,50 +128,19 @@ const TableRows = (props) => {
   const {
     rows,
     columns,
-    expandable,
-    expandedRowsKey,
     checkboxes
   } = props
 
-  const [expanded, setExpanded] = useState({})
-
-  const onExpand = (id) => {
-    setExpanded(prev => ({
-      ...prev,
-      [id]: !(id in prev)
-    })
-    )
-  }
-
-  return (
-    <>
-      {
-        rows.map((row, i) => {
-
-          let subRows = []
-          if (expandable && i in expanded) {
-            subRows = row[expandedRowsKey].map((row, i) => {
-              const k = i+rows.length + 1
-              return <Row key={k} row={row} columns={expandable} id={k} emptyCell/>
-            })
-          }
-
-          return [
-            <Row key={i} id={i}
-              row={row}
-              columns={columns}
-              expandable={expandable}
-              checkboxes={checkboxes}
-              onExpand={onExpand}
-              {...props}   /* pass on all other props else! */
-            />,
-            ...subRows
-          ]
-        })
-      }
-    </>
+  return rows.map((row, i) =>
+    <Row key={i} id={i}
+      row={row}
+      columns={columns}
+      checkboxes={checkboxes}
+      {...props}   /* pass on all other props else! */
+    />
   )
 }
+
 
 const getSortArrow = (colID, sort) =>
   <SortArrow>
@@ -201,7 +158,6 @@ const SortArrow = styled.span`
 
 const TableHeadComponent = (props) => {
   const {
-    expandable,
     checkboxes,
     columns,
     handleSelectAll,
@@ -213,9 +169,6 @@ const TableHeadComponent = (props) => {
 
   return (
     <TableRow>
-      {/* if table is expandable */}
-      {expandable && <TableCell style={{padding: 0}} />}
-
       {/* if table has checkboxes (if table has sslect all checkbox) */}
       {checkboxes &&
         <TableCell style={{padding: 0}}>
@@ -265,23 +218,41 @@ const getVisibleColumns = (columns, activeColumns = null) => {
 }
 
 
-const initialSelectionState = {
-  lastSelected: null,
-  ids: [],
-  objs: [],
+type Props = {
+  rows: object[]
+  columns: object[]
+  page?: number | string  // for ajax pagination
+  limit?: number          // for ajax pagination
+  total?: number          // for ajax pagination
+  search?: string
+  sort?: object
+  emptyNotice?: string
+  enableTableOptions?: boolean
+  pagination?: boolean
+  offsetHeight?: string
+  checkboxes?: boolean
+  searchPlaceholder?: string
+  onSearch?: (string) => void
+  onSort?: (string) => void       // for ajax pagination
+  onPage?: (number) => void       // for ajax pagination
+  onSelect?: (any) => void        // todo: define
+  onDoubleClick?: (any) => void
+  onColumnMenuChange?: (any) => void
+
+  openFilters?: boolean
+  onOpenFilters?: () => void
+
+  MiddleComponent?: JSX.Element
 }
 
-export default function TableComponent(props) {
-  const {
-    onSearch, pagination, offsetHeight, onSelect, onDoubleClick,
-    onSort, expandable, expandedRowsKey, checkboxes,
-    enableTableOptions, onColumnMenuChange, emptyNotice,
-    MiddleComponent
-  } = props
 
-  if (expandable && !expandedRowsKey) {
-    throw `Grid component must have prop 'expandedRowsKey' when 'expandable is provided`
-  }
+
+export default function TableComponent(props: Props) {
+  const {
+    pagination, offsetHeight, checkboxes, emptyNotice,
+    MiddleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
+    enableTableOptions
+  } = props
 
   if (pagination && (props.page === undefined || !props.limit)) {
     throw `Grid component must provide 'page' and 'limit' when 'pagination' is used.
@@ -290,7 +261,7 @@ export default function TableComponent(props) {
 
   const tableRef = useRef(null)
 
-  const [rows, setRows] = useState(props.rows)
+  const [rows, setRows] = useState(props.rows.map((row, i) => ({...row, rowID: i})))
   const [columns, setColumns] = useState(getVisibleColumns(props.columns))
   const [page, setPage] = useState(Number(props.page))
   const [sortBy, setSortBy] = useState((props.sort && parseSort(props.sort)) || {})
@@ -301,9 +272,13 @@ export default function TableComponent(props) {
 
   const [rowsPerPage] = useState(200)
 
-  // checkbox states
-  const [allSelected, setAllSelected] = useState(false)
-  const [selected, dispatch] = useReducer(selectedReducer, initialSelectionState)
+  // selected/checkbox state
+  const [allSelected, setAllSelected] = useState<boolean>(false)
+  const [selected, dispatch] = useReducer(selectedReducer, {
+    lastSelected: null,
+    ids: [],
+    objs: [],
+  })
 
 
   useEffect(() => {
@@ -311,18 +286,22 @@ export default function TableComponent(props) {
     setRows(props.rows.map((row, i) => ({...row, rowID: i})))
   }, [props.rows])
 
+
   useEffect(() => {
     setPage(Number(props.page))
   }, [props.page])
+
 
   useEffect(() => {
     if (!props.sort) return
     setSortBy(parseSort(props.sort))
   }, [props.sort])
 
+
   useEffect(() => {
     setColumns(getVisibleColumns(props.columns, activeColumns))
   }, [activeColumns, props.columns])
+
 
   useEffect(() => {
     // only call onSelect after initialization
@@ -335,9 +314,7 @@ export default function TableComponent(props) {
   }, [selected])
 
 
-
   useClickOutside(tableRef, () => {
-    console.log('clicked outside', selected)
     dispatch({type: 'CLEAR' })
   })
 
@@ -442,7 +419,6 @@ export default function TableComponent(props) {
               columns={columns}
               allSelected={allSelected}
               handleSelectAll={handleSelectAll}
-              expandable={expandable}
               checkboxes={checkboxes}
               enableSorting
               sortBy={sortBy}
@@ -458,8 +434,6 @@ export default function TableComponent(props) {
               onSelect={handleSelect}
               selected={selected}
               onDoubleClick={onDoubleClick}
-              expandable={expandable}
-              expandedRowsKey={expandedRowsKey}
             />
           </TableBody>
         </Table>
