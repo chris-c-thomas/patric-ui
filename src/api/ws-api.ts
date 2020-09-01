@@ -43,7 +43,8 @@ function metaToObj(m: string[]) {
   const path = m[2] + m[0]
   return {
     // encode everything but user's root
-    encodedPath: path.split('/').map((p, i) => i == 1 ? p : encodeURIComponent(p)).join('/'),
+    encodedPath: path.split('/')
+      .map((p, i) => i == 1 ? p : encodeURIComponent(p)).join('/'),
     path,
     name: m[0],
     parent: m[2],

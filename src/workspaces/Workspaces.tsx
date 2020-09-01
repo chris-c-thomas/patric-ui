@@ -70,7 +70,7 @@ export default function Workspaces() {
   const history = useHistory()
 
   const [rows, setRows] = useState(null)
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState([])
 
   const updateList = useCallback(() => {
     setRows(null)
@@ -79,7 +79,7 @@ export default function Workspaces() {
         console.log('data', data)
         setRows(data)
 
-        // also need to remove actions
+        // remove actions after list refresh
         setSelected([])
       })
   }, [path])
@@ -89,6 +89,10 @@ export default function Workspaces() {
     updateList()
   }, [path, updateList])
 
+  // remove actions on path change
+  useEffect(() => {
+    setSelected([])
+  }, [path])
 
   const handleSelect = (state) => {
     setSelected(state.objs)

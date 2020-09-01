@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 
 import Button from '@material-ui/core/Button'
@@ -17,12 +17,22 @@ const Btn = (props) =>
   </Button>
 
 
+const isWorkspace = path => {
+  console.log('isWS', (path.match(/\//g) || []).length == 1)
+  return (path.match(/\//g) || []).length == 1
+}
 
-const Options = (props) => {
+type Props = {
+  path: string
+  onUpdateList: () => void
+}
+
+const Options = (props: Props) => {
   const {path, onUpdateList} = props
 
   const [open, setOpen] = useState(false)
   const [snack, setSnack] = useState(null)
+
 
   const implement = () => {
     alert('Not implemented yet :(')
@@ -42,12 +52,12 @@ const Options = (props) => {
         Upload
       </Btn>
       <Btn startIcon={<FolderIcon />} onClick={() => setOpen(true)}>
-        New Folder
+        {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
       </Btn>
 
       {open &&
         <CreateDialog
-          type="New Folder"
+          type={isWorkspace(path) ? 'New Workspace' : 'New Folder'}
           path={path}
           onClose={() => setOpen(false)}
           onSuccess={onSuccess}
