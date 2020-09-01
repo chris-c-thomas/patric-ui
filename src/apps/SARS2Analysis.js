@@ -158,7 +158,7 @@ export default function SARSCoV2() {
 
       <Step number="2" label="Set Parameters" completed={isStep2Complete()} />
 
-      <Section column>
+      <Section column padRows>
         <Row>
           <Selector
             label="Assembly Strategy"
@@ -188,7 +188,7 @@ export default function SARSCoV2() {
 
       <Step number="3" label="Select Output" completed={isStep3Complete()} />
 
-      <Section column>
+      <Section column padRows>
         <Row>
           <ObjectSelector
             value={form.output_path}

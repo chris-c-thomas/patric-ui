@@ -1,12 +1,21 @@
 
 import React, {useState} from 'react'
-import styled from 'styled-components'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import TextInputCustom from './TextInputCustom'
 
-import { Select } from '@material-ui/core'
-import { FormControl, InputLabel, OutlinedInput, MenuItem } from '@material-ui/core'
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing(0),
+  },
+}))
 
 
 export default function Selector(props) {
+  const classes = useStyles()
   const {options, label, value, width} = props
 
   if (!options) throw ('Selector component must have prop: options')
@@ -23,15 +32,15 @@ export default function Selector(props) {
   }
 
   return (
-    <FormControl variant="outlined" margin="dense" notched="true" className="selector">
-      <Label htmlFor={label}>
-        {label}
-      </Label>
+    <FormControl className={classes.margin}>
+      <InputLabel id="custom-select">{label}</InputLabel>
       <Select
+        labelId="custom-select"
+        size="small"
         value={val}
         style={{minWidth: width}}
         onChange={handleChange}
-        input={<OutlinedInput name={label} id={label} />}
+        input={<TextInputCustom name={label} id={label} size="small"/>}
       >
         {
           options.map((obj, i) => <MenuItem key={i} value={obj.value}>{obj.label}</MenuItem>)
@@ -40,9 +49,4 @@ export default function Selector(props) {
     </FormControl>
   )
 }
-
-const Label = styled(InputLabel)`
-  background: #fff;
-  padding: 0 3px !important;
-`
 

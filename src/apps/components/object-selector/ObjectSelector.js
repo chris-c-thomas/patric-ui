@@ -114,6 +114,7 @@ export default function ObjectSelector(props) {
         </InputLabel>
 
         <AsyncSelect
+          id={label}
           cacheOptions
           defaultOptions
           placeholder={placeholder}

@@ -111,5 +111,5 @@ const Label = styled(InputLabel)`
     width: min-content;
     white-space: nowrap;
   }
-`
-*/
+`*/
+
