@@ -1,5 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react'
-import styled from 'styled-components'
+import React from 'react'
 
 import TaxonName from './TaxonName'
 import TaxonId from './TaxonId'
@@ -30,9 +29,7 @@ const TaxonSelector = (props) => {
   )
 }
 
-const Root = styled.div`
 
-`
 
 export default TaxonSelector
 

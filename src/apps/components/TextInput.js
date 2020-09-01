@@ -9,13 +9,15 @@ const usageError = (propName, value, label) => {
     `Value was: ${value}`
 }
 
+
 export default function TextInput(props) {
   const {
     label, value, adornment, type,
     onChange, style, noLabel, placeholder
-  } = props;
+  } = props
 
-  if (!label && !noLabel) throw usageError('label', label);
+  if (!label && !noLabel)
+    throw usageError('label', label)
 
   const [val, setVal] = useState(value || '')
 

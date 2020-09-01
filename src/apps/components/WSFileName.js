@@ -66,7 +66,7 @@ export default function WSFileName(props) {
     throw usageError('label', label)
 
   const [val, setVal] = useState(value || '')
-  const [error, setError] = useState(false)
+  const [error] = useState(false)
 
   useEffect(() => {
     if (!value) return

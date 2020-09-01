@@ -8,7 +8,7 @@ import AppStatus from './common/AppStatus'
 import Step from './components/Step'
 import ReadSelector from './components/ReadSelector'
 import ObjectSelector from './components/object-selector/ObjectSelector'
-import Selector from './components/selector'
+import Selector from './components/Selector'
 import TextInput from './components/TextInput'
 import AdvandedButton from './components/AdvancedButton'
 

@@ -11,7 +11,7 @@ import Switch from '@material-ui/core/Switch';
 
 import BarChart from '../../src/charts/bar';
 import Table from '../../src/tables/deprecated/mui-table'
-import Selector from '../../src/apps/components/selector';
+import Selector from '../../src/apps/components/Selector';
 import { getUIPerfLog } from '../api/log-fetcher'
 import { msToTimeStr, timeToHumanTime } from '../../src/utils/units';
 import Subtitle from '../../src/subtitle';

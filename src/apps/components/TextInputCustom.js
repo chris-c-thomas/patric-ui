@@ -1,4 +1,4 @@
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
 
 const CustomInput = withStyles((theme) => ({
