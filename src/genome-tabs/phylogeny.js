@@ -5,7 +5,7 @@ import Phylocanvas from 'phylocanvas';
 
 import {getPhyloData} from '../api/data-api'
 
-import ErrorMsg from '../error-msg'
+import ErrorMsg from '../ErrorMsg'
 
 
 const config = {}

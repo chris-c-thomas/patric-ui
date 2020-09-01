@@ -8,7 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import Table from '../../../tables/Table'
 import { listData, getGenomeIDs } from '../../../api/data-api'
 
-import ErrorMsg from '../../../error-msg'
+import ErrorMsg from '../../../ErrorMsg'
 import Actions from './actions'
 
 import FilterSidebar from '../../filter-sidebar'

@@ -24,7 +24,7 @@ import { isoToHumanDateTime } from '../utils/units'
 
 import { JobStatusContext } from './job-status-context'
 
-import ErrorMsg from '../error-msg'
+import ErrorMsg from '../ErrorMsg'
 
 import urlMapping from './url-mapping'
 
