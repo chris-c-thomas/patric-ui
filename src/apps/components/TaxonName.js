@@ -34,12 +34,12 @@ export default function TaxonName(props) {
   const loadOptions = (query, callback) => {
     if (!query) {
       callback([])
-      return;
+      return
     }
 
     queryTaxon({query})
       .then(data => callback(data))
-  };
+  }
 
   const formatOptionLabel = opt => (
     <div>{opt.taxon_rank && `[${opt.taxon_rank}]`} {highlightText(opt.taxon_name, query || '')}</div>
@@ -73,7 +73,7 @@ export default function TaxonName(props) {
         loadOptions={loadOptions}
         styles={inputStyles}
         formatOptionLabel={formatOptionLabel}
-        noOptionsMessage={() => !query ? noQueryText : "No results"}
+        noOptionsMessage={() => !query ? noQueryText : 'No results'}
         onInputChange={val => setQuery(val)}
         onChange={obj => _setTaxonName(obj)}
         value={value}

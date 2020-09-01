@@ -51,6 +51,7 @@ export default function Workspaces() {
     setSelected([])
   }, [path])
 
+
   const handleSelect = (state) => {
     setSelected(state.objs)
   }

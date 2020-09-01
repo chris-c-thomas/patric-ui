@@ -24,6 +24,8 @@ import downloadIcon from '../../assets/icons/download.svg'
 
 import selectedReducer from './selectedReducer'
 
+import useClickOutside from '../hooks/useClickOutside'
+
 /*
 const exampleColumns = [
   {
@@ -263,7 +265,7 @@ const getVisibleColumns = (columns, activeColumns = null) => {
 }
 
 
-const selectionState = {
+const initialSelectionState = {
   lastSelected: null,
   ids: [],
   objs: [],
@@ -286,7 +288,7 @@ export default function TableComponent(props) {
       page value was: ${props.page}; limit value was: ${props.limit}.`
   }
 
-  const mounted = useRef(false)
+  const tableRef = useRef(null)
 
   const [rows, setRows] = useState(props.rows)
   const [columns, setColumns] = useState(getVisibleColumns(props.columns))
@@ -301,7 +303,7 @@ export default function TableComponent(props) {
 
   // checkbox states
   const [allSelected, setAllSelected] = useState(false)
-  const [selected, dispatch] = useReducer(selectedReducer, selectionState)
+  const [selected, dispatch] = useReducer(selectedReducer, initialSelectionState)
 
 
   useEffect(() => {
@@ -314,7 +316,7 @@ export default function TableComponent(props) {
   }, [props.page])
 
   useEffect(() => {
-    if (!props.sort) return;
+    if (!props.sort) return
     setSortBy(parseSort(props.sort))
   }, [props.sort])
 
@@ -323,8 +325,9 @@ export default function TableComponent(props) {
   }, [activeColumns, props.columns])
 
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true
+    // only call onSelect after initialization
+    if (!tableRef.current) {
+      tableRef.current = true
       return
     }
 
@@ -332,15 +335,20 @@ export default function TableComponent(props) {
   }, [selected])
 
 
+
+  useClickOutside(tableRef, () => {
+    console.log('clicked outside', selected)
+    dispatch({type: 'CLEAR' })
+  })
+
+
   const onChangePage = (event, newPage) => {
     setPage(newPage)
     props.onPage(newPage)
   }
 
-  // rewrite
   const handleSelectAll = () => {
-    alert('reimplement handleSelectAll')
-
+    alert('re-implement handleSelectAll')
     setAllSelected(prev => !prev)
   }
 
@@ -427,7 +435,7 @@ export default function TableComponent(props) {
       </CtrlContainer>
 
       <Container offset={offsetHeight}>
-        <Table stickyHeader aria-label="table" size="small">
+        <Table stickyHeader aria-label="table" size="small" ref={tableRef}>
 
           <TableHead>
             <TableHeadComponent
@@ -465,6 +473,7 @@ export default function TableComponent(props) {
     </Root>
   )
 }
+
 
 
 

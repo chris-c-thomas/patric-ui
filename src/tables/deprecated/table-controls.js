@@ -21,7 +21,7 @@ import FilterIcon from '@material-ui/icons/FilterListRounded';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
-import useDebounce from '../../utils/use-debounce';
+import useDebounce from '../../hooks/useDebounce';
 import ColumnMenu from '../ColumnMenu';
 
 const useStyles = makeStyles(theme => ({

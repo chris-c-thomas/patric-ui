@@ -17,10 +17,9 @@ const Btn = (props) =>
   </Button>
 
 
-const isWorkspace = path => {
-  console.log('isWS', (path.match(/\//g) || []).length == 1)
-  return (path.match(/\//g) || []).length == 1
-}
+const isWorkspace = path =>
+  (path.match(/\//g) || []).length == 1
+
 
 type Props = {
   path: string

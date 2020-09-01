@@ -68,9 +68,6 @@ export default function Actions(props: Props) {
       </FileName>
 
       <ActionContainer>
-        <IconButton onClick={onClear} size="small" disableRipple>
-          <ClearIcon />
-        </IconButton>
         <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
           Share
         </Btn>

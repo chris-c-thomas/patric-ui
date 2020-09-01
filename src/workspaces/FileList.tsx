@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 import Table from '../tables/Table'
@@ -86,14 +86,12 @@ export default function FileList(props: Props) {
     // pass
   }
 
-
   if (isObjectSelector) {
     // if object selector, we'll want to (somehow) use a
     // click event instead of routing
     columns[0].format = (val, obj) =>
       <a onClick={() => navigate(obj)}>{getIcon(obj.type)} {val}</a>
   }
-
 
   // use event for object select
   const handleSelect = (state) => {
@@ -104,6 +102,8 @@ export default function FileList(props: Props) {
     if (isObjectSelector) return
     if (onNavigate) onNavigate(obj)
   }
+
+
 
   return (
     <>

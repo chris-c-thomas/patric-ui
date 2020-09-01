@@ -1,7 +1,15 @@
 
 // handles selection of rows (to include shift/ctrl click)
 const selectedReducer = (state, action) => {
-  if (action.type == 'SHIFT_SET' && state.lastSelected) {
+  console.log('action', action)
+
+  if (action.type == 'CLEAR') {
+    return {
+      lastSelected: [],
+      ids: [],
+      objs: []
+    }
+  } else if (action.type == 'SHIFT_SET' && state.lastSelected) {
     return {
       ...state,
       lastSelected: action.id,

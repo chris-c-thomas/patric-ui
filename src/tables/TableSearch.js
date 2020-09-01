@@ -10,7 +10,7 @@ import SearchIcon from '@material-ui/icons/SearchOutlined'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 
-import useDebounce from '../utils/use-debounce'
+import useDebounce from '../hooks/useDebounce'
 
 // expand out to sophisticated parsing
 const parseRegexSearch = (search) => {
