@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import Options from './Options'
 import Actions from './Actions'
 
-import {WSObject} from '../api/ws-api'
+import { WSObject } from '../api/ws-api'
 
 
 type Props = {
@@ -58,13 +58,13 @@ export default function ActionBar(props: Props) {
       }
 
       {(!selected || selected.length == 0) &&
-        <Crumbs>
+        <Breadcrumbs>
           {' / '}
           <Link to={`/files/${topLevel}`}>{topLevel.split('@')[0]}</Link>
           {' / '}
           {
             parts.slice(1).map((name, i) => {
-              const userPath = parts.slice(0, i).join('/')
+              const userPath = parts.slice(1, i-1).join('/')
               const path = `/files/${topLevel}/${userPath}`
 
               return (
@@ -75,7 +75,7 @@ export default function ActionBar(props: Props) {
               )
             })
           }
-        </Crumbs>
+        </Breadcrumbs>
       }
 
       {(!selected || selected.length == 0) &&
@@ -99,7 +99,7 @@ const Root = styled.div`
 `
 
 
-const Crumbs = styled.div`
+const Breadcrumbs = styled.div`
 
 `
 

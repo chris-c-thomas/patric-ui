@@ -2,8 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
+import Sidebar, {sidebarWidth} from './Sidebar'
 
 /*
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
@@ -22,48 +21,6 @@ import * as WS from '../api/ws-api'
 
 import './workspaces.scss'
 
-// stuff only for testing
-import config from '../config'
-
-const Sidebar = () => {
-
-  const handleChange = () => {
-    alert('Need to implement')
-  }
-
-  return (
-    <SidebarRoot>
-      <h3>Workspaces</h3>
-
-      <div>
-        <Tabs
-          orientation="vertical"
-          value={0}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleChange}
-          aria-label="disabled tabs example"
-        >
-          <Tab label="Workspaces" disableRipple/>
-          <Tab label="Home" disableRipple />
-          <Tab label="Genome Groups" disableRipple/>
-        </Tabs>
-      </div>
-    </SidebarRoot>
-  )
-}
-
-const sidebarWidth = '200px'
-
-const SidebarRoot = styled.div`
-  width: ${sidebarWidth};
-  padding: 5px 10px;
-  border-right: 1px solid #ccc;
-
-  .MuiTab-wrapper {
-    display: inline-block;
-  }
-`
 
 export default function Workspaces() {
   const path = decodeURIComponent('/' + useParams().path)
@@ -106,7 +63,7 @@ export default function Workspaces() {
     <Root>
       <Container>
 
-        <Sidebar />
+        <Sidebar onChange={() => {}}/>
 
         <Main>
           <ActionBarContainer>
@@ -127,13 +84,6 @@ export default function Workspaces() {
           </FileListContainer>
         </Main>
       </Container>
-
-      <P3Link
-        href={`${config.p3URL}/workspace/${useParams().path}`}
-        target="_blank"
-      >
-        p3
-      </P3Link>
     </Root>
   )
 }
@@ -163,10 +113,4 @@ const FileListContainer = styled.div`
   padding: 0 5px;
 `
 
-const P3Link = styled.a`
-  position: absolute;
-  top: 40;
-  right: 5;
-  opacity: .7;
-`
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback} from 'react'
+import React, { useState, useEffect} from 'react'
 import styled from 'styled-components'
 
 import InputLabel from '@material-ui/core/InputLabel'
@@ -23,33 +23,33 @@ export default function TaxonName(props) {
   const [value, setValue] = useState(props.value ? {taxon_name: props.value} : null) // internal value from here on
   const [query, setQuery] = useState(null)
 
-  const _setTaxonName = useCallback((obj) => {
-    // note obj may be null
-    setValue(obj)
-    if (onChange) onChange(obj)
-  }, [])
-
 
   useEffect(() => {
     if (!props.value) return
 
     _setTaxonName({taxon_name: props.value} )
-  }, [props.value, _setTaxonName])
+  }, [props.value])
 
 
   const loadOptions = (query, callback) => {
     if (!query) {
       callback([])
-      return
+      return;
     }
 
     queryTaxon({query})
       .then(data => callback(data))
-  }
+  };
 
   const formatOptionLabel = opt => (
     <div>{opt.taxon_rank && `[${opt.taxon_rank}]`} {highlightText(opt.taxon_name, query || '')}</div>
   )
+
+  const _setTaxonName = (obj) => {
+    // note obj may be null
+    setValue(obj)
+    if (onChange) onChange(obj)
+  }
 
 
   return (
@@ -73,7 +73,7 @@ export default function TaxonName(props) {
         loadOptions={loadOptions}
         styles={inputStyles}
         formatOptionLabel={formatOptionLabel}
-        noOptionsMessage={() => !query ? noQueryText : 'No results'}
+        noOptionsMessage={() => !query ? noQueryText : "No results"}
         onInputChange={val => setQuery(val)}
         onChange={obj => _setTaxonName(obj)}
         value={value}

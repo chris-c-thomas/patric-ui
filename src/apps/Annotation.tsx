@@ -28,7 +28,7 @@ const example = {
   domain: 'Bacteria',
   recipe: 'default',
   scientific_name: 'Buchnera aphidicola',
-  taxonomy_id: 1280,
+  taxonomy_id: '1280',
   code: 11,
   output_path: `/${getUser(true)}/home`,
   my_label: 'example',
@@ -53,6 +53,7 @@ const reducer = (state, action) => {
   else if (action == 'EXAMPLE')
     return example
   else {
+    console.log('setting ', action)
     return {...state, [action.field]: action.val}
   }
 }
