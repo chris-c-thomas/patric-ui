@@ -11,11 +11,11 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 
 // views
-import Home from './home/home'
+import Home from './home/Home'
 import Account from './user-profile/my-profile'
 import TaxonTabs from './genome-tabs/taxon/tabs'
 import GenomeTabs from './genome-tabs/genome/tabs'
-import Jobs from './jobs/jobs'
+import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
 import SUSignIn from './auth/su-sign-in'
 import NotFound404 from './404'

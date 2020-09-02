@@ -12,7 +12,7 @@ import Alert from '@material-ui/lab/Alert'
 
 
 const Btn = (props) =>
-  <Button variant="outlined" color="primary" disableRipple {...props}>
+  <Button size="small" variant="outlined" color="primary" disableRipple {...props}>
     {props.children}
   </Button>
 

@@ -13,15 +13,30 @@ div.MuiToolbar-dense {
 
 .MuiTabs-root {
   background: #fff !important;
-  min-height: 30px ;
+  min-height: 30px;
 }
 
 .MuiTab-root {
   text-transform: none !important;
   min-width: inherit !important;
   min-height: 30px;
-
 }
+
+.MuiButtonBase-root.Mui-selected {
+  color: #333;
+}
+
+.MuiTabs-root .MuiTabs-indicator {
+  background-color: $secondary-color;
+  height: 4px;
+  transform: translateY(-35px);
+}
+
+.MuiTabs-root.MuiTabs-vertical .MuiTabs-indicator {
+  width: 4px;
+}
+
+
 
 .MuiButtonBase-root.Mui-selected {
   color: #333;
@@ -41,11 +56,15 @@ div.MuiToolbar-dense {
   animation-duration: 0.8s !important;
 }
 
-// re-style paper except for app bar and alerts
+// re-style paper except for app bar, alerts, and menu
 .MuiCard-root,
-.MuiPaper-root:not(.MuiAppBar-root):not(.MuiAlert-root) {
+.MuiPaper-root:not(.MuiAppBar-root):not(.MuiAlert-root):not(.MuiMenu-paper) {
   border: 1px solid rgba(0, 0, 0, 0.125);
   box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
+
+.MuiMenu-paper {
+  box-shadow: 2px 5px 5px 2px rgb(0 0 0 / 9%);
 }
 
 .MuiButton-root,

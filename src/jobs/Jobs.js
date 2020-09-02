@@ -34,7 +34,7 @@ const columns = [
     id: 'status',
     label: 'Status',
     format: val => <b className={val}>{val}</b>,
-    width: '100px'
+    width: '75px'
   },
   {
     id: 'app',
@@ -49,7 +49,7 @@ const columns = [
     id: 'id',
     label: 'Job ID',
     format: val => Number(val),
-    width: '60px'
+    width: '75px'
   },
   {
     id: 'parameters',
@@ -61,19 +61,22 @@ const columns = [
       const name = obj.output_file,
         path = `${obj.output_path}/.${name}`
       return  <Link to={`/files${path}`}>{name}</Link>
-    }
+    },
   }, {
     id: 'submit_time',
     label: 'Submitted',
-    format: val => isoToHumanDateTime(val)
+    format: val => isoToHumanDateTime(val),
+    width: '125px'
   }, {
     id: 'start_time',
     label: 'Started',
-    format: val => isoToHumanDateTime(val)
+    format: val => isoToHumanDateTime(val),
+    width: '125px'
   }, {
     id: 'completed_time',
     label: 'Completed',
-    format: val => isoToHumanDateTime(val)
+    format: val => isoToHumanDateTime(val),
+    width: '125px'
   }
 ]
 

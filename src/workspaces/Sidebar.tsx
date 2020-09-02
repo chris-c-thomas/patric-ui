@@ -1,24 +1,38 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
+import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
+import FolderIcon  from '@material-ui/icons/FolderOutlined'
+import MyIcon from '@material-ui/icons/AccountCircleOutlined'
+import SharedIcon from '@material-ui/icons/PeopleOutline'
+import PublicIcon from '@material-ui/icons/PublicOutlined'
 
 // only for testing
 import config from '../config'
 
+const menu = [
+  {id: 'workspaces', label: 'My Workspaces', icon: <MyIcon />, caret: true },
+  {id: 'home', label: 'Home', level: 2, icon: <FolderIcon />, caret: true},
+  {id: 'genome_groups', label: 'Genome Groups', level: 3, icon: <FolderIcon />},
+  {id: 'feature_groups', label: 'Feature Groups', level: 3, icon: <FolderIcon />},
+  {id: 'experiements', label: 'Experiment Groups', level: 3, icon: <FolderIcon />},
+  {id: 'shared_with_me', label: 'Shared with Me', icon: <SharedIcon />},
+  {id: 'Public_workspaces', label: 'Public Workspaces', icon: <PublicIcon />}
+]
 
 type Props = {
-  onChange: () => void
+  onChange: (string) => void
 }
 
 const WSSideBar = (props: Props) => {
 
-  const handleChange = () => {
-    alert('Need to implement')
-    props.onChange()
+  const [value, setValue] = useState('workspaces')
+
+  const handleChange = (newVal) => {
+    setValue(newVal)
+    props.onChange(newVal)
   }
 
   return (
@@ -35,20 +49,22 @@ const WSSideBar = (props: Props) => {
         </sup>
       </h3>
 
-      <div>
-        <Tabs
-          orientation="vertical"
-          value={0}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleChange}
-          aria-label="disabled tabs example"
-        >
-          <Tab label="Workspaces" disableRipple/>
-          <Tab label="Home" disableRipple />
-          <Tab label="Genome Groups" disableRipple/>
-        </Tabs>
-      </div>
+      <Menu>
+        {menu.map((item) => (
+          <li key={item.id}>
+            <MenuItem
+              level={item.level}
+              caret={item.caret}
+              className={item.id == value ? 'active no-style' : 'no-style hover'}
+              onClicsk={() => handleChange(value)}
+            >
+              {item.caret && <Caret><CaretIcon /></Caret>}
+              {item.icon && <Icon>{item.icon}</Icon>}
+              {item.label}
+            </MenuItem>
+          </li>
+        ))}
+      </Menu>
     </SidebarRoot>
   )
 }
@@ -57,7 +73,7 @@ const sidebarWidth = '200px'
 
 const SidebarRoot = styled.div`
   width: ${sidebarWidth};
-  padding: 5px 10px;
+  padding: 5px 0 10px 5px;
   border-right: 1px solid #ccc;
 
   .MuiTab-wrapper {
@@ -65,10 +81,42 @@ const SidebarRoot = styled.div`
   }
 `
 
+const Menu = styled.ul`
+  position: relative;
+  padding: 0;
+  font-size: 1em;
+
+  li {
+    padding: 5px 0;
+  }
+`
+const indention = 5
+
+const MenuItem = styled.a`
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  ${props => props.level &&
+    `padding-left: ${props.level * indention + (!props.caret ? 21 : 0)};`}
+
+  ${props => props.level &&
+    `font-size: .9em`}
+`
+
+const Icon = styled.div`
+  margin-right: 5px;
+`
+
+const Caret = styled.div`
+  width: 20px;
+`
+
+
+
 const P3Link = styled.a`
   svg { font-size: 1.25em; }
 `
-
 
 
 export {sidebarWidth}

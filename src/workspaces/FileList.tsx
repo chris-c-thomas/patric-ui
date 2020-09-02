@@ -20,7 +20,9 @@ const columns = [
     label: 'Name',
     width: '45%',
     format: (val, obj) =>
-      <Link to={(`/files${obj.encodedPath}`)}>{getIcon(obj)} {val}</Link>
+      <Link to={(`/files${obj.encodedPath}`)} className="flex align-items-center">
+        {getIcon(obj)} {val}
+      </Link>
   }, {
     id: 'size',
     label: 'Size',
@@ -104,7 +106,6 @@ export default function FileList(props: Props) {
   }
 
 
-
   return (
     <>
       {
@@ -114,6 +115,7 @@ export default function FileList(props: Props) {
           rows={rows}
           onSelect={handleSelect}
           onDoubleClick={navigate}
+          emptyNotice="This folder is empty."
         />
       }
     </>
