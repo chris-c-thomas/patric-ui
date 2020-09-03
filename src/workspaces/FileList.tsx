@@ -116,6 +116,7 @@ export default function FileList(props: Props) {
           onSelect={handleSelect}
           onDoubleClick={navigate}
           emptyNotice="This folder is empty."
+          noStripes
         />
       }
     </>

@@ -232,6 +232,7 @@ type Props = {
   offsetHeight?: string
   checkboxes?: boolean
   searchPlaceholder?: string
+  noStripes?: boolean
   onSearch?: (string) => void
   onSort?: (string) => void       // for ajax pagination
   onPage?: (number) => void       // for ajax pagination
@@ -411,7 +412,7 @@ export default function TableComponent(props: Props) {
         }
       </CtrlContainer>
 
-      <Container offset={offsetHeight}>
+      <Container offset={offsetHeight} noStripes={props.noStripes}>
         <Table stickyHeader aria-label="table" size="small" ref={tableRef}>
 
           <TableHead>
@@ -492,10 +493,10 @@ const Container = styled(TableContainer)`
     font-size: 13px;
   }
 
-  /*
-  & tr:nth-child(odd) {
-    background: #fafafa;
-  }*/
+  ${props => !props.noStripes &&
+    `& tr:nth-child(odd) {
+      background: #fafafa;
+    }`}
 
   & td.MuiTableCell-sizeSmall {
     padding: 6px 12px 6px 2px;
