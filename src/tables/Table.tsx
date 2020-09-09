@@ -196,6 +196,7 @@ const parseSort = (str) => ({
   [str.slice(1)]: str.charAt(0) == '-' ? 'dsc' : 'asc'
 })
 
+
 const decodeSort = (sortObj) => {
   if (!sortObj)
     return ''
@@ -205,6 +206,7 @@ const decodeSort = (sortObj) => {
 
   return `${order == 'dsc' ? '-' : '+'}${id}`
 }
+
 
 // initial state of columns includes "hide", then shown columns is
 // controlled by showColumns (a list of column ids)
@@ -232,7 +234,7 @@ type Props = {
   offsetHeight?: string
   checkboxes?: boolean
   searchPlaceholder?: string
-  noStripes?: boolean
+  stripes?: boolean
   onSearch?: (string) => void
   onSort?: (string) => void       // for ajax pagination
   onPage?: (number) => void       // for ajax pagination
@@ -252,7 +254,7 @@ export default function TableComponent(props: Props) {
   const {
     pagination, offsetHeight, checkboxes, emptyNotice,
     MiddleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
-    enableTableOptions
+    enableTableOptions, stripes = true
   } = props
 
   if (pagination && (props.page === undefined || !props.limit)) {
@@ -331,7 +333,17 @@ export default function TableComponent(props: Props) {
   }
 
   const handleSelect = (rowID, obj) => {
-    dispatch({type: 'SET', id: rowID, obj, rows })
+    let type
+    if (event.metaKey) {
+      type = 'CTRL_SET'
+    } else if (event.shiftKey) {
+      document.getSelection().removeAllRanges()
+      type = 'SHIFT_SET'
+    } else {
+      type = 'SET'
+    }
+
+    dispatch({type, id: rowID, obj, rows })
   }
 
   const handleSort = (colObj) => {
@@ -412,7 +424,7 @@ export default function TableComponent(props: Props) {
         }
       </CtrlContainer>
 
-      <Container offset={offsetHeight} noStripes={props.noStripes}>
+      <Container offset={offsetHeight} stripes={stripes.toString()}>
         <Table stickyHeader aria-label="table" size="small" ref={tableRef}>
 
           <TableHead>
@@ -493,7 +505,7 @@ const Container = styled(TableContainer)`
     font-size: 13px;
   }
 
-  ${props => !props.noStripes &&
+  ${props => props.stripes != 'false' &&
     `& tr:nth-child(odd) {
       background: #fafafa;
     }`}
