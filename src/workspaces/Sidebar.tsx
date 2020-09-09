@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useParams} from 'react-router-dom'
+import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
 import InfoIcon from '@material-ui/icons/InfoOutlined'
@@ -10,17 +10,34 @@ import SharedIcon from '@material-ui/icons/PeopleAltRounded'
 import PublicIcon from '@material-ui/icons/PublicRounded'
 import SpecialFolderIcon from '@material-ui/icons/FolderSpecialRounded'
 
+import {getUser} from '../api/auth'
+
 // only for testing
 import config from '../config'
 
 const menu = [
-  {id: 'workspaces', label: 'My Workspaces', icon: <MyIcon />, caret: true },
-  {id: 'home', label: 'Home', level: 2, icon: <FolderIcon />, caret: true},
-  {id: 'genome_groups', label: 'Genome Groups', level: 3, icon: <SpecialFolderIcon />},
-  {id: 'feature_groups', label: 'Feature Groups', level: 3, icon: <SpecialFolderIcon />},
-  {id: 'experiements', label: 'Experiment Groups', level: 3, icon: <SpecialFolderIcon />},
-  {id: 'shared_with_me', label: 'Shared with Me', icon: <SharedIcon />},
-  {id: 'Public_workspaces', label: 'Public Workspaces', icon: <PublicIcon />}
+  {
+    path: `${getUser(true)}`, label: 'My Workspaces',
+    icon: <MyIcon />, caret: true
+  }, {
+    path: `${getUser(true)}/home`, label: 'Home',
+    level: 2, icon: <FolderIcon />, caret: true
+  }, {
+    path: `${getUser(true)}/home/Genome Groups`, label: 'Genome Groups',
+    level: 3, icon: <SpecialFolderIcon />
+  },{
+    path: `${getUser(true)}/home/Feature Groups`, label: 'Feature Groups',
+    level: 3, icon: <SpecialFolderIcon />
+  }, {
+    path: `${getUser(true)}/home/Experiment Groups`, label: 'Experiment Groups',
+    level: 3, icon: <SpecialFolderIcon />
+  }, {
+    label: 'Shared with Me',
+    icon: <SharedIcon />
+  }, {
+    label: 'Public Workspaces',
+    icon: <PublicIcon />
+  }
 ]
 
 type Props = {
@@ -28,6 +45,8 @@ type Props = {
 }
 
 const WSSideBar = (props: Props) => {
+  const {path} = useParams()
+  console.log('path', path)
 
   const [value, setValue] = useState('workspaces')
 
@@ -42,7 +61,7 @@ const WSSideBar = (props: Props) => {
         Workspaces
         <sup>
           <P3Link
-            href={`${config.p3URL}/workspace/${useParams().path}`}
+            href={`${config.p3URL}/workspace/${path}`}
             target="_blank"
           >
             <InfoIcon />
@@ -52,12 +71,12 @@ const WSSideBar = (props: Props) => {
 
       <Menu>
         {menu.map((item) => (
-          <li key={item.id}>
+          <li key={item.label}>
             <MenuItem
               level={item.level}
               caret={item.caret}
-              className={item.id == value ? 'active no-style' : 'no-style hover'}
-              onClick={() => handleChange(value)}
+              className={item.path == path ? 'active no-style' : 'no-style hover'}
+              to={`/files/${item.path}`}
             >
               {item.caret && <Caret><CaretIcon /></Caret>}
               {item.icon && <Icon>{item.icon}</Icon>}
@@ -93,16 +112,19 @@ const Menu = styled.ul`
 `
 const indention = 8
 
-const MenuItem = styled.a`
+const MenuItem = styled(Link)`
   display: flex;
   align-items: center;
-  width: 100%;
 
   ${props => props.level &&
     `padding-left: ${props.level * indention + (!props.caret ? 21 : 0)};`}
 
   ${props => props.level &&
     `font-size: .9em`}
+
+  &.active {
+    font-weight: 800 !important;
+  }
 `
 
 const Icon = styled.div`

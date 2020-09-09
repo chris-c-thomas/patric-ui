@@ -10,6 +10,8 @@ import Folder from '@material-ui/icons/FolderOutlined'
 import File from '@material-ui/icons/InsertDriveFileOutlined'
 import WSIcon from '../../assets/icons/hdd-o.svg'
 import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
+import GroupIcon from '../../assets/icons/genome-group.svg'
+import FeaturesIcon from '../../assets/icons/genome-features.svg'
 
 import {bytesToSize, isoToHumanDateTime} from '../utils/units'
 
@@ -53,6 +55,10 @@ function getIcon({type, isWS, permissions}) {
     return <Folder className="icon" />
   else if (type == 'contigs')
     return <File className="icon"/>
+  else if (type == 'genome_group')
+    return <img src={GroupIcon} className="icon"/>
+  else if (type == 'feature_group')
+    return <img src={FeaturesIcon} className="icon"/>
   else
     return <File className="icon"/>
 }

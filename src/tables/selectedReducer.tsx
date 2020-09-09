@@ -18,7 +18,7 @@ const selectedReducer = (state, action) => {
     const {lastSelected} = state
 
     let newObjs
-    if (action.id < lastSelected)
+    if (action.id <= lastSelected)
       newObjs = action.rows.filter(({rowID}) => rowID >= action.id && rowID <= lastSelected )
     else if (action.id > lastSelected)
       newObjs = action.rows.filter(({rowID}) => rowID >= lastSelected && rowID <= action.id)
