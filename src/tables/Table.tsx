@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer, useRef} from 'react'
+import React, {useState, useEffect, useReducer, useRef, useCallback} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -268,12 +268,14 @@ export default function TableComponent(props: Props) {
   const [columns, setColumns] = useState(getVisibleColumns(props.columns))
   const [page, setPage] = useState(Number(props.page))
   const [sortBy, setSortBy] = useState((props.sort && parseSort(props.sort)) || {})
+  const [rowsPerPage] = useState(200)
 
   // keep state on shown/hidden columns
   // initial columns are defined in `columns` spec.
   const [activeColumns, setActiveColumns] = useState(null)
 
-  const [rowsPerPage] = useState(200)
+  // disable user-select when shift+click is happening
+  const [userSelect, setUserSelect] = useState(true)
 
   // selected/checkbox state
   const [allSelected, setAllSelected] = useState<boolean>(false)
@@ -282,7 +284,6 @@ export default function TableComponent(props: Props) {
     ids: [],
     objs: [],
   })
-
 
   useEffect(() => {
     // todo: refactor/cleanup?
@@ -316,6 +317,21 @@ export default function TableComponent(props: Props) {
     if (onSelect) onSelect(selected)
   }, [selected])
 
+  // enable/disable userSelect durring ctrl/shift+click
+  const handleKeyDown = useCallback(() => {
+    if (event.metaKey || event.shiftKey) {
+      setUserSelect(false)
+    }
+  }, [setUserSelect])
+
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
 
   useClickOutside(tableRef, () => {
     dispatch({type: 'CLEAR' })
@@ -337,13 +353,13 @@ export default function TableComponent(props: Props) {
     if (event.metaKey) {
       type = 'CTRL_SET'
     } else if (event.shiftKey) {
-      document.getSelection().removeAllRanges()
       type = 'SHIFT_SET'
     } else {
       type = 'SET'
     }
 
     dispatch({type, id: rowID, obj, rows })
+    setUserSelect(true)
   }
 
   const handleSort = (colObj) => {
@@ -424,7 +440,11 @@ export default function TableComponent(props: Props) {
         }
       </CtrlContainer>
 
-      <Container offset={offsetHeight} stripes={stripes.toString()}>
+      <Container
+        offset={offsetHeight}
+        stripes={stripes.toString()}
+        userselect={userSelect}
+      >
         <Table stickyHeader aria-label="table" size="small" ref={tableRef}>
 
           <TableHead>
@@ -525,6 +545,9 @@ const Container = styled(TableContainer)`
   & tr.MuiTableRow-root.Mui-selected:hover {
     background-color: #ecf4fb;
   }
+
+  ${props => !props.userselect &&
+    'user-select: none;'}
 `
 
 const NoneFoundNotice = styled.div`
