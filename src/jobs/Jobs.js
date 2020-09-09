@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import React, {useEffect, useState, useContext} from 'react'
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components'
 import { Link, useHistory, useLocation} from 'react-router-dom'
 
@@ -10,6 +11,8 @@ import Select from 'react-select'
 // import DateFnsUtils from '@date-io/date-fns';
 
 import Paper from '@material-ui/core/Paper'
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
+import ToggleButton from '@material-ui/lab/ToggleButton'
 import Button from '@material-ui/core/Button'
 import Chip from '@material-ui/core/Chip'
 import LinearProgress from '@material-ui/core/LinearProgress'
@@ -87,7 +90,6 @@ function Toolbar(props) {
     app, onAppFilter, status, onStatusFilter, options
   } = props
 
-
   return (
     <div className="row">
       <MainOptions className="flex align-items-center">
@@ -136,27 +138,49 @@ function Toolbar(props) {
         />
       </MuiPickersUtilsProvider>
       */}
-      <StatusBtns className="flex align-items-end">
-        <StatusBtn onClick={() => onStatusFilter('queued')} isactive={status == 'queued'} disableRipple>
+
+      <StyledToggleButtonGroup
+        color="primary"
+        aria-label="filter by status"
+        size="small"
+        value={status}
+      >
+        <ToggleButton
+          value="queued"
+          onClick={() => onStatusFilter('queued')}
+          disableRipple
+        >
           <QueuedIcon className="queued" />
           {state.queued} queued
-        </StatusBtn>
+        </ToggleButton>
 
-        <StatusBtn onClick={() => onStatusFilter('in-progress')} isactive={status == 'in-progress'} disableRipple>
+        <ToggleButton
+          value="in-progress"
+          onClick={() => onStatusFilter('in-progress')}
+          disableRipple
+        >
           <InProgressIcon className="in-progress" />
           {state.inProgress} running
-        </StatusBtn>
+        </ToggleButton>
 
-        <StatusBtn onClick={() => onStatusFilter('completed')} isactive={status == 'completed'} disableRipple>
+        <ToggleButton
+          value="completed"
+          onClick={() => onStatusFilter('completed')}
+          disableRipple
+        >
           <CompletedIcon className="completed"/>
           {state.completed} completed
-        </StatusBtn>
+        </ToggleButton>
 
-        <StatusBtn onClick={() => onStatusFilter('failed')} isactive={status == 'failed'} disableRipple>
+        <ToggleButton
+          value="failed"
+          onClick={() => onStatusFilter('failed')}
+          disableRipple
+        >
           <WarningIcon className="failed"/>
           {state.failed} failed
-        </StatusBtn>
-      </StatusBtns>
+        </ToggleButton>
+      </StyledToggleButtonGroup>
     </div>
   )
 }
@@ -170,25 +194,32 @@ const Title = styled.div`
   margin-right: 20px;
 `
 
-const StatusBtns = styled.div`
-  flex-grow: 1;
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
+  svg {
+    margin-right: 5px;
+  }
 
-  & > * {
-    margin-right: 40px;
+  .MuiToggleButtonGroup-grouped {
+    &:not(:first-child) {
+      border-radius: 0;
+    }
+    &:first-child {
+      border-radius: 0;
+    }
+  }
+
+  .MuiToggleButton-root {
+    color: #444;
+    border: none;
+    margin-right: 20px;
+    border-bottom: 3px solid #fff;
+  }
+
+  & .MuiToggleButton-root.Mui-selected {
+    background-color: #fff;
+    border-bottom: 3px solid #c0d3a2;
   }
 `
-
-const StatusBtn = styled(Button)`
-  padding: 0;
-  color: #444;
-  &.MuiButton-root { margin-right: 20px;}
-
-  :hover { opacity: .8;}
-
-  ${props => props.isactive &&
-    'border-bottom: 10px solid #c0d3a2;'}
-`
-
 
 
 export default function Jobs() {
