@@ -31,23 +31,21 @@ export default function SubmitBtns(props: Props) {
   }, [status])
 
   return (
-    <Section>
-      <Row spaceBetween>
-        <Button
-          onClick={onSubmit}
-          variant="contained"
-          color="primary"
-          className="no-raised"
-          disableRipple
-          disabled={disabled || status == 'starting'}
-        >
-          {state == 'starting' ? 'Submitting...' : 'Submit'}
-        </Button>
+    <Section spaceBetween>
+      <Button
+        onClick={onSubmit}
+        variant="contained"
+        color="primary"
+        className="no-raised"
+        disableRipple
+        disabled={disabled || status == 'starting'}
+      >
+        {state == 'starting' ? 'Submitting...' : 'Submit'}
+      </Button>
 
-        <Button onClick={onReset} disableRipple>
-          Reset
-        </Button>
-      </Row>
+      <Button onClick={onReset} disableRipple>
+        Reset
+      </Button>
     </Section>
   )
 }

@@ -22,6 +22,8 @@ import Selector from './selector'
 
 import { parsePath } from '../../utils/paths'
 
+import {validateSRR} from '../../api/ncbi-eutils'
+
 
 const AddBtn = ({onAdd, disabled}) =>
   <Tooltip
@@ -94,6 +96,9 @@ export default function ReadSelector(props) {
   const [read_orientation_outward, setMatePaired] = useState('false')
   const [platform, setPlatform] = useState('infer')
 
+  const [sraMsg, setSRAMsg] = useState(null)
+  const [sraError, setSRAError] = useState(null)
+
 
   useEffect(() => {
     /*if (!didMountdRef.current) {
@@ -139,16 +144,15 @@ export default function ReadSelector(props) {
           read_orientation_outward
         }
       }
-    } else if (type == 'sra') {
-      row = {
-        type: 'srr_ids',
-        label: sraID,
-        value: sraID
-      }
     }
 
     // add reads
     setReads(prev => ([...prev, row]))
+  }
+
+  const onAddSRA = (id) => {
+    if (id != '')
+      validateSra(id)
   }
 
   const onRemoveAll = () => {
@@ -158,6 +162,21 @@ export default function ReadSelector(props) {
   const onRemove = ({index}) => {
     setReads(prev => prev.filter((_, i) => i != index))
   }
+
+  const validateSra = (id) => {
+    console.log('validating', id)
+
+    try {
+      const blah = validateSRR(id).catch(() => {
+        alert('not valid')
+      })
+      console.log('blah', blah)
+    } catch (e) {
+      console.log(e)
+      setSRAError(e)
+    }
+  }
+
 
   return (
     <Root>
@@ -206,13 +225,15 @@ export default function ReadSelector(props) {
 
         <Title>
           SRA run accession
-          <AddBtn onAdd={() => onAdd('sra')}  disabled={!sraID} />
+          <AddBtn onAdd={() => onAddSRA('sra')}  disabled={!sraID} />
         </Title>
         <TextInput
           placeholder="SRR"
           value={sraID}
           onChange={val => setSraID(val)}
           noLabel
+          error={!!sraError}
+          helperText={sraMsg || sraError}
         />
       </Inputs>
 

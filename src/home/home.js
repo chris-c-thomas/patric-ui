@@ -1,31 +1,32 @@
-import React, {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
 import clsx from 'clsx'
+import styled from 'styled-components'
 
-import Subtitle from '../subtitle';
+import Subtitle from '../subtitle'
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Chip from '@material-ui/core/Chip';
-import Avatar from '@material-ui/core/Avatar';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid'
+import Chip from '@material-ui/core/Chip'
+import Avatar from '@material-ui/core/Avatar'
+import Card from '@material-ui/core/Card'
+import CardActionArea from '@material-ui/core/CardActionArea'
+import TextField from '@material-ui/core/TextField'
 
-import GridListTileBar from '@material-ui/core/GridListTileBar';
+import GridListTileBar from '@material-ui/core/GridListTileBar'
 
-import News from './news/news';
-import Recents from './recents';
-import MyData from './my-data';
+import News from './news/news'
+import Recents from './recents'
+import MyData from './my-data'
 
-import serviceImages from '../../assets/imgs/services/*.jpg';
-import chipImages from '../../assets/imgs/biology/*.png';
+import serviceImages from '../../assets/imgs/services/*.jpg'
+import chipImages from '../../assets/imgs/biology/*.png'
 
 import config from '../config'
-import * as Auth from '../api/auth';
-import SignInDialog from '../auth/sign-in-dialog';
-import JobsOverview from './jobs-overview';
-import ChipFilters from '../utils/ui/chip-filters';
+import * as Auth from '../api/auth'
+import SignInDialog from '../auth/sign-in-dialog'
+import JobsOverview from './jobs-overview'
+import ChipFilters from '../utils/ui/chip-filters'
 
 const services = [
   {
@@ -87,10 +88,10 @@ const useStyles = makeStyles(theme => ({
       borderRadius: '10px'
     }
   }
-}));
+}))
 
-const NoAuth = props => !Auth.isSignedIn() ? [props.children] : <></>;
-const HasAuth = props => Auth.isSignedIn() ? [props.children] : <></>;
+const NoAuth = props => !Auth.isSignedIn() ? [props.children] : <></>
+const HasAuth = props => Auth.isSignedIn() ? [props.children] : <></>
 
 const ChipBtn = (props) => {
   return (
@@ -105,7 +106,7 @@ const ChipBtn = (props) => {
 }
 
 const Overview = () => {
-  const styles = useStyles();
+  const styles = useStyles()
   return (
     <Paper className={clsx('card', styles.overview)}>
       <NoAuth>
@@ -163,16 +164,16 @@ const serviceCardStyles = makeStyles({
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
   },
-});
+})
 
 const ServiceCard = (props) => {
-  const styles = serviceCardStyles();
-  const {name, type, descript, path, tutorial} = props;
+  const styles = serviceCardStyles()
+  const {name, type, descript, path, tutorial} = props
 
   // ignore all filter
-  if (type == 'All') return (<></>);
+  if (type == 'All') return (<></>)
 
-  const imgPath = serviceImages[name.toLowerCase().replace(/ /g, '_')];
+  const imgPath = serviceImages[name.toLowerCase().replace(/ /g, '_')]
 
   return (
     <Card className={styles.serviceCard} component={Link} to={path || '/'}>
@@ -198,9 +199,9 @@ const ServiceCard = (props) => {
 }
 
 const ServiceCards = () => {
-  const styles = useStyles();
-  const [filter, setFilter] = useState('Genomics');
-  const [openSignIn, setOpenSignIn] = useState(false);
+  const styles = useStyles()
+  const [filter, setFilter] = useState('Genomics')
+  const [openSignIn, setOpenSignIn] = useState(false)
 
   return (
     <Paper className="card">
@@ -234,7 +235,7 @@ const ServiceCards = () => {
       <div className={styles.scroller}>
         {
           services.map((obj, i) => (
-             obj.type == filter || filter == 'All' ?
+            obj.type == filter || filter == 'All' ?
               <ServiceCard filter={filter} key={i} {...obj} /> : ''
           ))
         }
@@ -248,7 +249,7 @@ const ServiceCards = () => {
 
 
 export default function Home() {
-  const styles = useStyles();
+  const styles = useStyles()
   return (
     <div className={styles.root}>
       <Grid container>
@@ -284,8 +285,6 @@ export default function Home() {
           </Grid>
         </Grid>
       </Grid>
-   </div>
-
+    </div>
   )
 }
-

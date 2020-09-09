@@ -31,6 +31,8 @@ module.exports = {
     'document': true,
     'alert': true,
     'localStorage': true,
-    'window': true
+    'window': true,
+    'DOMParser': true,
+    'event': true
   }
 }

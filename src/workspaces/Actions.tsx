@@ -34,7 +34,7 @@ export default function Actions(props: Props) {
 
   const [selected, setSelected] = useState(props.selected || [])
   const [open, setOpen] = useState(false)
-  const [snack, setSnack] = useState('')
+  const [snack, setSnack] = useState(null)
 
   useEffect(() => {
     setSelected(props.selected)
@@ -67,15 +67,19 @@ export default function Actions(props: Props) {
         <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
           Share
         </Btn>
-        <Btn startIcon={<RenameIcon />} onClick={() => implement()}>
-          Rename
-        </Btn>
+        {selected.length == 1 &&
+          <Btn startIcon={<RenameIcon />} onClick={() => implement()}>
+            Rename
+          </Btn>
+        }
         <Btn startIcon={<CopyMoveIcon />} onClick={() => implement()}>
           Move or Copy
         </Btn>
-        <Btn startIcon={<LabelIcon />} onClick={() => implement()}>
-          Edit Type
-        </Btn>
+        {selected.length == 1 &&
+          <Btn startIcon={<LabelIcon />} onClick={() => implement()}>
+            Edit Type
+          </Btn>
+        }
         <Btn startIcon={<DeleteIcon />} onClick={() => setOpen(true)} className="failed">
           Delete
         </Btn>
@@ -91,7 +95,7 @@ export default function Actions(props: Props) {
         }
 
         {snack &&
-          <Snackbar open={true} autoHideDuration={5000} onClose={() => setSnack(null)}>
+          <Snackbar open autoHideDuration={5000} onClose={() => setSnack(null)}>
             <Alert onClose={() => setSnack(null)} severity="success">
               {snack}
             </Alert>

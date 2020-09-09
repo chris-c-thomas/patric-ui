@@ -8,15 +8,12 @@ const Root = styled.div`
   background: #fff;
   margin: auto;
   padding: 20px 20px 10px 20px;
+  border: 1px solid #ddd;
 `
 
 const Row = styled.div`
   display: flex;
   align-items: flex-end;
-
-  /* spaceBetween; usefor for submit buttons */
-  ${props => props.spaceBetween &&
-    'justify-content: space-between;'}
 `
 
 const Column = styled.div`
@@ -37,6 +34,10 @@ const Section = styled.div`
     ${props => props.padRows &&
       'margin-bottom: 10px;'}
   }
+
+  /* spaceBetween; usefor for submit buttons */
+  ${props => props.spaceBetween &&
+    'justify-content: space-between;'}
 `
 
 const Title = styled.h5`

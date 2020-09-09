@@ -13,7 +13,7 @@ const usageError = (propName, value, label) => {
 export default function TextInput(props) {
   const {
     label, value, adornment, type,
-    onChange, style, noLabel, placeholder
+    onChange, style, noLabel, placeholder, ...rest
   } = props
 
   if (!label && !noLabel)
@@ -46,6 +46,7 @@ export default function TextInput(props) {
       {...(adornment ? inputProps : {})}
       {...(noLabel ? {style: {margin: 0}} : {})}
       {...(style ? {style} : {})}
+      {...rest}
     />
   )
 }

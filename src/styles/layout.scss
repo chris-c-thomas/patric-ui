@@ -1,9 +1,15 @@
 
 .flex { display: flex; }
+.inline-flex { display: inline-flex; }
 
-.space-between{ justify-content: space-between; }
-.align-items-center { align-items: center;}
-.align-items-end { align-items: flex-end;}
+.space-between { justify-content: space-between; }
+.align-items-start { align-items: flex-start; }
+.align-items-center { align-items: center; }
+.align-items-end { align-items: flex-end; }
+
+.align-self-start { align-self: flex-start; }
+.align-self-center { align-self: center; }
+.align-self-end { align-self: flex-end; }
 
 .row {
   display: flex;

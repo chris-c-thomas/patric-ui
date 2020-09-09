@@ -59,7 +59,7 @@ const reducer = (state, action) => {
 }
 
 const getValues = (form) => {
-  let params = Object.assign({}, form)
+  let params = {...form}
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
   return params
 }

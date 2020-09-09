@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
 import InfoIcon from '@material-ui/icons/InfoOutlined'
-import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
+import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
 import MyIcon from '@material-ui/icons/AccountCircleOutlined'
 import SharedIcon from '@material-ui/icons/PeopleOutline'
@@ -56,7 +56,7 @@ const WSSideBar = (props: Props) => {
               level={item.level}
               caret={item.caret}
               className={item.id == value ? 'active no-style' : 'no-style hover'}
-              onClicsk={() => handleChange(value)}
+              onClick={() => handleChange(value)}
             >
               {item.caret && <Caret><CaretIcon /></Caret>}
               {item.icon && <Icon>{item.icon}</Icon>}
@@ -69,7 +69,7 @@ const WSSideBar = (props: Props) => {
   )
 }
 
-const sidebarWidth = '200px'
+const sidebarWidth = '210px'
 
 const SidebarRoot = styled.div`
   width: ${sidebarWidth};
@@ -90,7 +90,7 @@ const Menu = styled.ul`
     padding: 5px 0;
   }
 `
-const indention = 5
+const indention = 8
 
 const MenuItem = styled.a`
   display: flex;
@@ -110,6 +110,9 @@ const Icon = styled.div`
 
 const Caret = styled.div`
   width: 20px;
+  svg {
+    width: 20px;
+  }
 `
 
 
