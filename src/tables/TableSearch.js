@@ -1,11 +1,6 @@
 
 import React, { useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
-
-import Grid from '@material-ui/core/Grid'
-
-import Tooltip from '@material-ui/core/Tooltip'
-import Button from '@material-ui/core/IconButton'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
@@ -25,7 +20,7 @@ const parseRegexSearch = (search) => {
 export default function TableControls(props) {
   const didMountdRef = useRef()
 
-  const {search, onSearch, enableTableOptions, searchPlaceholder} = props
+  const {search, onSearch, searchPlaceholder} = props
 
   const [query, setQuery] = useState(search ? parseRegexSearch(search) : '')
   const debounceQuery = useDebounce(query, 300)
@@ -46,9 +41,8 @@ export default function TableControls(props) {
         placeholder={searchPlaceholder || 'Search keywords'}
         value={query}
         onChange={e => { setQuery(e.target.value) }}
-
         InputProps={{
-          style: { height: 30},
+          style: { height: 30, width: '260px'},
           startAdornment: <InputAdornment position="start"><SearchIcon/></InputAdornment>,
         }}
         variant="outlined"

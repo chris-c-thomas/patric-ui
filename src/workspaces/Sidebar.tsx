@@ -5,9 +5,10 @@ import styled from 'styled-components'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
-import MyIcon from '@material-ui/icons/AccountCircleOutlined'
-import SharedIcon from '@material-ui/icons/PeopleOutline'
-import PublicIcon from '@material-ui/icons/PublicOutlined'
+import MyIcon from '@material-ui/icons/AccountCircleRounded'
+import SharedIcon from '@material-ui/icons/PeopleAltRounded'
+import PublicIcon from '@material-ui/icons/PublicRounded'
+import SpecialFolderIcon from '@material-ui/icons/FolderSpecialRounded'
 
 // only for testing
 import config from '../config'
@@ -15,9 +16,9 @@ import config from '../config'
 const menu = [
   {id: 'workspaces', label: 'My Workspaces', icon: <MyIcon />, caret: true },
   {id: 'home', label: 'Home', level: 2, icon: <FolderIcon />, caret: true},
-  {id: 'genome_groups', label: 'Genome Groups', level: 3, icon: <FolderIcon />},
-  {id: 'feature_groups', label: 'Feature Groups', level: 3, icon: <FolderIcon />},
-  {id: 'experiements', label: 'Experiment Groups', level: 3, icon: <FolderIcon />},
+  {id: 'genome_groups', label: 'Genome Groups', level: 3, icon: <SpecialFolderIcon />},
+  {id: 'feature_groups', label: 'Feature Groups', level: 3, icon: <SpecialFolderIcon />},
+  {id: 'experiements', label: 'Experiment Groups', level: 3, icon: <SpecialFolderIcon />},
   {id: 'shared_with_me', label: 'Shared with Me', icon: <SharedIcon />},
   {id: 'Public_workspaces', label: 'Public Workspaces', icon: <PublicIcon />}
 ]

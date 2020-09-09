@@ -99,13 +99,13 @@ const Main = styled.div`
 
 const Container = styled.div`
   display: flex;
-  height: calc(100% - 50px);
+  height: calc(100% - 60px);
   padding: 5px;
   background: #fff;
 `
 
 const ActionBarContainer = styled.div`
-  padding: 20px 10px;
+  padding: 15px 10px;
   border-bottom: 1px solid rgba(224, 224, 224, 1);
 `
 

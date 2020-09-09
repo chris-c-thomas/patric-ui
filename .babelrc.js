@@ -8,6 +8,15 @@ const plugins = [
     },
     'core'
   ],
+  [
+    'babel-plugin-import',
+    {
+      'libraryName': '@material-ui/lab',
+      'libraryDirectory': 'esm',
+      'camel2DashComponentName': false
+    },
+    'lab'
+  ],
   'babel-plugin-styled-components'
 ];
 

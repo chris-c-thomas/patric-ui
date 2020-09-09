@@ -1,6 +1,5 @@
 /* eslint-disable react/display-name */
 import React, {useEffect, useState, useContext} from 'react'
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import styled from 'styled-components'
 import { Link, useHistory, useLocation} from 'react-router-dom'
 
@@ -13,7 +12,6 @@ import Select from 'react-select'
 import Paper from '@material-ui/core/Paper'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import ToggleButton from '@material-ui/lab/ToggleButton'
-import Button from '@material-ui/core/Button'
 import Chip from '@material-ui/core/Chip'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import QueuedIcon from '@material-ui/icons/List'

@@ -56,10 +56,10 @@ export default function Actions(props: Props) {
     <>
       <FileName>
         {selected.length == 1 &&
-          selected[0].name
+          <>{selected[0].name} <span>is selected</span></>
         }
         {selected.length > 1 &&
-          `${selected.length} items`
+          <span>{selected.length} items are selected</span>
         }
       </FileName>
 
@@ -109,6 +109,12 @@ export default function Actions(props: Props) {
 
 const FileName = styled.div`
   font-weight: bold;
+  font-size: 1.1em;
+
+  span {
+    font-size: .85em;
+    font-weight: normal;
+  }
 `
 
 const ActionContainer = styled.div`

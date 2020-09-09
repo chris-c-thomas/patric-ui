@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import Button from '@material-ui/core/Button'
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import UploadIcon from '@material-ui/icons/CloudUploadOutlined'
 import VisibilityIcon from '@material-ui/icons/Visibility'
+// import NewWSIcon from '../../assets/icons/add-workspace.svg'
 
 import CreateDialog from './CreateDialog'
 import Snackbar from '@material-ui/core/Snackbar'

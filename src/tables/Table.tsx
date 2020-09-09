@@ -442,11 +442,10 @@ export default function TableComponent(props: Props) {
 
       <Container
         offset={offsetHeight}
-        stripes={stripes.toString()}
-        userselect={userSelect}
+        stripes={stripes ? 1 : 0}
+        userselect={userSelect ? 1 : 0}
       >
         <Table stickyHeader aria-label="table" size="small" ref={tableRef}>
-
           <TableHead>
             <TableHeadComponent
               columns={columns}
@@ -517,18 +516,24 @@ const Container = styled(TableContainer)`
   height: 100%;
   width: 100%;
 
+  /* handled with stickyHeader */
+  border-collapse: separate;
+
   & td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 0;
     font-size: 13px;
+
+    /* size="small" */
+    padding: 6px 12px 6px 2px;
   }
 
-  ${props => props.stripes != 'false' &&
+  ${props => props.stripes ?
     `& tr:nth-child(odd) {
       background: #fafafa;
-    }`}
+    }` : ''}
 
   & td.MuiTableCell-sizeSmall {
     padding: 6px 12px 6px 2px;
@@ -546,8 +551,18 @@ const Container = styled(TableContainer)`
     background-color: #ecf4fb;
   }
 
-  ${props => !props.userselect &&
-    'user-select: none;'}
+  ${props => !props.userselect ?
+    'user-select: none;' : ''}
+
+  /* todo(nc): workaround for production build styling issue.
+    similar to: https://github.com/gregnb/mui-datatables/issues/1074 */
+  th {
+    top: 0;
+    left: 0;
+    z-index: 2;
+    position: sticky;
+    background-color: #fff;
+  }
 `
 
 const NoneFoundNotice = styled.div`

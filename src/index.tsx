@@ -20,7 +20,6 @@ import Workspaces from './workspaces/Workspaces'
 import SUSignIn from './auth/su-sign-in'
 import NotFound404 from './404'
 
-
 import './styles/styles.scss'
 
 import { JobStatusProvider } from './jobs/job-status-context'
@@ -80,6 +79,7 @@ const App = () => {
         </JobStatusProvider>
 
       </ThemeProvider>
+
     </BrowserRouter>
   )
 }
