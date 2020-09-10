@@ -64,7 +64,7 @@ export default function Workspaces() {
     <Root>
       <Container>
 
-        <Sidebar onChange={() => {}}/>
+        <Sidebar />
 
         <Main>
           <ActionBarContainer>

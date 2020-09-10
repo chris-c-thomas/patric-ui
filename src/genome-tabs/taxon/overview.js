@@ -31,40 +31,42 @@ const MetaCharts = (props) => {
   const [topN, setTopN] = useState(10)
 
   return (
-    <div>
-      <ToggleButtonGroup
-        value={type}
-        exclusive
-        onChange={(_, val) => setType(val)}
-        aria-label="meta pie chart type"
-        size="small"
-        className="btn-group"
-      >
-        <ToggleButton value="host" aria-label="host" disableRipple>
-          Host Name
-        </ToggleButton>
-        <ToggleButton value="disease" aria-label="disease" disableRipple>
-          Disease
-        </ToggleButton>
-        <ToggleButton value="country" aria-label="isolation country" disableRipple>
-          Isolation Country
-        </ToggleButton>
-        <ToggleButton value="status" aria-label="genome status" disableRipple>
-          Genome Status
-        </ToggleButton>
-      </ToggleButtonGroup>
+    <>
+      <div className="flex align-items-center space-between">
+        <ToggleButtonGroup
+          value={type}
+          exclusive
+          onChange={(_, val) => setType(val)}
+          aria-label="meta pie chart type"
+          size="small"
+          className="btn-group"
+        >
+          <ToggleButton value="host" aria-label="host" disableRipple>
+            Host Name
+          </ToggleButton>
+          <ToggleButton value="disease" aria-label="disease" disableRipple>
+            Disease
+          </ToggleButton>
+          <ToggleButton value="country" aria-label="isolation country" disableRipple>
+            Isolation Country
+          </ToggleButton>
+          <ToggleButton value="status" aria-label="genome status" disableRipple>
+            Genome Status
+          </ToggleButton>
+        </ToggleButtonGroup>
 
-      <TopNField
-        label="Showing Top"
-        value={topN}
-        onChange={evt => setTopN(evt.target.value)}
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        margin="dense"
-        variant="outlined"
-      />
+        <TopNField
+          label="Showing Top"
+          value={topN}
+          onChange={evt => setTopN(evt.target.value)}
+          type="number"
+          InputLabelProps={{
+            shrink: true
+          }}
+          margin="dense"
+          variant="outlined"
+        />
+      </div>
 
       <div style={{height: 350}}>
         {type == 'host' && <Pie data={host_name.slice(0,topN)} /> }
@@ -72,15 +74,15 @@ const MetaCharts = (props) => {
         {type == 'country' && <Pie data={isolation_country.slice(0,topN)} /> }
         {type == 'status' && <Pie data={genome_status.slice(0,topN)} /> }
       </div>
-
-    </div>
+    </>
   )
 }
 
 const TopNField = styled(TextField)`
   width: 100px;
-  margin-left: 5px;
-  margin-top: 0;
+  & .MuiInputBase-input {
+    height: 15px;
+  }
 `
 
 const AMRChart = (props) => {
@@ -107,7 +109,7 @@ const Publications = ({data}) =>
 
 const PubList = styled.ul`
 
-  padding: 0;
+  padding-left: 20px;
 
   li {
     margin-bottom: 10px;
@@ -122,16 +124,15 @@ const TaxonMetaTable = ({data}) =>
       <tr>
         <Label>Lineage</Label>
         <td>
-          {
-            data.lineage_ids
-              .map((id, i) =>
-                <span key={id}>
-                  <Link to={`/taxonomy/${id}/overview`}>
-                    {data.lineage_names[i]}
-                  </Link>
-                  {i < data.lineage_ids.length - 1 && ', '}
-                </span>
-              )
+          {data.lineage_ids
+            .map((id, i) =>
+              <span key={id}>
+                <Link to={`/taxonomy/${id}/overview`}>
+                  {data.lineage_names[i]}
+                </Link>
+                {i < data.lineage_ids.length - 1 && ', '}
+              </span>
+            )
           }
         </td>
       </tr>

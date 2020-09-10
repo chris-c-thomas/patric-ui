@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -40,20 +40,9 @@ const menu = [
   }
 ]
 
-type Props = {
-  onChange: (string) => void
-}
 
-const WSSideBar = (props: Props) => {
+const WSSideBar = () => {
   const {path} = useParams()
-  console.log('path', path)
-
-  const [value, setValue] = useState('workspaces')
-
-  const handleChange = (newVal) => {
-    setValue(newVal)
-    props.onChange(newVal)
-  }
 
   return (
     <SidebarRoot>
@@ -74,7 +63,7 @@ const WSSideBar = (props: Props) => {
           <li key={item.label}>
             <MenuItem
               level={item.level}
-              caret={item.caret}
+              caret={item.caret ? 1 : 0}
               className={item.path == path ? 'active no-style' : 'no-style hover'}
               to={`/files/${item.path}`}
             >
