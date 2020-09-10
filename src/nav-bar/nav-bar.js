@@ -8,10 +8,6 @@ import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Badge from '@material-ui/core/Badge'
-import InputBase from '@material-ui/core/InputBase'
-import { fade } from '@material-ui/core/styles';
-
-import SearchIcon from '@material-ui/icons/Search'
 
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
@@ -311,24 +307,6 @@ export function NavBar(props) {
           </div>
         }
 
-        <SearchContainer>
-          <SearchIcon />
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: {
-                color: 'inherit',
-              },
-              input: {
-                padding: '2px 2px 2px 0',
-                // vertical padding + font size from searchIcon
-                paddingLeft: `calc(1em + 20px)`
-              }
-            }}
-            inputProps={{ 'aria-label': 'search' }}
-          />
-        </SearchContainer>
-
         {!isAdminApp &&
           <Button color="inherit" onClick={openAboutMenu} disableRipple>
             About <CaretIcon/>
@@ -393,14 +371,7 @@ const AccountBtn = styled(Button)`
   min-width: 30px;
 `
 
-const SearchContainer = styled.div`
-  position: relative;
-  border-radius: 3px;
-  background-color: ${fade('#fff', 0.15)};
-  &:hover, &:focus {
-    background-color: ${fade('#fff', 0.25)};
-  }
+//const SearchField = styled(TextField)`
 
-`
-
+//`
 
