@@ -18,7 +18,7 @@ import ObjectSelector from './object-selector/ObjectSelector'
 import SelectedTable from './SelectedTable'
 import TextInput from './TextInput'
 import AdvandedButton from './AdvancedButton'
-import Selector from './selector'
+import Selector from './Selector'
 
 import { parsePath } from '../../utils/paths'
 

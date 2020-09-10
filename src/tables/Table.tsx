@@ -317,12 +317,8 @@ export default function TableComponent(props: Props) {
   })
 
   useEffect(() => {
-    // todo: refactor/cleanup?
-
-    setRows(prev => {
-      console.log('resetting with ', prev)
-      return prev.map((row, i) => ({...row, rowID: i}))
-    })
+    // todo: primary ids?
+    setRows(props.rows.map((row, i) => ({...row, rowID: i})))
   }, [props.rows])
 
 
@@ -352,13 +348,13 @@ export default function TableComponent(props: Props) {
     if (onSelect) onSelect(selected)
   }, [selected])
 
+
   // enable/disable userSelect durring ctrl/shift+click
-  const handleKeyDown = useCallback(() => {
-    if (event.metaKey || event.shiftKey) {
+  const handleKeyDown = useCallback((evt) => {
+    if (evt.metaKey || evt.shiftKey) {
       setUserSelect(false)
     }
   }, [setUserSelect])
-
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)

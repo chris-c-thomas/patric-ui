@@ -272,7 +272,7 @@ const Sidebar = (props) => {
     <SidebarRoot collapsed={collapsed}>
       <Options>
         <AddFilterBtn>
-          <Tooltip title="Add a filter below" >
+          <Tooltip title="Add a filter" >
             <Button onClick={onAddFilter} size="small" color="primary" disableRipple>
               <Icon src={plusIcon} /> Add Filter
             </Button>
