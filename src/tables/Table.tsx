@@ -132,7 +132,7 @@ const TableRows = (props) => {
   } = props
 
   return rows.map((row, i) =>
-    <Row key={i} id={i}
+    <Row key={row.rowID} id={row.rowID}
       row={row}
       columns={columns}
       checkboxes={checkboxes}
@@ -191,6 +191,37 @@ const TableHeadComponent = (props) => {
   )
 }
 
+// todo(nc): use types
+const clientSideSort = (data, id, direction) => {
+  const isArrayCol = Array.isArray(data[0][id])
+  const isNumeric = typeof data[0][id] === 'number'
+
+  if (isArrayCol) {
+    // just use array lengths for now
+    data.sort((a, b) =>
+      direction == 'asc' ?
+        a[id].length - b[id].length :
+        b[id].length - a[id].length
+    )
+  } else if (isNumeric) {
+    data.sort((a, b) =>
+      direction == 'asc' ?
+        a[id].toString().localeCompare(b[id].toString(), undefined, {numeric: true}) :
+        a[id].toString().localeCompare(b[id].toString(), undefined, {numeric: true})
+    )
+  } else {
+    data.sort((a, b) =>
+      direction == 'asc' ?
+        a[id].localeCompare(b[id])
+        : b[id].localeCompare(a[id])
+    )
+  }
+
+  // re-index
+  data = data.map((row, i) => ({...row, rowID: i}))
+
+  return data
+}
 
 const parseSort = (str) => ({
   [str.slice(1)]: str.charAt(0) == '-' ? 'dsc' : 'asc'
@@ -287,7 +318,11 @@ export default function TableComponent(props: Props) {
 
   useEffect(() => {
     // todo: refactor/cleanup?
-    setRows(props.rows.map((row, i) => ({...row, rowID: i})))
+
+    setRows(prev => {
+      console.log('resetting with ', prev)
+      return prev.map((row, i) => ({...row, rowID: i}))
+    })
   }, [props.rows])
 
 
@@ -330,7 +365,7 @@ export default function TableComponent(props: Props) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [handleKeyDown])
 
 
   useClickOutside(tableRef, () => {
@@ -359,13 +394,23 @@ export default function TableComponent(props: Props) {
     }
 
     dispatch({type, id: rowID, obj, rows })
+
+    // enable text-selection again
     setUserSelect(true)
   }
 
   const handleSort = (colObj) => {
-    const newState = {[colObj.id]: sortBy[colObj.id] == 'asc' ? 'dsc' : 'asc' }
-    if (onSort)
+    const {id} = colObj
+    const direction = sortBy[id] == 'asc' ? 'dsc' : 'asc'
+    const newState = {[id]: direction}
+
+    if (onSort) {
       onSort(decodeSort(newState))
+    } else  {
+      // otherwise do client-side sorting
+      setRows(clientSideSort(rows, id, direction))
+      setSortBy(newState)
+    }
   }
 
   const onColumnChange = (activeCols) => {
@@ -501,7 +546,6 @@ const DownloadContainer = styled.div`
 `
 
 const Pagination = styled(TablePagination)`
-  justify-self: right;
   flex: 1;
 
   & .MuiTablePagination-actions {
@@ -514,7 +558,6 @@ const Container = styled(TableContainer)`
   /* remove height of control panel */
   max-height: ${props => `calc(100% - ${props.offset || '60px'})`};
   height: 100%;
-  width: 100%;
 
   /* handled with stickyHeader */
   border-collapse: separate;
@@ -562,6 +605,7 @@ const Container = styled(TableContainer)`
     z-index: 2;
     position: sticky;
     background-color: #fff;
+    user-select: none;
   }
 `
 
