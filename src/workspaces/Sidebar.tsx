@@ -94,6 +94,7 @@ const Menu = styled.ul`
   position: relative;
   padding: 0;
   font-size: 1em;
+  list-style: none;
 
   li {
     padding: 5px 0;
