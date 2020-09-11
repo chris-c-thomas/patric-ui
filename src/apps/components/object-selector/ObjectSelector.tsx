@@ -28,6 +28,11 @@ const usageError = (propName, value) => {
   return `ObjectSelector component must have prop: ${propName}.  Value was: ${value}`
 }
 
+type Props = {
+  type?: string
+  dialogTitle: string | JSX.Element
+}
+
 export default function ObjectSelector(props) {
   const {
     type,
@@ -72,8 +77,9 @@ export default function ObjectSelector(props) {
     }
 
     let path = `/${getUser(true)}/home`
-    WS.list({path, type, recursive: true, showHidden: false})
+    WS.list({path, type, recursive: true, includeHidden: false})
       .then(data => {
+        console.log('data', type, data)
         const items = data.map(obj => pathToOptionObj(obj.path))
 
         setItems(items)

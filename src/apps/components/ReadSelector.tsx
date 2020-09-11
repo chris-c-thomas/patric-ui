@@ -1,24 +1,27 @@
+/* eslint-disable react/display-name */
 /**
  * Read Selector
  *
  * Todo:
- *  - provide onAdd/onRemove methods
+ *  - provide onAdd/onRemove methods?
  */
 
 import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
-import {Title, TableTitle} from '../common/FormLayout'
+import {Title} from '../common/FormLayout'
 import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
+import ArrowIcon from '../../../assets/icons/arrow-circle-o-right.svg'
 
 import ObjectSelector from './object-selector/ObjectSelector'
 import SelectedTable from './SelectedTable'
 import TextInput from './TextInput'
 import AdvandedButton from './AdvancedButton'
 import Selector from './Selector'
+
 
 import { parsePath } from '../../utils/paths'
 
@@ -27,19 +30,21 @@ import {validateSRR} from '../../api/ncbi-eutils'
 
 const AddBtn = ({onAdd, disabled}) =>
   <Tooltip
-    title={<>{disabled ? 'First, select some read files' : 'Add item to read library'}</>}
+    title={<>{disabled ? 'First, select some read files' : 'Add item to selected libraries'}</>}
     placement="top"
   >
-    <span>
-      <AddItemBtn
+    <AddItemBtn>
+      <Button
         aria-label="add item"
         onClick={onAdd}
-        disableRipple
         disabled={disabled}
+        color="primary"
+        endIcon={<img src={ArrowIcon} className="icon" />}
+        disableRipple
       >
-        Add <AddIcon />
-      </AddItemBtn>
-    </span>
+        Add
+      </Button>
+    </AddItemBtn>
   </Tooltip>
 
 const AddItemBtn = styled(Button)`
@@ -70,9 +75,16 @@ const columns = [{
   type: 'removeButton'
 }]
 
+// todo(nc): define reads
+
+type Props = {
+  onChange: () => void
+  advancedOptions?: boolean
+  reads?: object[]
+}
 
 
-export default function ReadSelector(props) {
+export default function ReadSelector(props: Props) {
   const { onChange, advancedOptions} = props
 
   const didMountdRef = useRef()
@@ -102,7 +114,7 @@ export default function ReadSelector(props) {
 
   useEffect(() => {
     /*if (!didMountdRef.current) {
-      didMountdRef.current = true
+      didMountdRef.current = true]
       return
     }*/
 

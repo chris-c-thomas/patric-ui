@@ -160,7 +160,7 @@ export default function Annotation() {
             value={form.output_path}
             placeholder="Select a folder..."
             label="Output Folder"
-            type="Folder"
+            type="folder"
             dialogTitle="Select a folder"
           />
         </Row>
