@@ -143,6 +143,19 @@ const PatricMenus = () => {
 
   return (
     <>
+      <DropdownMenu label="About" menu={
+        <DropDown className="about-menu" >
+          <MenuSection>
+            <MenuTitle>{'About & Help'}</MenuTitle>
+            <Column>
+              <NavItem label="coming soon!" to="/"/>
+            </Column>
+          </MenuSection>
+        </DropDown>
+      }/>
+
+      <Spacer flexItem orientation="vertical" />
+
       <DropdownMenu label="Organisms" menu={
         <DropDown>
           <MenuSection>
@@ -182,19 +195,6 @@ const PatricMenus = () => {
           Job Status
         </Button>
       </JobCount>
-
-      <Spacer flexItem orientation="vertical" />
-
-      <DropdownMenu label="About" menu={
-        <DropDown className="about-menu" >
-          <MenuSection>
-            <MenuTitle>{'About & Help'}</MenuTitle>
-            <Column>
-              <NavItem label="coming soon!" to="/"/>
-            </Column>
-          </MenuSection>
-        </DropDown>
-      }/>
     </>
   )
 }
@@ -231,7 +231,7 @@ const JobCount = styled(Badge)`
 
 const Spacer = styled(Divider)`
   && {
-    margin: 8px;
+    margin: 8px 0px;
     background-color: rgb(81 137 177);
   }
 `

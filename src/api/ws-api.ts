@@ -94,7 +94,7 @@ export function list(args: Args) {
       let objects = meta ? meta.map((m) => metaToObj(m)) : []
 
       if (!includeHidden) {
-        objects = objects.filter((obj: { name: string[] }) => obj.name[0] != '.')
+        objects = objects.filter(obj => obj.path.indexOf('/.') == -1)
       }
 
       let permissionProm: Promise<any>

@@ -170,7 +170,7 @@ export default function Assembly() {
             onChange={val => dispatch({field: 'output_path', val})}
             placeholder="Select a folder..."
             label="Output Folder"
-            type="Folder"
+            type="folder"
             dialogTitle="Select a folder"
           />
         </Row>

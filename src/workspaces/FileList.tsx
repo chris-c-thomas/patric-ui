@@ -98,7 +98,9 @@ export default function FileList(props: Props) {
     // if object selector, we'll want to (somehow) use a
     // click event instead of routing
     columns[0].format = (val, obj) =>
-      <a onClick={() => navigate(obj)}>{getIcon(obj.type)} {val}</a>
+      <a onClick={() => navigate(obj)} className="inline-flex align-items-center">
+        {getIcon(obj)} {val}
+      </a>
   }
 
   // use event for object select

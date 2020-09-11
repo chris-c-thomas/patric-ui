@@ -40,15 +40,6 @@ const Section = styled.div`
     'justify-content: space-between;'}
 `
 
-const Title = styled.h5`
-  margin: 0 0 0px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(0, 0, 0, 0.87);
-  font-weight: 500;
-`
-
 const TableTitle = styled.h5`
   margin: 0 0 10px 0;
   color: rgba(0, 0, 0, 0.87);
@@ -56,6 +47,6 @@ const TableTitle = styled.h5`
 `
 
 export {
-  Root, Row, Section, Title, Column,
+  Root, Row, Section, Column,
   TableTitle
 }

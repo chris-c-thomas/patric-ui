@@ -31,6 +31,10 @@ const usageError = (propName, value) => {
 type Props = {
   type?: string
   dialogTitle: string | JSX.Element
+  placeholder: string
+  label: string
+  value: string // path
+  onChange: (path: string) => void
 }
 
 export default function ObjectSelector(props) {
@@ -77,7 +81,7 @@ export default function ObjectSelector(props) {
     }
 
     let path = `/${getUser(true)}/home`
-    WS.list({path, type, recursive: true, includeHidden: false})
+    WS.list({path, type, recursive: true})
       .then(data => {
         console.log('data', type, data)
         const items = data.map(obj => pathToOptionObj(obj.path))

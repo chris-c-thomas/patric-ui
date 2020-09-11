@@ -1,4 +1,8 @@
-import React, {useState, useEffect, useReducer, useRef, useCallback, MouseEvent} from 'react'
+import React, {
+  useState, useEffect, useReducer,
+  useRef, useCallback,
+  MouseEvent, ChangeEvent
+} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -79,7 +83,11 @@ type RowProps = {
   emptyCell: boolean,
   selected: any, //todo: type
   checkboxes: boolean,
-  onSelect?: (evt: MouseEvent<HTMLElement>, id: number, row: object) => void
+  onSelect?: (
+    evt: MouseEvent<HTMLElement> | ChangeEvent<HTMLInputElement>,
+    id: number,
+    row: object
+  ) => void
   onDoubleClick: (row: object) => void
 }
 
@@ -430,7 +438,7 @@ export default function TableComponent(props: Props) {
 
         {enableTableOptions &&
           <DownloadContainer>
-            <Tooltip title="download">
+            <Tooltip title="view download options...">
               <ActionBtn aria-label="download" >
                 <img src={downloadIcon} />
                 <div>Download</div>

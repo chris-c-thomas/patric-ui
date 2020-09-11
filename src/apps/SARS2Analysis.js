@@ -1,3 +1,5 @@
+
+// example ids: SRR5121082, ERR3827346, SRX981334
 import React, { useState, useReducer } from 'react'
 
 import { Root, Section, Row } from './common/FormLayout'
@@ -105,9 +107,8 @@ export default function SARSCoV2() {
     form.input_type == 'reads' && form.reads.length > 0 ||
     form.input_type == 'contigs' && form.contigs
 
-  const isStep2Complete = () => {
-    return form.scientific_name && form.taxonomy_id
-  }
+  const isStep2Complete = () =>
+    isStep1Complete() && form.scientific_name && form.taxonomy_id
 
   const isStep3Complete = () =>
     form.output_path != null && form.output_file != null

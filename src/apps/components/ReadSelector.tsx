@@ -9,7 +9,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
-import {Title} from '../common/FormLayout'
 import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'
@@ -26,35 +25,33 @@ import Selector from './Selector'
 import { parsePath } from '../../utils/paths'
 
 import {validateSRR} from '../../api/ncbi-eutils'
+import { Divider } from '@material-ui/core'
 
 
-const AddBtn = ({onAdd, disabled}) =>
+const AddBtn = ({onAdd, disabled = false, ...rest}) =>
   <Tooltip
     title={<>{disabled ? 'First, select some read files' : 'Add item to selected libraries'}</>}
     placement="top"
   >
-    <AddItemBtn>
-      <Button
+    <span>
+      <AddItemBtn
         aria-label="add item"
         onClick={onAdd}
         disabled={disabled}
         color="primary"
-        endIcon={<img src={ArrowIcon} className="icon" />}
+        endIcon={<AddIcon />}
         disableRipple
+        {...rest}
       >
         Add
-      </Button>
-    </AddItemBtn>
+      </AddItemBtn>
+    </span>
   </Tooltip>
 
-const AddItemBtn = styled(Button)`
-  min-width: 22px;
-  &.MuiButton-root {
-    padding: 3px;
-    min-width: 30px;
-  }
-`
 
+const AddItemBtn = styled(Button)`
+
+`
 
 const columns = [{
   id: 'label',
@@ -78,7 +75,7 @@ const columns = [{
 // todo(nc): define reads
 
 type Props = {
-  onChange: () => void
+  onChange: (object) => void
   advancedOptions?: boolean
   reads?: object[]
 }
@@ -126,10 +123,6 @@ export default function ReadSelector(props: Props) {
     onChange(reads)
   }, [reads])
 
-
-  const onTypeChange = (evt, type) => {
-    setType(type)
-  }
 
   function onAdd(type) {
     let row
@@ -193,60 +186,92 @@ export default function ReadSelector(props: Props) {
   return (
     <Root>
       <Inputs>
-        <Column>
-          <Title>
-            Paired Read Library
-            <AddBtn onAdd={() => onAdd('paired')} disabled={!path1 || !path2} />
-          </Title>
-          <Row>
-            <ObjectSelector
-              label=" "
-              value={path1}
-              onChange={val => setPath1(val)}
-              type="reads"
-              dialogTitle="Select read file"
-              placeholder="Read file 1"
-            />
-          </Row>
-          <Row>
-            <ObjectSelector
-              label=" "
-              value={path2}
-              onChange={val => setPath2(val)}
-              type="reads"
-              dialogTitle="Select read file 2"
-              placeholder="Read file 2"
-            />
-          </Row>
-        </Column>
 
-        <Title>
-          Single Read Library
-          <AddBtn onAdd={() => onAdd('single')} disabled={!path} />
-        </Title>
         <Row>
-          <ObjectSelector
-            label=" "
-            value={path}
-            onChange={val => setPath(val)}
-            type="reads"
-            dialogTitle="Select (single) read file"
-            placeholder="Read file"
-          />
+          <Column>
+            <Title>
+              Paired Read Library
+            </Title>
+            <Row>
+              <ObjectSelector
+                label=" "
+                value={path1}
+                onChange={val => setPath1(val)}
+                type="reads"
+                dialogTitle="Select read file"
+                placeholder="Read file 1"
+              />
+            </Row>
+            <Row>
+              <ObjectSelector
+                label=" "
+                value={path2}
+                onChange={val => setPath2(val)}
+                type="reads"
+                dialogTitle="Select read file 2"
+                placeholder="Read file 2"
+              />
+            </Row>
+
+          </Column>
+
+          {path1 && path2 &&
+            <div className="align-self-center" >
+              <AddBtn onAdd={() => onAdd('paired')}/>
+            </div>
+          }
         </Row>
 
-        <Title>
-          SRA run accession
-          <AddBtn onAdd={() => onAddSRA('sra')}  disabled={!sraID} />
-        </Title>
-        <TextInput
-          placeholder="SRR"
-          value={sraID}
-          onChange={val => setSraID(val)}
-          noLabel
-          error={!!sraError}
-          helperText={sraMsg || sraError}
-        />
+        <Row>
+          <Column>
+            <Title>
+              Single Read Library
+            </Title>
+            <Row>
+              <ObjectSelector
+                label=" "
+                value={path}
+                onChange={val => setPath(val)}
+                type="reads"
+                dialogTitle="Select (single) read file"
+                placeholder="Read file"
+              />
+
+              {path &&
+                <div className="align-self-center" >
+                  <AddBtn onAdd={() => onAdd('single')} />
+                </div>
+              }
+            </Row>
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <Title>
+              SRA run accession
+            </Title>
+
+            <Row>
+              <TextInput
+                placeholder="SRR"
+                value={sraID}
+                onChange={val => setSraID(val)}
+                noLabel
+                error={!!sraError}
+                helperText={sraMsg || sraError}
+              />
+
+              {sraID &&
+                <div className="align-self-center">
+                  <AddBtn onAdd={() => onAddSRA('sra')} />
+                </div>
+              }
+            </Row>
+
+          </Column>
+        </Row>
+
       </Inputs>
 
       <TableContainer>
@@ -273,10 +298,19 @@ const Inputs = styled.div`
   flex: 1;
 `
 
+const Title = styled.div`
+  margin: 0 0 0px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 500;
+  font-size: .85em;
+`
+
 const TableContainer = styled.div`
   flex: 1;
-  margin: 0 15px;
-  padding: 0 15px;
+  margin: 0 5px;
 `
 
 const Row = styled.div`

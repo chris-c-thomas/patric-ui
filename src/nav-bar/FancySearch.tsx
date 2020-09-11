@@ -39,7 +39,10 @@ export default function FancySearch (props: Props) {
         <option>All Data Types </option>
         <option>Genomes</option>
         <option>Features</option>
-        <option>Genomes</option>
+        <option>Specialtiy Genes</option>
+        <option>Taxa</option>
+        <option>Transcriptomic Experiments</option>
+        <option>Antibiotic</option>
       </SearchType>
 
       <SearchContainer>
@@ -120,10 +123,12 @@ const SearchType = styled.select`
   border: none;
   border-right: 1px solid #2e75a3;
   padding-left: 3px;
+  width: 100px;
 `
 
 const SearchLogic = styled.select`
   border-radius: 0 3px 3px 0;
   border: none;
   border-left: 1px solid #2e75a3;
+  width: 75px;
 `

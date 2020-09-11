@@ -22,8 +22,19 @@ import * as WS from '../api/ws-api'
 import './workspaces.scss'
 
 
-export default function Workspaces() {
-  const path = decodeURIComponent('/' + useParams().path)
+type Props = {
+  isObjectSelector?: boolean
+  path?: string // for object selector
+}
+
+
+export default function Workspaces(props: Props) {
+  let path = decodeURIComponent('/' + useParams().path)
+
+  if (props.path) {
+    path = props.path
+  }
+
   const history = useHistory()
 
   const [rows, setRows] = useState(null)
@@ -64,27 +75,27 @@ export default function Workspaces() {
     <Root>
       <Container>
 
-        <Sidebar />
+        <Sidebar {...props} />
 
-        {
-          <Main>
-            <ActionBarContainer>
-              <ActionBar
-                path={path}
-                selected={selected}
-                onUpdateList={() => updateList()}
-              />
-            </ActionBarContainer>
+        <Main>
+          <ActionBarContainer>
+            <ActionBar
+              path={path}
+              selected={selected}
+              onUpdateList={() => updateList()}
+            />
+          </ActionBarContainer>
 
-            <FileListContainer>
-              <FileList
-                rows={rows}
-                onSelect={handleSelect}
-                onNavigate={onNavigate}
-              />
-            </FileListContainer>
-          </Main>
-        }
+          <FileListContainer>
+            <FileList
+              rows={rows}
+              onSelect={handleSelect}
+              onNavigate={onNavigate}
+              isObjectSelector={props.isObjectSelector}
+            />
+          </FileListContainer>
+        </Main>
+
       </Container>
     </Root>
   )

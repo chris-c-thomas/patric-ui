@@ -14,8 +14,10 @@ const GlobalSearch = (props) => {
 }
 
 const Root = styled.div`
+  margin-top: 50px;
   background: #fff;
   height: 100%;
+  padding: 20px
 `
 
 export default GlobalSearch

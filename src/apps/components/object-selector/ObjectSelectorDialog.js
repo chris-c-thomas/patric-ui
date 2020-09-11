@@ -9,55 +9,27 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useTheme } from '@material-ui/core/styles'
 
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
-import MyIcon from '@material-ui/icons/AccountCircleOutlined'
-import SharedIcon from '@material-ui/icons/PeopleOutline'
-import PublicIcon from '@material-ui/icons/PublicOutlined'
 
 // import { ButtonGroup } from '@material-ui/core';
 // import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
 // import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
 
-import * as Auth from '../../../api/auth'
-
-import FileList from '../../../workspaces/FileList'
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {children}
-    </div>
-  )
-}
+import {getUser} from '../../../api/auth'
+import Workspaces from '../../../workspaces/Workspaces'
+import { Close } from '@material-ui/icons'
+import { IconButton } from '@material-ui/core'
 
 
-function a11yProps(index) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  }
-}
 
 export default function ObjectSelectorDialog(props) {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const path = `/${Auth.getUser()}@patricbrc.org/home`
+  const path = `/${getUser(true)}/home`
 
   const {title, type} = props
 
   const [open, setOpen] = useState(false)
-  const [tab, setTab] = useState(0)
   const [selectedPath, setSelectedPath] = useState(null)
 
 
@@ -69,10 +41,6 @@ export default function ObjectSelectorDialog(props) {
     setOpen(false)
   }
 
-  function onTabChange(event, newValue) {
-    setTab(newValue)
-  }
-
   function onSelect(path) {
     setSelectedPath(path)
 
@@ -80,77 +48,41 @@ export default function ObjectSelectorDialog(props) {
     props.onSelect(path)
   }
 
-  // could implment history here, if desired.
-  function prev() {}
-  function next() {}
-
   return (
     <>
-      <FolderBtn color="primary" onClick={handleClickOpen}
+      <FolderBtn
+        color="primary"
+        onClick={handleClickOpen}
         disableRipple
       >
         <FolderIcon />
       </FolderBtn>
 
-      <DialogRoot
+      <Dialog
         className="dialog"
         fullWidth
-        maxWidth={'xl'}
-        fullScreen={fullScreen}
+        maxWidth="lg"
+        fullScreen={fullScreen} // for mobile
         open={open}
         onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
+        aria-labelledby="dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          {/*<ButtonGroup size="small" aria-label="table paging" disableRipple>
-            <Button onClick={() => back} disabled={!prev.length}><NavBeforeIcon /></Button>
-            <Button disabled={!next.length}><NavNextIcon /></Button>
-            </ButtonGroup>  {' '} */}
-          {title}
-        </DialogTitle>
+        <span id="dialog-title">
+          <div className="flex space-between align-items-center">
+            <div>
+              {title}
+            </div>
+            <IconButton onClick={handleClose} color="primary" disableRipple autoFocus>
+              <Close />
+            </IconButton>
+          </div>
+        </span>
 
-        <DialogContent className="dialog-content">
-          <Tabs
-            orientation="vertical"
-            value={tab}
-            onChange={onTabChange}
-            aria-label="Workspace tabs"
-            className="tabs"
-          >
-            <Tab
-              label={<span><MyIcon/>My files</span>}
-              {...a11yProps(0)}
-              disableRipple
-            />
-            <Tab
-              label={<span><SharedIcon/>Shared with me</span>}
-              {...a11yProps(1)}
-              disableRipple
-            />
-            <Tab
-              label={<span><PublicIcon/>Public</span>}
-              {...a11yProps(2)}
-              disableRipple
-            />
-            <Tab label="Sample Data" {...a11yProps(3)} disableRipple/>
-          </Tabs>
-
-          <TabPanel value={tab} index={0} className="tab">
-            <FileList
-              type={type}
-              onSelect={onSelect}
-              isObjectSelector
-              wsPath={path}
-            />
-          </TabPanel>
-          <TabPanel value={tab} index={1}>
-            Shared with me
-          </TabPanel>
-          <TabPanel value={tab} index={2}>
-          </TabPanel>
-          <TabPanel value={tab} index={3}>
-            Sample Data
-          </TabPanel>
+        <DialogContent>
+          <Workspaces
+            isObjectSelector
+            path={path}
+          />
         </DialogContent>
 
         <DialogActions>
@@ -161,24 +93,15 @@ export default function ObjectSelectorDialog(props) {
             OK
           </Button>
         </DialogActions>
-
-      </DialogRoot>
+      </Dialog>
     </>
   )
 }
 
 
-const DialogRoot = styled(Dialog)`
-  .dialog-content {
-    display: flex;
-  }
-
-  .tabs {
-    border-right: 1px solid #aaa;
-  }
-
-  .tab {
-    width: 100%;
+const Header = styled(DialogTitle)`
+  && .MuiDialogTitle-root {
+    padding: 0;
   }
 `
 

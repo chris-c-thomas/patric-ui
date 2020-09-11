@@ -41,22 +41,36 @@ const menu = [
 ]
 
 
-const WSSideBar = () => {
+type Props = {
+  isObjectSelector?: boolean
+}
+
+const WSSideBar = (props: Props) => {
   const {path} = useParams()
+
+  const onNav = (evt) => {
+    if (props.isObjectSelector) {
+      console.log('preventing default')
+      evt.preventDefault()
+    }
+  }
+
 
   return (
     <SidebarRoot>
-      <h3>
-        Workspaces
-        <sup>
-          <P3Link
-            href={`${config.p3URL}/workspace/${path}`}
-            target="_blank"
-          >
-            <InfoIcon />
-          </P3Link>
-        </sup>
-      </h3>
+      {!props.isObjectSelector &&
+        <Title>
+          Workspaces
+          <sup>
+            <P3Link
+              href={`${config.p3URL}/workspace/${path}`}
+              target="_blank"
+            >
+              <InfoIcon />
+            </P3Link>
+          </sup>
+        </Title>
+      }
 
       <Menu>
         {menu.map((item) => (
@@ -66,6 +80,7 @@ const WSSideBar = () => {
               caret={item.caret ? 1 : 0}
               className={item.path == path ? 'active no-style' : 'no-style hover'}
               to={`/files/${item.path}`}
+              onClick={onNav}
             >
               {item.caret && <Caret><CaretIcon /></Caret>}
               {item.icon && <Icon>{item.icon}</Icon>}
@@ -88,6 +103,11 @@ const SidebarRoot = styled.div`
   .MuiTab-wrapper {
     display: inline-block;
   }
+`
+
+const Title = styled.div`
+  font-size: 1.2em;
+  margin-top: 10px;
 `
 
 const Menu = styled.ul`
