@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Badge from '@material-ui/core/Badge'
+
 
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
@@ -24,6 +25,8 @@ import SignInDialog from '../auth/sign-in-dialog'
 import DropdownMenu from './menu'
 
 import { JobStatusContext } from '../jobs/job-status-context'
+
+import FancySearch from './FancySearch'
 
 
 const LogoComponent = () =>
@@ -235,6 +238,7 @@ export function NavBar(props) {
   // accunt menu
   const [anchorEl, setAnchorEl] = useState(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [searchFocus, setSearchFocus] = useState(false)
 
   /**
    * account menu pieces
@@ -250,7 +254,11 @@ export function NavBar(props) {
   }
 
   const openAboutMenu = () => {
-    alert('Not implemented yet')
+    alert('About pages are not here yet')
+  }
+
+  const handleSearchFocus = (isFocused) => {
+    setSearchFocus(isFocused)
   }
 
   const userAccount = () => (
@@ -293,18 +301,24 @@ export function NavBar(props) {
 
   return (
     <NavBarRoot>
-      <Toolbar variant="dense" style={{height: 35}}>
+      <Toolbar variant="dense" style={{height: 35, justifyContent: 'flex-end'}}>
 
         {Logo ? <Logo /> : <LogoComponent />}
 
-        {isAdminApp ?
-          <div className="nav-bar">
+        {isAdminApp &&
+          <MainNav>
             <MenuComponnt/>
-          </div> :
-          <div className="nav-bar">
+          </MainNav>
+        }
 
-            <PatricMenus />
-          </div>
+        {!isAdminApp &&
+          <MainNav fullWidth={!searchFocus}>
+            {!searchFocus && <PatricMenus />}
+          </MainNav>
+        }
+
+        {!isAdminApp &&
+          <FancySearch onFocus={handleSearchFocus} fullWidth={searchFocus} />
         }
 
         {!isAdminApp &&
@@ -340,7 +354,6 @@ export function NavBar(props) {
 }
 
 const NavBarRoot = styled(AppBar)`
-  flex-grow: 1;
   background: '#2e76a3';
   border-top: 3px solid #154e72;
   position: fixed;
@@ -348,6 +361,34 @@ const NavBarRoot = styled(AppBar)`
 
   & .brand {
     margin-right: 10px;
+  }
+`
+
+const MainNav = styled.div`
+  margin-left: 5px;
+  flex-grow: 1;
+  font-size: .9em;
+  margin-right: 5px;
+
+  transition: flex cubic-bezier(.32,.77,.47,.86) 0.3s;
+  ${props => !props.fullWidth &&
+    'flex: 0;'}
+
+  span {
+    margin-left: 5px;
+    color: #fff
+  }
+
+  .nav-item:hover {
+    color: #fff;
+  }
+
+  .nav-item.active {
+    color: #fff;
+    margin-top: -3px;
+    border-top: 3px solid #fff;
+    transition: all 100ms;
+    font-weight: 500;
   }
 `
 
@@ -370,8 +411,4 @@ const AccountMenu = styled(Menu)`
 const AccountBtn = styled(Button)`
   min-width: 30px;
 `
-
-//const SearchField = styled(TextField)`
-
-//`
 

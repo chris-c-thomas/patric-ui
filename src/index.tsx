@@ -5,7 +5,7 @@ import { BrowserRouter, Switch, Route} from 'react-router-dom'
 import { render } from 'react-dom'
 import styled from 'styled-components'
 
-import { NavBar } from './nav-bar/nav-bar'
+import { NavBar } from './nav-bar/NavBar'
 
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'

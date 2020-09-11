@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 
 import { isSignedIn } from '../src/api/auth'
-import { NavBar } from '../src/nav-bar/nav-bar'
+import { NavBar } from '../src/nav-bar/NavBar'
 import AdminSignInForm from '../src/auth/admin-sign-in-form'
 import PrivateRoute from './private-route'
 
