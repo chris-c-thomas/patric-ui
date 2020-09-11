@@ -191,7 +191,7 @@ export default function Overview() {
       setTaxonMeta(data)
       setTaxonName(data.lineage_names[data.lineage_names.length - 1] )
     })
-  }, [])
+  }, [taxonID])
 
   return (
     <Root>
