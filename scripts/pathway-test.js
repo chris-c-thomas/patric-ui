@@ -3,20 +3,20 @@
  *    node -r esm pathway-test.js
  */
 
-import {query} from '../src/api/data-api-req';
+import {query} from '../src/api/data-api-req'
 
 const genomeIDs = [
-  "1160233.3",
-  "204722.15",
-  "29459.45",
-  "35802.57",
-  "35802.83",
-  "35802.75",
-  "1408887.3",
-  "1198699.3",
-  "35802.52",
-  "1210448.3",
-  "1905695.3"
+  '1160233.3',
+  '204722.15',
+  '29459.45',
+  '35802.57',
+  '35802.83',
+  '35802.75',
+  '1408887.3',
+  '1198699.3',
+  '35802.52',
+  '1210448.3',
+  '1905695.3'
 ]
 
 
@@ -65,8 +65,7 @@ function queryGroup(genome_id, pathway_id) {
     console.log('number found:', numFound)
 
     return res
-  })
-  .catch(e =>
+  }).catch(e =>
     console.error(e)
   )
 }

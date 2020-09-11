@@ -80,7 +80,7 @@ export default function SignInDialog(props) {
 
       <DialogContent>
         <Grid container direction="column" alignItems="center">
-          <TextInput label="Username" onChange={val => setUser(val)} fullWidth/>
+          <TextInput label="Username" onChange={val => setUser(val)} fullWidth autoFocus/>
           <TextInput label="Password" type="password" onChange={val => setPass(val)} fullWidth/>
 
           {isInvalid && <div>Invalid username and/or password</div>}

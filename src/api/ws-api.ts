@@ -86,6 +86,7 @@ export function list(args: Args) {
     'recursive': recursive,
     ...(type ? {query: {type: [type]}} : {})
   }
+  console.log('params', params)
 
   return rpc('ls', params)
     .then(data => {

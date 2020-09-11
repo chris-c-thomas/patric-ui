@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer, useRef, useCallback} from 'react'
+import React, {useState, useEffect, useReducer, useRef, useCallback, MouseEvent} from 'react'
 import styled from 'styled-components'
 
 import TableContainer from '@material-ui/core/TableContainer'
@@ -79,7 +79,7 @@ type RowProps = {
   emptyCell: boolean,
   selected: any, //todo: type
   checkboxes: boolean,
-  onSelect?: (id: number, row: object) => void
+  onSelect?: (evt: MouseEvent<HTMLElement>, id: number, row: object) => void
   onDoubleClick: (row: object) => void
 }
 
@@ -101,7 +101,7 @@ const Row = (props: RowProps) => {
     <TableRow hover
       tabIndex={-1}
       key={id}
-      onClick={() => onSelect(rowID, row)}
+      onClick={evt => onSelect(evt, rowID, row)}
       onDoubleClick={() => onDoubleClick(row)}
       selected={selected.ids.includes(rowID)}
     >
@@ -109,7 +109,7 @@ const Row = (props: RowProps) => {
 
       {checkboxes &&
         <Cell key={id + '-checkbox'} style={{padding: 0}}>
-          <Checkbox checked={selected.ids.includes(rowID)} onChange={() => onSelect(rowID, row)}/>
+          <Checkbox checked={selected.ids.includes(rowID)} onChange={evt => onSelect(evt, rowID, row)}/>
         </Cell>
       }
 
@@ -131,7 +131,7 @@ const TableRows = (props) => {
     checkboxes
   } = props
 
-  return rows.map((row, i) =>
+  return rows.map(row =>
     <Row key={row.rowID} id={row.rowID}
       row={row}
       columns={columns}
@@ -379,11 +379,11 @@ export default function TableComponent(props: Props) {
     setAllSelected(prev => !prev)
   }
 
-  const handleSelect = (rowID, obj) => {
+  const handleSelect = (evt, rowID, obj) => {
     let type
-    if (event.metaKey) {
+    if (evt.metaKey) {
       type = 'CTRL_SET'
-    } else if (event.shiftKey) {
+    } else if (evt.shiftKey) {
       type = 'SHIFT_SET'
     } else {
       type = 'SET'

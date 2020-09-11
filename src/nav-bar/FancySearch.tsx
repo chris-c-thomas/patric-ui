@@ -45,7 +45,7 @@ export default function FancySearch (props: Props) {
       <SearchContainer>
         <InputBase
           startAdornment={ <SearchIcon />}
-          placeholder="Search…"
+          placeholder="Search data…"
           inputProps={{
             'aria-label': 'search',
             onFocus: () => onFocus(true)

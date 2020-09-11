@@ -188,7 +188,7 @@ const PatricMenus = () => {
       <DropdownMenu label="About" menu={
         <DropDown className="about-menu" >
           <MenuSection>
-            <MenuTitle>About</MenuTitle>
+            <MenuTitle>{'About & Help'}</MenuTitle>
             <Column>
               <NavItem label="coming soon!" to="/"/>
             </Column>
@@ -231,7 +231,7 @@ const JobCount = styled(Badge)`
 
 const Spacer = styled(Divider)`
   && {
-    margin: 5px 5px;
+    margin: 8px;
     background-color: rgb(81 137 177);
   }
 `

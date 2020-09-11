@@ -59,8 +59,11 @@ div.MuiToolbar-dense {
 // re-style paper except for app bar, alerts, and menu
 .MuiCard-root,
 .MuiPaper-root:not(.MuiAppBar-root):not(.MuiAlert-root):not(.MuiMenu-paper) {
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+  // border: 1px solid rgba(0, 0, 0, 0.125);
+  // box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+  box-shadow: none;
+  border: 1px solid #ddd;
+  border-radius: 0;
 }
 
 .MuiMenu-paper {

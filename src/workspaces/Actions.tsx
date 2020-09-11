@@ -56,7 +56,7 @@ export default function Actions(props: Props) {
     <>
       <FileName>
         {selected.length == 1 &&
-          <>{selected[0].name} <span>is selected</span></>
+          <>{selected[0].name}<span> is selected</span></>
         }
         {selected.length > 1 &&
           <span>{selected.length} items are selected</span>
