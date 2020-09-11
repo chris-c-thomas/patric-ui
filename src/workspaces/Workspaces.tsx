@@ -66,23 +66,25 @@ export default function Workspaces() {
 
         <Sidebar />
 
-        <Main>
-          <ActionBarContainer>
-            <ActionBar
-              path={path}
-              selected={selected}
-              onUpdateList={() => updateList()}
-            />
-          </ActionBarContainer>
+        {
+          <Main>
+            <ActionBarContainer>
+              <ActionBar
+                path={path}
+                selected={selected}
+                onUpdateList={() => updateList()}
+              />
+            </ActionBarContainer>
 
-          <FileListContainer>
-            <FileList
-              rows={rows}
-              onSelect={handleSelect}
-              onNavigate={onNavigate}
-            />
-          </FileListContainer>
-        </Main>
+            <FileListContainer>
+              <FileList
+                rows={rows}
+                onSelect={handleSelect}
+                onNavigate={onNavigate}
+              />
+            </FileListContainer>
+          </Main>
+        }
       </Container>
     </Root>
   )

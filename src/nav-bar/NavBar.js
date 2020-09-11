@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -9,11 +9,10 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Badge from '@material-ui/core/Badge'
 
-
 import AccountIcon from '@material-ui/icons/AccountCircle'
-import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import SUIcon from '@material-ui/icons/SupervisedUserCircle'
+import Divider from '@material-ui/core/Divider'
 
 import ListItem from '@material-ui/core/ListItem'
 
@@ -27,6 +26,7 @@ import DropdownMenu from './menu'
 import { JobStatusContext } from '../jobs/job-status-context'
 
 import FancySearch from './FancySearch'
+
 
 
 const LogoComponent = () =>
@@ -115,33 +115,28 @@ const services = [
 
 const getMiddle = data => Math.round(data.length / 2)
 
-const TaxonColumn = ({data}) =>
-  <Column>
-    {
-      data.map(({label, taxon}, i) =>
-        <NavItem label={label} url={`/taxonomy/${taxon}/overview`} key={i} />
-      )
-    }
-  </Column>
-
-const ServicesColumn = ({data}) =>
-  <Column>
-    {
-      data.map(({label, url}) =>
-        <NavItem label={label} url={url} key={label}/>
-      )
-    }
-  </Column>
-
-const Column = styled.div`
-  display: inline-block;
-`
-
 const NavItem = ({label, url}) =>
   <ListItem button component={Link} to={url} disableRipple>
     {label}
   </ListItem>
 
+const TaxonColumn = ({data}) =>
+  <Column>
+    {data.map(({label, taxon}, i) =>
+      <NavItem label={label} url={`/taxonomy/${taxon}/overview`} key={i} />
+    )}
+  </Column>
+
+const ServicesColumn = ({data}) =>
+  <Column>
+    {data.map(({label, url}) =>
+      <NavItem label={label} url={url} key={label}/>
+    )}
+  </Column>
+
+const Column = styled.div`
+  display: inline-block;
+`
 
 const PatricMenus = () => {
   const [jobs] = useContext(JobStatusContext)
@@ -178,23 +173,28 @@ const PatricMenus = () => {
         </DropDown>
       }/>
 
-      {/*
-      <DropdownMenu label="Workspaces" menu={
-        <div>
-          <NavItem label={'My Workspaces'} url={`/files/${Auth.getUser(true)}`} />
-        </div>
-      }/>
-      */}
-
-      <Button color="inherit" disableRipple component={Link} to={`/files/${Auth.getUser(true)}`}>
+      <Button component={Link} to={`/files/${Auth.getUser(true)}`} disableRipple>
         Workspaces
       </Button>
 
       <JobCount badgeContent={jobs.queued + jobs.inProgress} max={999}>
-        <Button color="inherit" disableRipple component={Link} to="/jobs">
+        <Button component={Link} to="/jobs" disableRipple>
           Job Status
         </Button>
       </JobCount>
+
+      <Spacer flexItem orientation="vertical" />
+
+      <DropdownMenu label="About" menu={
+        <DropDown className="about-menu" >
+          <MenuSection>
+            <MenuTitle>About</MenuTitle>
+            <Column>
+              <NavItem label="coming soon!" to="/"/>
+            </Column>
+          </MenuSection>
+        </DropDown>
+      }/>
     </>
   )
 }
@@ -229,6 +229,14 @@ const JobCount = styled(Badge)`
   }
 `
 
+const Spacer = styled(Divider)`
+  && {
+    margin: 5px 5px;
+    background-color: rgb(81 137 177);
+  }
+`
+
+
 
 export function NavBar(props) {
   const {isAdminApp, MenuComponnt, Logo} = props
@@ -251,10 +259,6 @@ export function NavBar(props) {
   const closeMenu = () => {
     setAnchorEl(null)
     setIsMenuOpen(false)
-  }
-
-  const openAboutMenu = () => {
-    alert('About pages are not here yet')
   }
 
   const handleSearchFocus = (isFocused) => {
@@ -321,11 +325,6 @@ export function NavBar(props) {
           <FancySearch onFocus={handleSearchFocus} fullWidth={searchFocus} />
         }
 
-        {!isAdminApp &&
-          <Button color="inherit" onClick={openAboutMenu} disableRipple>
-            About <CaretIcon/>
-          </Button>
-        }
 
         {Auth.isSignedIn() &&
           <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
@@ -365,6 +364,7 @@ const NavBarRoot = styled(AppBar)`
 `
 
 const MainNav = styled.div`
+  display: flex;
   margin-left: 5px;
   flex-grow: 1;
   font-size: .9em;
@@ -375,7 +375,7 @@ const MainNav = styled.div`
     'flex: 0;'}
 
   span {
-    margin-left: 5px;
+    padding: 0px 3px;
     color: #fff
   }
 
@@ -395,6 +395,7 @@ const MainNav = styled.div`
 const SignInBtn = styled(Button)`
   margin-bottom: 2px;
   color: #fff;
+  height: 30px;
 
   &:hover {
     background: #157f9d;

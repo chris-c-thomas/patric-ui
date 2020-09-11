@@ -1,5 +1,6 @@
 
-import React, {useRef} from 'react'
+import React, {useRef, useState} from 'react'
+import {useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
 import InputBase from '@material-ui/core/InputBase'
@@ -17,14 +18,23 @@ type Props = {
 export default function FancySearch (props: Props) {
   const {onFocus, fullWidth} = props
 
+  const history = useHistory()
   const searchRef = useRef(null)
+
+  const [query, setQuery] = useState(null)
+
 
   useClickOutside(searchRef, () => {
     onFocus(false)
   })
 
+  const onSubmit = (evt) => {
+    evt.preventDefault()
+    history.push(`/search/?keyword(${query})`)
+  }
+
   return (
-    <MainSearch fullWidth={fullWidth} ref={searchRef} >
+    <MainSearch fullWidth={fullWidth} ref={searchRef} onSubmit={onSubmit} >
       <SearchType>
         <option>All Data Types </option>
         <option>Genomes</option>
@@ -41,21 +51,22 @@ export default function FancySearch (props: Props) {
             onFocus: () => onFocus(true)
           }}
           margin="dense"
+          onChange={(evt) => setQuery(evt.target.value)}
         />
       </SearchContainer>
 
       <SearchLogic>
         <option>All Terms </option>
-        <option>Genomes</option>
-        <option>Features</option>
-        <option>Genomes</option>
+        <option>Any terms</option>
+        <option>All exact term</option>
+        <option>Any exact term</option>
       </SearchLogic>
 
     </MainSearch>
   )
 }
 
-const MainSearch = styled.div`
+const MainSearch = styled.form`
   display: flex;
   margin: 0 20px;
 

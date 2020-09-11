@@ -12,6 +12,7 @@ import { ThemeProvider } from '@material-ui/styles'
 
 // views
 import Home from './home/Home'
+import GlobalSearch from './search/GlobalSearch'
 import Account from './user-profile/my-profile'
 import TaxonTabs from './genome-tabs/taxon/tabs'
 import GenomeTabs from './genome-tabs/genome/tabs'
@@ -48,14 +49,15 @@ const App = () => {
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <JobStatusProvider>
-          {<NavBar />}
+
+          <NavBar />
 
           <Root>
-
             <Main>
               <Suspense fallback={<div>loading...</div>}>
                 <Switch>
                   <Route path="/" exact component={Home} />
+                  <Route path="/search/" component={GlobalSearch} />
                   <Route path="/my-profile" exact component={Account} />
                   <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
                   <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />

@@ -308,7 +308,7 @@ export default function Jobs() {
   }
 
   const onSort = (/*colObj*/) => {
-    alert('no api method available')
+    alert('The app service currently does not have a sorting api method(?)')
   }
 
 
