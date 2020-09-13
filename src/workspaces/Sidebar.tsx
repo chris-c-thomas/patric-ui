@@ -50,7 +50,6 @@ const WSSideBar = (props: Props) => {
 
   const onNav = (evt) => {
     if (props.isObjectSelector) {
-      console.log('preventing default')
       evt.preventDefault()
     }
   }

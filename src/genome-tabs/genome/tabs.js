@@ -7,10 +7,10 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 
-import { ActionBar } from '../action-bar'
+import { TaxonActionBar } from '../TaxonActionBar'
 import Overview from './genome-overview'
-import Phylogeny from '../phylogeny'
-// import { Genomes } from './genomes'
+import Phylogeny from '../Phylogeny'
+
 // import { PFContainer } from './protein-families/protein-families'
 
 
@@ -22,7 +22,7 @@ const tabs = [{
   view: 'overview',
 }, {
   label: 'AMR Phenotypes',
-  view: 'amr-phenotypes'
+  view: 'amr'
 }, {
   label: 'Phylogeny',
   view: 'phylogeny'
@@ -82,7 +82,7 @@ export default function GenomeTabs(props) {
   return (
     <Root>
 
-      <ActionBar title="Genome View" />
+      <TaxonActionBar title="Genome View" />
 
       <Tabs
         value={view}

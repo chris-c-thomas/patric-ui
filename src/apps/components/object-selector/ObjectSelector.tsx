@@ -83,7 +83,6 @@ export default function ObjectSelector(props) {
     let path = `/${getUser(true)}/home`
     WS.list({path, type, recursive: true})
       .then(data => {
-        console.log('data', type, data)
         const items = data.map(obj => pathToOptionObj(obj.path))
 
         setItems(items)

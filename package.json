@@ -11,7 +11,8 @@
     "p4-build": "parcel build ./build-p4/apps.js --no-content-hash --no-autoinstall",
     "test": "echo \"Error: no test specified\" && exit 1",
     "story": "./node_modules/parcel/bin/cli.js ./stories.html",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "clean": "rm -rf ./.cache && rm -rf ./dist"
   },
   "repository": {
     "type": "git",

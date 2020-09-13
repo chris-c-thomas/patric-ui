@@ -45,10 +45,7 @@ const TaxonCrumbs = () => {
     })
 
     getGenomeCount(taxID)
-      .then(count => {
-        console.log('count', count)
-        setCount(count)
-      })
+      .then(count => setCount(count))
   }, [taxonID, genomeID])
 
 

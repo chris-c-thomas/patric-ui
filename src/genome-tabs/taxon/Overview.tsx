@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, {useEffect, useState} from 'react'
 import { Link, useParams} from "react-router-dom"
 import styled from 'styled-components'
@@ -94,7 +95,7 @@ const Publications = ({data}) =>
   <PubList>
     {
       data.map((pub, i) => {
-        const authors = pub.authors.map(author => author.name).slice(0, 3)
+        const authors = (pub.authors || []).map(author => author.name).slice(0, 3)
 
         return (
           <li key={i}>

@@ -53,7 +53,6 @@ const reducer = (state, action) => {
   else if (action == 'EXAMPLE')
     return example
   else {
-    console.log('setting ', action)
     return {...state, [action.field]: action.val}
   }
 }

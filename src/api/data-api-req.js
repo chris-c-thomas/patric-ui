@@ -80,6 +80,14 @@ function getCompareStr(type, compareObj) {
   return parts.join('&')
 }
 
+
+const postConfig =  {
+  headers: {
+    'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
+    Accept: 'application/solr+json'
+  }
+}
+
 /**
  * validGroupOption
  * @param {String} opt option to validate
@@ -91,7 +99,6 @@ function validateGroupFacet(type, opt) {
     throw `\nquery: the provided option type '${type}' is not valid.
       the accepted types are: ${types.join(',')}`
 
-  console.log('type', type, opt)
   const opts = type == 'group' ?
     ['field', 'format', 'ngroups', 'limit', 'facet'] :
     ['field', 'mincount']
@@ -127,9 +134,9 @@ function getTupleStr(type, groupObj) {
  *  Note: the rql 'in' param has been made part of 'eq', 'neq', etc
  *  simply provide a list and 'in' will be used.
  */
-export function query(params) {
+export function query(params, options = false) {
   const {
-    core = 'genome',
+    core,
     solrInfo, // include solrInfo if true
     query,
     eq,
@@ -147,10 +154,10 @@ export function query(params) {
   const neqQuery = neq ? getCompareStr('neq', neq) : null
   const groupQuery = group ? getTupleStr('group', group) : null
   const facetQuery = facet ? getTupleStr('facet', facet) : null
-
   // const jsonQuery = json ? getTupleStr('json', json) : null
 
-  const q = `?http_accept=application/${solrInfo ? 'solr+json': 'json'}`
+
+  const q = '' //`?http_accept=application/${solrInfo ? 'solr+json': 'json'}`
     + (query ? `&keyword(${query})` : `&keyword(*)`)
     + (eqQuery ? `&${eqQuery}` : '')
     + (neqQuery ? `&${neqQuery}` : '')
@@ -162,7 +169,14 @@ export function query(params) {
     + (filter ? `&${filter}` : '')
     // + (jsonQuery ?  `&json(${encodeURIComponent(JSON.stringify(jsonQuery))}` : '')
 
-  return api.get(`/${core}/${q}`)
+
+  let config
+  if (solrInfo)
+    config = {...postConfig, ...options}
+  else
+    config = options
+
+  return api.post(`/${core}`, q, config)
     .then(res => solrInfo ? res : res.data)
 }
 

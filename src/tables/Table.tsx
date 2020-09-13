@@ -279,12 +279,12 @@ type Props = {
   onPage?: (number) => void       // for ajax pagination
   onSelect?: (any) => void        // todo: define
   onDoubleClick?: (any) => void
-  onColumnMenuChange?: (any) => void
+  onColumnMenuChange?: (any) => void | boolean
 
   openFilters?: boolean
   onOpenFilters?: () => void
 
-  MiddleComponent?: JSX.Element
+  MiddleComponent?: Element
 }
 
 
@@ -347,12 +347,6 @@ export default function TableComponent(props: Props) {
 
 
   useEffect(() => {
-    // only call onSelect after initialization
-    if (!tableRef.current) {
-      tableRef.current = true
-      return
-    }
-
     if (onSelect) onSelect(selected)
   }, [selected])
 
@@ -383,7 +377,7 @@ export default function TableComponent(props: Props) {
   }
 
   const handleSelectAll = () => {
-    alert('re-implement handleSelectAll')
+    alert('sorry, handleSelectAll needs to be re-implemented.  Thanks for your patience.')
     setAllSelected(prev => !prev)
   }
 
@@ -465,7 +459,7 @@ export default function TableComponent(props: Props) {
             labelRowsPerPage={''}
             rowsPerPageOptions={[rowsPerPage]}
             component="div"
-            rowsPerPage={200}
+            rowsPerPage={props.limit}
             page={page}
             backIconButtonProps={{
               disableRipple: true,

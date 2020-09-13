@@ -44,7 +44,7 @@ export default function Workspaces(props: Props) {
     setRows(null)
     WS.list({path})
       .then(data => {
-        console.log('data', data)
+        console.log('fetched workspace data:', data)
         setRows(data)
 
         // remove actions after list refresh

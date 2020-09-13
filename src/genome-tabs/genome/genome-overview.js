@@ -12,7 +12,7 @@ import { getPubSummary, pubSearch } from '../../api/ncbi-eutils';
 import genomeIcon from '../../../assets/icons/genome.svg'
 
 
-import {columns} from '../taxon/genomes/genomes'
+import {columns} from '../taxon/genomes/Genomes'
 
 let metaSpec = {
   'Organism Info':  [

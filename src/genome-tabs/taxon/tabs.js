@@ -7,15 +7,18 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 
-import { ActionBar } from '../action-bar'
+import { TaxonActionBar } from '../TaxonActionBar'
 
 import Overview from './overview'
-import Genomes from './genomes/genomes'
-import Phylogeny from '../phylogeny'
-// import Sequences from './sequences/sequences'
-// import Features from './features/features'
-// import SpecialtyGenes from './specialty-genes/specialty-genes'
-// import AMRPhenotypes from './amr-phenotypes/amr-phenotypes'
+import Phylogeny from '../Phylogeny'
+import Genomes from './genomes/Genomes'
+import AMRPhenotypes from './amr/AMRPhenotypes'
+import Sequences from './sequences/Sequences'
+import Features from './features/Features'
+import SpecialtyGenes from './specialty-genes/SpecGenes'
+
+
+import { TabProvider } from './TabContext'
 
 
 import NotFound404 from '../../404'
@@ -23,25 +26,32 @@ import NotFound404 from '../../404'
 
 const tabs = [{
   label: 'Overview',
-  view: 'overview'
+  view: 'overview',
+  Component: <Overview />
 }, {
   label: 'Phylogeny',
-  view: 'phylogeny'
+  view: 'phylogeny',
+  Component: <Phylogeny />
 }, {
   label: 'Genomes',
-  view: 'genomes'
+  view: 'genomes',
+  Component: <Genomes />
 }, {
   label: 'AMR Phenotypes',
-  view: 'amr-phenotypes'
+  view: 'amr',
+  Component: <AMRPhenotypes />
 }, {
   label: 'Sequences',
-  view: 'sequences'
+  view: 'sequences',
+  Component: <Sequences />
 }, {
   label: 'Features',
-  view: 'features'
+  view: 'features',
+  Component: <Features />
 }, {
   label: 'Specialty Genes',
-  view: 'spec-genes'
+  view: 'specialtyGenes',
+  Component: <SpecialtyGenes />
 }, {
   label: 'Pathways',
   view: 'pathways'
@@ -87,7 +97,7 @@ export default function GenomeTabs() {
   return (
     <Root>
 
-      <ActionBar title="Taxon View"/>
+      <TaxonActionBar title="Taxon View"/>
 
       <Tabs
         value={view}
@@ -97,14 +107,15 @@ export default function GenomeTabs() {
         {TabButtons()}
       </Tabs>
 
+
       <Content>
-        {view == tabs[0].view && <Overview />}
-        {view == tabs[1].view && <Phylogeny />}
-        {view == tabs[2].view && <Genomes />}
-        {view == tabs[3].view && placeHolder(view)}
-        {view == tabs[4].view && placeHolder(view)}
-        {view == tabs[5].view && placeHolder(view)}
-        {view == tabs[6].view && placeHolder(view)}
+        {view == tabs[0].view && tabs[0].Component}
+        {view == tabs[1].view && <TabProvider>{tabs[1].Component}</TabProvider>}
+        {view == tabs[2].view && <TabProvider>{tabs[2].Component}</TabProvider>}
+        {view == tabs[3].view && <TabProvider>{tabs[3].Component}</TabProvider>}
+        {view == tabs[4].view && <TabProvider>{tabs[4].Component}</TabProvider>}
+        {view == tabs[5].view && <TabProvider>{tabs[5].Component}</TabProvider>}
+        {view == tabs[6].view && <TabProvider>{tabs[6].Component}</TabProvider>}
         {view == tabs[7].view && placeHolder(view)}
         {view == tabs[8].view && placeHolder(view)}
         {view == tabs[9].view && placeHolder(view)}

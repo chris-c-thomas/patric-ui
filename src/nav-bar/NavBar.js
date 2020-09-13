@@ -12,6 +12,7 @@ import Badge from '@material-ui/core/Badge'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import SUIcon from '@material-ui/icons/SupervisedUserCircle'
+import MenuIcon from '@material-ui/icons/MenuRounded'
 import Divider from '@material-ui/core/Divider'
 
 import ListItem from '@material-ui/core/ListItem'
@@ -143,6 +144,7 @@ const PatricMenus = () => {
 
   return (
     <>
+      {/*
       <DropdownMenu label="About" menu={
         <DropDown className="about-menu" >
           <MenuSection>
@@ -155,6 +157,7 @@ const PatricMenus = () => {
       }/>
 
       <Spacer flexItem orientation="vertical" />
+      */}
 
       <DropdownMenu label="Organisms" menu={
         <DropDown>
@@ -325,6 +328,16 @@ export function NavBar(props) {
           <FancySearch onFocus={handleSearchFocus} fullWidth={searchFocus} />
         }
 
+        <DropdownMenu label={<MenuIcon />} noCaret menu={
+          <DropDown className="about-menu" >
+            <MenuSection>
+              <MenuTitle>{'About & Help'}</MenuTitle>
+              <Column>
+                <NavItem label="coming soon!" to="/"/>
+              </Column>
+            </MenuSection>
+          </DropDown>
+        }/>
 
         {Auth.isSignedIn() &&
           <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
@@ -370,7 +383,7 @@ const MainNav = styled.div`
   font-size: .9em;
   margin-right: 5px;
 
-  transition: flex cubic-bezier(.32,.77,.47,.86) 0.3s;
+  transition: flex cubic-bezier(.32,.77,.47,.86) 0.25s;
   ${props => !props.fullWidth &&
     'flex: 0;'}
 

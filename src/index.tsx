@@ -14,16 +14,18 @@ import { ThemeProvider } from '@material-ui/styles'
 import Home from './home/Home'
 import GlobalSearch from './search/GlobalSearch'
 import Account from './user-profile/my-profile'
-import TaxonTabs from './genome-tabs/taxon/tabs'
+import TaxonTabs from './genome-tabs/taxon/Tabs'
 import GenomeTabs from './genome-tabs/genome/tabs'
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
 import SUSignIn from './auth/su-sign-in'
 import NotFound404 from './404'
 
-import './styles/styles.scss'
-
 import { JobStatusProvider } from './jobs/job-status-context'
+
+import 'regenerator-runtime/runtime'
+
+import './styles/styles.scss'
 
 
 const colors = {

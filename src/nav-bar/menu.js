@@ -48,7 +48,7 @@ export default function CustomizedMenus(props) {
         color="inherit"
         onClick={handleClick}
       >
-        {label} <CaretIcon/>
+        {label} {!props.noCaret && <CaretIcon/>}
       </Button>
       <StyledMenu
         id="menu"

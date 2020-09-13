@@ -71,9 +71,9 @@ export default function FancySearch (props: Props) {
 
 const MainSearch = styled.form`
   display: flex;
-  margin: 0 20px;
+  margin: 0 4px;
 
-  transition: flex cubic-bezier(.32,.77,.47,.86) 0.3s;
+  transition: flex cubic-bezier(.32,.77,.47,.86) 0.25s;
   ${props => props.fullWidth &&
     'flex: 1;'}
 
