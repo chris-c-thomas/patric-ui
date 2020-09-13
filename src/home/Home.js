@@ -12,12 +12,12 @@ import Avatar from '@material-ui/core/Avatar'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import TextField from '@material-ui/core/TextField'
-
 import GridListTileBar from '@material-ui/core/GridListTileBar'
 
 import News from './news/news'
 import Recents from './recents'
 import MyData from './my-data'
+import Footer from './Footer'
 
 import serviceImages from '../../assets/imgs/services/*.jpg'
 import chipImages from '../../assets/imgs/biology/*.png'
@@ -67,7 +67,7 @@ const services = [
 
 const useStyles = makeStyles(theme => ({
   root: {
-    maxWidth: '1440',
+    maxWidth: 1440,
     margin: 'auto auto'
   },
   scroller: {
@@ -280,11 +280,14 @@ export default function Home() {
           <Grid item>
             <News />
           </Grid>
+
           <Grid>
 
           </Grid>
         </Grid>
       </Grid>
+
+      <Footer />
     </div>
   )
 }

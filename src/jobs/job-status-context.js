@@ -2,7 +2,7 @@ import React, {useState, useEffect, createContext, useCallback} from 'react'
 
 import { getStatus } from '../api/app-service'
 
-const TIME_OUT = 99999999
+const TIME_OUT = 5000
 
 /*
 interface State {
