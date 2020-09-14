@@ -1,8 +1,6 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
-
-import Typography from '@material-ui/core/Typography'
 
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
@@ -13,6 +11,7 @@ import PublicIcon from '@material-ui/icons/PublicRounded'
 import SpecialFolderIcon from '@material-ui/icons/FolderSpecialRounded'
 
 import {getUser} from '../api/auth'
+import { getUserCounts } from '../api/ws-api'
 
 // only for testing
 import config from '../config'
@@ -49,6 +48,19 @@ type Props = {
 
 const WSSideBar = (props: Props) => {
   const {path} = useParams()
+
+  /*
+  const [counts, setCounts] = useState(null)
+
+  useEffect(() => {
+    getUserCounts({user: getUser(true)})
+      .then(counts => {
+        console.log('counts', counts)
+        setCounts(counts)
+      })
+  }, [])
+  */
+
 
   const onNav = (evt) => {
     if (props.isObjectSelector) {
@@ -112,7 +124,7 @@ const SidebarRoot = styled.div`
 
 const Title = styled.div`
   font-size: 1.2em;
-  margin: 10px 5px;
+  margin: 10px;
 `
 
 const Menu = styled.ul`
@@ -128,6 +140,7 @@ const Menu = styled.ul`
 const indention = 8
 
 const MenuItem = styled(Link)`
+  display: flex;
   padding: 5px 0 5px 5px;
   display: flex;
   align-items: center;
@@ -156,6 +169,10 @@ const Caret = styled.div`
   }
 `
 
+const Count = styled.span`
+  margin-left: auto;
+  margin-right: 4px;
+`
 
 
 const P3Link = styled.a`

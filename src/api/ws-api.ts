@@ -219,10 +219,10 @@ function _omitSpecialFolders(paths, operation) {
 
 export function getUserCounts({user}) {
   const paths = [
-    `/${user}@patricbrc.org/`,
-    `/${user}@patricbrc.org/home/Genome Groups/`,
-    `/${user}@patricbrc.org/home/Feature Groups/`,
-    `/${user}@patricbrc.org/home/Experiment Groups/`,
+    `/${user}/`,
+    `/${user}/home/Genome Groups/`,
+    `/${user}/home/Feature Groups/`,
+    `/${user}/home/Experiment Groups/`,
   ]
 
   const params = {

@@ -340,7 +340,7 @@ export default function Jobs() {
             onSort={onSort}
             onSearch={onSearch}
             searchPlaceholder={'Search files and parameters'}
-            middleComponent={() => (
+            middleComponent={
               <Filters>
                 {app && app !== 'AllServices' &&
                   <Chip size="small"
@@ -357,7 +357,7 @@ export default function Jobs() {
                   />
                 }
               </Filters>
-            )}
+            }
           />
         }
         {error && <ErrorMsg error={error} />}
