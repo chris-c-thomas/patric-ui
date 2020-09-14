@@ -2,7 +2,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { Link } from 'react-router-dom'
 
-import FilterSidebar from '../../filter-sidebar'
+import FilterSidebar from '../../FilterSidebar'
 import Table from '../../../tables/Table'
 import ErrorMsg from '../../../ErrorMsg'
 import Actions from './Actions'

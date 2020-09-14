@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Menu from '@material-ui/core/Menu'
@@ -242,9 +242,6 @@ const Spacer = styled(Divider)`
 
 
 export function NavBar(props) {
-  const location = useLocation()
-  console.log('location', location)
-
   const {isAdminApp, MenuComponnt, Logo} = props
 
   const [openSignIn, setOpenSignIn] = useState(false)

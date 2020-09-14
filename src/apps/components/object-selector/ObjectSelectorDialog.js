@@ -17,8 +17,8 @@ import FolderIcon  from '@material-ui/icons/FolderOutlined'
 
 import {getUser} from '../../../api/auth'
 import Workspaces from '../../../workspaces/Workspaces'
-import { Close } from '@material-ui/icons'
-import { IconButton } from '@material-ui/core'
+import Close from '@material-ui/icons/Close'
+import IconButton from '@material-ui/core/IconButton'
 
 
 

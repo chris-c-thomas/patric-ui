@@ -1,7 +1,6 @@
 import React, {useState, useEffect, createContext} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
-
 import { listData, getGenomeIDs, getRepGenomeIDs } from '../../api/data-api'
 
 const MAX_GENOMES = 20000
