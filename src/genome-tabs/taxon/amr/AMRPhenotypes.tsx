@@ -99,7 +99,7 @@ export default function AMRPhenotypes() {
             enableTableOptions
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
-            MiddleComponent={() => showActions && <Actions />}
+             middleComponent={showActions && <Actions />}
             {...tableProps}
           />
         }

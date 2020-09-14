@@ -84,7 +84,7 @@ export default function Sequences() {
             enableTableOptions
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
-            MiddleComponent={() => showActions && <Actions />}
+            middleComponent={showActions && <Actions />}
             {...tableProps}
           />
         }

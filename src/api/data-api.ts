@@ -246,8 +246,8 @@ type ListParams = {
   sort?: string
   start?: number
   query?: string
-  limit?: number
-  eq?: {[key: string]: any}  // todo(nc): define;
+  limit?: number | string
+  eq?: any  // todo(nc): define;
   select?: string[]
   solrInfo?: boolean
   filter?: string

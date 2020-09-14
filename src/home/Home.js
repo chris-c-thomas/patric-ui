@@ -4,15 +4,16 @@ import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import styled from 'styled-components'
 
-import Subtitle from '../subtitle'
+import { Title } from './Title'
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid'
 import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
-import TextField from '@material-ui/core/TextField'
 import GridListTileBar from '@material-ui/core/GridListTileBar'
+
+// import FancySearch from '../nav-bar/FancySearch'
 
 import News from './news/news'
 import Recents from './recents'
@@ -93,10 +94,22 @@ const useStyles = makeStyles(theme => ({
 const NoAuth = props => !Auth.isSignedIn() ? [props.children] : <></>
 const HasAuth = props => Auth.isSignedIn() ? [props.children] : <></>
 
+const chipStyles = {
+  marginRight: '10px',
+  background: '#5189b1',
+  borderColor: 'rgb(103 186 240)',
+  color: '#f2f2f2',
+}
+
+const chipStyles2 = {
+  margin: '0 5px'
+}
+
+
 const ChipBtn = (props) => {
   return (
     <Chip variant="outlined"
-      style={{marginRight: '10px'}}
+      style={chipStyles2}
       clickable
       component={Link}
       {...props}
@@ -110,36 +123,25 @@ const Overview = () => {
   return (
     <Paper className={clsx('card', styles.overview)}>
       <NoAuth>
-        <Subtitle>
+        <Title>
           Baterial Bioinformatics Resource Center
-        </Subtitle>
+        </Title>
         <p>
-          PATRIC, the PAThosystems Resource Integration Center, provides integrated data and analysis
+          PATRIC, the Pathosystems Resource Integration Center, provides integrated data and analysis
           tools to support biomedical research on bacterial infectious diseases.
         </p>
       </NoAuth>
 
-      <div>
-        <Subtitle inline>
+      <div className="flex align-items-center">
+        <Title>
           Browse
-        </Subtitle>
-        <ChipBtn label="Bacteria" src={chipImages['bacteria']} to="/taxonomy/2/overview"/>
-        <ChipBtn label="Viruses" src={chipImages['bacteria']} to="/taxonomy/10239/overview"/>
-        <ChipBtn label="Archaea" src={chipImages['archaea']} to="/taxonomy/2157/overview" />
-        <ChipBtn label="Eukaryotic" src={chipImages['eukaryotic']} to="/taxonomy/2759/overview"/>
-        <ChipBtn label="Phages" src={chipImages['phages']} to="/taxonomy/10239/overview" />
-      </div>
+        </Title>
 
-      <div>
-        <Subtitle inline>
-          Search
-        </Subtitle>
-        <TextField
-          placeholder="search should be here as usual"
-          variant="outlined"
-          margin="dense"
-          style={{width: 'calc(100% - 100px'}}
-        />
+        <ChipBtn label="Bacteria" src={chipImages['bacteria']} to="/taxonomy/2/overview"/>
+        <ChipBtn label="Archaea" src={chipImages['archaea']} to="/taxonomy/2157/overview" />
+        <ChipBtn label="Phages" src={chipImages['phages']} to="/taxonomy/10239/overview" />
+        <ChipBtn label="Viruses" src={chipImages['bacteria']} to="/taxonomy/10239/overview"/>
+        <ChipBtn label="Eukaryotic Hosts" src={chipImages['eukaryotic']} to="/taxonomy/2759/overview"/>
       </div>
     </Paper>
   )
@@ -206,9 +208,9 @@ const ServiceCards = () => {
   return (
     <Paper className="card">
       <NoAuth>
-        <Subtitle inline>
+        <Title>
           Analyze Data at PATRIC
-        </Subtitle>
+        </Title>
 
         <p>
           At PATRIC, you can <a>upload</a> your private data in a
@@ -218,9 +220,9 @@ const ServiceCards = () => {
       </NoAuth>
 
 
-      <Grid container direction="row" justify="space-between">
+      <Grid container justify="space-between" alignItems="center">
         <Grid item>
-          <Subtitle inline>Services</Subtitle>
+          <Title>Services</Title>
         </Grid>
 
         <Grid item>
@@ -255,12 +257,20 @@ export default function Home() {
       <Grid container>
 
         <Grid container item xs={9} direction="column">
+          {/*<Grid item>
+            <FancySearchContainer>
+              <FancySearch tall />
+            </FancySearchContainer>
+          </Grid>*/}
+
           <Grid item>
             <Overview />
           </Grid>
+
           <Grid item>
             <ServiceCards />
           </Grid>
+
           <Grid container>
             <HasAuth>
               <Grid item xs={4}>
@@ -291,3 +301,12 @@ export default function Home() {
     </div>
   )
 }
+
+
+const FancySearchContainer = styled.div`
+  color: #f2f2f2;
+  padding: 8px 16px;
+  margin: 10px;
+  background: #2e75a3;
+  border-radius: 4px;
+`

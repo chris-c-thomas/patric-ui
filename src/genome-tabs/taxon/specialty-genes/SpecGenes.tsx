@@ -17,7 +17,7 @@ const columns = [
   { label: 'Property', id: 'property' },
   { label: 'Source', id: 'source' },
   { label: 'PATRIC ID', id: 'patric_id', width: '10%',
-    format: (val, row) =>
+    format: (val) =>
       <Link to={`/view/Feature/${val}`}>{val}</Link>
   },
   { label: 'RefSeq Locus Tag', id: 'refseq_locus_tag', width: '10%'},
@@ -60,7 +60,7 @@ export default function SpecGenes() {
   const [state] = useContext(TabContext)
 
   const {
-    init, taxonID, data, loading, error, filter, onFacetFilter, onColumnChange,
+    init, taxonID, data, loading, error, filter, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 
@@ -98,10 +98,9 @@ export default function SpecGenes() {
             checkboxes
             pagination
             enableTableOptions
-            onColumnChange={onColumnChange}
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
-            MiddleComponent={() => showActions && <Actions />}
+            middleComponent={showActions && <Actions />}
             {...tableProps}
           />
         }

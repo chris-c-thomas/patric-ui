@@ -11,11 +11,11 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 
 // views
-import Home from './home/Home'
+import Home from './home/BVBRC'
 import GlobalSearch from './search/GlobalSearch'
 import Account from './user-profile/my-profile'
 import TaxonTabs from './genome-tabs/taxon/Tabs'
-import GenomeTabs from './genome-tabs/genome/tabs'
+import GenomeTabs from './genome-tabs/genome/Tabs'
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
 import SUSignIn from './auth/su-sign-in'
@@ -30,7 +30,7 @@ import './styles/styles.scss'
 
 const colors = {
   primary: '#2e75a3',
-  secondary: '#629821'
+  secondary: '#549a00'
 }
 
 const theme = createMuiTheme({
@@ -63,7 +63,7 @@ const App = () => {
                   <Route path="/my-profile" exact component={Account} />
                   <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
                   <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
-                  <Route path="/apps/sars-cov-2" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
+                  <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
                   <Route path="/jobs*" component={Jobs}/>
                   <Route path="/files/:path*" exact component={Workspaces} />
                   <Route path="/taxonomy/:taxonID/:view" exact render={() =>

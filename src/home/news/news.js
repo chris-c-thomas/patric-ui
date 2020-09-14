@@ -1,20 +1,19 @@
-import React, {useState, useEffect} from 'react';
-import { Link } from "react-router-dom";
+import React, {useState, useEffect} from 'react'
+import styled from 'styled-components'
 
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@material-ui/core/Grid'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import Subtitle from '../../subtitle';
+import Subtitle from '../../subtitle'
 
 
-import {get} from 'axios';
-import MobileStepper from './stepper';
+import {get} from 'axios'
+import MobileStepper from './stepper'
 
 
-const newsURL = "https://docs.patricbrc.org/_static/carousel.json";
+const newsURL = 'https://docs.patricbrc.org/_static/carousel.json'
 
-export default function News(props) {
-  const [steps, setSteps] = useState(null);
+export default function News() {
+  const [steps, setSteps] = useState(null)
 
   useEffect(() => {
     get(newsURL).then(({data}) => {
@@ -23,7 +22,7 @@ export default function News(props) {
   }, [])
 
   return (
-    <Paper className="card">
+    <Root>
       <Grid container justify="space-between" alignItems="center">
         <Grid item>
           <Subtitle>
@@ -36,6 +35,10 @@ export default function News(props) {
           {steps && <MobileStepper steps={steps}/>}
         </Grid>
       </Grid>
-    </Paper>
+    </Root>
   )
 }
+
+const Root = styled.div`
+  padding: 10px;
+`

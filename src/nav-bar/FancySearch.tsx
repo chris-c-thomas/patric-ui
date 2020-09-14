@@ -10,13 +10,14 @@ import SearchIcon from '@material-ui/icons/Search'
 import useClickOutside from '../hooks/useClickOutside'
 
 type Props = {
-  onFocus: (boolean) => void
+  onFocus?: (boolean) => void
   fullWidth: boolean
+  tall?: boolean
 }
 
 
 export default function FancySearch (props: Props) {
-  const {onFocus, fullWidth} = props
+  const {onFocus, fullWidth, tall} = props
 
   const history = useHistory()
   const searchRef = useRef(null)
@@ -25,7 +26,8 @@ export default function FancySearch (props: Props) {
 
 
   useClickOutside(searchRef, () => {
-    onFocus(false)
+    if (onFocus)
+      onFocus(false)
   })
 
   const onSubmit = (evt) => {
@@ -34,7 +36,7 @@ export default function FancySearch (props: Props) {
   }
 
   return (
-    <MainSearch fullWidth={fullWidth} ref={searchRef} onSubmit={onSubmit} >
+    <MainSearch fullWidth={fullWidth} tall={tall} ref={searchRef} onSubmit={onSubmit} >
       <SearchType>
         <option>All Data Types </option>
         <option>Genomes</option>
@@ -51,7 +53,7 @@ export default function FancySearch (props: Props) {
           placeholder="Search data…"
           inputProps={{
             'aria-label': 'search',
-            onFocus: () => onFocus(true)
+            onFocus: () => onFocus && onFocus(true)
           }}
           margin="dense"
           onChange={(evt) => setQuery(evt.target.value)}
@@ -88,6 +90,9 @@ const MainSearch = styled.form`
       background-color: ${fade('#fff', 0.25)};
     }
   }
+
+  ${props => props.tall ?
+    'height: 40px; font-size: 1.3em;' : ''}
 `
 
 const SearchContainer = styled.div`

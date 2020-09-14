@@ -8,13 +8,11 @@ import Github from '@material-ui/icons/GitHub'
 
 import pngs from '../../assets/bv-brc/*.png'
 
-import { isSignedIn } from '../api/auth'
-
 const Footer = () =>
   <Root>
     <div className="brc-program">
       <a href="https://www.niaid.nih.gov/research/bioinformatics-resource-centers">
-        <img src={pngs['brc-logo']} alt="BRC Logo" />
+        <img src={pngs['brc-logo']} alt="BRC Logo" height="80" />
       </a>
 
       {/*
@@ -58,20 +56,19 @@ const Footer = () =>
 
 
 const Root = styled.div`
-  ${!isSignedIn() && `
+  @media (min-width: 960px) and (min-height: 900px) {
     position: fixed;
     bottom: 0;
     left: 0;
-  `}
+  }
+
   width: 100%;
   z-index: 100;
   display: flex;
-  background: linear-gradient(#174c6f, #2e75a3);
+  background: linear-gradient(#135b89, #2e75a3);
   color: #f2f2f2;
   font-size: .8em;
   margin-top: 25px;
-  padding: 0 25px;
-
 
   h3:after {
     content: "";

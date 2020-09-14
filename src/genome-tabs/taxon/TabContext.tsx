@@ -1,9 +1,8 @@
 import React, {useState, useEffect, createContext} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
-import axios from 'axios'
 
-import { listData, getGenomeIDs, getRepGenomeIDs, getGenomeCount } from '../../api/data-api'
+import { listData, getGenomeIDs, getRepGenomeIDs } from '../../api/data-api'
 
 const MAX_GENOMES = 20000
 
@@ -24,7 +23,7 @@ const TabContext = createContext([{
   onPage: null,
   onSearch: null,
   onFacetFilter: null,
-  onColumnChange: null
+  onColumnMenuChange: null
 }])
 
 const TabProvider = (props) => {
@@ -57,13 +56,15 @@ const TabProvider = (props) => {
         start: Number(page) * Number(limit),
         limit,
         query,
-        eq: {taxon_lineage_ids: taxonID},
         filter,
-        select: colIDs
+        select: colIDs,
+        eq: null
       }
 
       // if core is not 'genome', get associated genome ids first
-      if (core != 'genome') {
+      if (core == 'genome') {
+        params.eq = {taxon_lineage_ids: taxonID}
+      } else {
         const genomeIDs = await getGenomeIDs(taxonID)
 
         // if associated genomes ids is over MAX_GENOMES,
@@ -129,7 +130,7 @@ const TabProvider = (props) => {
     history.push({search: unescape(params.toString())})
   }
 
-  const onColumnChange = (cols) => {
+  const onColumnMenuChange = (cols) => {
     setColIDs(cols.map(col => col.id))
   }
 
@@ -137,7 +138,7 @@ const TabProvider = (props) => {
   return (
     <TabContext.Provider value={[{
       init, loading, data, filter, error, total, taxonID, page, limit, sort, query,
-      onSort, onPage, onSearch, onFacetFilter, onColumnChange
+      onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange
     }]}>
       {props.children}
     </TabContext.Provider>

@@ -101,7 +101,7 @@ export default function Features() {
             enableTableOptions
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
-            MiddleComponent={() => showActions && <Actions />}
+            middleComponent={showActions && <Actions />}
             {...tableProps}
           />
         }

@@ -284,7 +284,7 @@ type Props = {
   openFilters?: boolean
   onOpenFilters?: () => void
 
-  MiddleComponent?: Element
+  middleComponent?: JSX.Element
 }
 
 
@@ -292,7 +292,7 @@ type Props = {
 export default function TableComponent(props: Props) {
   const {
     pagination, offsetHeight, checkboxes, emptyNotice,
-    MiddleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
+    middleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
     enableTableOptions, stripes = true
   } = props
 
@@ -450,8 +450,8 @@ export default function TableComponent(props: Props) {
           />
         }
 
-        {MiddleComponent &&
-          <MiddleComponent />
+        {middleComponent &&
+          middleComponent
         }
 
         {pagination &&

@@ -137,7 +137,7 @@ export default function Genomes() {
   const [state] = useContext(TabContext)
 
   const {
-    init, taxonID, data, loading, error, filter, onFacetFilter, onColumnChange,
+    init, taxonID, data, loading, error, filter, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 
@@ -175,10 +175,9 @@ export default function Genomes() {
             checkboxes
             pagination
             enableTableOptions
-            onColumnChange={onColumnChange}
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
-            MiddleComponent={() => showActions && <Actions />}
+            middleComponent={showActions && <Actions />}
             {...tableProps}
           />
         }

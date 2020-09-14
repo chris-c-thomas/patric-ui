@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Menu from '@material-ui/core/Menu'
@@ -111,7 +111,7 @@ const allOrganisms = [
 const services = [
   {label: 'Assembly', url: '/apps/assembly'},
   {label: 'Annotation', url: '/apps/annotation'},
-  {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/sars-cov-2'},
+  {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/ComprehensiveSARS2Analysis'},
 ]
 
 const getMiddle = data => Math.round(data.length / 2)
@@ -242,6 +242,9 @@ const Spacer = styled(Divider)`
 
 
 export function NavBar(props) {
+  const location = useLocation()
+  console.log('location', location)
+
   const {isAdminApp, MenuComponnt, Logo} = props
 
   const [openSignIn, setOpenSignIn] = useState(false)
