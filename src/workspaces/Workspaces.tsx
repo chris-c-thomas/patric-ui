@@ -113,7 +113,7 @@ const Main = styled.div`
 const Container = styled.div`
   display: flex;
   height: calc(100% - 60px);
-  padding: 5px;
+  padding: 5px 5px 5px 0;
   background: #fff;
 `
 

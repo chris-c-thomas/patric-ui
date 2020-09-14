@@ -154,6 +154,16 @@ const Root = styled.div`
   h2 { font-size: 1.3em; }
   h3 { font-size: 1.15em; }
 
+
+  h2:after, h3:after {
+    content: "";
+    display: block;
+    width: 20%;
+    padding-top: 10px;
+    border-bottom: 1px solid #2e75a3;
+  }
+
+
   .btns {
     position: absolute;
     bottom: 0;

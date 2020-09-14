@@ -2,6 +2,8 @@ import React from 'react'
 import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
+import Typography from '@material-ui/core/Typography'
+
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
@@ -21,16 +23,16 @@ const menu = [
     icon: <MyIcon />, caret: true
   }, {
     path: `${getUser(true)}/home`, label: 'Home',
-    level: 2, icon: <FolderIcon />, caret: true
+    indent: 2, icon: <FolderIcon />, caret: true
   }, {
     path: `${getUser(true)}/home/Genome Groups`, label: 'Genome Groups',
-    level: 3, icon: <SpecialFolderIcon />
+    indent: 3, icon: <SpecialFolderIcon />
   },{
     path: `${getUser(true)}/home/Feature Groups`, label: 'Feature Groups',
-    level: 3, icon: <SpecialFolderIcon />
+    indent: 3, icon: <SpecialFolderIcon />
   }, {
     path: `${getUser(true)}/home/Experiment Groups`, label: 'Experiment Groups',
-    level: 3, icon: <SpecialFolderIcon />
+    indent: 3, icon: <SpecialFolderIcon />
   }, {
     label: 'Shared with Me',
     icon: <SharedIcon />
@@ -75,14 +77,18 @@ const WSSideBar = (props: Props) => {
         {menu.map((item) => (
           <li key={item.label}>
             <MenuItem
-              level={item.level}
+              indent={item.indent}
               caret={item.caret ? 1 : 0}
               className={item.path == path ? 'active no-style' : 'no-style hover'}
               to={`/files/${item.path}`}
               onClick={onNav}
             >
-              {item.caret && <Caret><CaretIcon /></Caret>}
-              {item.icon && <Icon>{item.icon}</Icon>}
+              {item.caret &&
+                <Caret><CaretIcon color={item.path == path ? 'primary' : 'inherit'} /></Caret>
+              }
+              {item.icon &&
+                <Icon>{React.cloneElement(item.icon, {color: item.path == path ? 'primary' : 'inherit'})}</Icon>
+              }
               {item.label}
             </MenuItem>
           </li>
@@ -96,7 +102,7 @@ const sidebarWidth = '210px'
 
 const SidebarRoot = styled.div`
   width: ${sidebarWidth};
-  padding: 5px 0 10px 5px;
+  padding: 5px 0 10px 0px;
   border-right: 1px solid #ccc;
 
   .MuiTab-wrapper {
@@ -106,7 +112,7 @@ const SidebarRoot = styled.div`
 
 const Title = styled.div`
   font-size: 1.2em;
-  margin-top: 10px;
+  margin: 10px 5px;
 `
 
 const Menu = styled.ul`
@@ -116,24 +122,27 @@ const Menu = styled.ul`
   list-style: none;
 
   li {
-    padding: 5px 0;
+
   }
 `
 const indention = 8
 
 const MenuItem = styled(Link)`
+  padding: 5px 0 5px 5px;
   display: flex;
   align-items: center;
 
-  ${props => props.level &&
-    `padding-left: ${props.level * indention + (!props.caret ? 21 : 0)};`}
-
-  ${props => props.level &&
-    `font-size: .9em`}
-
   &.active {
-    font-weight: 800 !important;
+    border-right: 3px solid #2e75a3;
+    background-color: #f2f2f2;
+    font-weight: 900;
   }
+
+  ${props => props.indent &&
+    `padding-left: ${props.indent * indention + (!props.caret ? 21 : 0)};`}
+
+  ${props => props.indent &&
+    `font-size: .9em`}
 `
 
 const Icon = styled.div`

@@ -189,7 +189,7 @@ const PatricMenus = () => {
         </DropDown>
       }/>
 
-      <Button component={Link} to={`/files/${Auth.getUser(true)}`} disableRipple>
+      <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
         Workspaces
       </Button>
 

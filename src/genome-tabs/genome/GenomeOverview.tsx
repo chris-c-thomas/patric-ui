@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import { Link, useParams} from 'react-router-dom';
+import React, {useEffect, useState} from 'react'
+import { useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
-import Subtitle from '../../subtitle'
-import Table from '../../tables/Table';
 
 import {getTaxon} from '../../api/data-api'
 
-import { getGenomeMeta }  from '../../api/data-api';
-import { getPubSummary, pubSearch } from '../../api/ncbi-eutils';
+import { getGenomeMeta }  from '../../api/data-api'
 import genomeIcon from '../../../assets/icons/genome.svg'
 
 
@@ -32,12 +29,12 @@ let metaSpec = {
     {id: 'reference_genome'}],
   'Genome Quality':
     [
-    {id: 'genome_quality', editable: false},
-    {id: 'genome_quality_flags', editable: false},
-    {id: 'coarse_consistency', editable: false},
-    {id: 'fine_consistency', editable: false},
-    {id: 'checkm_completeness', editable: false},
-    {id: 'checkm_contamination', editable: false}],
+      {id: 'genome_quality', editable: false},
+      {id: 'genome_quality_flags', editable: false},
+      {id: 'coarse_consistency', editable: false},
+      {id: 'fine_consistency', editable: false},
+      {id: 'checkm_completeness', editable: false},
+      {id: 'checkm_contamination', editable: false}],
   'Sharing':  [
     {id: 'user_read', editable: false, 'isList': true},
     {id: 'user_write', editable: false, 'isList': true}],
@@ -114,7 +111,7 @@ const metaTableBody = (headerName, spec, data) => {
   return (
     <>
       <MetaHeader>
-        <td colspan="2">{headerName}</td>
+        <td colSpan={2}>{headerName}</td>
       </MetaHeader>
       {
         spec.map(o => data[o.id] ?
@@ -143,12 +140,12 @@ const MetaHeader = styled.tr`
 
 export default function Overview() {
 
-  const {genomeID} = useParams();
+  const {genomeID} = useParams()
 
-  const [loading, setLoading] = useState(false);
-  const [meta, setMeta] = useState(null);
-  const [error, setError] = useState(null);
-  const [name, setName] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [meta, setMeta] = useState(null)
+  const [error, setError] = useState(null)
+  const [name, setName] = useState(null)
 
   useEffect(() => {
     getGenomeMeta(genomeID)
@@ -183,8 +180,8 @@ export default function Overview() {
       </Tables>
 
     </Root>
-  );
-};
+  )
+}
 
 const Root = styled.div`
   display: flex;

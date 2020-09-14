@@ -48,8 +48,8 @@ export {columns}
 // ['public', 'annotation', 'feature_type'],
 let filters =  [
 //  {id: 'public', hideSearch: true},
-  {id: 'annotation' },
-  {id: 'feature_type' }
+  {id: 'annotation', hideSearch: true },
+  {id: 'feature_type'}
 ].map(o =>
   ({label: columns.filter(obj => obj.id == o.id)[0].label, ...o})
 )

@@ -3,150 +3,12 @@ import styled from 'styled-components'
 
 import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import SearchIcon from '@material-ui/icons/SearchOutlined'
 import ArrowLeft from '@material-ui/icons/KeyboardArrowLeftRounded'
 
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 import plusIcon from '../../assets/icons/plus-circle.svg'
-import { getFacets } from '../api/data-api'
 
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '../forms/Checkbox'
-
-const FilterComponent = (props) => {
-  const {
-    field, label, core, taxonID, hideSearch,
-    onCheck, facetQueryStr = null
-  } = props
-
-  const [enableQuery, setEnableQuery] = useState(false)
-
-  const [data, setData] = useState(null)
-  const [checked, setChecked] = useState({})
-
-  useEffect(() => {
-    // if facetQueryString includes field, don't update (a little bit hacky?)
-    if (facetQueryStr && facetQueryStr.includes(field)) {
-      console.log(`field '${field} found in in filter string; skipping FilterComponent update`)
-      return
-    }
-
-    getFacets({field, core, taxonID, facetQueryStr: unescape(facetQueryStr)})
-      .then(data => setData(data))
-  }, [facetQueryStr])
-
-  useEffect(() => {
-    onCheck({field, value: checked})
-  }, [checked])
-
-  const handleCheck = (id) => {
-    setChecked(prev => ({...prev, [id]: !prev[id]}))
-  }
-
-  // only render if there's actually facet data
-  if (data && !data.length) return <></>
-
-  return (
-    <FilterRoot>
-      <Header>
-        <Title>
-          {label}
-        </Title>
-
-        {!hideSearch && data && data.length > 0 &&
-          <SearchBtn onClick={() => setEnableQuery(!enableQuery)} disableRipple>
-            <SearchIcon/>
-          </SearchBtn>
-        }
-      </Header>
-
-      {enableQuery &&
-        <TextField
-          autoFocus
-          placeholder={`Filter ${label}`}
-          onChange={() => {}}
-          InputProps={{
-            style: {margin: '5px 10px', height: 26}
-          }}
-          variant="outlined"
-        />
-      }
-
-      <Filters>
-        {
-          data && data.length > 0 &&
-          data.slice(0, 10).map(obj =>
-            <div key={obj.name}>
-              <CBContainer
-                control={
-                  <Checkbox
-                    checked={checked[obj.name]}
-                    onChange={() => handleCheck(obj.name)}
-                  />}
-                label={
-                  <>
-                    <FacetLabel>{obj.name}</FacetLabel>
-                    <Count>{obj.count.toLocaleString()}</Count>
-                  </>
-                }
-              />
-            </div>
-          )
-        }
-      </Filters>
-    </FilterRoot>
-  )
-}
-
-const FilterRoot = styled.div`
-  margin-bottom: 10px;
-`
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
-
-const Title = styled.div`
-  margin-left: 5px;
-`
-const Filters = styled.div`
-  max-height: 250px;
-  overflow: scroll;
-`
-
-const CBContainer = styled(FormControlLabel)`
-  margin-left: 5px;
-
-  &.MuiFormControlLabel-root {
-    width: 225px;
-    margin-left: 0;
-  }
-
-  & .MuiTypography-root {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-`
-const FacetLabel = styled.div`
-  font-size: .8rem;
-`
-
-const Count = styled.div`
-  color: #888;
-  font-size: .8rem;
-`
-
-const SearchBtn = styled(Button)`
-  margin-right: 10px;
-  padding: 0;
-  min-width: 0;
-`
+import FilterComponent from './Filter'
 
 
 const getFacetFields = (state) =>
@@ -171,7 +33,7 @@ const getORStr = (state, field) =>
 
 // todo: refactor?  lists may actually be better after all.
 const buildFilterString = (state) => {
-  let queryStr;
+  let queryStr
 
   // first get fields that have facet filters
   const fields = getFacetFields(state)
@@ -201,8 +63,24 @@ const buildFilterString = (state) => {
 }
 
 
+type Filter = {
+  id: string
+  label: string
+  hideSearch?: boolean
+}
 
-const Sidebar = (props) => {
+type Props = {
+  taxonID: string
+  core: string
+  filters: Filter[]
+  onChange: (query: object, queryStr: string) => void
+  collapsed: boolean
+  onCollapse: (isCollapsed: boolean) => void
+  facetQueryStr: string
+}
+
+
+const Sidebar = (props: Props) => {
   const {
     filters,  // list of objects
     onChange,
@@ -212,7 +90,7 @@ const Sidebar = (props) => {
   if (!onChange)
     throw '`onChange` is required a prop for the sidebar component'
 
-  let didMountRef = useRef()
+  let didMountRef = useRef(null)
 
   // {fieldA: {facet1: true, facet2: false}, fieldB: {facet3, facet4}}
   const [query, setQuery] = useState({})

@@ -1,5 +1,5 @@
-import React from "react"
-import { Link, useParams} from "react-router-dom"
+import React from 'react'
+import { Link, useParams} from 'react-router-dom'
 
 import styled from 'styled-components'
 
@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab'
 import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 
 import { TaxonActionBar } from '../TaxonActionBar'
-import Overview from './genome-overview'
+import Overview from './GenomeOverview'
 import Phylogeny from '../Phylogeny'
 
 // import { PFContainer } from './protein-families/protein-families'
