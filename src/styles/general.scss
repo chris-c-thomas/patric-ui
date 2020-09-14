@@ -69,7 +69,9 @@ $spacing: 8px;
 }
 
 .muted { color: #666; }
+.text-center { text-align: center; }
 .italic { font-style: italic; }
+.bold { font-weight: bold; }
 .hover { opacity: .7; }
 .hover:hover { cursor: pointer; opacity: 1.0;  }
 
@@ -103,6 +105,9 @@ $spacing: 8px;
 /**
  * general colors
  */
+.primary { color: #2e75a3; }
+.secondary { color: #549a00; }
+
 .queued { color: #777; }
 .in-progress { color: #de9300; }
 .completed, .success { color: #286329; }

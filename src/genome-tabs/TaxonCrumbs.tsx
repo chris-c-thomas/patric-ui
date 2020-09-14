@@ -54,12 +54,17 @@ const TaxonCrumbs = () => {
       {indexes && ids && names &&
         indexes.map((idx, i) =>
           <span key={idx}>
-            <Link to={`/taxonomy/${ids[idx]}/${view}`}>{names[idx]}</Link>
+            <Link to={`/taxonomy/${ids[idx]}/${view}`}
+              className={i == indexes.length - 1 ? 'bold secondary' : ''}
+            >
+              {names[idx]}
+            </Link>
             {i < indexes.length - 1 && ' > '}
           </span>
         )
       }
-      {count != null &&
+      {/* don't show count for genomeID */}
+      {count != null && !genomeID &&
         <span className="muted"> ({count} {count == 1 ? 'genome' : 'genomes'})</span>
       }
     </div>
