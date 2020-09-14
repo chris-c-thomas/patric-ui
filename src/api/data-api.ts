@@ -134,7 +134,8 @@ export function getTaxonChartData({taxonID}) {
 }
 
 export function getGenomeMeta(genome_id) {
-  return Query({eq: {genome_id}})
+  console.log('genome_id', genome_id)
+  return Query({core: 'genome', eq: {genome_id}})
     .then(data => data[0])
 }
 
