@@ -108,6 +108,7 @@ for (const key of Object.keys(metaSpec)) {
 }
 
 const metaTableBody = (headerName, spec, data) => {
+
   return (
     <>
       <MetaHeader>
@@ -122,18 +123,21 @@ const metaTableBody = (headerName, spec, data) => {
           : <></>
         )
       }
+      {!spec.map(o => !!data[o.id]).filter(val => val).length  &&
+        <tr className="muted text-center italic">
+          <td colSpan={2}>none available</td>
+        </tr>
+      }
     </>
   )
 }
 
 const MetaHeader = styled.tr`
   td {
-    margin: 10px 0 5px 0;
     background: #f2f2f2;
-    padding: 3px 5px;
+    padding: 3px 1px !important;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
-    font-size: 1em;
   }
 `
 
@@ -148,11 +152,12 @@ export default function Overview() {
   const [name, setName] = useState(null)
 
   useEffect(() => {
+    console.log('genomeID', genomeID)
     getGenomeMeta(genomeID)
       .then(meta => setMeta(meta))
       .catch(e => setError(e))
 
-  }, [])
+  }, [genomeID])
 
   useEffect(() => {
     getTaxon(genomeID.split('.')[0]).then(data => {
@@ -199,7 +204,12 @@ const MetaTitle = styled.span`
 `
 
 const MetaTable = styled.table`
-  font-size: 1em;
+  font-size: .95em;
+
+  tr td {
+    padding: 2px;
+    padding-left: 10px;
+  }
 `
 
 const Icon = styled.img`
