@@ -1,3 +1,4 @@
+import { SignalCellularNull } from '@material-ui/icons'
 import React, {useState, useEffect, createContext} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
@@ -6,24 +7,7 @@ import { listData, getGenomeIDs, getRepGenomeIDs } from '../../api/data-api'
 const MAX_GENOMES = 20000
 
 
-const TabContext = createContext([{
-  init: null,
-  loading: null,
-  data: null,
-  filter: null,
-  error: null,
-  total: null,
-  taxonID: null,
-  page: null,
-  limit: null,
-  sort: null,
-  query: null,
-  onSort: null,
-  onPage: null,
-  onSearch: null,
-  onFacetFilter: null,
-  onColumnMenuChange: null
-}])
+const TabContext = createContext([null])
 
 const TabProvider = (props) => {
   const {taxonID} = useParams()
@@ -39,8 +23,8 @@ const TabProvider = (props) => {
 
   const [core, setCore] = useState(null)
   const [colIDs, setColIDs] = useState(null)
-  const [loading, setLoading] = useState(null)
-  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState([])
   const [total, setTotal] = useState(null)
   const [error, setError] = useState(null)
 
@@ -77,7 +61,6 @@ const TabProvider = (props) => {
       }
 
       console.log('fetching data for:', params)
-      setLoading(true)
       try {
         let res = await listData(params)
         res = res.data.response
@@ -92,6 +75,8 @@ const TabProvider = (props) => {
       }
     }
 
+
+    setLoading(true)
     fetchData()
 
     return () => {
@@ -137,7 +122,8 @@ const TabProvider = (props) => {
   return (
     <TabContext.Provider value={[{
       init, loading, data, filter, error, total, taxonID, page, limit, sort, query,
-      onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange
+      onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
+      emptyNotice: loading && 'loading...'
     }]}>
       {props.children}
     </TabContext.Provider>
