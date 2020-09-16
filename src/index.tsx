@@ -31,7 +31,7 @@ import './styles/styles.scss'
 
 const colors = {
   primary: '#2e75a3',
-  secondary: '#549a00'
+  secondary: '#42a242'
 }
 
 const theme = createMuiTheme({
@@ -66,6 +66,7 @@ const App = () => {
                     <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
                     <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
                     <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
+                    <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
                     <Route path="/jobs*" component={Jobs}/>
                     <Route path="/files/:path*" exact component={Workspaces} />
                     <Route path="/taxonomy/:taxonID/:view" exact render={() =>

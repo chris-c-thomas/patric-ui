@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect } from 'react'
 import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
 import InfoIcon from '@material-ui/icons/InfoOutlined'
+import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
 import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
 import MyIcon from '@material-ui/icons/AccountCircleRounded'
@@ -11,7 +12,9 @@ import PublicIcon from '@material-ui/icons/PublicRounded'
 import SpecialFolderIcon from '@material-ui/icons/FolderSpecialRounded'
 
 import {getUser} from '../api/auth'
-import { getUserCounts } from '../api/ws-api'
+
+import { WSObject } from '../api/ws-api'
+
 
 // only for testing
 import config from '../config'
@@ -49,29 +52,18 @@ type Props = {
 const WSSideBar = (props: Props) => {
   const {path} = useParams()
 
-  /*
-  const [counts, setCounts] = useState(null)
-
-  useEffect(() => {
-    getUserCounts({user: getUser(true)})
-      .then(counts => {
-        console.log('counts', counts)
-        setCounts(counts)
-      })
-  }, [])
-  */
+  const {isObjectSelector} = props
 
 
   const onNav = (evt) => {
-    if (props.isObjectSelector) {
+    if (isObjectSelector) {
       evt.preventDefault()
     }
   }
 
-
   return (
     <SidebarRoot>
-      {!props.isObjectSelector &&
+      {!isObjectSelector &&
         <Title>
           Workspaces
           <sup>
@@ -79,7 +71,7 @@ const WSSideBar = (props: Props) => {
               href={`${config.p3URL}/workspace/${path}`}
               target="_blank"
             >
-              <InfoIcon />
+              <HelpIcon />
             </P3Link>
           </sup>
         </Title>
@@ -132,10 +124,6 @@ const Menu = styled.ul`
   padding: 0;
   font-size: 1em;
   list-style: none;
-
-  li {
-
-  }
 `
 const indention = 8
 
@@ -167,11 +155,6 @@ const Caret = styled.div`
   svg {
     width: 20px;
   }
-`
-
-const Count = styled.span`
-  margin-left: auto;
-  margin-right: 4px;
 `
 
 

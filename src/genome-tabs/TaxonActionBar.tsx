@@ -2,6 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams} from 'react-router-dom'
 
+import IconButton from '@material-ui/core/IconButton'
+import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
+
 import genomeIcon from '../../assets/icons/selection-Genome.svg'
 import taxonIcon from '../../assets/icons/selection-Taxonomy.svg'
 
@@ -18,6 +21,8 @@ export const TaxonActionBar = (props) => {
       <Image src={props.title.includes('Genome') ? genomeIcon : taxonIcon} />
       {props.title}
       <TaxonCrumbs />
+
+
       <P3Link
         href={props.title.includes('Genome') ?
           `${config.p3URL}/view/Genome/${genomeID}#view_tab=${view}` :
@@ -25,7 +30,9 @@ export const TaxonActionBar = (props) => {
         }
         target="_blank"
       >
-        p3
+        <IconButton size="small" disableRipple >
+          <HelpIcon fontSize="small" />
+        </IconButton>
       </P3Link>
     </Root>
   )
@@ -45,7 +52,7 @@ const Image = styled.img`
 
 const P3Link = styled.a`
   position: absolute;
-  top: 50;
-  right: 10;
+  top: 60;
+  right: 20;
   opacity: .7;
 `

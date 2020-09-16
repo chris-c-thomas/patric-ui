@@ -112,6 +112,7 @@ const services = [
   {label: 'Assembly', url: '/apps/assembly'},
   {label: 'Annotation', url: '/apps/annotation'},
   {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/ComprehensiveSARS2Analysis'},
+  {label: 'BLAST', url: '/apps/blast'},
 ]
 
 const getMiddle = data => Math.round(data.length / 2)

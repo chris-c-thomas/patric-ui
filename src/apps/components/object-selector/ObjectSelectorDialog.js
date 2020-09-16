@@ -61,13 +61,13 @@ export default function ObjectSelectorDialog(props) {
       <Dialog
         className="dialog"
         fullWidth
-        maxWidth="lg"
+        maxWidth="md"
         fullScreen={fullScreen} // for mobile
         open={open}
         onClose={handleClose}
         aria-labelledby="dialog-title"
       >
-        <span id="dialog-title">
+        <DialogTitle id="dialog-title">
           <div className="flex space-between align-items-center">
             <div>
               {title}
@@ -76,7 +76,7 @@ export default function ObjectSelectorDialog(props) {
               <Close />
             </IconButton>
           </div>
-        </span>
+        </DialogTitle>
 
         <DialogContent>
           <Workspaces

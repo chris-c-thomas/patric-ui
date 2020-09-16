@@ -461,13 +461,17 @@ export default function TableComponent(props: Props) {
             component="div"
             rowsPerPage={props.limit}
             page={page}
+
             backIconButtonProps={{
               disableRipple: true,
               'aria-label': 'previous page',
+              size: 'small',
+              style: {marginLeft: '2px'}
             }}
             nextIconButtonProps={{
               disableRipple: true,
               'aria-label': 'next page',
+              size: 'small'
             }}
             count={props.total || (rows && rows.length) || 0}
             onChangePage={onChangePage}

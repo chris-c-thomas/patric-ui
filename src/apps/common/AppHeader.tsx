@@ -29,7 +29,7 @@ type Props = {
   description: string;
   tutorialURL: string;
   userGuideURL: string;
-  onUseExample: () => void;
+  onUseExample?: () => void;
 }
 
 

@@ -1,4 +1,3 @@
-import { SignalCellularNull } from '@material-ui/icons'
 import React, {useState, useEffect, createContext} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
@@ -27,6 +26,8 @@ const TabProvider = (props) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState(null)
   const [error, setError] = useState(null)
+
+  const [filterState, setFilterState] = useState(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -106,7 +107,8 @@ const TabProvider = (props) => {
     history.push({search: params.toString()})
   }
 
-  const onFacetFilter = (queryObj, queryStr) => {
+  const onFacetFilter = (state, queryStr) => {
+    setFilterState(filterState)
     if (!queryStr.length) params.delete('filter')
     params.set('filter', queryStr)
 
@@ -121,7 +123,7 @@ const TabProvider = (props) => {
 
   return (
     <TabContext.Provider value={[{
-      init, loading, data, filter, error, total, taxonID, page, limit, sort, query,
+      init, loading, data, filter, filterState, error, total, taxonID, page, limit, sort, query,
       onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
       emptyNotice: loading && 'loading...'
     }]}>

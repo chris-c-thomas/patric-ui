@@ -3,6 +3,7 @@ import React, {useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import FilterSidebar from '../../FilterSidebar'
+import QueryDisplay from '../QueryDisplay'
 import Table from '../../../tables/Table'
 import ErrorMsg from '../../../ErrorMsg'
 import Actions from './Actions'
@@ -137,7 +138,7 @@ export default function Genomes() {
   const [state] = useContext(TabContext)
 
   const {
-    init, taxonID, data, loading, error, filter, onFacetFilter,
+    init, taxonID, data, loading, error, filter, filterState, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 
@@ -166,6 +167,8 @@ export default function Genomes() {
 
       <GridContainer fullWidth={fullWidth}>
         {loading && <Progress />}
+
+        {/*<QueryDisplay filterState={filterState} />*/}
 
         {data &&
           <Table

@@ -9,15 +9,16 @@ import  Button from '@material-ui/core/Button'
 import News from './news/news'
 
 import { docsURL } from '../config'
+import Alert from '@material-ui/lab/Alert'
 
 
 const Home = () =>
   <>
     <Root>
-      <Notice>
-        <strong>NEW: </strong>
-        Check out the <a href="/sars-cov-2">SARS-CoV-2 Page</a> and its <a href="apps/ComprehensiveSARS2Analysis">Genome Assembly and Annotation Service</a>
-      </Notice>
+      <Alert icon={false} style={{margin: 10, borderBottom: '5px solid #42a242'}}>
+        <strong>NEW:</strong>
+        Check out the new <a href="/sars-cov-2">SARS-CoV-2 Page</a> and <a href="apps/ComprehensiveSARS2Analysis">Genome Assembly and Annotation Service</a>
+      </Alert>
 
       <Row>
         <ColumnLeft>
@@ -67,7 +68,7 @@ const Home = () =>
               */}
 
               <div className="btns">
-                <Button variant="contained" color="secondary" href="https://patricbrc.org/" disableRipple>
+                <Button variant="contained" style={{background: '#42a242', color: '#fff'}} href="https://patricbrc.org/" disableRipple>
                   Visit PATRIC
                 </Button>
               </div>
@@ -143,7 +144,7 @@ const Root = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 1140px;
-  margin: 60px auto 0 auto;
+  margin: 50px auto 0 auto;
 
   ul {
     list-style: none;

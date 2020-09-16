@@ -75,7 +75,10 @@ export default function Workspaces(props: Props) {
     <Root>
       <Container>
 
-        <Sidebar {...props} />
+        <Sidebar
+          selected={selected}
+          {...props}
+        />
 
         <Main>
           <ActionBarContainer>

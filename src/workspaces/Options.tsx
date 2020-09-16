@@ -2,9 +2,13 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import UploadIcon from '@material-ui/icons/CloudUploadOutlined'
 import VisibilityIcon from '@material-ui/icons/Visibility'
+import MoreIcon from '@material-ui/icons/MoreVert'
+
 // import NewWSIcon from '../../assets/icons/add-workspace.svg'
 
 import CreateDialog from './CreateDialog'
@@ -54,6 +58,12 @@ const Options = (props: Props) => {
       <Btn startIcon={<FolderIcon />} onClick={() => setOpen(true)}>
         {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
       </Btn>
+
+      <Tooltip title="show details">
+        <IconButton onClick={() => implement()} size="small" color="primary" disableRipple >
+          <MoreIcon />
+        </IconButton>
+      </Tooltip>
 
       {open &&
         <CreateDialog

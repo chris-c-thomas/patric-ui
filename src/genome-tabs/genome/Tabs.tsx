@@ -76,7 +76,7 @@ const TabButtons = () => {
 
 const placeHolder = (view) => <div>{view} goes here</div>
 
-export default function GenomeTabs(props) {
+export default function GenomeTabs() {
   const {view} = useParams()
 
   return (

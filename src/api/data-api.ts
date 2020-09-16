@@ -310,4 +310,12 @@ export function getRepGenomeIDs(taxonID: string) {
 
 
 
+export function queryGenomeNames(query: string) {
+  const q = `?or(eq(genome_name,*${query}*),eq(genome_id,*${query}*))&or(eq(public,true),eq(public,false))` +
+    `&select(genome_id,genome_name,strain,public,owner,reference_genome,taxon_id)` +
+    `&limit(20,0)`
+
+  return api.get(`/genome/${q}`, {headers: {}})
+    .then(res => res.data)
+}
 
