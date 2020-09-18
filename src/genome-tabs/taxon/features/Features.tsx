@@ -21,7 +21,7 @@ const columns = [
   },
   { label: 'Genome ID', id: 'genome_id' },
   { label: 'Accession', id: 'accession', hide: true },
-  { label: 'PATRIC ID', id: 'patric_id', hide: false },
+  { label: 'PATRIC ID', id: 'patric_id', hide: false, width: '10%'},
   { label: 'RefSeq Locus Tag', id: 'refseq_locus_tag', hide: false },
   { label: 'Alt Locus Tag', id: 'alt_locus_tag', hide: true },
   { label: 'Gene Symbol', id: 'gene', hide: false },

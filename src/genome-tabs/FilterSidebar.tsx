@@ -9,6 +9,7 @@ import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 import plusIcon from '../../assets/icons/plus-circle.svg'
 
 import FilterComponent from './Filter'
+import FilterDialog from './FilterDialog'
 
 
 const getFacetFields = (state) =>
@@ -99,6 +100,7 @@ const Sidebar = (props: Props) => {
   const [queryStr, setQueryStr] = useState(props.facetQueryStr)
 
   const [collapsed, setCollapsed] = useState(props.collapsed)
+  const [openDialog, setOpenDialog] = useState(false)
   const [showApplyBtn, setShowApplyBtn] = useState(null)
 
   useEffect(() => {
@@ -147,7 +149,7 @@ const Sidebar = (props: Props) => {
       <Options>
         <AddFilterBtn>
           <Tooltip title="Add a filter" >
-            <Button onClick={onAddFilter} size="small" color="primary" disableRipple>
+            <Button onClick={() => setOpenDialog(true)} size="small" color="primary" disableRipple>
               <Icon src={plusIcon} /> Add Filter
             </Button>
           </Tooltip>
@@ -180,6 +182,15 @@ const Sidebar = (props: Props) => {
           )
         }
       </Container>
+
+      {openDialog &&
+        <FilterDialog
+          title={}
+          onClose={() => setOpenDialog(false)}
+          onPrimaryClick={() => setOpenDialog(false)}
+          onAddFilters={}
+        />
+      }
     </SidebarRoot>
   )
 }

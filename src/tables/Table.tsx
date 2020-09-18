@@ -13,7 +13,9 @@ import TableHead from '@material-ui/core/TableHead'
 import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import Tooltip from '@material-ui/core/Tooltip'
+import IconButton from '@material-ui/core/IconButton'
 
+import MoreIcon from '@material-ui/icons/MoreHoriz'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 import filterIcon from '../../assets/icons/filter.svg'
@@ -89,6 +91,7 @@ type RowProps = {
     row: object
   ) => void
   onDoubleClick: (row: object) => void
+  onMore: () => void
 }
 
 const Row = (props: RowProps) => {
@@ -101,12 +104,13 @@ const Row = (props: RowProps) => {
     checkboxes,
     onSelect,
     onDoubleClick,
+    onMore
   } = props
 
   const {rowID} = row
 
   return (
-    <TableRow hover
+    <TableRowComponent hover
       tabIndex={-1}
       key={id}
       onClick={evt => onSelect(evt, rowID, row)}
@@ -125,11 +129,35 @@ const Row = (props: RowProps) => {
         columns={columns}
         row={row}
       />
-    </TableRow>
+
+      {onMore &&
+        <More className="more-btn">
+          <IconButton size="small">
+            <MoreIcon />
+          </IconButton>
+        </More>
+      }
+    </TableRowComponent>
   )
 }
 
 Row.displayName = 'TableComponent-Row'
+
+const TableRowComponent = styled(TableRow)`
+  &:hover {
+    .more-btn {
+      display: block;
+    }
+  }
+`
+
+const More = styled.span`
+  position: absolute;
+  background: #f5f5f5;
+  padding: 0 20px;
+  right: 20;
+  display: none;
+`
 
 
 const TableRows = (props) => {
@@ -283,6 +311,8 @@ type Props = {
 
   openFilters?: boolean
   onOpenFilters?: () => void
+
+  onMore?: () => void             // todo: deprecate?
 
   middleComponent?: JSX.Element
 }
@@ -481,7 +511,7 @@ export default function TableComponent(props: Props) {
 
         {onColumnMenuChange &&
           <ColumnMenu
-            columns={props.columns} // all columns
+            options={props.columns} // all columns
             onChange={onColumnChange}
           />
         }
@@ -513,6 +543,7 @@ export default function TableComponent(props: Props) {
               onSelect={handleSelect}
               selected={selected}
               onDoubleClick={onDoubleClick}
+              onMore={props.onMore}
             />
           </TableBody>
         </Table>

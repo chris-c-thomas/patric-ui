@@ -113,7 +113,6 @@ export default function FileList(props: Props) {
     if (onNavigate) onNavigate(obj)
   }
 
-
   return (
     <>
       {
