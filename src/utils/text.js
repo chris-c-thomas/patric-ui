@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+
 
 export default function highlightText(text, query) {
   if (!text) return ''
@@ -10,7 +11,7 @@ export default function highlightText(text, query) {
         <span
           key={i}
           style={part.toLowerCase() === query.toLowerCase() ?
-            { fontWeight: '800', color: '#000' /*#2684ff*/ } :
+            { fontWeight: '800', color: '#2684ff' } :
             {}
           }>
           { part }

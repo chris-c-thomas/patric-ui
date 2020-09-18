@@ -90,7 +90,7 @@ const TabProvider = (props) => {
     return () => {
       // cancel request!
     }
-  }, [core, taxonID, sort, page, query, colIDs, filterStr, limit, filter])
+  }, [core, taxonID, sort, page, query, colIDs, filterStr, limit])
 
   const init = (core, columnIDs) => {
     setCore(core)
@@ -131,7 +131,7 @@ const TabProvider = (props) => {
 
   return (
     <TabContext.Provider value={[{
-      init, loading, data, filter, filterState, error, total, taxonID, page, limit, sort, query,
+      init, loading, data, filter: filterStr, filterState, error, total, taxonID, page, limit, sort, query,
       onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
       emptyNotice: loading && 'loading...'
     }]}>

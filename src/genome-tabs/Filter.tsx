@@ -6,6 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
 
+import highlightText from '../utils/text'
 import Checkbox from '../forms/Checkbox'
 import { getFacets } from '../api/data-api'
 
@@ -14,17 +15,32 @@ import { getFacets } from '../api/data-api'
 const MAX_FILTERS = 10
 
 
-export default function FilterComponent(props) {
+type Props = {
+  field: string
+  label: string
+  core: string
+  taxonID: string
+  hideSearch?: boolean
+  onCheck: ({field: string, value: boolean}) => void
+  facetQueryStr?: string
+}
+
+
+export default function FilterComponent(props: Props) {
   const {
     field, label, core, taxonID, hideSearch,
     onCheck, facetQueryStr = null
   } = props
 
-  const [enableQuery, setEnableQuery] = useState(false)
 
-  const [data, setData] = useState(null)
+  const [allData, setAllData] = useState(null)
   const [checked, setChecked] = useState({})
   const [showAll, setShowAll] = useState(false)
+
+
+  const [enableQuery, setEnableQuery] = useState(false)
+  const [query, setQuery] = useState('')
+  const [data, setData] = useState([])
 
   useEffect(() => {
     // if facetQueryString includes field, don't update (a little bit hacky?)
@@ -33,13 +49,18 @@ export default function FilterComponent(props) {
       return
     }
 
-    getFacets({field, core, taxonID, facetQueryStr: unescape(facetQueryStr)})
-      .then(data => setData(data))
+    getFacets({field, core, taxonID, facetQueryStr: facetQueryStr})
+      .then(data => setAllData(data))
   }, [taxonID, facetQueryStr])
 
   useEffect(() => {
     onCheck({field, value: checked})
   }, [checked])
+
+  useEffect(() => {
+    if (!allData) return
+    setData(allData.filter(obj => obj.name.toLowerCase().includes(query.toLowerCase())))
+  }, [query, allData, setData])
 
 
   const handleCheck = (id) => {
@@ -51,11 +72,11 @@ export default function FilterComponent(props) {
   }
 
   // only render if there's actually facet data
-  if (data && !data.length) return <></>
+  if (allData && !allData.length) return <></>
 
   return (
     <FilterRoot>
-      {data && data.length > 0 &&
+      {allData && allData.length > 0 &&
         <Header>
           <Title>
             {label}
@@ -73,7 +94,7 @@ export default function FilterComponent(props) {
         <TextField
           autoFocus
           placeholder={`Filter ${label}`}
-          onChange={() => {}}
+          onChange={evt => setQuery(evt.target.value)}
           InputProps={{
             style: {margin: '5px 10px', height: 26}
           }}
@@ -83,28 +104,29 @@ export default function FilterComponent(props) {
 
       <Filters>
         {
-          data && data.length > 0 &&
-          data.slice(0, showAll ? data.length : MAX_FILTERS).map(obj =>
-            <div key={obj.name}>
-              <CBContainer
-                control={
-                  <Checkbox
-                    checked={checked[obj.name]}
-                    onChange={() => handleCheck(obj.name)}
-                  />}
-                label={
-                  <>
-                    <FacetLabel>{obj.name}</FacetLabel>
-                    <Count>{obj.count.toLocaleString()}</Count>
-                  </>
-                }
-              />
-            </div>
-          )
+          allData && allData.length > 0 &&
+          data.slice(0, showAll ? data.length : MAX_FILTERS)
+            .map(obj =>
+              <div key={obj.name}>
+                <CBContainer
+                  control={
+                    <Checkbox
+                      checked={checked[obj.name]}
+                      onChange={() => handleCheck(obj.name)}
+                    />}
+                  label={
+                    <>
+                      <FacetLabel>{highlightText(obj.name, query)}</FacetLabel>
+                      <Count>{obj.count.toLocaleString()}</Count>
+                    </>
+                  }
+                />
+              </div>
+            )
         }
       </Filters>
 
-      {data && data.length > MAX_FILTERS &&
+      {allData && data.length > MAX_FILTERS &&
         <MoreBtn onClick={handleShowAll}>
           {!showAll && `${data.length - MAX_FILTERS} more…`}
           {showAll && 'less…'}
@@ -112,6 +134,11 @@ export default function FilterComponent(props) {
       }
     </FilterRoot>
   )
+}
+
+
+const getSearchedFilters = (data, search) => {
+
 }
 
 const FilterRoot = styled.div`
