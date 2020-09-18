@@ -73,9 +73,8 @@ const FailIcon = (props) => {
         <WarningIcon className="failed"/>
       </IconButton>
       {
-        open &&
+        msg &&
         <Dialog title={<><WarningIcon className="failed"/> Error Log</>}
-          open={msg ? true : false}
           primaryBtnText="close"
           maxWidth="lg"
           content={<pre>{msg}</pre>}

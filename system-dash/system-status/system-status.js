@@ -273,7 +273,6 @@ export default function SystemStatus() {
 
       {errorLog &&
         <Dialog title={<><WarningIcon className="failed"/> Error Log (time is in UTC)</>}
-          open={errorLog ? true : false}
           primaryBtnText="close"
           maxWidth="lg"
           content={<pre>{errorLog}</pre>}

@@ -216,7 +216,6 @@ export default function Tests() {
 
       {msg &&
         <Dialog title={<><WarningIcon className="failed"/> Error Log</>}
-          open={msg ? true : false}
           primaryBtnText="close"
           maxWidth="lg"
           content={<pre>{msg}</pre>}
