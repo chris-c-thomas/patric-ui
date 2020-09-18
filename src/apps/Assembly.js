@@ -14,7 +14,7 @@ import AdvandedButton from './components/AdvancedButton'
 
 // auth is required
 import { isSignedIn } from '../api/auth'
-import SignInForm from '../auth/sign-in-form'
+import SignInForm from '../auth/SignInForm'
 
 import { submitApp } from '../api/app-service'
 

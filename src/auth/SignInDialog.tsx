@@ -1,14 +1,14 @@
 
-import React, {useState, useEffect} from 'react';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import SignInForm from './sign-in-form';
+import React, {useState, useEffect} from 'react'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import SignInForm from './SignInForm'
 
 
 export default function SignInDialog(props) {
-  const {onClose} = props;
+  const {onClose} = props
 
-  const [open, setOpen] = useState(props.open);
+  const [open, setOpen] = useState(props.open)
 
   useEffect(() => {
     setOpen(props.open)
@@ -16,7 +16,7 @@ export default function SignInDialog(props) {
 
   function handleClose() {
     setOpen(false)
-    if (onClose) onClose();
+    if (onClose) onClose()
   }
 
   return (
@@ -28,5 +28,5 @@ export default function SignInDialog(props) {
       <DialogTitle>Sign In</DialogTitle>
       <SignInForm />
     </Dialog>
-  );
+  )
 }

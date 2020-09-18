@@ -432,7 +432,7 @@ export default function TableComponent(props: Props) {
 
         {enableTableOptions &&
           <DownloadContainer>
-            <Tooltip title="view download options...">
+            <Tooltip title="View download options...">
               <ActionBtn aria-label="download" >
                 <img src={downloadIcon} />
                 <div>Download</div>

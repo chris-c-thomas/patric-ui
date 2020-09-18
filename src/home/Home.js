@@ -25,7 +25,7 @@ import chipImages from '../../assets/imgs/biology/*.png'
 
 import config from '../config'
 import * as Auth from '../api/auth'
-import SignInDialog from '../auth/sign-in-dialog'
+import SignInDialog from '../auth/SignInDialog'
 import JobsOverview from './jobs-overview'
 import ChipFilters from '../utils/ui/chip-filters'
 

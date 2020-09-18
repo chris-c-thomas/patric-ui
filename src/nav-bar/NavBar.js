@@ -20,7 +20,7 @@ import ListItem from '@material-ui/core/ListItem'
 import logo from '../../assets/imgs/patric-logo-88h.png'
 
 import * as Auth from '../api/auth'
-import SignInDialog from '../auth/sign-in-dialog'
+import SignInDialog from '../auth/SignInDialog'
 
 import DropdownMenu from './menu'
 
@@ -358,7 +358,7 @@ export function NavBar(props) {
             onClick={() => setOpenSignIn(true)}
             disableRipple
           >
-            Sign In&nbsp;<ExitIcon/>
+            Sign In
           </SignInBtn>
         }
 

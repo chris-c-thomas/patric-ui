@@ -1,10 +1,10 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
 
-import SignInForm from './sign-in-form';
-import SUSignInForm from './su-sign-in-form';
+import SignInForm from './SignInForm'
+import SUSignInForm from './SuSignInForm'
 
 import {isSignedIn} from '../api/auth'
 
@@ -14,11 +14,11 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     marginTop: theme.spacing(2)
   }
-}));
+}))
 
 
 export default function SUSignIn(props) {
-  const styles = useStyles();
+  const styles = useStyles()
 
   return (
     <Grid container justify="center">

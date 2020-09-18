@@ -17,7 +17,7 @@ import WSFileName from './components/WSFileName'
 
 // auth is required
 import { isSignedIn, getUser} from '../api/auth'
-import SignInForm from '../auth/sign-in-form'
+import SignInForm from '../auth/SignInForm'
 
 import { submitApp } from '../api/app-service'
 

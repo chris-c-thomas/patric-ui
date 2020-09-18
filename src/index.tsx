@@ -18,9 +18,12 @@ import TaxonTabs from './genome-tabs/taxon/Tabs'
 import GenomeTabs from './genome-tabs/genome/Tabs'
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
-import SUSignIn from './auth/su-sign-in'
+import SUSignIn from './auth/SuSignIn'
 import NotFound404 from './404'
 import ErrorBoundary from './ErrorBoundary'
+
+import {isSignedIn} from './api/auth'
+import SignIn from './auth/SignIn'
 
 import { JobStatusProvider } from './jobs/job-status-context'
 
@@ -67,8 +70,14 @@ const App = () => {
                     <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
                     <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
                     <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
-                    <Route path="/jobs*" component={Jobs}/>
-                    <Route path="/files/:path*" exact component={Workspaces} />
+
+                    <Route path="/jobs*" render={() =>
+                      isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status." />}
+                    />
+                    <Route path="/files/:path*" exact render={() =>
+                      isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces." />}
+                    />
+
                     <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                       <TaxonTabs />
                     } />
