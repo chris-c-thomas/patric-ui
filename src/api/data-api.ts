@@ -68,7 +68,7 @@ function getSolrConfig({start = null, limit, contentType, data}: ConfigParams) {
  * Data API helpers
  */
 
-// todo: replace with "Query"
+// todo: replace with "Query"?
 export function listRepresentative({taxonID,  limit=10000}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
     `&select(genome_id,reference_genome,genome_name)` +
@@ -83,7 +83,8 @@ export function listRepresentative({taxonID,  limit=10000}) {
     })
 }
 
-// todo: replace with "Query"
+
+// todo: replace with "Query"?
 export function getAMRCounts() {
   console.warn('Note: The AMR Overview Counts still need to be fixed.')
   const kinds = 'Resistant,Susceptible,Intermediate'
@@ -113,7 +114,8 @@ export function getAMRCounts() {
     })
 }
 
-// todo: replace with "Query"
+
+// todo: replace with "Query"?
 export function getTaxonChartData({taxonID}) {
   const q = `?eq(taxon_lineage_ids,${taxonID})` +
     `&facet((field,host_name),(field,disease),(field,genome_status),(field,isolation_country),(mincount,1))` +
@@ -139,7 +141,7 @@ export function getGenomeMeta(genome_id) {
     .then(data => data[0])
 }
 
-// todo: replace with "Query"
+// todo: replace with "Query"?
 export function queryTaxon({query, start = 0, limit = 25}) {
   const q = `?q=((taxon_name:*${query}*)%20OR%20(taxon_name:${query}))%20AND%20` +
     `(taxon_rank:(superkingdom)^7000000%20OR%20taxon_rank:(phylum)^6000000%20OR%20` +
@@ -173,8 +175,9 @@ const parseFacets = (facetList) => {
   return data
 }
 
+
 // todo(nc): refactor
-export function getFacets({core, taxonID, field, facetQueryStr}) {
+export async function getFacets({core, taxonID, field, facetQueryStr}) {
   let q
 
   // if faceting the genome core, facet everything below taxon
@@ -185,28 +188,27 @@ export function getFacets({core, taxonID, field, facetQueryStr}) {
 
   // otherwise, get reference genomes
   } else if (facetQueryStr) {
-    return getRepGenomeIDs(taxonID)
-      .then(genomeIDs => {
-        q = `?and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
-        q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+    const genomeIDs = await getRepGenomeIDs(taxonID)
 
-        return api.get(`/${core}/${q}`)
-          .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
-      })
+    q = `?and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
+    q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+
+    const res = await api.get(`/${core}/${q}`)
+    return parseFacets(res.data.facet_counts.facet_fields[field])
   } else {
-    return getRepGenomeIDs(taxonID)
-      .then(genomeIDs => {
-        q = `?and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
-        q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
-        return api.get(`/${core}/${q}`)
-          .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
-      })
+    const genomeIDs = await getRepGenomeIDs(taxonID)
+
+    q = `?and(in(genome_id,(${genomeIDs.join(',')})))`
+    q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+
+    const res = await api.get(`/${core}/${q}`)
+    return parseFacets(res.data.facet_counts.facet_fields[field])
   }
 
   q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}`
 
-  return api.get(`/${core}/${q}`)
-    .then(res => parseFacets(res.data.facet_counts.facet_fields[field]))
+  const res = await api.get(`/${core}/${q}`)
+  return parseFacets(res.data.facet_counts.facet_fields[field])
 }
 
 
@@ -218,10 +220,49 @@ export function queryTaxonID({query}) {
 }
 
 
+export function getGenomeCount(taxonID: string) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&select(genome_id)&limit(100001)&${acceptSolr}`
+  return api.get(`/genome/${q}`)
+    .then(res => res.data.response.numFound)
+}
+
+
+export function getGenomeIDs(taxonID: string) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&select(genome_id)&limit(100001)&${acceptSolr}`
+  return api.get(`/genome/${q}`)
+    .then(res => res.data.response.docs.map(o => o.genome_id))
+}
+
+
+export function getRepGenomeIDs(taxonID: string) {
+  const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
+    `&select(genome_id)` +
+    `&facet((field,reference_genome),(mincount,1))&json(nl,map)` +
+    `&limit(100001)` +
+    `&${acceptSolr}`
+
+  return api.get(`/genome/${q}`)
+    .then(res => {
+      return res.data.response.docs.map(o => o.genome_id)
+    })
+}
+
+
+export function queryGenomeNames(query: string) {
+  const q = `?or(eq(genome_name,*${query}*),eq(genome_id,*${query}*))&or(eq(public,true),eq(public,false))` +
+    `&select(genome_id,genome_name,strain,public,owner,reference_genome,taxon_id)` +
+    `&limit(20,0)`
+
+  return api.get(`/genome/${q}`, {headers: {}})
+    .then(res => res.data)
+}
+
+
 export function getPhyloData({taxonID}, ) {
   return api.get(`/taxonomy/${taxonID}`, {headers: {Accept: 'application/newick+json'} } )
     .then(res => res.data)
 }
+
 
 
 
@@ -273,49 +314,13 @@ export async function listData(params: ListParams, options = null) {
 
   return cachero({
     core, sort, start, query,
-    limit, eq, select, solrInfo, filter
+    limit, eq, select, solrInfo,
+    filter: filter // ? filter.replace(/(".*")/g, (match) => encodeURIComponent(match)) : null
   }, options)
 }
 
 export function getTaxon(id) {
   return api.get(`/taxonomy/${id}`)
-    .then(res => res.data)
-}
-
-
-export function getGenomeCount(taxonID: string) {
-  const q = `?eq(taxon_lineage_ids,${taxonID})&select(genome_id)&limit(100001)&${acceptSolr}`
-  return api.get(`/genome/${q}`)
-    .then(res => res.data.response.numFound)
-}
-
-export function getGenomeIDs(taxonID: string) {
-  const q = `?eq(taxon_lineage_ids,${taxonID})&select(genome_id)&limit(100001)&${acceptSolr}`
-  return api.get(`/genome/${q}`)
-    .then(res => res.data.response.docs.map(o => o.genome_id))
-}
-
-export function getRepGenomeIDs(taxonID: string) {
-  const q = `?eq(taxon_lineage_ids,${taxonID})&or(eq(reference_genome,*))` +
-    `&select(genome_id)` +
-    `&facet((field,reference_genome),(mincount,1))&json(nl,map)` +
-    `&limit(100001)` +
-    `&${acceptSolr}`
-
-  return api.get(`/genome/${q}`)
-    .then(res => {
-      return res.data.response.docs.map(o => o.genome_id)
-    })
-}
-
-
-
-export function queryGenomeNames(query: string) {
-  const q = `?or(eq(genome_name,*${query}*),eq(genome_id,*${query}*))&or(eq(public,true),eq(public,false))` +
-    `&select(genome_id,genome_name,strain,public,owner,reference_genome,taxon_id)` +
-    `&limit(20,0)`
-
-  return api.get(`/genome/${q}`, {headers: {}})
     .then(res => res.data)
 }
 

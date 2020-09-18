@@ -90,7 +90,7 @@ export default function SpecGenes() {
       <GridContainer fullWidth={fullWidth}>
         {loading && <Progress />}
 
-        {data &&
+        {data && !error &&
           <Table
             columns={columns}
             rows={data}

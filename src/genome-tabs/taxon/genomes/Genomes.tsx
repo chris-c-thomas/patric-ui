@@ -138,7 +138,7 @@ export default function Genomes() {
   const [state] = useContext(TabContext)
 
   const {
-    init, taxonID, data, loading, error, filter, filterState, onFacetFilter,
+    init, taxonID, data, loading, error, filter, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 
@@ -168,9 +168,7 @@ export default function Genomes() {
       <GridContainer fullWidth={fullWidth}>
         {loading && <Progress />}
 
-        {/*<QueryDisplay filterState={filterState} />*/}
-
-        {data &&
+        {data && !error &&
           <Table
             columns={columns}
             rows={data}

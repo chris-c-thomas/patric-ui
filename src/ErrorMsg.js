@@ -7,6 +7,7 @@ export default function ErrorMsg(props) {
   const {error, noContact} = props
 
   const res = error.response
+  console.log('res', res)
 
   let msg
   if (res && res.data != '' && res.data.error) {
@@ -23,6 +24,11 @@ export default function ErrorMsg(props) {
         {error.message} - {msg || 'Something has gone wrong.'}
 
         {'config' in error && 'url' in error.config && `: ${error.config.url}`}
+
+        {/* for data api errors */
+          'data' in res &&
+          <pre>{res.data}</pre>
+        }
 
         {!noContact &&
           <p>

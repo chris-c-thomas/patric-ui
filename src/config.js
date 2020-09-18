@@ -6,5 +6,5 @@ export default {
   authAPI: 'https://user.patricbrc.org/authenticate',
   docsURL: 'https://docs.patricbrc.org',
 
-  p3URL: 'https://patricbrc.org', //'https://alpha.bv-brc.org' // used for old website links
+  p3URL: 'https://alpha.bv-brc.org', //'https://alpha.bv-brc.org' // used for old website links
 }

@@ -5,6 +5,7 @@ import { listData, getGenomeIDs, getRepGenomeIDs } from '../../api/data-api'
 
 const MAX_GENOMES = 20000
 
+const LOG = false
 
 const TabContext = createContext([null])
 
@@ -27,10 +28,14 @@ const TabProvider = (props) => {
   const [total, setTotal] = useState(null)
   const [error, setError] = useState(null)
 
+  const [filterStr, setFilterStr] = useState(null)
+
+  // Keep an object version of filter state in memory
+  // This is not currently used, but may be?
   const [filterState, setFilterState] = useState(null)
 
   useEffect(() => {
-    async function fetchData() {
+    (async function() {
       // core may not be set yet
       if (!core) return
 
@@ -40,14 +45,16 @@ const TabProvider = (props) => {
         start: Number(page) * Number(limit),
         limit,
         query,
-        filter,
+        filter: filterStr,
         select: colIDs,
         eq: null
       }
 
-      // if core is not 'genome', get associated genome ids first
+      // if core is genome, go ahead and make query with taxon_lineage_ids
       if (core == 'genome') {
         params.eq = {taxon_lineage_ids: taxonID}
+
+      // if core is not 'genome', get associated genome ids first
       } else {
         const genomeIDs = await getGenomeIDs(taxonID)
 
@@ -61,7 +68,11 @@ const TabProvider = (props) => {
         }
       }
 
-      console.log('fetching data for:', params)
+      if (LOG)
+        console.log('fetching data for:', params)
+
+      setError(null)
+      setLoading(true)
       try {
         let res = await listData(params)
         res = res.data.response
@@ -74,16 +85,12 @@ const TabProvider = (props) => {
         setLoading(false)
         setError(e)
       }
-    }
-
-
-    setLoading(true)
-    fetchData()
+    })()
 
     return () => {
       // cancel request!
     }
-  }, [core, taxonID, sort, page, query, colIDs, filter, limit])
+  }, [core, taxonID, sort, page, query, colIDs, filterStr, limit, filter])
 
   const init = (core, columnIDs) => {
     setCore(core)
@@ -108,9 +115,10 @@ const TabProvider = (props) => {
   }
 
   const onFacetFilter = (state, queryStr) => {
-    setFilterState(filterState)
+    setFilterStr(queryStr)
+    setFilterState(state)
     if (!queryStr.length) params.delete('filter')
-    params.set('filter', queryStr)
+    else params.set('filter', queryStr)
 
     // note: we don't want to escape parens and commas for rql
     history.push({search: unescape(params.toString())})

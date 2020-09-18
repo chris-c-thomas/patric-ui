@@ -89,7 +89,7 @@ export default function AMRPhenotypes() {
       <GridContainer fullWidth={fullWidth}>
         {loading && <Progress />}
 
-        {data &&
+        {data && !error &&
           <Table
             columns={columns}
             rows={data}
@@ -99,7 +99,7 @@ export default function AMRPhenotypes() {
             enableTableOptions
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(false)}
-             middleComponent={showActions && <Actions />}
+            middleComponent={showActions && <Actions />}
             {...tableProps}
           />
         }

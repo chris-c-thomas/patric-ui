@@ -25,7 +25,7 @@ const getORStr = (state, field) =>
     Object.keys(state[field])
       .reduce((acc, name) =>
         state[field][name] ?
-          [...acc, `eq(${field},"${encodeURIComponent(name.replace(/,/g, '%2C'))}")`] : acc
+          [...acc, `eq(${field},%22${encodeURIComponent(name).replace(/,/g, '%2C')}%22)`] : acc
       , [])
       .join(',') +
   ')').replace(/,*or\(\),*/g, '')
@@ -38,13 +38,13 @@ const buildFilterString = (state) => {
   // first get fields that have facet filters
   const fields = getFacetFields(state)
 
-  // eq(field,val)
+  // case for: eq(field,val)
   if (fields.length == 1 && getFilterCount(state[fields[0]]) == 1) {
     const field = fields[0]
     const [query, _] = Object.entries(state[field])[0]
-    queryStr = `eq(${field},"${encodeURIComponent(query.replace(/,/g, '%2C'))}")`
+    queryStr = `eq(${field},%22${encodeURIComponent(query).replace(/,/g, '%2C')}%22)`
 
-  // or(eq(field,val), ..., eq(field_n,val_n))
+  // case for: or(eq(field,val), ..., eq(field_n,val_n))
   } else if (fields.length == 1) {
     queryStr =
       fields.map(field => getORStr(state, field))
@@ -95,7 +95,7 @@ const Sidebar = (props: Props) => {
   // {fieldA: {facet1: true, facet2: false}, fieldB: {facet3, facet4}}
   const [query, setQuery] = useState({})
 
-  // and(or(eq(...),...))
+  // query string is something like: and(or(eq(...),...))
   const [queryStr, setQueryStr] = useState(props.facetQueryStr)
 
   const [collapsed, setCollapsed] = useState(props.collapsed)
@@ -106,19 +106,15 @@ const Sidebar = (props: Props) => {
       didMountRef.current = true
       return
     }
-    const fields = getFacetFields(query)
 
-    // only build string and do callback if necessary
-    if (fields.length) {
-      const qStr = buildFilterString(query)
-      setQueryStr(qStr)
-      onChange(query, qStr)
-    }
+    const qStr = buildFilterString(query)
+    setQueryStr(qStr)
+    onChange(query, qStr)
 
     if (queryStr) {
       setShowApplyBtn(true)
     }
-  }, [query, props.facetQueryStr])
+  }, [query])
 
 
   useEffect(() => {
@@ -138,7 +134,7 @@ const Sidebar = (props: Props) => {
   }
 
   const onApplyFilters = () => {
-
+    alert('The apply feature has not been implemented yet. :(')
   }
 
   const handleCollapse = () => {

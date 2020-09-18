@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
-import Skeleton from '@material-ui/lab/Skeleton'
 
 import Checkbox from '../forms/Checkbox'
 import { getFacets } from '../api/data-api'
@@ -13,17 +12,6 @@ import { getFacets } from '../api/data-api'
 
 // number of rows shown by default for each facet
 const MAX_FILTERS = 10
-
-const PlaceHolder = () =>
-  <>
-    <Skeleton variant="rect" width={40} height={20} />
-    <Skeleton animation="wave"/>
-    <Skeleton animation="wave"/>
-    <Skeleton animation="wave"/>
-    <Skeleton animation="wave"/>
-    <Skeleton animation="wave"/>
-    <Skeleton animation="wave"/>
-  </>
 
 
 export default function FilterComponent(props) {
@@ -47,11 +35,12 @@ export default function FilterComponent(props) {
 
     getFacets({field, core, taxonID, facetQueryStr: unescape(facetQueryStr)})
       .then(data => setData(data))
-  }, [facetQueryStr])
+  }, [taxonID, facetQueryStr])
 
   useEffect(() => {
     onCheck({field, value: checked})
   }, [checked])
+
 
   const handleCheck = (id) => {
     setChecked(prev => ({...prev, [id]: !prev[id]}))
