@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 
-import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
@@ -83,7 +83,7 @@ export default function FilterComponent(props: Props) {
           </Title>
 
           {!hideSearch &&
-            <SearchBtn onClick={() => setEnableQuery(!enableQuery)} disableRipple>
+            <SearchBtn onClick={() => setEnableQuery(!enableQuery)} size="small" disableRipple>
               <SearchIcon/>
             </SearchBtn>
           }
@@ -181,10 +181,10 @@ const Count = styled.div`
   font-size: .8rem;
 `
 
-const SearchBtn = styled(Button)`
-  margin-right: 10px;
-  padding: 0;
-  min-width: 0;
+const SearchBtn = styled(IconButton)`
+  &.MuiButtonBase-root {
+    margin-right: 5px;
+  }
 `
 
 const MoreBtn = styled.a`
