@@ -15,6 +15,16 @@ import { getFacets } from '../api/data-api'
 const MAX_FILTERS = 10
 
 
+
+const sortOptions = (options, checked) =>
+  [
+    ...options.filter(obj => checked[obj.name]),
+    ...options.filter(obj => !checked[obj.name])
+      .sort((a, b) => b.count - a.count)
+  ]
+
+
+
 type Props = {
   field: string
   label: string
@@ -24,7 +34,6 @@ type Props = {
   onCheck: ({field: string, value: boolean}) => void
   facetQueryStr?: string
 }
-
 
 export default function FilterComponent(props: Props) {
   const {
@@ -50,16 +59,23 @@ export default function FilterComponent(props: Props) {
     }
 
     getFacets({field, core, taxonID, facetQueryStr: facetQueryStr})
-      .then(data => setAllData(data))
+      .then(data => {
+        setAllData(data)
+      })
   }, [taxonID, facetQueryStr])
 
   useEffect(() => {
     onCheck({field, value: checked})
+
+    // sort checked to the top, and sort
+    setData(data => sortOptions(data, checked))
   }, [checked])
 
   useEffect(() => {
     if (!allData) return
-    setData(allData.filter(obj => obj.name.toLowerCase().includes(query.toLowerCase())))
+
+    const filteredData = allData.filter(obj => obj.name.toLowerCase().includes(query.toLowerCase()))
+    setData(filteredData)
   }, [query, allData, setData])
 
 
