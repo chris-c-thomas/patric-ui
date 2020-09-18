@@ -125,7 +125,6 @@ const TabProvider = (props) => {
   }
 
   const onColumnMenuChange = (cols) => {
-    console.log('setting new ids', cols)
     setColIDs(cols.map(col => col.id))
   }
 

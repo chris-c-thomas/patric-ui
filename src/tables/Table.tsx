@@ -120,7 +120,7 @@ const Row = (props: RowProps) => {
       {emptyCell && <Cell></Cell>}
 
       {checkboxes &&
-        <Cell key={id + '-checkbox'} style={{padding: 0}}>
+        <Cell key={id + '-checkbox'} style={{padding: 0, width: 1}}>
           <Checkbox checked={selected.ids.includes(rowID)} onChange={evt => onSelect(evt, rowID, row)}/>
         </Cell>
       }
@@ -207,7 +207,7 @@ const TableHeadComponent = (props) => {
     <TableRow>
       {/* if table has checkboxes (if table has sslect all checkbox) */}
       {checkboxes &&
-        <TableCell style={{padding: 0}}>
+        <TableCell style={{padding: 0, width: 1}}>
           <Checkbox checked={allSelected} onChange={handleSelectAll} />
         </TableCell>
       }

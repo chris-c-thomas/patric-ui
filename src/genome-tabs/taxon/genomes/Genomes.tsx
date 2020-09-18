@@ -24,7 +24,7 @@ const columns = [
       <Link to={`/genome/${row.genome_id}/overview`}>{row.genome_name}</Link>,
     width: '20%'
   },
-  {type: 'number', id: 'genome_id', label: 'Genome ID', width: '9%'},
+  {id: 'genome_id', label: 'Genome ID', width: '9%'},
   {type: 'text', id: 'genome_status', label: 'Genome Status', width: '8%'},
   {
     type: 'number', id: 'contigs', label: 'Contigs',
