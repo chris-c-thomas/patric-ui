@@ -80,6 +80,7 @@ type Props = {
   collapsed: boolean
   onCollapse: (isCollapsed: boolean) => void
   facetQueryStr: string
+  applyOption?: boolean
 }
 
 
@@ -117,9 +118,10 @@ const Sidebar = (props: Props) => {
     setQueryStr(qStr)
     onChange(query, qStr)
 
-    if (queryStr) {
+    if (qStr && props.applyOption)
       setShowApplyBtn(true)
-    }
+    else
+      setShowApplyBtn(false)
   }, [query])
 
 

@@ -164,6 +164,7 @@ export default function Genomes() {
         collapsed={fullWidth}
         onCollapse={val => setFullWidth(val)}
         facetQueryStr={filter}
+        applyOption
       />
 
       <GridContainer fullWidth={fullWidth}>
