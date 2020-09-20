@@ -1,5 +1,5 @@
 
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import Popper from '@material-ui/core/Popper'
 import AddIcon from '@material-ui/icons/AddCircle'
@@ -128,17 +128,30 @@ type Option = {
 type Props = {
   options: Option[]
   onChange: (opt: Option[]) => void
+  ButtonComponent?: JSX.Element
+  header?: boolean
+  headerText?: string
+  noOptionsText?: string
 }
 
 export default function ColumnMenu(props: Props) {
-  const {options, onChange} = props
+  const {
+    options,
+    onChange,
+    ButtonComponent,
+    header = true,
+    headerText,
+    ...rest
+  } = props
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
+//  const [open, setOpen] = useState(false)
   const [value, setValue] = useState(options.filter(obj => !obj.hide))
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
+
   }
 
   const handleClose = (event, reason) => {
@@ -153,20 +166,22 @@ export default function ColumnMenu(props: Props) {
     setAnchorEl(null)
   }
 
-
   const open = Boolean(anchorEl)
   const id = open ? 'column-search' : undefined
 
   return (
     <>
-      <Button
-        size="small"
-        variant="text"
-        onClick={handleClick}
-        disableRipple
-      >
-        <AddIcon /> <ChevronDown/>
-      </Button>
+      {ButtonComponent ?
+        React.cloneElement(ButtonComponent, {onClick: handleClick}) :
+        <Button
+          size="small"
+          variant="text"
+          onClick={handleClick}
+          disableRipple
+        >
+          <AddIcon /> <ChevronDown/>
+        </Button>
+      }
 
       <Popper
         id={id}
@@ -175,7 +190,11 @@ export default function ColumnMenu(props: Props) {
         placement="bottom-start"
         className={classes.popper}
       >
-        <div className={classes.header}>Select columns for this view</div>
+        {header &&
+          <div className={classes.header}>
+            {headerText ? headerText : 'Select columns for this view'}
+          </div>
+        }
         <Autocomplete
           open
           onClose={handleClose}
@@ -226,6 +245,8 @@ export default function ColumnMenu(props: Props) {
               className={classes.inputBase}
             />
           )}
+
+          {...rest}
         />
       </Popper>
     </>
