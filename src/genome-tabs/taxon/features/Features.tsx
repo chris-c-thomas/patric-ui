@@ -7,8 +7,8 @@ import Table from '../../../tables/Table'
 import ErrorMsg from '../../../ErrorMsg'
 import Actions from './Actions'
 
-
 import { Root, GridContainer, Progress} from '../TabLayout'
+import { getFilterSpec } from '../TabUtils'
 import { TabContext } from '../TabContext'
 
 const core = 'genome_feature'
@@ -50,9 +50,9 @@ let filters =  [
 //  {id: 'public', hideSearch: true},
   {id: 'annotation', hideSearch: true },
   {id: 'feature_type'}
-].map(o =>
-  ({label: columns.filter(obj => obj.id == o.id)[0].label, ...o})
-)
+]
+
+filters = getFilterSpec(filters, columns)
 
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)

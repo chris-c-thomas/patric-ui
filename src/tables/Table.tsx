@@ -20,7 +20,7 @@ import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 import filterIcon from '../../assets/icons/filter.svg'
 
-import ColumnMenu from './ColumnMenu'
+import ColumnMenu from './MenuSelector'
 import Checkbox from '../forms/Checkbox'
 import TableSearch from './TableSearch'
 import ActionBtn from './ActionBtn'

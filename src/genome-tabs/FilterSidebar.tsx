@@ -9,7 +9,8 @@ import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 import plusIcon from '../../assets/icons/plus-circle.svg'
 
 import FilterComponent from './Filter'
-import FilterDialog from './FilterDialog'
+// import FilterDialog from './FilterDialog'
+import MenuSelector from '../tables/MenuSelector'
 
 
 const getFacetFields = (state) =>
@@ -68,12 +69,13 @@ type Filter = {
   id: string
   label: string
   hideSearch?: boolean
+  hide?: boolean
 }
 
 type Props = {
   taxonID: string
   core: string
-  filters: Filter[]
+  filters: Filter[],
   onChange: (query: object, queryStr: string) => void
   collapsed: boolean
   onCollapse: (isCollapsed: boolean) => void
@@ -83,7 +85,7 @@ type Props = {
 
 const Sidebar = (props: Props) => {
   const {
-    filters,  // list of objects
+    filters,
     onChange,
     onCollapse
   } = props
@@ -100,8 +102,10 @@ const Sidebar = (props: Props) => {
   const [queryStr, setQueryStr] = useState(props.facetQueryStr)
 
   const [collapsed, setCollapsed] = useState(props.collapsed)
-  const [openDialog, setOpenDialog] = useState(false)
   const [showApplyBtn, setShowApplyBtn] = useState(null)
+
+  //const [openDialog, setOpenDialog] = useState(false)
+  const [newFilters, setNewFilters] = useState([])
 
   useEffect(() => {
     if (!didMountRef.current) {
@@ -123,6 +127,7 @@ const Sidebar = (props: Props) => {
     setCollapsed(props.collapsed)
   }, [props.collapsed])
 
+
   const onCheck = ({field, value}) => {
     setQuery(prev => ({
       ...prev,
@@ -131,8 +136,9 @@ const Sidebar = (props: Props) => {
   }
 
 
-  const onAddFilter = () => {
-
+  const onAddFilter = (newFilters) => {
+    setNewFilters(newFilters)
+    console.log('newFilters', newFilters)
   }
 
   const onApplyFilters = () => {
@@ -147,13 +153,21 @@ const Sidebar = (props: Props) => {
   return (
     <SidebarRoot collapsed={collapsed}>
       <Options>
-        <AddFilterBtn>
-          <Tooltip title="Add a filter" >
-            <Button onClick={() => setOpenDialog(true)} size="small" color="primary" disableRipple>
-              <Icon src={plusIcon} /> Add Filter
-            </Button>
-          </Tooltip>
-        </AddFilterBtn>
+        <MenuSelector
+          options={filters.filter(o => o.hide)}
+          onChange={onAddFilter}
+          headerText="Add a filter"
+          noOptionsText="No filters found"
+          ButtonComponent={
+            <AddFilterBtn>
+              <Tooltip title="Add a filter..." >
+                <Button size="small" color="primary" disableRipple>
+                  <Icon src={plusIcon} /> Add Filter
+                </Button>
+              </Tooltip>
+            </AddFilterBtn>
+          }
+        />
 
         {showApplyBtn &&
           <Tooltip title="Apply filters to all views" >
@@ -168,8 +182,20 @@ const Sidebar = (props: Props) => {
       </Options>
 
       <Container>
-        {
-          filters.map(({id, label, hideSearch}) =>
+        {newFilters.map(({id, label, hideSearch}) =>
+          <FilterComponent
+            key={id}
+            field={id}
+            label={label}
+            hideSearch={hideSearch}
+            onCheck={onCheck}
+            facetQueryStr={queryStr}
+            {...props}
+          />
+        )}
+
+        {filters.filter(obj => !obj.hide)
+          .map(({id, label, hideSearch}) =>
             <FilterComponent
               key={id}
               field={id}
@@ -183,14 +209,15 @@ const Sidebar = (props: Props) => {
         }
       </Container>
 
-      {openDialog &&
+
+      {/*openDialog &&
         <FilterDialog
           title={}
           onClose={() => setOpenDialog(false)}
           onPrimaryClick={() => setOpenDialog(false)}
           onAddFilters={}
         />
-      }
+      */}
     </SidebarRoot>
   )
 }

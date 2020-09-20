@@ -3,7 +3,7 @@ import React, {useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import FilterSidebar from '../../FilterSidebar'
-import QueryDisplay from '../QueryDisplay'
+// import QueryDisplay from '../QueryDisplay'
 import Table from '../../../tables/Table'
 import ErrorMsg from '../../../ErrorMsg'
 import Actions from './Actions'
@@ -11,6 +11,7 @@ import Actions from './Actions'
 import {toPrettyDate} from '../../../utils/dates'
 
 import { Root, GridContainer, Progress} from '../TabLayout'
+import { getFilterSpec } from '../TabUtils'
 import { TabContext } from '../TabContext'
 
 const core = 'genome'
@@ -126,9 +127,9 @@ let filters =  [
   {id: 'host_name'},
   {id: 'collection_year'},
   {id: 'genome_quality'}
-].map(o =>
-  ({label: columns.filter(obj => obj.id == o.id)[0].label, ...o})
-)
+]
+filters = getFilterSpec(filters, columns)
+
 
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)

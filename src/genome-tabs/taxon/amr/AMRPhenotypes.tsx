@@ -8,6 +8,7 @@ import ErrorMsg from '../../../ErrorMsg'
 import Actions from './Actions'
 
 import { Root, GridContainer, Progress} from '../TabLayout'
+import { getFilterSpec } from '../TabUtils'
 import { TabContext } from '../TabContext'
 
 const core = 'genome_amr'
@@ -48,9 +49,8 @@ let filters =  [
   {id: 'laboratory_typing_method'},
   {id: 'computational_method'},
 
-].map(o =>
-  ({label: columns.filter(obj => obj.id == o.id)[0].label, ...o})
-)
+]
+filters = getFilterSpec(filters, columns)
 
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)
