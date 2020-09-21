@@ -22,17 +22,14 @@ const api = axios.create({
 
 const cache = new Map()
 
+// config for POST requests
+api.defaults.headers.post['Content-Type'] = 'application/rqlquery+x-www-form-urlencoded'
+api.defaults.headers.post['Accept'] = 'application/solr+json'
+
+// GET request config strings
+const acceptSolr = `http_accept=application/solr+json`  // string for including solr request meta
 const solrConfigStr = 'http_content-type=application/solrquery+x-www-form-urlencoded'
 
-// config for when faceting and post requests in rqlquery are needed
-const postConfig =  {
-  headers: {
-    'Content-Type': 'application/rqlquery+x-www-form-urlencoded',
-    Accept: 'application/solr+json'
-  }
-}
-
-const acceptSolr = `http_accept=application/solr+json`
 
 type ConfigParams = {
   start?: number
@@ -95,7 +92,7 @@ export function getAMRCounts() {
   `&limit(1)&facet((pivot,(${pivot})),(mincount,1),(limit,-1))` +
   `&json(nl,map)`
 
-  return api.post(`/genome_amr/`, q, postConfig)
+  return api.post(`/genome_amr/`, q)
     .then(res => {
       const pivots = res.data.facet_counts.facet_pivot[pivot]
 
@@ -179,35 +176,38 @@ const parseFacets = (facetList) => {
 // todo(nc): refactor
 export async function getFacets({core, taxonID, field, facetQueryStr}) {
   let q
+  console.log('core,', core, facetQueryStr)
 
   // if faceting the genome core, facet everything below taxon
   if (core == 'genome' && facetQueryStr) {
-    q = `?and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})`
+    q = `and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})`
+
   } else if (core == 'genome') {
-    q = `?eq(taxon_lineage_ids,${taxonID})`
+    q = `eq(taxon_lineage_ids,${taxonID})`
 
   // otherwise, get reference genomes
   } else if (facetQueryStr) {
     const genomeIDs = await getRepGenomeIDs(taxonID)
 
-    q = `?and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
-    q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+    q = `and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
+    q += `&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
 
-    const res = await api.get(`/${core}/${q}`)
+    const res = await api.post(`/${core}`, q)
     return parseFacets(res.data.facet_counts.facet_fields[field])
   } else {
     const genomeIDs = await getRepGenomeIDs(taxonID)
 
-    q = `?and(in(genome_id,(${genomeIDs.join(',')})))`
-    q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}&select(genome_id)`
+    q = `and(in(genome_id,(${genomeIDs.join(',')})))`
+    q += `&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
 
-    const res = await api.get(`/${core}/${q}`)
+    const res = await api.post(`/${core}`, q)
     return parseFacets(res.data.facet_counts.facet_fields[field])
   }
 
-  q += `&limit(1)&facet((field,${field}),(mincount,1))&${acceptSolr}`
 
-  const res = await api.get(`/${core}/${q}`)
+  q += `&limit(1)&facet((field,${field}),(mincount,1))`
+
+  const res = await api.post(`/${core}`, q)
   return parseFacets(res.data.facet_counts.facet_fields[field])
 }
 
