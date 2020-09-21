@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Menu from '@material-ui/core/Menu'
@@ -14,6 +14,7 @@ import ExitIcon from '@material-ui/icons/ExitToApp'
 import SUIcon from '@material-ui/icons/SupervisedUserCircle'
 import MenuIcon from '@material-ui/icons/MenuRounded'
 import Divider from '@material-ui/core/Divider'
+// import Avatar from '@material-ui/core/Divider'
 
 import ListItem from '@material-ui/core/ListItem'
 
@@ -346,7 +347,7 @@ export function NavBar(props) {
 
         {Auth.isSignedIn() &&
           <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
-            <AccountIcon/>&nbsp;{Auth.getUser()}
+            <AccountIcon/>&nbsp;{Auth.getUser()} {/*<Avatar className="avatar"></Avatar>*/}
           </AccountBtn>
         }
 
