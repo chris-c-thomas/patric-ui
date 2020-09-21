@@ -27,7 +27,7 @@ const StyledMenu = withStyles({
 
 
 export default function CustomizedMenus(props) {
-  const {menu, label} = props
+  const {menu, label, ...rest} = props
 
   const [anchorEl, setAnchorEl] = React.useState(null)
 
@@ -47,6 +47,7 @@ export default function CustomizedMenus(props) {
         disableRipple
         color="inherit"
         onClick={handleClick}
+        {...rest}
       >
         {label} {!props.noCaret && <CaretIcon/>}
       </Button>

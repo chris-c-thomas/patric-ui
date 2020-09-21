@@ -334,16 +334,21 @@ export function NavBar(props) {
           />
         }
 
-        <DropdownMenu label={<MenuIcon />} noCaret menu={
-          <DropDown className="about-menu" >
-            <MenuSection>
-              <MenuTitle>{'About & Help'}</MenuTitle>
-              <Column>
-                <NavItem label="coming soon!" to="/"/>
-              </Column>
-            </MenuSection>
-          </DropDown>
-        }/>
+        <DropdownMenu
+          label={<MenuIcon />}
+          style={{minWidth: 1, marginLeft: '0 10px'}}
+          noCaret
+          menu={
+            <DropDown className="about-menu" >
+              <MenuSection>
+                <MenuTitle>{'About & Help'}</MenuTitle>
+                <Column>
+                  <NavItem label="coming soon!" to="/"/>
+                </Column>
+              </MenuSection>
+            </DropDown>
+          }
+        />
 
         {Auth.isSignedIn() &&
           <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
