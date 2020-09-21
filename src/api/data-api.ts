@@ -278,8 +278,13 @@ export function queryGenomeNames(query: string) {
 }
 
 
-export function getPhyloData({taxonID}, ) {
-  return api.get(`/taxonomy/${taxonID}`, {headers: {Accept: 'application/newick+json'} } )
+export function getPhyloData({taxonID, genomeID}) {
+  if (!taxonID && !genomeID)
+    throw 'getPhyloData() expects either a `taxonID` or `genomeID`'
+
+  let id = taxonID ? taxonID : genomeID.split('.')[0]
+
+  return api.get(`/taxonomy/${id}`, {headers: {Accept: 'application/newick+json'} } )
     .then(res => res.data)
 }
 

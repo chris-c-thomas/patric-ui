@@ -20,14 +20,13 @@ const loadTree = (domRef, newick) => {
 
 export default function Phylogeny() {
   const ref = useRef(null)
-  const {taxonID} = useParams()
+  const {taxonID, genomeID} = useParams()
 
   const [notFound, setNotFound] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-
-    getPhyloData({taxonID}).then(res => {
+    getPhyloData({taxonID, genomeID}).then(res => {
       loadTree(ref, res.tree)
     }).catch(err => {
       if (err.response.status == 404) {
@@ -35,9 +34,9 @@ export default function Phylogeny() {
         return
       }
 
-      setError(e)
+      setError(err)
     })
-  }, [taxonID])
+  }, [taxonID, genomeID])
 
 
   return (
