@@ -4,9 +4,10 @@ import styled from 'styled-components'
 import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@material-ui/core/Button'
 import ArrowLeft from '@material-ui/icons/KeyboardArrowLeftRounded'
+import AddIcon from '@material-ui/icons/AddCircleRounded'
 
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
-import plusIcon from '../../assets/icons/plus-circle.svg'
+
 
 import FilterComponent from './Filter'
 // import FilterDialog from './FilterDialog'
@@ -163,8 +164,8 @@ const Sidebar = (props: Props) => {
           ButtonComponent={
             <AddFilterBtn>
               <Tooltip title="Add a filter..." >
-                <Button size="small" color="primary" disableRipple>
-                  <Icon src={plusIcon} /> Add Filter
+                <Button startIcon={<AddIcon />} size="small" color="primary" disableRipple>
+                  Add Filter
                 </Button>
               </Tooltip>
             </AddFilterBtn>
@@ -262,6 +263,15 @@ const CollapseBtn = styled.a`
 
 const AddFilterBtn = styled.div`
   margin-left: 5px;
+
+  .MuiButton-startIcon {
+    margin-right: 4;
+  }
+
+  .MuiSvgIcon-root {
+     color: #444;
+     padding-right: 0;
+  }
 `
 
 const Icon = styled.img`

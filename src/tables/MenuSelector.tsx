@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import Popper from '@material-ui/core/Popper'
-import AddIcon from '@material-ui/icons/AddCircle'
+import AddIcon from '@material-ui/icons/AddCircleRounded'
 import CloseIcon from '@material-ui/icons/Close'
 import DoneIcon from '@material-ui/icons/Done'
 import ChevronDown from '@material-ui/icons/ExpandMoreRounded'
@@ -179,7 +179,7 @@ export default function ColumnMenu(props: Props) {
           onClick={handleClick}
           disableRipple
         >
-          <AddIcon /> <ChevronDown/>
+          <AddIcon fontSize="small" /> <ChevronDown fontSize="small" />
         </Button>
       }
 
