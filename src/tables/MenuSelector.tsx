@@ -151,7 +151,6 @@ export default function ColumnMenu(props: Props) {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
-
   }
 
   const handleClose = (event, reason) => {

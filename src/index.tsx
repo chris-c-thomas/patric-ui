@@ -15,9 +15,9 @@ import Home from './home/BVBRC'
 import GlobalSearch from './search/GlobalSearch'
 import Account from './user-profile/my-profile'
 
-import TaxonTabs from './views/taxon/Tabs'
-import GenomeTabs from './views/genome/Tabs'
-import HostTabs from './views/hosts/Tabs'
+import TaxonTabs from './views/taxon/TaxonTabs'
+import GenomeTabs from './views/genome/GenomeTabs'
+import HostTabs from './views/hosts/HostTabs'
 
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
