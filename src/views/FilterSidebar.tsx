@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@material-ui/core/Button'
 import ArrowLeft from '@material-ui/icons/KeyboardArrowLeftRounded'
 import AddIcon from '@material-ui/icons/AddCircleRounded'
+import UndoIcon from '@material-ui/icons/UndoRounded'
 
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 
@@ -71,6 +72,7 @@ type Filter = {
   label: string
   hideSearch?: boolean
   hide?: boolean
+  type?: string
 }
 
 type Props = {
@@ -103,7 +105,8 @@ const FilterSidebar = (props: Props) => {
   const [queryStr, setQueryStr] = useState(props.facetQueryStr)
 
   const [collapsed, setCollapsed] = useState(props.collapsed)
-  const [showApplyBtn, setShowApplyBtn] = useState(null)
+  const [showApplyBtn, setShowApplyBtn] = useState(false)
+  const [showClearBtn, setShowClearBtn] = useState(false)
 
   //const [openDialog, setOpenDialog] = useState(false)
   const [newFilters, setNewFilters] = useState([])
@@ -122,6 +125,8 @@ const FilterSidebar = (props: Props) => {
       setShowApplyBtn(true)
     else
       setShowApplyBtn(false)
+
+    setShowClearBtn(!!qStr)
   }, [query])
 
 
@@ -164,7 +169,7 @@ const FilterSidebar = (props: Props) => {
             <AddFilterBtn>
               <Tooltip title="Add a filter..." >
                 <Button startIcon={<AddIcon />} size="small" color="primary" disableRipple>
-                  Add Filter
+                  Add Filters
                 </Button>
               </Tooltip>
             </AddFilterBtn>
@@ -178,17 +183,27 @@ const FilterSidebar = (props: Props) => {
             </Button>
           </Tooltip>
         }
+
+        {/*showClearBtn &&
+          <Tooltip title="Remove all filters" >
+            <Button onClick={onApplyFilters} size="small" color="primary" style={{minWidth: 20}}>
+              Clear
+            </Button>
+          </Tooltip>
+        */}
+
         <CollapseBtn onClick={handleCollapse}>
           <ArrowLeft />
         </CollapseBtn>
       </Options>
 
       <Container>
-        {newFilters.map(({id, label, hideSearch}) =>
+        {newFilters.map(({id, label, hideSearch, type}) =>
           <Filter
             key={id}
             field={id}
             label={label}
+            type={type}
             hideSearch={hideSearch}
             onCheck={onCheck}
             facetQueryStr={queryStr}
@@ -197,11 +212,12 @@ const FilterSidebar = (props: Props) => {
         )}
 
         {filters.filter(obj => !obj.hide)
-          .map(({id, label, hideSearch}) =>
+          .map(({id, label, hideSearch, type}) =>
             <Filter
               key={id}
               field={id}
               label={label}
+              type={type}
               hideSearch={hideSearch}
               onCheck={onCheck}
               facetQueryStr={queryStr}

@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
@@ -29,6 +30,7 @@ const sortOptions = (options, checked) =>
 
 type Props = {
   field: string
+  type: string
   label: string
   core: string
   hideSearch?: boolean
@@ -38,7 +40,7 @@ type Props = {
 
 export default function FilterComponent(props: Props) {
   const {
-    field, label, core, hideSearch,
+    field, type, label, core, hideSearch,
     onCheck, facetQueryStr = null
   } = props
 
@@ -55,6 +57,9 @@ export default function FilterComponent(props: Props) {
   const [enableQuery, setEnableQuery] = useState(false)
   const [query, setQuery] = useState('')
   const [data, setData] = useState([])
+
+  const [range, setRange] = useState({min: null, max: null})
+
 
   useEffect(() => {
     // if facetQueryString includes field, don't update (a little bit hacky?)
@@ -99,24 +104,30 @@ export default function FilterComponent(props: Props) {
     setShowAll(!showAll)
   }
 
+  const onSubmitRange = () => {
+    alert(JSON.stringify(range))
+  }
+
+
   // only render if there's actually facet data
   if (allData && !allData.length) return <></>
 
   return (
     <FilterRoot>
       {allData && allData.length > 0 &&
-        <Header>
-          <Title>
-            {label}
-          </Title>
+    <>
+      <Header>
+        <Title>
+          {label}
+        </Title>
 
-          {!hideSearch &&
-            <SearchBtn onClick={() => setEnableQuery(!enableQuery)} size="small" disableRipple>
-              <SearchIcon/>
-            </SearchBtn>
-          }
-        </Header>
-      }
+        {!hideSearch &&
+          <SearchBtn onClick={() => setEnableQuery(!enableQuery)} size="small" disableRipple>
+            <SearchIcon/>
+          </SearchBtn>
+        }
+      </Header>
+
 
       {enableQuery &&
         <TextField
@@ -130,9 +141,44 @@ export default function FilterComponent(props: Props) {
         />
       }
 
+      {type == 'number' &&
+        <form className="flex align-items-center" onSubmit={onSubmitRange}>
+          <TextField
+            placeholder="Min"
+            onChange={evt => setRange({min: evt.target.value, max: range.max})}
+            InputProps={{
+              style: {margin: '5px 10px', height: 26, width: 70}
+            }}
+            variant="outlined"
+          />
+
+          <span>to</span>
+
+          <TextField
+            placeholder="Max"
+            onChange={evt => setRange({max: evt.target.value, min: range.min})}
+            InputProps={{
+              style: {margin: '5px 5px', height: 26, width: 70}
+            }}
+            variant="outlined"
+          />
+
+          {(range.min || range.max) &&
+            <RangeSubmitBtn
+              type="submit"
+              size="small"
+              color="primary"
+              variant="contained"
+              disableRipple
+            >
+              Go
+            </RangeSubmitBtn>
+          }
+        </form>
+      }
+
       <Filters>
         {
-          allData && allData.length > 0 &&
           data.slice(0, showAll ? data.length : MAX_FILTERS)
             .map(obj =>
               <div key={obj.name}>
@@ -160,14 +206,12 @@ export default function FilterComponent(props: Props) {
           {showAll && 'less…'}
         </MoreBtn>
       }
+    </>
+      }
     </FilterRoot>
   )
 }
 
-
-const getSearchedFilters = (data, search) => {
-
-}
 
 const FilterRoot = styled.div`
   display: flex;
@@ -220,4 +264,12 @@ const MoreBtn = styled.a`
   margin-left: auto;
   margin-right: 10px;
   font-size: .9em;
+`
+
+const RangeSubmitBtn = styled(Button)`
+  &.MuiButton-root {
+    margin-left: 5px;
+    min-width: 10px;
+    height: 26px;
+  }
 `

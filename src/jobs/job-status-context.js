@@ -1,6 +1,7 @@
 import React, {useState, useEffect, createContext, useCallback} from 'react'
 
 import { getStatus } from '../api/app-service'
+import { isSignedIn } from '../api/auth'
 
 const TIME_OUT = 9999999999
 
@@ -24,6 +25,8 @@ const JobStatusProvider = (props) => {
   })
 
   useEffect(() => {
+    if (!isSignedIn()) return
+
     const timer = poll()
     return () => timer.then(to => clearTimeout(to))
   }, [poll])

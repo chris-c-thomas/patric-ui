@@ -133,7 +133,6 @@ export function getTaxonChartData({taxonID}) {
 }
 
 export function getGenomeMeta(genome_id) {
-  console.log('genome_id', genome_id)
   return Query({core: 'genome', eq: {genome_id}})
     .then(data => data[0])
 }
@@ -191,11 +190,12 @@ export async function getFacets(params: FacetParams) {
     facetQueryStr,
     genomeIDs
   } = params
+
+
   console.log('params', params)
 
   if (!taxonID && !genomeID)
     throw 'getFacets() expects either a `taxonID` or `genomeID`'
-
 
   // build query string based on params
   let q

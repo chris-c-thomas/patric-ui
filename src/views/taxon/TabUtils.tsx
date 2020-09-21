@@ -2,9 +2,10 @@
 
 export function getFilterSpec(filters, columns) {
   // get labels, types, etc, from column spec
-  filters = filters.map(o =>
-    ({label: columns.filter(obj => obj.id == o.id)[0].label, ...o})
-  )
+  filters = filters.map(o => {
+    const col = columns.filter(obj => obj.id == o.id)[0]
+    return {...col}
+  })
 
   // hide rest of filters
   const filterIDs = filters.map(obj => obj.id)
