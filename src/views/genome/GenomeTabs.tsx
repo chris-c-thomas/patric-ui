@@ -17,7 +17,7 @@ import SpecialtyGenes from '../taxon/specialty-genes/SpecGenes'
 import Pathways from '../taxon/pathways/Pathways'
 import Subsystems from '../taxon/subsystems/Subsystems'
 
-import { TabProvider } from '../taxon/TabContext'
+import { TabProvider } from '../TabContext'
 
 
 import NotFound404 from '../../404'

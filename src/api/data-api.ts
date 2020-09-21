@@ -178,54 +178,56 @@ type FacetParams = {
   taxonID?: string       // taxonID, or
   genomeID?: string      // genomeID
   facetQueryStr?: string // optional query string
+  genomeIDs?: string[]   // genomeIDs (for non-genome core query)
 }
 
 
-export async function getFacets(params) {
+export async function getFacets(params: FacetParams) {
   const {
     core,
     field,
     taxonID,
     genomeID,
-    facetQueryStr
+    facetQueryStr,
+    genomeIDs
   } = params
+  console.log('params', params)
 
   if (!taxonID && !genomeID)
     throw 'getFacets() expects either a `taxonID` or `genomeID`'
+
 
   // build query string based on params
   let q
 
   // if faceting the genome core, facet everything below taxon
   if (core == 'genome' && taxonID && facetQueryStr) {
-    q = `and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})` +
-      `&limit(1)&facet((field,${field}),(mincount,1))`
+    q = `and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})`
 
   } else if (core == 'genome' && taxonID) {
-    q = `eq(taxon_lineage_ids,${taxonID})` +
-      `&limit(1)&facet((field,${field}),(mincount,1))`
+    q = `eq(taxon_lineage_ids,${taxonID})`
 
-  // otherwise, conditions to get reference genomes first
-  } else if (facetQueryStr && taxonID) {
-    const genomeIDs = await getRepGenomeIDs(taxonID)
-    q = `and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})` +
-      `&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
 
-  } else if (taxonID) {
-    const genomeIDs = await getRepGenomeIDs(taxonID)
-    q = `and(in(genome_id,(${genomeIDs.join(',')})))` +
-      `&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
+  // otherwise, filter on provided genomeIDs
+  } else if (facetQueryStr && taxonID && genomeIDs) {
+    q = `and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
+
+  } else if (taxonID && genomeIDs) {
+    q = `and(in(genome_id,(${genomeIDs.join(',')})))`
   }
-
 
   // cases for if genomeID is specified (i.e., for genome view)
-  if (facetQueryStr && genomeID) {
-    q = `eq(genome_id,${genomeID}),${facetQueryStr})` +
-    `&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
+  else if (facetQueryStr && genomeID) {
+    q = `eq(genome_id,${genomeID}),${facetQueryStr})`
 
   } else if (genomeID) {
-    q = `eq(genome_id,${genomeID})&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
+    q = `eq(genome_id,${genomeID})`
+
+  } else {
+    throw 'getFacets(): no condition met!'
   }
+
+  q += `&limit(1)&facet((field,${field}),(mincount,1))&select(genome_id)`
 
   const res = await api.post(`/${core}`, q)
   return parseFacets(res.data.facet_counts.facet_fields[field])

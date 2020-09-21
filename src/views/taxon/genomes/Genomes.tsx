@@ -12,7 +12,7 @@ import {toPrettyDate} from '../../../utils/dates'
 
 import { Root, GridContainer, Progress} from '../TabLayout'
 import { getFilterSpec } from '../TabUtils'
-import { TabContext } from '../TabContext'
+import { TabContext } from '../../TabContext'
 
 const core = 'genome'
 

@@ -9,7 +9,7 @@ import AddIcon from '@material-ui/icons/AddCircleRounded'
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 
 
-import FilterComponent from './Filter'
+import Filter from './Filter'
 // import FilterDialog from './FilterDialog'
 import MenuSelector from '../tables/MenuSelector'
 
@@ -84,7 +84,7 @@ type Props = {
 }
 
 
-const Sidebar = (props: Props) => {
+const FilterSidebar = (props: Props) => {
   const {
     filters,
     onChange,
@@ -185,7 +185,7 @@ const Sidebar = (props: Props) => {
 
       <Container>
         {newFilters.map(({id, label, hideSearch}) =>
-          <FilterComponent
+          <Filter
             key={id}
             field={id}
             label={label}
@@ -198,7 +198,7 @@ const Sidebar = (props: Props) => {
 
         {filters.filter(obj => !obj.hide)
           .map(({id, label, hideSearch}) =>
-            <FilterComponent
+            <Filter
               key={id}
               field={id}
               label={label}
@@ -277,4 +277,4 @@ const Icon = styled.img`
   height: 18px;
   margin-right: 5px;
 `
-export default Sidebar
+export default FilterSidebar

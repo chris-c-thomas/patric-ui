@@ -20,7 +20,7 @@ import Pathways from './pathways/Pathways'
 import Subsystems from './subsystems/Subsystems'
 
 
-import { TabProvider } from './TabContext'
+import { TabProvider } from '../TabContext'
 
 
 import NotFound404 from '../../404'

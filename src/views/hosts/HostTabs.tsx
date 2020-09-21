@@ -12,7 +12,7 @@ import Genomes from '../taxon/genomes/Genomes'
 import Sequences from '../taxon/sequences/Sequences'
 import Features from '../taxon/features/Features'
 
-import { TabProvider } from '../taxon/TabContext'
+import { TabProvider } from '../TabContext'
 
 
 import NotFound404 from '../../404'

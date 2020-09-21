@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -10,6 +10,8 @@ import SearchIcon from '@material-ui/icons/SearchOutlined'
 import highlightText from '../utils/text'
 import Checkbox from '../forms/Checkbox'
 import { getFacets } from '../api/data-api'
+
+import { TabContext } from './TabContext'
 
 
 // number of rows shown by default for each facet
@@ -42,6 +44,9 @@ export default function FilterComponent(props: Props) {
 
   const {taxonID, genomeID} = useParams()
 
+  const [state] = useContext(TabContext)
+  const {genomeIDs} = state
+
   const [allData, setAllData] = useState(null)
   const [checked, setChecked] = useState({})
   const [showAll, setShowAll] = useState(false)
@@ -58,11 +63,16 @@ export default function FilterComponent(props: Props) {
       return
     }
 
-    getFacets({field, core, taxonID, genomeID, facetQueryStr: facetQueryStr})
+    // don't request if genomeIDs haven't yet
+    // been set in the TabContext
+    if (core != 'genome' && !genomeIDs)
+      return
+
+    getFacets({field, core, taxonID, genomeID, facetQueryStr, genomeIDs})
       .then(data => {
         setAllData(data)
       })
-  }, [taxonID, genomeID, facetQueryStr])
+  }, [taxonID, genomeID, facetQueryStr, genomeIDs])
 
 
   useEffect(() => {

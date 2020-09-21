@@ -9,7 +9,7 @@ import Actions from './Actions'
 
 import { Root, GridContainer, Progress} from '../TabLayout'
 import { getFilterSpec } from '../TabUtils'
-import { TabContext } from '../TabContext'
+import { TabContext } from '../../TabContext'
 
 const core = 'genome_sequence'
 
@@ -44,7 +44,7 @@ const columnIDs = _initialColumns.map(obj => obj.id)
 export default function Sequences() {
   const [state] = useContext(TabContext)
   const {
-    init, taxonID, data, loading, error, filter, onFacetFilter,
+    init, data, loading, error, filter, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 

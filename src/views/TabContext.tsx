@@ -1,7 +1,7 @@
 import React, {useState, useEffect, createContext} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
-import { listData, getGenomeIDs, getRepGenomeIDs } from '../../api/data-api'
+import { listData, getGenomeIDs, getRepGenomeIDs } from '../api/data-api'
 
 const MAX_GENOMES = 20000
 
@@ -28,6 +28,9 @@ const TabProvider = (props) => {
   const [data, setData] = useState([])
   const [total, setTotal] = useState(null)
   const [error, setError] = useState(null)
+
+  // keep track of genomeIDs for facet filtering
+  const [genomeIDs, setGenomeIDs] = useState(null)
 
   const [filterStr, setFilterStr] = useState(null)
 
@@ -64,8 +67,10 @@ const TabProvider = (props) => {
         if (genomeIDs.length > MAX_GENOMES) {
           const repGenomeIDs = await getRepGenomeIDs(taxonID)
           params.eq = {genome_id: repGenomeIDs}
+          setGenomeIDs(repGenomeIDs)
         } else {
           params.eq = {genome_id: genomeIDs}
+          setGenomeIDs(genomeIDs)
         }
 
       // if genomeID, filter to just that genome
@@ -136,7 +141,7 @@ const TabProvider = (props) => {
 
   return (
     <TabContext.Provider value={[{
-      init, loading, data, filter: filterStr, filterState, error, total, page, limit, sort, query,
+      init, loading, data, genomeIDs, filter: filterStr, filterState, error, total, page, limit, sort, query,
       onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
       emptyNotice: loading && 'loading...'
     }]}>

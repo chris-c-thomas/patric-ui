@@ -9,7 +9,7 @@ import Actions from './Actions'
 
 import { Root, GridContainer, Progress} from '../TabLayout'
 import { getFilterSpec } from '../TabUtils'
-import { TabContext } from '../TabContext'
+import { TabContext } from '../../TabContext'
 
 const core = 'subsystem'
 
