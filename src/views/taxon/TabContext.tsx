@@ -10,7 +10,8 @@ const LOG = false
 const TabContext = createContext([null])
 
 const TabProvider = (props) => {
-  const {taxonID} = useParams()
+  let {taxonID, genomeID} = useParams()
+
 
   const history = useHistory()
   const params = new URLSearchParams(useLocation().search)
@@ -52,10 +53,10 @@ const TabProvider = (props) => {
 
       // if core is genome, go ahead and make query with taxon_lineage_ids
       if (core == 'genome') {
-        params.eq = {taxon_lineage_ids: taxonID}
+        params.eq = {taxon_lineage_ids: taxonID || genomeID}
 
-      // if core is not 'genome', get associated genome ids first
-      } else {
+      // if core is not genome and we're in taxon view, get associated genome ids first
+      } else if (core !== 'genome' && !genomeID) {
         const genomeIDs = await getGenomeIDs(taxonID)
 
         // if associated genomes ids is over MAX_GENOMES,
@@ -66,6 +67,10 @@ const TabProvider = (props) => {
         } else {
           params.eq = {genome_id: genomeIDs}
         }
+
+      // if genomeID, filter to just that genome
+      } else if (genomeID) {
+        params.eq = {genome_id: genomeID}
       }
 
       if (LOG)
@@ -90,7 +95,7 @@ const TabProvider = (props) => {
     return () => {
       // cancel request!
     }
-  }, [core, taxonID, sort, page, query, colIDs, filterStr, limit])
+  }, [core, taxonID, genomeID, sort, page, query, colIDs, filterStr, limit])
 
   const init = (core, columnIDs) => {
     setCore(core)
@@ -141,3 +146,4 @@ const TabProvider = (props) => {
 }
 
 export { TabContext, TabProvider }
+

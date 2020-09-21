@@ -14,8 +14,11 @@ import { ThemeProvider } from '@material-ui/styles'
 import Home from './home/BVBRC'
 import GlobalSearch from './search/GlobalSearch'
 import Account from './user-profile/my-profile'
-import TaxonTabs from './genome-tabs/taxon/Tabs'
-import GenomeTabs from './genome-tabs/genome/Tabs'
+
+import TaxonTabs from './views/taxon/Tabs'
+import GenomeTabs from './views/genome/Tabs'
+import HostTabs from './views/hosts/Tabs'
+
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
 import SUSignIn from './auth/SuSignIn'
@@ -83,6 +86,9 @@ const App = () => {
                     } />
                     <Route path="/genome/:genomeID/:view" render={() =>
                       <GenomeTabs />
+                    } />
+                    <Route path="/hosts/:taxonID/:view" render={() =>
+                      <HostTabs />
                     } />
 
                     <Route path="/susignin" exact component={SUSignIn} />

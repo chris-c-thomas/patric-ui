@@ -8,10 +8,17 @@ import Tab from '@material-ui/core/Tab'
 import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 
 import { TaxonActionBar } from '../TaxonActionBar'
-import Overview from './GenomeOverview'
-import Phylogeny from '../Phylogeny'
 
-// import { PFContainer } from './protein-families/protein-families'
+import Overview from './Overview'
+import Phylogeny from '../Phylogeny'
+import Genomes from './genomes/Genomes'
+import AMRPhenotypes from './amr/AMRPhenotypes'
+import Sequences from './sequences/Sequences'
+import Features from './features/Features'
+import SpecialtyGenes from './specialty-genes/SpecGenes'
+
+
+import { TabProvider } from './TabContext'
 
 
 import NotFound404 from '../../404'
@@ -20,27 +27,31 @@ import NotFound404 from '../../404'
 const tabs = [{
   label: 'Overview',
   view: 'overview',
-}, {
-  label: 'AMR Phenotypes',
-  view: 'amr'
+  Component: <Overview />
 }, {
   label: 'Phylogeny',
-  view: 'phylogeny'
+  view: 'phylogeny',
+  Component: <Phylogeny />
 }, {
-  label: 'Genome Browser',
-  view: 'genome-browser'
+  label: 'Genomes',
+  view: 'genomes',
+  Component: <Genomes />
 }, {
-  label: 'Circular Viewer',
-  view: 'circular-viewer'
-},{
+  label: 'AMR Phenotypes',
+  view: 'amr',
+  Component: <AMRPhenotypes />
+}, {
   label: 'Sequences',
-  view: 'sequences'
-},{
+  view: 'sequences',
+  Component: <Sequences />
+}, {
   label: 'Features',
-  view: 'features'
+  view: 'features',
+  Component: <Features />
 }, {
   label: 'Specialty Genes',
-  view: 'spec-genes'
+  view: 'specialtyGenes',
+  Component: <SpecialtyGenes />
 }, {
   label: 'Pathways',
   view: 'pathways'
@@ -55,14 +66,18 @@ const tabs = [{
   view: 'interactions'
 }]
 
+/*{
+  label: 'Protein Families',
+  view: 'protein-families'
+}*/
 
 const TabButtons = () => {
   const tabItemStyles = plainTabsStylesHook.useTabItem()
 
-  return tabs.map(tab => {
+  return tabs.map((tab, i) => {
     const {label, view} = tab
     return (
-      <Tab key={view}
+      <Tab key={i}
         disableRipple
         classes={tabItemStyles}
         component={Link}
@@ -82,7 +97,7 @@ export default function GenomeTabs() {
   return (
     <Root>
 
-      <TaxonActionBar title="Genome View" />
+      <TaxonActionBar title="Taxon View"/>
 
       <Tabs
         value={view}
@@ -92,19 +107,19 @@ export default function GenomeTabs() {
         {TabButtons()}
       </Tabs>
 
+
       <Content>
-        {view == tabs[0].view && <Overview />}
-        {view == tabs[1].view && placeHolder(view)}
-        {view == tabs[2].view && <Phylogeny />}
-        {/*view == tabs[3].view && <PFContainer />*/}
-        {view == tabs[4].view && placeHolder(view)}
-        {view == tabs[5].view && placeHolder(view)}
-        {view == tabs[6].view && placeHolder(view)}
+        {view == tabs[0].view && tabs[0].Component}
+        {view == tabs[1].view && <TabProvider>{tabs[1].Component}</TabProvider>}
+        {view == tabs[2].view && <TabProvider>{tabs[2].Component}</TabProvider>}
+        {view == tabs[3].view && <TabProvider>{tabs[3].Component}</TabProvider>}
+        {view == tabs[4].view && <TabProvider>{tabs[4].Component}</TabProvider>}
+        {view == tabs[5].view && <TabProvider>{tabs[5].Component}</TabProvider>}
+        {view == tabs[6].view && <TabProvider>{tabs[6].Component}</TabProvider>}
         {view == tabs[7].view && placeHolder(view)}
         {view == tabs[8].view && placeHolder(view)}
         {view == tabs[9].view && placeHolder(view)}
         {view == tabs[10].view && placeHolder(view)}
-        {view == tabs[11].view && placeHolder(view)}
         {
           tabs.map(obj => obj.view).indexOf(view) == -1 &&
           <NotFound404 />
@@ -121,4 +136,5 @@ const Root = styled.div`
 const Content = styled.div`
   border-top: 1px solid #e9e9e9;
   margin-top: -1px;
+  background: #fff;
 `

@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import {useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
 import IconButton from '@material-ui/core/IconButton'
@@ -24,7 +25,6 @@ const sortOptions = (options, checked) =>
   ]
 
 
-
 type Props = {
   field: string
   label: string
@@ -41,6 +41,7 @@ export default function FilterComponent(props: Props) {
     onCheck, facetQueryStr = null
   } = props
 
+  const {genomeID} = useParams()
 
   const [allData, setAllData] = useState(null)
   const [checked, setChecked] = useState({})
@@ -58,11 +59,12 @@ export default function FilterComponent(props: Props) {
       return
     }
 
-    getFacets({field, core, taxonID, facetQueryStr: facetQueryStr})
+    getFacets({field, core, taxonID, genomeID, facetQueryStr: facetQueryStr})
       .then(data => {
         setAllData(data)
       })
-  }, [taxonID, facetQueryStr])
+  }, [taxonID, genomeID, facetQueryStr])
+
 
   useEffect(() => {
     onCheck({field, value: checked})
@@ -70,6 +72,7 @@ export default function FilterComponent(props: Props) {
     // sort checked to the top, and sort
     setData(data => sortOptions(data, checked))
   }, [checked])
+
 
   useEffect(() => {
     if (!allData) return

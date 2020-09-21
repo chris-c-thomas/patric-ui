@@ -91,7 +91,7 @@ export default function Features() {
       <GridContainer fullWidth={fullWidth}>
         {loading && <Progress />}
 
-        {data &&
+        {data && !error &&
           <Table
             columns={columns}
             rows={data}

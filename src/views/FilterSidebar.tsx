@@ -74,7 +74,6 @@ type Filter = {
 }
 
 type Props = {
-  taxonID: string
   core: string
   filters: Filter[],
   onChange: (query: object, queryStr: string) => void
