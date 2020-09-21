@@ -44,7 +44,7 @@ const columnIDs = _initialColumns.map(obj => obj.id)
 export default function Subsystems() {
   const [state] = useContext(TabContext)
   const {
-    init, taxonID, data, loading, error, filter, onFacetFilter,
+    init, data, loading, error, filter, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 

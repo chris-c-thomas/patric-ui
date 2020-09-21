@@ -136,7 +136,7 @@ const TabProvider = (props) => {
 
   return (
     <TabContext.Provider value={[{
-      init, loading, data, filter: filterStr, filterState, error, total, taxonID, page, limit, sort, query,
+      init, loading, data, filter: filterStr, filterState, error, total, page, limit, sort, query,
       onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
       emptyNotice: loading && 'loading...'
     }]}>
