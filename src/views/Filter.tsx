@@ -29,7 +29,6 @@ type Props = {
   field: string
   label: string
   core: string
-  taxonID: string
   hideSearch?: boolean
   onCheck: ({field: string, value: boolean}) => void
   facetQueryStr?: string
@@ -37,11 +36,11 @@ type Props = {
 
 export default function FilterComponent(props: Props) {
   const {
-    field, label, core, taxonID, hideSearch,
+    field, label, core, hideSearch,
     onCheck, facetQueryStr = null
   } = props
 
-  const {genomeID} = useParams()
+  const {taxonID, genomeID} = useParams()
 
   const [allData, setAllData] = useState(null)
   const [checked, setChecked] = useState({})

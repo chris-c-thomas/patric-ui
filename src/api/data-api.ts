@@ -193,8 +193,6 @@ export async function getFacets(params) {
   if (!taxonID && !genomeID)
     throw 'getFacets() expects either a `taxonID` or `genomeID`'
 
-  console.log('getFacet() params:', params)
-
   // build query string based on params
   let q
 
@@ -231,7 +229,6 @@ export async function getFacets(params) {
 
   const res = await api.post(`/${core}`, q)
   return parseFacets(res.data.facet_counts.facet_fields[field])
-
 }
 
 

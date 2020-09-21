@@ -78,7 +78,6 @@ export default function SpecGenes() {
     <Root>
       <FilterSidebar
         core={core}
-        taxonID={taxonID}
         filters={filters}
         onChange={onFacetFilter}
         collapsed={fullWidth}
