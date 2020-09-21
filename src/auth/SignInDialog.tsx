@@ -24,6 +24,8 @@ export default function SignInDialog(props) {
       open={open}
       onClose={handleClose}
       aria-labelledby="dragable-dialog"
+      fullWidth
+      maxWidth="xs"
     >
       <DialogTitle>Sign In</DialogTitle>
       <SignInForm />

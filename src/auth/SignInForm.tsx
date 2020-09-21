@@ -83,10 +83,7 @@ export default function SignInDialog(props) {
 
         {isInvalid && <div>Invalid username and/or password</div>}
         {failMsg && <div>{failMsg}</div>}
-      </Content>
 
-
-      <DialogActions>
         <Button color="primary"
           variant="contained"
           disabled={!user || !pass || inProgress}
@@ -95,13 +92,17 @@ export default function SignInDialog(props) {
         >
           {inProgress ? 'Signing in...' : 'Sign in'}
         </Button>
-      </DialogActions>
+      </Content>
+
     </form>
   )
 }
 
 
 const Content = styled.div`
-  margin: 0 auto;
   max-width: 300px;
+
+  button {
+    margin: 20px 0;
+  }
 `

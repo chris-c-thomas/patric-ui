@@ -44,13 +44,13 @@ export default function FilterComponent(props: Props) {
 
   const {taxonID, genomeID} = useParams()
 
+  // use tab context for view's genomeIDs (or ref genomes)
   const [state] = useContext(TabContext)
   const {genomeIDs} = state
 
   const [allData, setAllData] = useState(null)
   const [checked, setChecked] = useState({})
   const [showAll, setShowAll] = useState(false)
-
 
   const [enableQuery, setEnableQuery] = useState(false)
   const [query, setQuery] = useState('')

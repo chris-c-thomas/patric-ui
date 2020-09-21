@@ -30,9 +30,9 @@ export default function SignIn(props: Props) {
 }
 
 const Root = styled.div`
-  max-width: 500px;
+  max-width: fit-content;
   background: #fff;
-  margin: 50px auto;
+  margin: 60px auto;
   padding: 20px 20px 10px 20px;
   border: 1px solid #ddd;
 `
