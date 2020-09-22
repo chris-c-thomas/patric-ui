@@ -27,7 +27,7 @@ const StyledMenu = withStyles({
 
 
 export default function CustomizedMenus(props) {
-  const {menu, label, ...rest} = props
+  const {menu, label, caret = true, ...rest} = props
 
   const [anchorEl, setAnchorEl] = React.useState(null)
 
@@ -49,7 +49,7 @@ export default function CustomizedMenus(props) {
         onClick={handleClick}
         {...rest}
       >
-        {label} {!props.caret && <CaretIcon/>}
+        {label} {caret && <CaretIcon/>}
       </Button>
       <StyledMenu
         id="menu"
