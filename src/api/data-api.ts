@@ -295,7 +295,7 @@ export function getPhyloData({taxonID, genomeID}) {
 const cachero = (params, options) => {
   const serialized = JSON.stringify(params)
   if (cache.has(serialized)) {
-    console.log('Using cache for', serialized)
+    // console.log('Using cache for', serialized)
     return cache.get(serialized)
   }
 

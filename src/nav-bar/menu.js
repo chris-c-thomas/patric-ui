@@ -49,7 +49,7 @@ export default function CustomizedMenus(props) {
         onClick={handleClick}
         {...rest}
       >
-        {label} {!props.noCaret && <CaretIcon/>}
+        {label} {!props.caret && <CaretIcon/>}
       </Button>
       <StyledMenu
         id="menu"

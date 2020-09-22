@@ -337,7 +337,7 @@ export function NavBar(props) {
         <DropdownMenu
           label={<MenuIcon />}
           style={{minWidth: 1, marginLeft: '0 10px'}}
-          noCaret
+          caret={0}
           menu={
             <DropDown className="about-menu" >
               <MenuSection>

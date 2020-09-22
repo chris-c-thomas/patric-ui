@@ -11,8 +11,8 @@ import SearchIcon from '@material-ui/icons/SearchOutlined'
 
 import highlightText from '../utils/text'
 import Checkbox from '../forms/Checkbox'
-import { getFacets } from '../api/data-api'
 
+import { getFacets } from '../api/data-api'
 import { TabContext } from './TabContext'
 
 
@@ -39,7 +39,7 @@ type Props = {
   facetQueryStr?: string
 }
 
-export default function FilterComponent(props: Props) {
+export default function Filter(props: Props) {
   const {
     field, type, label, core, hideSearch,
     onCheck, facetQueryStr = null
@@ -62,7 +62,6 @@ export default function FilterComponent(props: Props) {
   const [data, setData] = useState([])
 
   const [range, setRange] = useState({min: null, max: null})
-
 
   useEffect(() => {
     // if facetQueryString includes field, don't update (a little bit hacky?)
@@ -126,7 +125,7 @@ export default function FilterComponent(props: Props) {
   }
 
   const handleSelectAll = () => {
-    if (selectAll) {
+    if (showUndo || selectAll) {
       setChecked({})
     } else {
       const newState = allData.reduce((acc, obj) => ({...acc, [obj.name]: true}), {})
