@@ -383,7 +383,7 @@ export default function TableComponent(props: Props) {
 
   // enable/disable userSelect durring ctrl/shift+click
   const handleKeyDown = useCallback((evt) => {
-    if (evt.metaKey || evt.shiftKey) {
+    if (evt.shiftKey) {
       setUserSelect(false)
     }
   }, [setUserSelect])
@@ -446,6 +446,10 @@ export default function TableComponent(props: Props) {
     onColumnMenuChange(activeCols)
   }
 
+  const handleDoubleClick = (row) => {
+    if (onDoubleClick)
+      onDoubleClick(row)
+  }
 
   return (
     <Root>
@@ -542,7 +546,7 @@ export default function TableComponent(props: Props) {
               checkboxes={checkboxes}
               onSelect={handleSelect}
               selected={selected}
-              onDoubleClick={onDoubleClick}
+              onDoubleClick={handleDoubleClick}
               onMore={props.onMore}
             />
           </TableBody>

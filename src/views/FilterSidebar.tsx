@@ -10,7 +10,7 @@ import UndoIcon from '@material-ui/icons/UndoRounded'
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 
 
-import Filter from './Filter'
+import FilterComponent from './Filter'
 // import FilterDialog from './FilterDialog'
 import MenuSelector from '../tables/MenuSelector'
 
@@ -198,7 +198,7 @@ const FilterSidebar = (props: Props) => {
 
       <Container>
         {newFilters.map(({id, ...filterOpts}) =>
-          <Filter
+          <FilterComponent
             key={id}
             field={id}
             onCheck={onCheck}
@@ -210,7 +210,7 @@ const FilterSidebar = (props: Props) => {
 
         {filters.filter(obj => !obj.hide)
           .map(({id, ...filterOpts}) =>
-            <Filter
+            <FilterComponent
               key={id}
               field={id}
               onCheck={onCheck}

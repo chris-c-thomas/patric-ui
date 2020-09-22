@@ -75,10 +75,10 @@ const App = () => {
                     <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
 
                     <Route path="/jobs*" render={() =>
-                      isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status." />}
+                      isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" />}
                     />
                     <Route path="/files/:path*" exact render={() =>
-                      isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces." />}
+                      isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
                     />
 
                     <Route path="/taxonomy/:taxonID/:view" exact render={() =>

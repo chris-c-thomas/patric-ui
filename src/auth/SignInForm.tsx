@@ -74,7 +74,7 @@ export default function SignInDialog(props) {
         {forApp &&
           <Step active={true} completed={false}>
             <StepIcon className={styles.root} icon={<div><LockIcon /></div>} />
-            <StepLabel>Please sign in to use this service.</StepLabel>
+            <StepLabel>Please sign in to use this service</StepLabel>
           </Step>
         }
 
@@ -100,6 +100,7 @@ export default function SignInDialog(props) {
 
 
 const Content = styled.div`
+  padding: 20px;
   max-width: 300px;
 
   button {
