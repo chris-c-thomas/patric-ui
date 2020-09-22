@@ -145,7 +145,6 @@ const FilterSidebar = (props: Props) => {
 
   const onAddFilter = (newFilters) => {
     setNewFilters(newFilters)
-    console.log('newFilters', newFilters)
   }
 
   const onApplyFilters = () => {

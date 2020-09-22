@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
+
 import SearchIcon from '@material-ui/icons/SearchOutlined'
 
 import highlightText from '../utils/text'
@@ -54,7 +55,9 @@ export default function FilterComponent(props: Props) {
   const [checked, setChecked] = useState({})
   const [showAll, setShowAll] = useState(false)
 
-  const [enableQuery, setEnableQuery] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
+  const [selectAll, setSelectAll] = useState(false)
+  const [showUndo, setShowUndo] = useState(false)
   const [query, setQuery] = useState('')
   const [data, setData] = useState([])
 
@@ -84,14 +87,32 @@ export default function FilterComponent(props: Props) {
     onCheck({field, value: checked})
 
     // sort checked to the top, and sort
-    setData(data => sortOptions(data, checked))
+    setData(data => {
+      const d = sortOptions(data, checked)
+      return d
+    })
+
+    // watch checked for indeterminate state
+    const l = Object.keys(checked).filter(k => checked[k]).length
+    if (l > 0 && l < allData.length) {
+      setShowUndo(true)
+      setSelectAll(false)
+    } else if (l == 0) {
+      setShowUndo(false)
+      setSelectAll(false)
+    } else if (l == allData.length ) {
+      setSelectAll(true)
+    }
+
   }, [checked])
 
 
   useEffect(() => {
     if (!allData) return
 
-    const filteredData = allData.filter(obj => obj.name.toLowerCase().includes(query.toLowerCase()))
+    const filteredData = allData.filter(obj =>
+      obj.name.toLowerCase().includes(query.toLowerCase())
+    )
     setData(filteredData)
   }, [query, allData, setData])
 
@@ -104,7 +125,17 @@ export default function FilterComponent(props: Props) {
     setShowAll(!showAll)
   }
 
-  const onSubmitRange = () => {
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setChecked({})
+    } else {
+      const newState = allData.reduce((acc, obj) => ({...acc, [obj.name]: true}), {})
+      setChecked(newState)
+    }
+  }
+
+  const onSubmitRange = (evt) => {
+    evt.preventDefault()
     alert(JSON.stringify(range))
   }
 
@@ -118,18 +149,24 @@ export default function FilterComponent(props: Props) {
     <>
       <Header>
         <Title>
-          {label}
+          <Checkbox
+            checked={selectAll}
+            onChange={handleSelectAll}
+            size="small"
+            indeterminate={showUndo}
+          />
+
+          <b>{label}</b>
         </Title>
 
         {!hideSearch &&
-          <SearchBtn onClick={() => setEnableQuery(!enableQuery)} size="small" disableRipple>
+          <SearchBtn onClick={() => setShowSearch(!showSearch)} size="small" disableRipple>
             <SearchIcon/>
           </SearchBtn>
         }
       </Header>
 
-
-      {enableQuery &&
+      {showSearch &&
         <TextField
           autoFocus
           placeholder={`Filter ${label}`}
@@ -142,7 +179,7 @@ export default function FilterComponent(props: Props) {
       }
 
       {type == 'number' &&
-        <form className="flex align-items-center" onSubmit={onSubmitRange}>
+        <RangeForm className="flex align-items-center" onSubmit={onSubmitRange}>
           <TextField
             placeholder="Min"
             onChange={evt => setRange({min: evt.target.value, max: range.max})}
@@ -174,29 +211,32 @@ export default function FilterComponent(props: Props) {
               Go
             </RangeSubmitBtn>
           }
-        </form>
+        </RangeForm>
       }
 
       <Filters>
-        {
-          data.slice(0, showAll ? data.length : MAX_FILTERS)
-            .map(obj =>
-              <div key={obj.name}>
-                <CBContainer
-                  control={
-                    <Checkbox
-                      checked={checked[obj.name]}
-                      onChange={() => handleCheck(obj.name)}
-                    />}
-                  label={
-                    <>
-                      <FacetLabel>{highlightText(obj.name, query)}</FacetLabel>
-                      <Count>{obj.count.toLocaleString()}</Count>
-                    </>
-                  }
-                />
-              </div>
-            )
+        {data.slice(0, showAll ? data.length : MAX_FILTERS)
+          .map(obj =>
+            <div key={obj.name}>
+              <CBContainer
+                control={
+                  <Checkbox
+                    checked={checked[obj.name]}
+                    onChange={() => handleCheck(obj.name)}
+                  />}
+                label={
+                  <>
+                    <FacetLabel>{highlightText(obj.name, query)}</FacetLabel>
+                    <Count>{obj.count.toLocaleString()}</Count>
+                  </>
+                }
+              />
+            </div>
+          )
+        }
+
+        {data.length == 0 &&
+          <NoneFound className="muted">none found</NoneFound>
         }
       </Filters>
 
@@ -216,17 +256,22 @@ export default function FilterComponent(props: Props) {
 const FilterRoot = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   padding: 0 5px;
+
 `
 
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #e9e9e9;
+  margin: 5px 0;
+  padding-bottom: 5px;
 `
 
 const Title = styled.div`
+
 `
 const Filters = styled.div`
 
@@ -264,6 +309,14 @@ const MoreBtn = styled.a`
   margin-left: auto;
   margin-right: 10px;
   font-size: .9em;
+`
+
+const NoneFound = styled.div`
+  margin: 0 20px;
+`
+
+const RangeForm = styled.form`
+  margin-bottom: 5px;
 `
 
 const RangeSubmitBtn = styled(Button)`

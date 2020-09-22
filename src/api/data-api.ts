@@ -191,9 +191,6 @@ export async function getFacets(params: FacetParams) {
     genomeIDs
   } = params
 
-
-  console.log('params', params)
-
   if (!taxonID && !genomeID)
     throw 'getFacets() expects either a `taxonID` or `genomeID`'
 

@@ -60,6 +60,8 @@ const useStyles = makeStyles({
 type Props = {
   checked: boolean
   onChange: (evt: ChangeEvent<HTMLInputElement>) => void
+  indeterminate?: boolean
+  size?: null | 'small'
 }
 
 // Inspired by blueprintjs
@@ -77,8 +79,12 @@ const StyledCheckbox = memo(function StyledCheckbox(props: Props) {
       checked={props.checked || false}
       onChange={props.onChange}
       style={{padding: '0 9px'}}
+      indeterminate={props.indeterminate}
+      size={props.size}
     />
   )
-}, (prev, next) => prev.checked == next.checked)
+}, (prev, next) =>
+  prev.checked == next.checked && prev.indeterminate == next.indeterminate
+)
 
 export default StyledCheckbox
