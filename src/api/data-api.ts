@@ -336,9 +336,9 @@ export async function listData(params: ListParams, options = null) {
     console.log('calling api with free-form rql filter:', filter)
 
   return cachero({
-    core, sort, start, query,
+    core, sort: sort.replace(/ /g, '+') , start, query,
     limit, eq, select, solrInfo,
-    filter: filter // ? filter.replace(/(".*")/g, (match) => encodeURIComponent(match)) : null
+    filter: filter
   }, options)
 }
 
