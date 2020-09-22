@@ -153,7 +153,7 @@ export default function FilterComponent(props: Props) {
             checked={selectAll}
             onChange={handleSelectAll}
             size="small"
-            indeterminate={showUndo}
+            indeterminate={showUndo && !selectAll}
           />
 
           <b>{label}</b>
