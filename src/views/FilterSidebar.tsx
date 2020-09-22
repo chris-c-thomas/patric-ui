@@ -197,29 +197,25 @@ const FilterSidebar = (props: Props) => {
       </Options>
 
       <Container>
-        {newFilters.map(({id, label, hideSearch, type}) =>
+        {newFilters.map(({id, ...filterOpts}) =>
           <Filter
             key={id}
             field={id}
-            label={label}
-            type={type}
-            hideSearch={hideSearch}
             onCheck={onCheck}
             facetQueryStr={queryStr}
+            {...filterOpts}
             {...props}
           />
         )}
 
         {filters.filter(obj => !obj.hide)
-          .map(({id, label, hideSearch, type}) =>
+          .map(({id, ...filterOpts}) =>
             <Filter
               key={id}
               field={id}
-              label={label}
-              type={type}
-              hideSearch={hideSearch}
               onCheck={onCheck}
               facetQueryStr={queryStr}
+              {...filterOpts}
               {...props}
             />
           )

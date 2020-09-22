@@ -119,7 +119,7 @@ const columns = [
 export {columns}
 
 let filters =  [
-  {id: 'public', hideSearch: true},
+  {id: 'public', hideSearch: true, hideSelectAll: true},
   {id: 'genome_status',  hideSearch: true},
   {id: 'reference_genome',  hideSearch: true},
   {id: 'antimicrobial_resistance'},

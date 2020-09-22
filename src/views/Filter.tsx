@@ -35,13 +35,14 @@ type Props = {
   label: string
   core: string
   hideSearch?: boolean
+  hideSelectAll?: boolean
   onCheck: ({field: string, value: boolean}) => void
   facetQueryStr?: string
 }
 
 export default function Filter(props: Props) {
   const {
-    field, type, label, core, hideSearch,
+    field, type, label, core, hideSearch, hideSelectAll,
     onCheck, facetQueryStr = null
   } = props
 
@@ -148,12 +149,14 @@ export default function Filter(props: Props) {
     <>
       <Header>
         <Title>
-          <Checkbox
-            checked={selectAll}
-            onChange={handleSelectAll}
-            size="small"
-            indeterminate={showUndo && !selectAll}
-          />
+          {!hideSelectAll &&
+            <Checkbox
+              checked={selectAll}
+              onChange={handleSelectAll}
+              size="small"
+              indeterminate={showUndo && !selectAll}
+            />
+          }
 
           <b>{label}</b>
         </Title>
