@@ -3,6 +3,10 @@ import {useParams, useHistory, useLocation} from 'react-router-dom'
 
 import { listData, getGenomeIDs, getRepGenomeIDs } from '../api/data-api'
 
+import parseQuery from './parseQuery'
+
+import buildFilterString from './buildFilterString'
+
 const MAX_GENOMES = 20000
 
 const LOG = false
@@ -33,9 +37,6 @@ const TabProvider = (props) => {
   const [genomeIDs, setGenomeIDs] = useState(null)
 
   const [filterStr, setFilterStr] = useState(null)
-
-  // Keep an object version of filter state in memory
-  // This is not currently used, but may be?
   const [filterState, setFilterState] = useState(null)
 
   useEffect(() => {
@@ -43,13 +44,25 @@ const TabProvider = (props) => {
       // core may not be set yet
       if (!core) return
 
+      let fState, fStr
+      if (filter.length) {
+        fState = parseQuery(filter)
+        fStr = buildFilterString(fState.byCategory)
+
+        setFilterStr(fStr)
+        setFilterState(fState)
+      } else {
+        setFilterStr(null)
+        setFilterState(null)
+      }
+
       const params = {
         core,
         sort,
         start: Number(page) * Number(limit),
         limit,
         query,
-        filter: filterStr,
+        filter: fStr,
         select: colIDs,
         eq: null
       }
@@ -59,6 +72,7 @@ const TabProvider = (props) => {
         params.eq = {taxon_lineage_ids: taxonID || genomeID}
 
       // if core is not genome and we're in taxon view, get associated genome ids first
+      // Todo(nc): this should only happn on first request!
       } else if (core !== 'genome' && !genomeID) {
         const genomeIDs = await getGenomeIDs(taxonID)
 
@@ -100,7 +114,7 @@ const TabProvider = (props) => {
     return () => {
       // cancel request!
     }
-  }, [core, taxonID, genomeID, sort, page, query, colIDs, filterStr, limit])
+  }, [core, taxonID, genomeID, sort, page, query, colIDs, limit, filter])
 
   const init = (core, columnIDs) => {
     setCore(core)
@@ -125,8 +139,7 @@ const TabProvider = (props) => {
   }
 
   const onFacetFilter = (state, queryStr) => {
-    setFilterStr(queryStr)
-    setFilterState(state)
+    // setFilterStr(queryStr)
     if (!queryStr.length) params.delete('filter')
     else params.set('filter', queryStr)
 
@@ -141,7 +154,7 @@ const TabProvider = (props) => {
 
   return (
     <TabContext.Provider value={[{
-      init, loading, data, genomeIDs, filter: filterStr, filterState, error, total, page, limit, sort, query,
+      init, loading, data, genomeIDs, filterStr, filterState, error, total, page, limit, sort, query,
       onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
       emptyNotice: loading && 'loading...'
     }]}>

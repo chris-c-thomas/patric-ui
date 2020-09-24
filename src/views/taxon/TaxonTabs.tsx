@@ -10,7 +10,7 @@ import { plainTabsStylesHook } from '@mui-treasury/styles/tabs'
 import { TaxonActionBar } from '../TaxonActionBar'
 
 import Overview from './Overview'
-import Phylogeny from '../Phylogeny'
+import Phylogeny from './Phylogeny'
 import Genomes from './genomes/Genomes'
 import AMRPhenotypes from './amr/AMRPhenotypes'
 import Sequences from './sequences/Sequences'

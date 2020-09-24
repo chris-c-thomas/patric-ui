@@ -176,7 +176,7 @@ type FacetParams = {
   field: string          // field to facet on
   taxonID?: string       // taxonID, or
   genomeID?: string      // genomeID
-  facetQueryStr?: string // optional query string
+  filterStr?: string // optional query string
   genomeIDs?: string[]   // genomeIDs (for non-genome core query)
 }
 
@@ -187,7 +187,7 @@ export async function getFacets(params: FacetParams) {
     field,
     taxonID,
     genomeID,
-    facetQueryStr,
+    filterStr,
     genomeIDs
   } = params
 
@@ -198,24 +198,24 @@ export async function getFacets(params: FacetParams) {
   let q
 
   // if faceting the genome core, facet everything below taxon
-  if (core == 'genome' && taxonID && facetQueryStr) {
-    q = `and(eq(taxon_lineage_ids,${taxonID}),${facetQueryStr})`
+  if (core == 'genome' && taxonID && filterStr) {
+    q = `and(eq(taxon_lineage_ids,${taxonID}),${filterStr})`
 
   } else if (core == 'genome' && taxonID) {
     q = `eq(taxon_lineage_ids,${taxonID})`
 
 
   // otherwise, filter on provided genomeIDs
-  } else if (facetQueryStr && taxonID && genomeIDs) {
-    q = `and(in(genome_id,(${genomeIDs.join(',')})),${facetQueryStr})`
+  } else if (filterStr && taxonID && genomeIDs) {
+    q = `and(in(genome_id,(${genomeIDs.join(',')})),${filterStr})`
 
   } else if (taxonID && genomeIDs) {
     q = `and(in(genome_id,(${genomeIDs.join(',')})))`
   }
 
   // cases for if genomeID is specified (i.e., for genome view)
-  else if (facetQueryStr && genomeID) {
-    q = `eq(genome_id,${genomeID}),${facetQueryStr})`
+  else if (filterStr && genomeID) {
+    q = `eq(genome_id,${genomeID}),${filterStr})`
 
   } else if (genomeID) {
     q = `eq(genome_id,${genomeID})`

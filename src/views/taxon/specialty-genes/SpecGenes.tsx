@@ -59,7 +59,7 @@ export default function SpecGenes() {
   const [state] = useContext(TabContext)
 
   const {
-    init, data, loading, error, filter, onFacetFilter,
+    init, data, loading, error, onFacetFilter,
     ...tableProps // see TabContext for rest of table params
   } = state
 
@@ -82,7 +82,6 @@ export default function SpecGenes() {
         onChange={onFacetFilter}
         collapsed={fullWidth}
         onCollapse={val => setFullWidth(val)}
-        facetQueryStr={filter}
       />
 
       <GridContainer fullWidth={fullWidth}>

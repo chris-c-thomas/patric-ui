@@ -1,20 +1,20 @@
 import React, {useRef, useState, useEffect}from 'react'
 import { useParams} from 'react-router-dom'
 import styled from 'styled-components'
-import Phylocanvas from 'phylocanvas';
+import Phylocanvas from 'phylocanvas'
 
-import {getPhyloData} from '../api/data-api'
+import {getPhyloData} from '../../api/data-api'
 
-import ErrorMsg from '../ErrorMsg'
+import ErrorMsg from '../../ErrorMsg'
 
 
 const config = {}
 
 
 const loadTree = (domRef, newick) => {
-  const tree = Phylocanvas.createTree(domRef.current, config);
-  tree.load(newick, () => console.log('tree loaded'));
-  tree.setTreeType('rectangular');
+  const tree = Phylocanvas.createTree(domRef.current, config)
+  tree.load(newick, () => console.log('tree loaded'))
+  tree.setTreeType('rectangular')
 }
 
 

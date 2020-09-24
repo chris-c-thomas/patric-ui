@@ -4,7 +4,6 @@ node_modules/
 dist/
 yarn-error.log
 
-
 *token*
 system-dash/config.js
 system-dash/scripts/*.json

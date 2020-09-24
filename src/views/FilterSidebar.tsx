@@ -14,57 +14,7 @@ import FilterComponent from './Filter'
 // import FilterDialog from './FilterDialog'
 import MenuSelector from '../tables/MenuSelector'
 
-
-const getFacetFields = (state) =>
-  Object.keys(state)
-    .reduce((acc, k) => getFilterCount(state[k]) > 0 ? [...acc, k] : acc, [])
-
-
-const getFilterCount = (obj) =>
-  Object.keys(obj).filter(k => obj[k]).length
-
-
-const getORStr = (state, field) =>
-  ('or(' +
-    Object.keys(state[field])
-      .reduce((acc, name) =>
-        state[field][name] ?
-          [...acc, `eq(${field},%22${encodeURIComponent(name).replace(/,/g, '%2C')}%22)`] : acc
-      , [])
-      .join(',') +
-  ')').replace(/,*or\(\),*/g, '')
-
-
-// todo: refactor?  lists may actually be better after all.
-const buildFilterString = (state) => {
-  let queryStr
-
-  // first get fields that have facet filters
-  const fields = getFacetFields(state)
-
-  // case for: eq(field,val)
-  if (fields.length == 1 && getFilterCount(state[fields[0]]) == 1) {
-    const field = fields[0]
-    const [query, _] = Object.entries(state[field])[0]
-    queryStr = `eq(${field},%22${encodeURIComponent(query).replace(/,/g, '%2C')}%22)`
-
-  // case for: or(eq(field,val), ..., eq(field_n,val_n))
-  } else if (fields.length == 1) {
-    queryStr =
-      fields.map(field => getORStr(state, field))
-        .join(',')
-
-  // and(or(...), ..., or(...))
-  } else {
-    queryStr =
-      ('and(' +
-        fields.map(field => getORStr(state, field))
-          .join(',') +
-      ')').replace(/,*and\(\),*/g, '')
-  }
-
-  return queryStr
-}
+import buildFilterString from './buildFilterString'
 
 
 type Filter = {
@@ -96,38 +46,30 @@ const FilterSidebar = (props: Props) => {
   if (!onChange)
     throw '`onChange` is required a prop for the sidebar component'
 
-  let didMountRef = useRef(null)
+  let ref = useRef(null)
 
-  // {fieldA: {facet1: true, facet2: false}, fieldB: {facet3, facet4}}
-  const [query, setQuery] = useState({})
-
-  // query string is something like: and(or(eq(...),...))
-  const [queryStr, setQueryStr] = useState(props.facetQueryStr)
+  // {fieldA: ['cat1', 'cat2'], fieldB: ['cat3', 'cat4']}
+  const [filterState, setFilterState] = useState({})
 
   const [collapsed, setCollapsed] = useState(props.collapsed)
   const [showApplyBtn, setShowApplyBtn] = useState(false)
-  const [showClearBtn, setShowClearBtn] = useState(false)
+  // const [showClearBtn, setShowClearBtn] = useState(false)
 
-  //const [openDialog, setOpenDialog] = useState(false)
   const [newFilters, setNewFilters] = useState([])
 
+
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true
+    if (!ref.current) {
+      ref.current = true
       return
     }
 
-    const qStr = buildFilterString(query)
-    setQueryStr(qStr)
-    onChange(query, qStr)
+    const qStr = buildFilterString(filterState)
+    onChange(filterState, qStr)
 
-    if (qStr && props.applyOption)
-      setShowApplyBtn(true)
-    else
-      setShowApplyBtn(false)
-
-    setShowClearBtn(!!qStr)
-  }, [query])
+    if (qStr && props.applyOption) setShowApplyBtn(true)
+    else setShowApplyBtn(false)
+  }, [filterState])
 
 
   useEffect(() => {
@@ -136,12 +78,8 @@ const FilterSidebar = (props: Props) => {
 
 
   const onCheck = ({field, value}) => {
-    setQuery(prev => ({
-      ...prev,
-      [field]: value
-    }))
+    setFilterState(prev => ({...prev, [field]: value}))
   }
-
 
   const onAddFilter = (newFilters) => {
     setNewFilters(newFilters)
@@ -202,7 +140,6 @@ const FilterSidebar = (props: Props) => {
             key={id}
             field={id}
             onCheck={onCheck}
-            facetQueryStr={queryStr}
             {...filterOpts}
             {...props}
           />
@@ -214,7 +151,6 @@ const FilterSidebar = (props: Props) => {
               key={id}
               field={id}
               onCheck={onCheck}
-              facetQueryStr={queryStr}
               {...filterOpts}
               {...props}
             />

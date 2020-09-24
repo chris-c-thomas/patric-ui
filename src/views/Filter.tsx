@@ -23,10 +23,14 @@ const MAX_FILTERS = 10
 
 const sortOptions = (options, checked) =>
   [
-    ...options.filter(obj => checked[obj.name]),
-    ...options.filter(obj => !checked[obj.name])
+    ...options.filter(obj => checked.includes(obj.name)),
+    ...options.filter(obj => !checked.includes(obj.name))
       .sort((a, b) => b.count - a.count)
   ]
+
+const isFiltered = (state, field) =>
+  state && field in state.byCategory && state.byCategory[field].length
+
 
 
 type Props = {
@@ -37,23 +41,24 @@ type Props = {
   hideSearch?: boolean
   hideSelectAll?: boolean
   onCheck: ({field: string, value: boolean}) => void
-  facetQueryStr?: string
 }
 
 export default function Filter(props: Props) {
   const {
     field, type, label, core, hideSearch, hideSelectAll,
-    onCheck, facetQueryStr = null
+    onCheck
   } = props
+
+  const ref = React.useRef(null)
 
   const {taxonID, genomeID} = useParams()
 
   // use tab context for view's genomeIDs (or ref genomes)
   const [state] = useContext(TabContext)
-  const {genomeIDs} = state
+  const {genomeIDs, filterState, filterStr} = state
 
   const [allData, setAllData] = useState(null)
-  const [checked, setChecked] = useState({})
+  const [checked, setChecked] = useState([])
   const [showAll, setShowAll] = useState(false)
 
   const [showSearch, setShowSearch] = useState(false)
@@ -64,9 +69,12 @@ export default function Filter(props: Props) {
 
   const [range, setRange] = useState({min: null, max: null})
 
+
+  // effect for updating data
   useEffect(() => {
-    // if facetQueryString includes field, don't update (a little bit hacky?)
-    if (facetQueryStr && facetQueryStr.includes(field)) {
+
+    // if filterState includes field, don't update
+    if (isFiltered(filterState, field)) {
       console.log(`field '${field} found in in filter string; skipping FilterComponent update`)
       return
     }
@@ -76,24 +84,28 @@ export default function Filter(props: Props) {
     if (core != 'genome' && !genomeIDs)
       return
 
-    getFacets({field, core, taxonID, genomeID, facetQueryStr, genomeIDs})
-      .then(data => {
-        setAllData(data)
-      })
-  }, [taxonID, genomeID, facetQueryStr, genomeIDs])
+    getFacets({field, core, taxonID, genomeID, filterStr, genomeIDs})
+      .then(data => setAllData(data))
+
+  }, [taxonID, genomeID, filterStr, genomeIDs, filterState])
 
 
+  // effect for selecting items
   useEffect(() => {
+    if (!ref.current) {
+      ref.current = true
+      return
+    }
+
+    if (!allData) return
+
     onCheck({field, value: checked})
 
-    // sort checked to the top, and sort
-    setData(data => {
-      const d = sortOptions(data, checked)
-      return d
-    })
+    // sort checked to the top, and sort rest
+    setData(data => sortOptions(data, checked))
 
     // watch checked for indeterminate state
-    const l = Object.keys(checked).filter(k => checked[k]).length
+    const l = checked.length
     if (l > 0 && l < allData.length) {
       setShowUndo(true)
       setSelectAll(false)
@@ -107,6 +119,7 @@ export default function Filter(props: Props) {
   }, [checked])
 
 
+  // effect for filtering data (currently client-side)
   useEffect(() => {
     if (!allData) return
 
@@ -114,11 +127,26 @@ export default function Filter(props: Props) {
       obj.name.toLowerCase().includes(query.toLowerCase())
     )
     setData(filteredData)
+    console.log('newData', data)
   }, [query, allData, setData])
 
 
+  // effect for state from url
+  useEffect(() => {
+    if (!filterState) {
+      console.log('there is no filterSTate!')
+      return
+    }
+
+    const isFiltered = field in filterState.byCategory
+    setChecked(isFiltered ? filterState.byCategory[field]: [])
+  }, [filterState])
+
+
   const handleCheck = (id) => {
-    setChecked(prev => ({...prev, [id]: !prev[id]}))
+    setChecked(prev =>
+      prev.includes(id) ? prev.filter(str => str != id) : [...prev, id]
+    )
   }
 
   const handleShowAll = () => {
@@ -127,10 +155,9 @@ export default function Filter(props: Props) {
 
   const handleSelectAll = () => {
     if (showUndo || selectAll) {
-      setChecked({})
+      setChecked([])
     } else {
-      const newState = allData.reduce((acc, obj) => ({...acc, [obj.name]: true}), {})
-      setChecked(newState)
+      setChecked(allData.map(obj => obj.name))
     }
   }
 
@@ -223,7 +250,7 @@ export default function Filter(props: Props) {
               <CBContainer
                 control={
                   <Checkbox
-                    checked={checked[obj.name]}
+                    checked={checked.includes(obj.name)}
                     onChange={() => handleCheck(obj.name)}
                   />}
                 label={
