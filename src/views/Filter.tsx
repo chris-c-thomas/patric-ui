@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TextField from '@material-ui/core/TextField'
+// import Slider from '@material-ui/core/Slider'
 
 import SearchIcon from '@material-ui/icons/SearchOutlined'
 
@@ -15,10 +16,11 @@ import Checkbox from '../forms/Checkbox'
 import { getFacets } from '../api/data-api'
 import { TabContext } from './TabContext'
 
+import {toPrettyDate} from '../utils/dates'
+
 
 // number of rows shown by default for each facet
 const MAX_FILTERS = 10
-
 
 
 const sortOptions = (options, checked) =>
@@ -28,10 +30,6 @@ const sortOptions = (options, checked) =>
       .sort((a, b) => b.count - a.count)
   ]
 
-const isFiltered = (state, field) =>
-  state && field in state.byCategory && state.byCategory[field].length
-
-
 
 type Props = {
   field: string
@@ -40,13 +38,13 @@ type Props = {
   core: string
   hideSearch?: boolean
   hideSelectAll?: boolean
-  onCheck: ({field: string, value: boolean}) => void
+  // onCheck: ({field: string, value: boolean}) => void
 }
 
 export default function Filter(props: Props) {
   const {
     field, type, label, core, hideSearch, hideSelectAll,
-    onCheck
+    // onCheck
   } = props
 
   const ref = React.useRef(null)
@@ -54,40 +52,42 @@ export default function Filter(props: Props) {
   const {taxonID, genomeID} = useParams()
 
   // use tab context for view's genomeIDs (or ref genomes)
-  const [state] = useContext(TabContext)
-  const {genomeIDs, filterState, filterStr} = state
+  const [state, dispatch] = useContext(TabContext)
+  const {genomeIDs, filterState} = state
+
+  const checked = field in filterState.byCategory ? filterState.byCategory[field] : []
 
   const [allData, setAllData] = useState(null)
-  const [checked, setChecked] = useState([])
-  const [showAll, setShowAll] = useState(false)
 
+  const [showAll, setShowAll] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [selectAll, setSelectAll] = useState(false)
   const [showUndo, setShowUndo] = useState(false)
   const [query, setQuery] = useState('')
   const [data, setData] = useState([])
 
-  const [range, setRange] = useState({min: null, max: null})
+  const [range, setRange] = useState({
+    min: field in filterState.range ? filterState.range[field].min : '',
+    max: field in filterState.range ? filterState.range[field].max : '',
+  })
+
+  //const [sliderRange, setSliderRange] = React.useState([0, 100])
 
 
   // effect for updating data
   useEffect(() => {
-
-    // if filterState includes field, don't update
-    if (isFiltered(filterState, field)) {
-      console.log(`field '${field} found in in filter string; skipping FilterComponent update`)
-      return
-    }
+    // if filterState includes field, don't update (REVISE!)
+    if (checked.length) return
 
     // don't request if genomeIDs haven't yet
     // been set in the TabContext
     if (core != 'genome' && !genomeIDs)
       return
 
-    getFacets({field, core, taxonID, genomeID, filterStr, genomeIDs})
+    getFacets({field, core, taxonID, genomeID, filterStr: filterState.filterString, genomeIDs})
       .then(data => setAllData(data))
 
-  }, [taxonID, genomeID, filterStr, genomeIDs, filterState])
+  }, [taxonID, genomeID, genomeIDs, filterState])
 
 
   // effect for selecting items
@@ -98,8 +98,6 @@ export default function Filter(props: Props) {
     }
 
     if (!allData) return
-
-    onCheck({field, value: checked})
 
     // sort checked to the top, and sort rest
     setData(data => sortOptions(data, checked))
@@ -115,8 +113,7 @@ export default function Filter(props: Props) {
     } else if (l == allData.length ) {
       setSelectAll(true)
     }
-
-  }, [checked])
+  }, [filterState])
 
 
   // effect for filtering data (currently client-side)
@@ -127,26 +124,11 @@ export default function Filter(props: Props) {
       obj.name.toLowerCase().includes(query.toLowerCase())
     )
     setData(filteredData)
-    console.log('newData', data)
   }, [query, allData, setData])
 
 
-  // effect for state from url
-  useEffect(() => {
-    if (!filterState) {
-      console.log('there is no filterSTate!')
-      return
-    }
-
-    const isFiltered = field in filterState.byCategory
-    setChecked(isFiltered ? filterState.byCategory[field]: [])
-  }, [filterState])
-
-
-  const handleCheck = (id) => {
-    setChecked(prev =>
-      prev.includes(id) ? prev.filter(str => str != id) : [...prev, id]
-    )
+  const handleCheck = (value) => {
+    dispatch({type: 'UPDATE', field, value})
   }
 
   const handleShowAll = () => {
@@ -155,16 +137,21 @@ export default function Filter(props: Props) {
 
   const handleSelectAll = () => {
     if (showUndo || selectAll) {
-      setChecked([])
+      dispatch({type: 'RESET', field})
     } else {
-      setChecked(allData.map(obj => obj.name))
+      dispatch({type: 'SELECT_ALL', field, value: allData.map(obj => obj.name)})
     }
   }
 
   const onSubmitRange = (evt) => {
     evt.preventDefault()
-    alert(JSON.stringify(range))
+
+    dispatch({type: 'RANGE', field, value: range})
   }
+
+  // const handleSliderChange = (evt, newValue) => {
+  //  setSliderRange(newValue)
+  // }
 
 
   // only render if there's actually facet data
@@ -185,11 +172,13 @@ export default function Filter(props: Props) {
             />
           }
 
-          <b>{label}</b>
+          <b style={hideSelectAll ? {marginLeft: 34} : {}}>
+            {label}
+          </b>
         </Title>
 
         {!hideSearch &&
-          <SearchBtn onClick={() => setShowSearch(!showSearch)} size="small" disableRipple>
+          <SearchBtn onClick={() => setShowSearch(!showSearch)} size="small" autoFocus disableRipple>
             <SearchIcon/>
           </SearchBtn>
         }
@@ -208,28 +197,30 @@ export default function Filter(props: Props) {
       }
 
       {type == 'number' &&
-        <RangeForm className="flex align-items-center" onSubmit={onSubmitRange}>
-          <TextField
-            placeholder="Min"
-            onChange={evt => setRange({min: evt.target.value, max: range.max})}
-            InputProps={{
-              style: {margin: '5px 10px', height: 26, width: 70}
-            }}
-            variant="outlined"
-          />
+        <RangeForm  onSubmit={onSubmitRange}>
+          <div className="flex align-items-center">
+            <TextField
+              placeholder="Min"
+              value={range.min}
+              onChange={evt => setRange({min: evt.target.value, max: range.max})}
+              InputProps={{
+                style: {margin: '5px 10px', height: 26, width: 70}
+              }}
+              variant="outlined"
+            />
 
-          <span>to</span>
+            <span>to</span>
 
-          <TextField
-            placeholder="Max"
-            onChange={evt => setRange({max: evt.target.value, min: range.min})}
-            InputProps={{
-              style: {margin: '5px 5px', height: 26, width: 70}
-            }}
-            variant="outlined"
-          />
+            <TextField
+              placeholder="Max"
+              value={range.max}
+              onChange={evt => setRange({max: evt.target.value, min: range.min})}
+              InputProps={{
+                style: {margin: '5px 5px', height: 26, width: 70}
+              }}
+              variant="outlined"
+            />
 
-          {(range.min || range.max) &&
             <RangeSubmitBtn
               type="submit"
               size="small"
@@ -239,24 +230,39 @@ export default function Filter(props: Props) {
             >
               Go
             </RangeSubmitBtn>
-          }
+
+          </div>
+
+          {/*
+          <Slider
+            value={sliderRange}
+            onChange={handleSliderChange}
+            valueLabelDisplay="auto"
+            aria-labelledby={`${field}-slider`}
+            getAriaValueText={() => `${sliderRange[0]} to ${sliderRange[1]}`}
+          />
+          */}
         </RangeForm>
       }
 
       <Filters>
         {data.slice(0, showAll ? data.length : MAX_FILTERS)
-          .map(obj =>
-            <div key={obj.name}>
+          .map(({name, count}) =>
+            <div key={name}>
               <CBContainer
                 control={
                   <Checkbox
-                    checked={checked.includes(obj.name)}
-                    onChange={() => handleCheck(obj.name)}
+                    checked={checked.includes(name)}
+                    onChange={() => handleCheck(name)}
                   />}
                 label={
                   <>
-                    <FacetLabel>{highlightText(obj.name, query)}</FacetLabel>
-                    <Count>{obj.count.toLocaleString()}</Count>
+                    <FacetLabel>
+                      {highlightText(type == 'date' ? toPrettyDate(name) : name, query)}
+                    </FacetLabel>
+                    <Count>
+                      {count.toLocaleString()}
+                    </Count>
                   </>
                 }
               />

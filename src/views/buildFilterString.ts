@@ -1,4 +1,13 @@
 
+type RangeFilters = {
+  field: Range
+}
+
+type Range = {
+  min?: string | null
+  max?: string | null
+}
+
 
 const getFacetFields = (state: object) =>
   Object.keys(state).filter(k => state[k].length > 0)
@@ -11,10 +20,28 @@ const getORStr = (state, field) =>
   ')').replace(/,*or\(\),*/g, '')
 
 
-export default function buildFilterString(state: object) {
+const getRangeStr = (range: RangeFilters) => {
+  let q = ''
+  for (let [field, val] of Object.entries(range)) {
+    const {min, max} = val
+    if (min.length && !max.length)
+      q += `${q.length ? ',' : ''}gt(${field},%22${min}%22)`
+    else if (!min.length && max.length)
+      q += `${q.length ? ',' : ''}lt(${field},%22${max}%22)`
+    else if (min.length && max.length)
+      q += `${q.length ? ',' : ''}between(${field},%22${min}%22,%22${max}%22)`
+  }
+
+  return q
+}
+
+
+export default function buildFilterString(state: object, range?: RangeFilters) {
   let queryStr
 
   const fields = getFacetFields(state)
+
+  const rangeStr = getRangeStr(range)
 
   // case for: eq(field,val)
   if (fields.length == 1 && state[fields[0]].length == 1) {
@@ -32,8 +59,15 @@ export default function buildFilterString(state: object) {
     queryStr =
       ('and(' +
         fields.map(field => getORStr(state, field)).join(',') +
+        (rangeStr.length ? rangeStr : '') +
       ')').replace(/,*and\(\),*/g, '')
   }
+
+  // handle remaining range range cases
+  if (fields.length == 1 && rangeStr.length) {
+    queryStr = `and(${queryStr},${rangeStr})`
+  }
+
 
   return queryStr
 }

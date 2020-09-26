@@ -1,11 +1,13 @@
-import React, {useState, useEffect, createContext} from 'react'
+import React, {useState, useEffect, createContext, useReducer} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
 import { listData, getGenomeIDs, getRepGenomeIDs } from '../api/data-api'
 
 import parseQuery from './parseQuery'
 
+import filterReducer from './filterReducer'
 import buildFilterString from './buildFilterString'
+
 
 const MAX_GENOMES = 20000
 
@@ -16,10 +18,10 @@ const TabContext = createContext([null])
 const TabProvider = (props) => {
   let {taxonID, genomeID} = useParams()
 
-
   const history = useHistory()
-  const params = new URLSearchParams(useLocation().search)
+  const location = useLocation()
 
+  const params = new URLSearchParams(location.search)
   const sort = params.get('sort') || '-score'
   const page = params.get('page') || 0
   const query = params.get('query') || ''
@@ -36,25 +38,39 @@ const TabProvider = (props) => {
   // keep track of genomeIDs for facet filtering
   const [genomeIDs, setGenomeIDs] = useState(null)
 
-  const [filterStr, setFilterStr] = useState(null)
-  const [filterState, setFilterState] = useState(null)
+  const [filterState, dispatch] = useReducer(filterReducer, null, () => {
+    const {byCategory, range} = parseQuery(filter)
+    return {
+      byCategory,
+      range,
+      filterString: buildFilterString(byCategory, range)
+    }
+  })
+
+  // update filterState whenever url state changes
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const filter = params.get('filter') || ''
+
+    dispatch({type: 'URL_CHANGE', value: filter})
+  }, [location])
+
+
+  useEffect(() => {
+    const queryStr = filterState.filterString
+
+    if (!queryStr.length) params.delete('filter')
+    else params.set('filter', queryStr)
+
+    // note: we don't want to escape parens and commas for rql
+    history.push({search: unescape(params.toString())})
+  }, [filterState.filterString])
+
 
   useEffect(() => {
     (async function() {
       // core may not be set yet
       if (!core) return
-
-      let fState, fStr
-      if (filter.length) {
-        fState = parseQuery(filter)
-        fStr = buildFilterString(fState.byCategory)
-
-        setFilterStr(fStr)
-        setFilterState(fState)
-      } else {
-        setFilterStr(null)
-        setFilterState(null)
-      }
 
       const params = {
         core,
@@ -62,7 +78,7 @@ const TabProvider = (props) => {
         start: Number(page) * Number(limit),
         limit,
         query,
-        filter: fStr,
+        filter: filterState.filterString,
         select: colIDs,
         eq: null
       }
@@ -114,7 +130,9 @@ const TabProvider = (props) => {
     return () => {
       // cancel request!
     }
-  }, [core, taxonID, genomeID, sort, page, query, colIDs, limit, filter])
+  }, [core, taxonID, genomeID, sort, page, query, colIDs, limit, filterState.filterString])
+
+
 
   const init = (core, columnIDs) => {
     setCore(core)
@@ -138,15 +156,6 @@ const TabProvider = (props) => {
     history.push({search: params.toString()})
   }
 
-  const onFacetFilter = (state, queryStr) => {
-    // setFilterStr(queryStr)
-    if (!queryStr.length) params.delete('filter')
-    else params.set('filter', queryStr)
-
-    // note: we don't want to escape parens and commas for rql
-    history.push({search: unescape(params.toString())})
-  }
-
   const onColumnMenuChange = (cols) => {
     setColIDs(cols.map(col => col.id))
   }
@@ -154,14 +163,15 @@ const TabProvider = (props) => {
 
   return (
     <TabContext.Provider value={[{
-      init, loading, data, genomeIDs, filterStr, filterState, error, total, page, limit, sort, query,
-      onSort, onPage, onSearch, onFacetFilter, onColumnMenuChange,
+      init, loading, data, genomeIDs, filterState, error, total, page, limit, sort, query,
+      onSort, onPage, onSearch, onColumnMenuChange,
       emptyNotice: loading && 'loading...'
-    }]}>
+    }, dispatch]}>
       {props.children}
     </TabContext.Provider>
   )
 }
+
 
 export { TabContext, TabProvider }
 

@@ -231,6 +231,19 @@ export async function getFacets(params: FacetParams) {
 }
 
 
+type StatsParams = {
+  core: string
+  field: string
+}
+
+// /genome/select?q=public:true%20AND%20owner:PATRIC*&wt=json&stats=true&stats.field=genome_length&stats.field=patric_cds&stats.field=patric_cds&stats.facet=genus&rows=0
+export async function getStats(params: StatsParams) {
+  const {core, field} = params
+
+  throw 'getStats() is not implemented'
+}
+
+
 export function queryTaxonID({query}) {
   const q = `?eq(taxon_id,${query})&select(taxon_id,taxon_name,lineage_names)&sort(+taxon_id)`
 

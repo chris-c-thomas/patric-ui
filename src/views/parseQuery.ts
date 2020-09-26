@@ -3,27 +3,36 @@ import { RQLQuery } from '@swimlane/rql'
 
 
 type FilterState = {
-  parsed: object
-  selected: object[],
+  parsed?: object
   byCategory: object,
+  range: object,
   keywords: string[]
 }
 
-export default function parseQuery(filter: string) : FilterState {
+export default function parseQuery(filter: string) : FilterState{
+
   let _parsed
   try {
     _parsed = RQLQuery.parse(filter)
   } catch (err) {
-    console.log('Unable To Parse Query: ', filter)
-    return
+    return {
+      byCategory: {},
+      keywords: [],
+      range: {}
+    }
   }
 
   let parsed = {
     parsed: _parsed,
-    selected: [],
     byCategory: {},
-    keywords: []
+    keywords: [],
+    range: {}
   }
+
+
+  let field, value
+  let min = '',
+    max = ''
 
   function walk(term) {
     switch (term.name) {
@@ -34,16 +43,31 @@ export default function parseQuery(filter: string) : FilterState {
       })
       break
     case 'eq':
-      var field = decodeURIComponent(term.args[0])
-      var value = decodeURIComponent(term.args[1])
-
-      parsed.selected.push({ field, value })
+      field = decodeURIComponent(term.args[0])
+      value = decodeURIComponent(term.args[1])
 
       if (!parsed.byCategory[field]) {
         parsed.byCategory[field] = [value]
       } else {
         parsed.byCategory[field].push(value)
       }
+
+      break
+    case 'gt':
+    case 'lt':
+    case 'between':
+      field = decodeURIComponent(term.args[0])
+
+      if (term.name == 'gt')
+        min = decodeURIComponent(term.args[1])
+      else if (term.name == 'lt')
+        max = decodeURIComponent(term.args[1])
+      else if (term.name == 'between')
+        [min, max] = [decodeURIComponent(term.args[1]), decodeURIComponent(term.args[2])]
+      else
+        throw 'parseQuery: no condition found for `gt`, `lt`, or `between`'
+
+      parsed.range[field] = {min, max}
 
       break
     case 'keyword':

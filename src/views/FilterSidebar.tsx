@@ -31,7 +31,6 @@ type Props = {
   onChange: (query: object, queryStr: string) => void
   collapsed: boolean
   onCollapse: (isCollapsed: boolean) => void
-  facetQueryStr: string
   applyOption?: boolean
 }
 
@@ -43,8 +42,8 @@ const FilterSidebar = (props: Props) => {
     onCollapse
   } = props
 
-  if (!onChange)
-    throw '`onChange` is required a prop for the sidebar component'
+  //if (!onChange)
+  //  throw '`onChange` is required a prop for the sidebar component'
 
   let ref = useRef(null)
 
@@ -64,11 +63,12 @@ const FilterSidebar = (props: Props) => {
       return
     }
 
-    const qStr = buildFilterString(filterState)
-    onChange(filterState, qStr)
-
+    //const qStr = buildFilterString(filterState)
+    //onChange(filterState, qStr)
+    /*
     if (qStr && props.applyOption) setShowApplyBtn(true)
     else setShowApplyBtn(false)
+    */
   }, [filterState])
 
 
@@ -139,7 +139,7 @@ const FilterSidebar = (props: Props) => {
           <FilterComponent
             key={id}
             field={id}
-            onCheck={onCheck}
+            // onCheck={onCheck}
             {...filterOpts}
             {...props}
           />
@@ -150,7 +150,7 @@ const FilterSidebar = (props: Props) => {
             <FilterComponent
               key={id}
               field={id}
-              onCheck={onCheck}
+              // onCheck={onCheck}
               {...filterOpts}
               {...props}
             />
