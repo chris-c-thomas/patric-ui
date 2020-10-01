@@ -9,7 +9,8 @@ import { getGenomeMeta }  from '../../api/data-api'
 import genomeIcon from '../../../assets/icons/genome.svg'
 
 
-import columns from '../taxon/genomes/columns'
+import columns from './genomes/columns'
+console.log('columns', columns)
 
 let metaSpec = {
   'Organism Info':  [
@@ -142,8 +143,7 @@ const MetaHeader = styled.tr`
 `
 
 
-export default function Overview() {
-
+export default function Overview(props) {
   const {genomeID} = useParams()
 
   const [loading, setLoading] = useState(false)
@@ -152,50 +152,54 @@ export default function Overview() {
   const [name, setName] = useState(null)
 
   useEffect(() => {
-    console.log('genomeID', genomeID)
-    getGenomeMeta(genomeID)
-      .then(meta => setMeta(meta))
+    const id = props.genomeID || genomeID
+    if (!id) return
+
+
+    getGenomeMeta(id)
+      .then(meta => {
+        setMeta(meta)
+
+        if (props.onLoaded)
+          props.onLoaded(meta)
+      })
       .catch(e => setError(e))
 
-  }, [genomeID])
+  }, [genomeID, props.genomeID])
 
   useEffect(() => {
-    getTaxon(genomeID.split('.')[0]).then(data => {
+    const id = props.genomeID || genomeID
+    if (!id) return
+
+    getTaxon(id.split('.')[0]).then(data => {
       setName(data.lineage_names[data.lineage_names.length - 1] )
     })
-  }, [])
+  }, [genomeID, props.genomeID])
 
   return (
     <Root>
-      <Meta>
-        <Icon src={genomeIcon} /> <MetaTitle>{name}</MetaTitle>
-        {
-          meta &&
-          <MetaTable>
-            <tbody>
-              {Object.keys(metaSpec).map(headerName =>
-                metaTableBody(headerName, metaSpec[headerName], meta)
-              )}
-            </tbody>
-          </MetaTable>
-        }
-      </Meta>
-
-      <Tables>
-      </Tables>
-
+      {props.title != false &&
+        <>
+          <Icon src={genomeIcon} /> <MetaTitle>{name}</MetaTitle>
+        </>
+      }
+      {
+        meta &&
+        <MetaTable>
+          <tbody>
+            {Object.keys(metaSpec).map(headerName =>
+              metaTableBody(headerName, metaSpec[headerName], meta)
+            )}
+          </tbody>
+        </MetaTable>
+      }
     </Root>
   )
 }
 
 const Root = styled.div`
-  display: flex;
-  height: calc(100% - 160px);
   overflow: scroll;
 
-  & > div {
-    margin: 10px;
-  }
 `
 
 const MetaTitle = styled.span`
@@ -215,14 +219,4 @@ const MetaTable = styled.table`
 const Icon = styled.img`
   height: 25px;
   height: 25px;
-`
-
-const Meta = styled.div`
-  flex: 1.2;
-`
-const Tables = styled.div`
-  flex: 2;
-`
-const Pubs = styled.div`
-  flex: 1;
 `
