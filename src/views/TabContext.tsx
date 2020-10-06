@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createContext, useReducer} from 'react'
+import React, {useState, useEffect, createContext, useReducer, useRef} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
 import { listData, getGenomeIDs, getRepGenomeIDs } from '../api/data-api'
@@ -13,9 +13,16 @@ const MAX_GENOMES = 20000
 
 const LOG = false
 
+// todo(nc): document
+const isStateUpToDate = (filterStr, urlStr) =>
+  (!filterStr && !urlStr) || (decodeURIComponent(filterStr) == decodeURIComponent(urlStr))
+
+
 const TabContext = createContext([null])
 
 const TabProvider = (props) => {
+  const ref = useRef(null)
+
   let {taxonID, genomeID} = useParams()
 
   const history = useHistory()
@@ -40,6 +47,7 @@ const TabProvider = (props) => {
 
   const [filterState, dispatch] = useReducer(filterReducer, null, () => {
     const {byCategory, range} = parseQuery(filter)
+
     return {
       byCategory,
       range,
@@ -47,26 +55,36 @@ const TabProvider = (props) => {
     }
   })
 
-  // update filterState whenever url state changes
+
+  // effect for updating URL on filterString change
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    const filter = params.get('filter') || ''
+    const filterStr = filterState.filterString
 
-    dispatch({type: 'URL_CHANGE', value: filter})
-  }, [location])
+    if (isStateUpToDate(filterStr, params.get('filter'))) {
+      return
+    }
 
-
-  useEffect(() => {
-    const queryStr = filterState.filterString
-
-    if (!queryStr.length) params.delete('filter')
-    else params.set('filter', queryStr)
+    if (!filterStr.length) params.delete('filter')
+    else params.set('filter', filterStr)
 
     // note: we don't want to escape parens and commas for rql
     history.push({search: unescape(params.toString())})
   }, [filterState.filterString])
 
 
+  // effect for setting state on filter change
+  useEffect(() => {
+    const {byCategory, range} = parseQuery(filter)
+    const filterString = buildFilterString(byCategory, range)
+
+    if (filterString == filterState.filterString) {
+      return
+    }
+
+    dispatch({type: 'SET', value: {byCategory, range, filterString})
+  }, [filter])
+
+  // effect for fetching grid data
   useEffect(() => {
     (async function() {
       // core may not be set yet

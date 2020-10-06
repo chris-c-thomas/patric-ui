@@ -1,9 +1,8 @@
 import buildFilterString from'./buildFilterString'
-import parseQuery from'./parseQuery'
 
 
 type Action = {
-  type: 'UPDATE' | 'RANGE' | 'SELECT_ALL' | 'RESET' | 'URL_CHANGE'
+  type: 'SET' | 'UPDATE' | 'RANGE' | 'SELECT_ALL' | 'RESET' | 'URL_CHANGE'
   field?: string
   value: string | {min: string, max: string} | string[]
 }
@@ -12,6 +11,18 @@ const filterReducer = (state, action: Action) => {
   console.log('******called filterReducer', state, action)
 
   switch (action.type) {
+
+  case 'SET': {   // useful for url changes?
+    const {byCategory, range, filterString} = action.value
+
+    return {
+      ...state,
+      byCategory,
+      range,
+      filterString
+    }
+  }
+
   case 'UPDATE': {
     const {value, field} = action
     const facets = field in state.byCategory ? state.byCategory[field] : []
@@ -71,19 +82,6 @@ const filterReducer = (state, action: Action) => {
       filterString: buildFilterString(byCategory, state.range)
     }
   }
-
-  case 'URL_CHANGE': {
-    const {byCategory, range} = parseQuery(action.value)
-    const filterString = buildFilterString(byCategory, range)
-
-
-    return {
-      byCategory,
-      range,
-      filterString
-    }
-  }
-
 
   default:
     return state

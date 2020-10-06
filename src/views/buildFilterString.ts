@@ -1,6 +1,6 @@
 
 type RangeFilters = {
-  field: Range
+  [field: string]: Range
 }
 
 type Range = {

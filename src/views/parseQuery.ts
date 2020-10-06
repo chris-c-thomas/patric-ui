@@ -4,8 +4,8 @@ import { RQLQuery } from '@swimlane/rql'
 
 type FilterState = {
   parsed?: object
-  byCategory: object,
-  range: object,
+  byCategory: object
+  range: object
   keywords: string[]
 }
 

@@ -15,8 +15,8 @@ import Checkbox from '../forms/Checkbox'
 
 import { getFacets } from '../api/data-api'
 import { TabContext } from './TabContext'
-
 import {toPrettyDate} from '../utils/dates'
+import buildFilterString from './buildFilterString'
 
 
 // number of rows shown by default for each facet
@@ -43,11 +43,8 @@ type Props = {
 
 export default function Filter(props: Props) {
   const {
-    field, type, label, core, hideSearch, hideSelectAll,
-    // onCheck
+    field, type, label, core, hideSearch, hideSelectAll
   } = props
-
-  const ref = React.useRef(null)
 
   const {taxonID, genomeID} = useParams()
 
@@ -57,14 +54,19 @@ export default function Filter(props: Props) {
 
   const checked = field in filterState.byCategory ? filterState.byCategory[field] : []
 
+  // all data for field
   const [allData, setAllData] = useState(null)
+
+  // filtered data
+  const [data, setData] = useState([])
 
   const [showAll, setShowAll] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [selectAll, setSelectAll] = useState(false)
   const [showUndo, setShowUndo] = useState(false)
+
+  // query in search field
   const [query, setQuery] = useState('')
-  const [data, setData] = useState([])
 
   const [range, setRange] = useState({
     min: field in filterState.range ? filterState.range[field].min : '',
@@ -76,31 +78,48 @@ export default function Filter(props: Props) {
 
   // effect for updating data
   useEffect(() => {
-    // if filterState includes field, don't update (REVISE!)
-    if (checked.length) return
-
     // don't request if genomeIDs haven't yet
     // been set in the TabContext
-    if (core != 'genome' && !genomeIDs)
-      return
-
-    getFacets({field, core, taxonID, genomeID, filterStr: filterState.filterString, genomeIDs})
-      .then(data => setAllData(data))
-
-  }, [taxonID, genomeID, genomeIDs, filterState])
-
-
-  // effect for selecting items
-  useEffect(() => {
-    if (!ref.current) {
-      ref.current = true
+    if (core != 'genome' && !genomeIDs) {
       return
     }
 
+    (async() => {
+      // if field has a filter checked, we need to get facet counts filtered on all other fields
+      let data
+      if (checked.length) {
+        try {
+          // get filter string
+          const byCat = {...filterState.byCategory}
+          delete byCat[field]
+          const range = {...filterState.range}
+          delete range[field]
+          const filterStr = buildFilterString(byCat, range)
+
+          data = await getFacets({field, core, taxonID, genomeID, genomeIDs, filterStr})
+        } catch (err) {
+          console.error(err)
+        }
+      } else {
+        data = await getFacets({field, core, taxonID, genomeID, filterStr: filterState.filterString, genomeIDs})
+      }
+
+      setAllData(data)
+    })()
+
+  }, [taxonID, genomeID, genomeIDs, filterState.filterString])
+
+
+  // effect for filtering data (currently client-side)
+  useEffect(() => {
     if (!allData) return
 
+    const filteredData = allData.filter(obj =>
+      obj.name.toLowerCase().includes(query.toLowerCase())
+    )
+
     // sort checked to the top, and sort rest
-    setData(data => sortOptions(data, checked))
+    setData(sortOptions(filteredData, checked))
 
     // watch checked for indeterminate state
     const l = checked.length
@@ -113,18 +132,7 @@ export default function Filter(props: Props) {
     } else if (l == allData.length ) {
       setSelectAll(true)
     }
-  }, [filterState])
-
-
-  // effect for filtering data (currently client-side)
-  useEffect(() => {
-    if (!allData) return
-
-    const filteredData = allData.filter(obj =>
-      obj.name.toLowerCase().includes(query.toLowerCase())
-    )
-    setData(filteredData)
-  }, [query, allData, setData])
+  }, [query, allData])
 
 
   const handleCheck = (value) => {
