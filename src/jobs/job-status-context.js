@@ -3,7 +3,7 @@ import React, {useState, useEffect, createContext, useCallback} from 'react'
 import { getStatus } from '../api/app-service'
 import { isSignedIn } from '../api/auth'
 
-const TIME_OUT = 9999999999
+const TIME_OUT = 5000
 
 /*
 interface State {

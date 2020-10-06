@@ -113,7 +113,7 @@ const services = [
   {label: 'Assembly', url: '/apps/Assembly2'},
   {label: 'Annotation', url: '/apps/GenomeAnnotation'},
   {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/ComprehensiveSARS2Analysis'},
-  {label: 'GenomeAlignment', url: '/apps/GenomeAlignment'},
+  // {label: 'GenomeAlignment', url: '/apps/GenomeAlignment'},
   // {label: 'BLAST', url: '/apps/blast'},
 ]
 
