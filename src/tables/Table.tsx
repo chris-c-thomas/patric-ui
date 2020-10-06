@@ -15,7 +15,8 @@ import TableRow from '@material-ui/core/TableRow'
 import Tooltip from '@material-ui/core/Tooltip'
 import IconButton from '@material-ui/core/IconButton'
 
-import MoreIcon from '@material-ui/icons/MoreHoriz'
+import MoreIcon from '@material-ui/icons/MoreVert'
+import InfoIcon from '@material-ui/icons/InfoOutlined'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 import filterIcon from '../../assets/icons/filter.svg'
@@ -323,7 +324,7 @@ export default function TableComponent(props: Props) {
   const {
     pagination, offsetHeight, checkboxes, emptyNotice,
     middleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
-    enableTableOptions, stripes = true
+    enableTableOptions, stripes = true, onShowDetails
   } = props
 
   if (pagination && (props.page === undefined || !props.limit)) {
@@ -353,6 +354,8 @@ export default function TableComponent(props: Props) {
     ids: [],
     objs: [],
   })
+
+  const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
     // todo: primary ids?
@@ -451,9 +454,13 @@ export default function TableComponent(props: Props) {
       onDoubleClick(row)
   }
 
+  const handleShowDetails = () => {
+    if (onShowDetails) onShowDetails()
+  }
+
   return (
     <Root>
-      <CtrlContainer>
+      <CtrlContainer >
 
         { enableTableOptions && props.openFilters &&
           <Tooltip title="Show filters">
@@ -519,6 +526,17 @@ export default function TableComponent(props: Props) {
             onChange={onColumnChange}
           />
         }
+
+        {onShowDetails &&
+          <IconButton
+            size="small"
+            onClick={handleShowDetails}
+            style={{background: selected.ids.length ? '#ecf4fb' : '#fff'}}
+            className="hover"
+          >
+            <InfoIcon />
+          </IconButton>
+        }
       </CtrlContainer>
 
       <Container
@@ -558,6 +576,7 @@ export default function TableComponent(props: Props) {
           </NoneFoundNotice>
         }
       </Container>
+
     </Root>
   )
 }

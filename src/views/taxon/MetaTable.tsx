@@ -8,9 +8,7 @@ import {getTaxon} from '../../api/data-api'
 import { getGenomeMeta }  from '../../api/data-api'
 import genomeIcon from '../../../assets/icons/genome.svg'
 
-
 import columns from './genomes/columns'
-console.log('columns', columns)
 
 let metaSpec = {
   'Organism Info':  [
@@ -23,22 +21,21 @@ let metaSpec = {
     {id: 'biovar', editable: true},
     {id: 'pathovar', editable: true},
     {id: 'mlst', editable: true},
-    {id: 'other_typing', editable: true, 'isList': true},
+    {id: 'other_typing', editable: true, isList: true},
     {id: 'culture_collection', editable: true},
     {id: 'type_strain', editable: true},
-    {id: 'antimicrobial_resistance', editable: true, 'isList': false},
+    {id: 'antimicrobial_resistance', editable: true, isList: false},
     {id: 'reference_genome'}],
-  'Genome Quality':
-    [
-      {id: 'genome_quality', editable: false},
-      {id: 'genome_quality_flags', editable: false},
-      {id: 'coarse_consistency', editable: false},
-      {id: 'fine_consistency', editable: false},
-      {id: 'checkm_completeness', editable: false},
-      {id: 'checkm_contamination', editable: false}],
+  'Genome Quality': [
+    {id: 'genome_quality', editable: false},
+    {id: 'genome_quality_flags', editable: false},
+    {id: 'coarse_consistency', editable: false},
+    {id: 'fine_consistency', editable: false},
+    {id: 'checkm_completeness', editable: false},
+    {id: 'checkm_contamination', editable: false}],
   'Sharing':  [
-    {id: 'user_read', editable: false, 'isList': true},
-    {id: 'user_write', editable: false, 'isList': true}],
+    {id: 'user_read', editable: false, isList: true},
+    {id: 'user_write', editable: false, isList: true}],
   'Project Info':  [
     {id: 'sequencing_centers'},
     {id: 'completion_date', editable: true, 'type': 'date'},
@@ -73,7 +70,7 @@ let metaSpec = {
     {id: 'longitude', editable: true},
     {id: 'altitude', editable: true},
     {id: 'depth', editable: true},
-    {id: 'other_environmental', editable: true, 'isList': true}],
+    {id: 'other_environmental', editable: true, isList: true}],
   'Host Info':  [
     {id: 'host_name', editable: true},
     {id: 'host_gender', editable: true},
@@ -81,7 +78,7 @@ let metaSpec = {
     {id: 'host_health', editable: true},
     {id: 'body_sample_site', editable: true},
     {id: 'body_sample_subsite', editable: true},
-    {id: 'other_clinical', editable: true, 'isList': true}],
+    {id: 'other_clinical', editable: true, isList: true}],
   'Phenotype Info':  [
     {id: 'gram_stain', editable: true},
     {id: 'cell_shape', editable: true},
@@ -92,10 +89,10 @@ let metaSpec = {
     {id: 'salinity', editable: true},
     {id: 'oxygen_requirement', editable: true},
     {id: 'habitat', editable: true},
-    {id: 'disease', editable: true, 'isList': true}],
+    {id: 'disease', editable: true, isList: true}],
   'Other': [
-    {id: 'comments', editable: true, 'type': 'textarea', 'isList': true},
-    {id: 'additional_metadata', editable: true, 'type': 'textarea', 'isList': true},
+    {id: 'comments', editable: true, 'type': 'textarea', isList: true},
+    {id: 'additional_metadata', editable: true, 'type': 'textarea', isList: true},
     {id: 'date_inserted', 'type': 'date'},
     {id: 'date_modified', 'type': 'date'}]
 }
@@ -109,7 +106,6 @@ for (const key of Object.keys(metaSpec)) {
 }
 
 const metaTableBody = (headerName, spec, data) => {
-
   return (
     <>
       <MetaHeader>
@@ -118,8 +114,8 @@ const metaTableBody = (headerName, spec, data) => {
       {
         spec.map(o => data[o.id] ?
           <tr key={o.id}>
-            <td style={{width: '40%'}}><b>{o.label}</b></td>
-            <td>{data[o.id]}</td>
+            <td style={{width: '45%'}}><b>{o.label}</b></td>
+            <td>{String(data[o.id]).split(',').join(', ')}</td>
           </tr>
           : <></>
         )
@@ -142,6 +138,20 @@ const MetaHeader = styled.tr`
   }
 `
 
+
+const MetaTableTitle = ({name}) =>
+  <MetaTitle className="secondary flex align-items-center">
+    <Icon src={genomeIcon} /> {name}
+  </MetaTitle>
+
+
+const MetaTitle = styled.span`
+  padding: 12px 0;
+  font-size: 14px;
+  margin-left: 5px;
+`
+
+export {MetaTableTitle}
 
 export default function Overview(props) {
   const {genomeID} = useParams()
@@ -179,9 +189,7 @@ export default function Overview(props) {
   return (
     <Root>
       {props.title != false &&
-        <>
-          <Icon src={genomeIcon} /> <MetaTitle>{name}</MetaTitle>
-        </>
+        <MetaTableTitle name={name}/>
       }
       {
         meta &&
@@ -200,11 +208,6 @@ export default function Overview(props) {
 const Root = styled.div`
   overflow: scroll;
 
-`
-
-const MetaTitle = styled.span`
-  font-size: 1.5em;
-  margin-left: 5px;
 `
 
 const MetaTable = styled.table`

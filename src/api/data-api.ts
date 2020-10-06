@@ -325,7 +325,7 @@ type ListParams = {
   start?: number
   query?: string
   limit?: number | string
-  eq?: any  // todo(nc): define;
+  eq?: object  // todo(nc): define;
   select?: string[]
   solrInfo?: boolean
   filter?: string
@@ -344,6 +344,7 @@ export async function listData(params: ListParams, options = null) {
     solrInfo = true,
     filter
   } = params
+
 
   if (filter)
     console.log('calling api with free-form rql filter:', filter)

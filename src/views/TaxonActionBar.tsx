@@ -4,6 +4,7 @@ import { useParams} from 'react-router-dom'
 
 import IconButton from '@material-ui/core/IconButton'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
+import ExternalIcon from '@material-ui/icons/OpenInNew'
 
 import genomeIcon from '../../assets/icons/selection-Genome.svg'
 import taxonIcon from '../../assets/icons/selection-Taxonomy.svg'
@@ -12,6 +13,7 @@ import TaxonCrumbs from './TaxonCrumbs'
 
 // only for tessting
 import config from '../config'
+import { Tooltip } from '@material-ui/core'
 
 export const TaxonActionBar = (props) => {
   const {taxonID, genomeID, view} = useParams()
@@ -23,17 +25,21 @@ export const TaxonActionBar = (props) => {
       <TaxonCrumbs />
 
 
-      <P3Link
-        href={props.title.includes('Genome') ?
-          `${config.p3URL}/view/Genome/${genomeID}#view_tab=${view}` :
-          `${config.p3URL}/view/Taxonomy/${taxonID}#view_tab=${view}`
-        }
-        target="_blank"
+      <Tooltip
+        title={<>Open guide <ExternalIcon style={{fontSize: 10}} /></>}
       >
-        <IconButton size="small" disableRipple >
+        <P3Link
+          href={props.title.includes('Genome') ?
+            `${config.p3URL}/view/Genome/${genomeID}#view_tab=${view}` :
+            `${config.p3URL}/view/Taxonomy/${taxonID}#view_tab=${view}`
+          }
+          target="_blank"
+          className="no-style hover flex-column align-items-center"
+        >
           <HelpIcon fontSize="small" />
-        </IconButton>
-      </P3Link>
+          <div>Guide</div>
+        </P3Link>
+      </Tooltip>
     </Root>
   )
 }
@@ -53,6 +59,9 @@ const Image = styled.img`
 const P3Link = styled.a`
   position: absolute;
   top: 60;
-  right: 20;
+  right: 30;
   opacity: .7;
+  > div {
+    font-size: 9px;
+  }
 `

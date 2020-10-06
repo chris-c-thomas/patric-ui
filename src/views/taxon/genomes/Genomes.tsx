@@ -11,6 +11,8 @@ import { getFilterSpec } from '../TabUtils'
 import { TabContext } from '../../TabContext'
 import MetaSidebar from '../MetaSidebar'
 
+import useLocalStorage from '../../../hooks/useLocalStorage'
+
 import columns from './columns'
 
 const core = 'genome'
@@ -40,21 +42,16 @@ export default function Genomes() {
     ...tableProps // see TabContext for rest of table params
   } = state
 
-  const [showActions, setShowActions] = useState(false)
+  const [showDetails, setShowDetails] = useLocalStorage<boolean>('showGridDetails', false)
   const [fullWidth, setFullWidth] = useState(false)
-  const [genomeID, setGenomeID] = useState(null)
+  const [selection, setSelection] = useState(null)
 
   useEffect(() => {
     init(core, columnIDs)
   }, [init])
 
-  const onSelect = (rows) => {
-    setShowActions(!!rows.ids.length)
-
-    if (rows.objs.length == 1)
-      setGenomeID(rows.objs[0].genome_id)
-    else
-      setGenomeID(null)
+  const onSelect = (sel) => {
+    setSelection(sel.objs.length ? sel.objs : null)
   }
 
   return (
@@ -80,15 +77,24 @@ export default function Genomes() {
             pagination
             enableTableOptions
             openFilters={fullWidth}
-            onOpenFilters={() => setFullWidth(false)}
-            middleComponent={showActions && <Actions />}
-            onShowDetails={genomeID && <MetaSidebar genomeID={genomeID} />}
+            onOpenFilters={() => setFullWidth(!fullWidth)}
+            middleComponent={selection && <Actions />}
+            onShowDetails={() => setShowDetails(!showDetails)}
             {...tableProps}
           />
         }
 
         {error && <ErrorMsg error={error} />}
       </GridContainer>
+
+      {showDetails &&
+        <MetaSidebar
+          selection={selection}
+          onClose={() => setShowDetails(false)}
+        />
+      }
+
+
 
     </Root>
   )

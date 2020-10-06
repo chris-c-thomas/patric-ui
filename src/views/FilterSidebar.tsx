@@ -3,10 +3,9 @@ import styled from 'styled-components'
 
 import Tooltip from '@material-ui/core/Tooltip'
 import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import ArrowLeft from '@material-ui/icons/KeyboardArrowLeftRounded'
 import AddIcon from '@material-ui/icons/AddCircleRounded'
-import UndoIcon from '@material-ui/icons/UndoRounded'
-
 import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 
 
@@ -14,7 +13,6 @@ import FilterComponent from './Filter'
 // import FilterDialog from './FilterDialog'
 import MenuSelector from '../tables/MenuSelector'
 
-import buildFilterString from './buildFilterString'
 
 
 type Filter = {
@@ -129,9 +127,9 @@ const FilterSidebar = (props: Props) => {
           </Tooltip>
         */}
 
-        <CollapseBtn onClick={handleCollapse}>
+        <IconButton size="small" onClick={handleCollapse}>
           <ArrowLeft />
-        </CollapseBtn>
+        </IconButton>
       </Options>
 
       <Container>
@@ -177,7 +175,7 @@ const optionsHeight = '30px'
 const SidebarRoot = styled.div`
   overflow: scroll;
   background: #fff;
-  width: ${sidebarWidth};
+  min-width: ${sidebarWidth};
   border-right: 1px solid #e9e9e9;
 
   @media (max-width: 960px) {
@@ -200,11 +198,6 @@ const Options = styled.div`
   padding: 5px 0;
   background-image: linear-gradient(to right, rgba(240,240,240,1), rgba(255,255,255,1));
   z-index: 100;
-`
-
-const CollapseBtn = styled.a`
-  margin-top: 5px;
-  color: #444;
 `
 
 const AddFilterBtn = styled.div`

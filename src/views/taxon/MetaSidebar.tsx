@@ -1,84 +1,56 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import InfoIcon from '@material-ui/icons/InfoOutlined'
+
 import Slide from '@material-ui/core/Slide'
 
-import MetaTable from './MetaTable'
-
-const drawerWidth = 240
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}))
-
-
+import MetaTable, { MetaTableTitle } from './MetaTable'
+import Alert from '@material-ui/lab/Alert'
+import AlertTitle from '@material-ui/lab/AlertTitle'
 
 
 export default function MetaSidebar(props) {
-  const {genomeID} = props
+  const {selection, onClose} = props
 
   const [title, setTitle] = useState()
 
-  const [open, setOpen] = useState(true)
-
-  useEffect(() => {
-    setOpen(genomeID ? true : false)
-  }, [genomeID])
-
-  const handleLoaded = (data) => {
+  const onLoaded = (data) => {
     setTitle(data.genome_name)
   }
 
-  const toggleDrawer = (open) => {
-    setOpen(open)
-  }
-
-
   return (
-    <Slide direction="left" in={open} mountOnEnter unmountOnExit>
+    <Slide direction="left" in={true} mountOnEnter unmountOnExit>
       <Root>
-
         <div className="flex space-between">
-          <h3 className="secondary">
-            {title}
-          </h3>
-          <IconButton size="small" onClick={() => toggleDrawer(false)}>
+          <div>
+            {(selection || []).length == 1 && title &&
+              <MetaTableTitle name={title} />
+            }
+          </div>
+
+          <IconButton size="small" onClick={() => onClose()} disableRipple>
             <CloseIcon/>
           </IconButton>
         </div>
 
-        <MetaTable genomeID={genomeID} title={false} onLoaded={handleLoaded} />
+        {(selection || []).length == 1 &&
+          <MetaTable genomeID={selection[0].genome_id} title={false} onLoaded={onLoaded} />
+        }
 
+        {(selection || []).length > 1&&
+          <Alert icon={<InfoIcon />} severity="info">
+            <AlertTitle>{selection.length} items selected</AlertTitle>
+          </Alert>
+        }
+
+        {!selection &&
+          <Alert icon={<InfoIcon />} severity="info">
+            <AlertTitle>Nothing Selected</AlertTitle>
+            Select one or more items on the left to see their details and possible actions.
+          </Alert>
+        }
       </Root>
     </Slide>
   )
@@ -87,19 +59,12 @@ export default function MetaSidebar(props) {
 
 
 const Root = styled.div`
-  position: fixed;
-  overflow-y: scroll;
   background: #fff;
-  right: 0;
-  box-shadow: -2px 4px 5px 1px #f2f2f2;
-  z-index: 200;
-  max-width: 350px;
+  width: 350px;
+  padding-left: 2px;
   border-left: 1px solid #e9e9e9;
-  padding: 10px;
+  box-shadow: -2px 4px 5px 1px #f2f2f2;
 
-  font-size: .9em;
-`
-
-const Container = styled.div`
-  overflow: scroll;
+  font-size: 13px;
+  overflow-y: scroll;
 `
