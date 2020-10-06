@@ -148,8 +148,14 @@ const MetaTableTitle = ({name}) =>
 const MetaTitle = styled.span`
   padding: 12px 0;
   font-size: 14px;
-  margin-left: 5px;
 `
+
+const Icon = styled.img`
+  height: 25px;
+  width: 25px;
+  padding-right: 5px;
+`
+
 
 export {MetaTableTitle}
 
@@ -219,7 +225,3 @@ const MetaTable = styled.table`
   }
 `
 
-const Icon = styled.img`
-  height: 25px;
-  height: 25px;
-`

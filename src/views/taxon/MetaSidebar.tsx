@@ -23,17 +23,19 @@ export default function MetaSidebar(props) {
   return (
     <Slide direction="left" in={true} mountOnEnter unmountOnExit>
       <Root>
-        <div className="flex space-between">
+        <Title>
           <div>
             {(selection || []).length == 1 && title &&
               <MetaTableTitle name={title} />
             }
           </div>
+          <div>
+            <IconButton size="small" onClick={() => onClose()} disableRipple>
+              <CloseIcon/>
+            </IconButton>
+          </div>
 
-          <IconButton size="small" onClick={() => onClose()} disableRipple>
-            <CloseIcon/>
-          </IconButton>
-        </div>
+        </Title>
 
         {(selection || []).length == 1 &&
           <MetaTable genomeID={selection[0].genome_id} title={false} onLoaded={onLoaded} />
@@ -68,3 +70,11 @@ const Root = styled.div`
   font-size: 13px;
   overflow-y: scroll;
 `
+
+const Title = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+`
+
