@@ -61,9 +61,9 @@ export default function MetaSidebar(props) {
 const Root = styled.div`
   background: #fff;
   width: 350px;
-  padding-left: 2px;
+  padding: 0 5px;
   border-left: 1px solid #e9e9e9;
-  box-shadow: -2px 4px 5px 1px #f2f2f2;
+  /*box-shadow: -2px 4px 5px 1px #f2f2f2;*/
 
   font-size: 13px;
   overflow-y: scroll;

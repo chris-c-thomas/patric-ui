@@ -528,14 +528,17 @@ export default function TableComponent(props: Props) {
         }
 
         {onShowDetails &&
-          <IconButton
-            size="small"
-            onClick={handleShowDetails}
-            style={{background: selected.ids.length ? '#ecf4fb' : '#fff'}}
-            className="hover"
-          >
-            <InfoIcon />
-          </IconButton>
+          <Tooltip title="Show/hide details">
+            <IconButton
+              size="small"
+              onClick={handleShowDetails}
+              style={{background: selected.ids.length ? '#ecf4fb' : '#fff'}}
+              className="hover"
+              disableRipple
+            >
+              <InfoIcon htmlColor={selected.ids.length && '#3a8cc2'}/>
+            </IconButton>
+          </Tooltip>
         }
       </CtrlContainer>
 

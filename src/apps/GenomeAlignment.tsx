@@ -20,8 +20,8 @@ import SignInForm from '../auth/SignInForm'
 import config from '../config'
 
 const appName = 'GenomeAnnotation'
-const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`
-const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`
+const userGuideURL =  `${config.docsURL}/user_guides/services/genome_alignment_service.html`
+const tutorialURL = `${config.docsURL}/tutorial/genome_alignment/genome_alignment.html`
 
 
 const example = {
