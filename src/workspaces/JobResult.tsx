@@ -9,7 +9,6 @@ import ActionBar from './ActionBar'
 import * as WS from '../api/ws-api'
 
 import './workspaces.scss'
-import GenericViewer from './viewers/GenericViewer'
 
 
 type Props = {
@@ -27,19 +26,18 @@ export default function Workspaces(props: Props) {
 
   const history = useHistory()
 
-  const [isObject, setIsObject] = useState(null)
   const [rows, setRows] = useState(null)
   const [selected, setSelected] = useState([])
 
   const updateList = useCallback(() => {
+    if (!path) return
+
+    const parts = path.split('/')
+    const name = parts.pop()
+    const jobDir = `${parts.join('/')}/.${name}`
+
     setRows(null)
-
-    console.log('path', path)
-
-    WS.isFolder(path)
-      .then(isFolder => setIsObject(!isFolder))
-
-    WS.list({path})
+    WS.list({path: jobDir, includeHidden: true})
       .then(data => {
         console.log('fetched workspace data:', data)
         setRows(data)
@@ -65,11 +63,6 @@ export default function Workspaces(props: Props) {
   }
 
   const onNavigate = (obj) => {
-    if (obj.type == 'job_result') {
-      history.push(`/job-result${obj.encodedPath}`)
-      return
-    }
-
     history.push(`/files${obj.encodedPath}`)
   }
 
@@ -88,19 +81,20 @@ export default function Workspaces(props: Props) {
               path={path}
               selected={selected}
               onUpdateList={() => updateList()}
+              isJobResult
             />
+
+            <h3>Job Result</h3>
           </ActionBarContainer>
 
           <FileListContainer>
-            {isObject ?
-              <GenericViewer path={path} /> :
-              <FileList
-                rows={rows}
-                onSelect={handleSelect}
-                onNavigate={onNavigate}
-                isObjectSelector={props.isObjectSelector}
-              />
-            }
+            <FileList
+              rows={rows}
+              onSelect={handleSelect}
+              onNavigate={onNavigate}
+              isObjectSelector={props.isObjectSelector}
+              isJobResult
+            />
           </FileListContainer>
         </Main>
 

@@ -11,15 +11,16 @@ import { WSObject } from '../api/ws-api'
 
 type Props = {
   path: string;
-  selected: WSObject[];
+  selected: WSObject[]
   onUpdateList: () => void;
+  isJobResult: boolen;
 }
 
 /**
  * Workspace-specific ActionBar / breadcrumbs.
  */
 export default function ActionBar(props: Props) {
-  const {path, onUpdateList} = props
+  const {path, onUpdateList, isJobResult} = props
 
   const [currentPath, setCurrentPath] = useState(path)
   const [parts, setParts] = useState([])
@@ -76,7 +77,7 @@ export default function ActionBar(props: Props) {
         </Breadcrumbs>
       }
 
-      {(!selected || selected.length == 0) &&
+      {(!selected || selected.length == 0) && !isJobResult &&
         <Opts>
           <Options
             path={currentPath}

@@ -39,7 +39,7 @@ export type WSObject = {
   isWS: boolean
 }
 
-function metaToObj(m: string[]) {
+function metaToObj(m) {
   const path = m[2] + m[0]
   return {
     // encode everything but user's root
@@ -53,8 +53,11 @@ function metaToObj(m: string[]) {
     hash: m[4],
     owner: m[5],
     size: m[6],
+    userMeta: m[7],
+    autoMeta: m[8],
     priv: m[9],
     public: m[10] == 'r',
+    linkRef: m[11],
     isWS: (m[2].match(/\//g) || []).length == 2
     // permissions: (added below in a second 'list_permissions' request)
   }
@@ -90,6 +93,7 @@ export function list(args: Args) {
 
   return rpc('ls', params)
     .then(data => {
+      console.log('data', data)
       const meta = data[path]
       let objects = meta ? meta.map((m) => metaToObj(m)) : []
 
@@ -99,36 +103,101 @@ export function list(args: Args) {
 
       let permissionProm: Promise<any>
       if (includePermissions) {
-        permissionProm = listPermissions(objects.map((o: { path: any }) => o.path))
+        permissionProm = listPermissions(objects.map(o => o.path))
       }
 
-      return permissionProm.then((permHash: { [x: string]: any }) => {
+
+      return permissionProm.then((permHash) => {
+        console.log('permhash', permHash)
         // join-in permissions if requested
         if (permHash) {
-          objects = objects.map((obj: { path: string | number }) => ({...obj, permissions: permHash[obj.path]}))
+          objects = objects.map((obj) => ({...obj, permissions: permHash[obj.path]}))
         }
 
+        console.log('objects', objects)
         // we want to return folders followed by files
-        const folders = objects.filter((obj: { type: string }) => obj.type == 'folder').reverse()
-        const files = objects.filter((obj: { type: string }) => obj.type != 'folder'). reverse()
+        const folders = objects.filter((obj) => obj.type == 'folder').reverse()
+        const files = objects.filter((obj) => obj.type != 'folder'). reverse()
         return [...folders, ...files]
       })
     })
 }
 
 
-function listPermissions(paths: any) {
-  var objects = Array.isArray(paths) ? paths : [paths]
+function listPermissions(paths: string | string[]) {
+  const objects = Array.isArray(paths) ? paths : [paths]
 
   return rpc('list_permissions', {objects})
 }
 
 
-export function createFolder(path) {
+type IsFolderArgs = {
+  path: string
+}
 
+export function isFolder(path: IsFolderArgs) {
+  return rpc('get', { objects: [path], metadata_only: true})
+    .then(res => res[0][0][1] == 'folder')
+}
+
+
+export async function get({path, onlyMeta = false}) {
+  if (!path) {
+    throw 'ws-api > `get`: Invalid Path(s) to retrieve'
+  }
+  path = decodeURIComponent(path)
+
+  const res = await rpc('get', {objects: [path], metadata_only: onlyMeta})
+  console.log('res', res)
+
+  const meta = metaToObj(res[0][0])
+  console.log('meta', meta)
+
+  if (onlyMeta) {
+    return meta
+  }
+
+  // if there's a object ref, fetch it
+  if (meta.linkRef) {
+    let headers = {
+      // 'X-Requested-With': null,
+      Authorization: getToken() ? 'OAuth ' + getToken() : null
+    }
+
+    try {
+      const data = await axios.get(meta.linkRef + '?download', {headers})
+
+      return {
+        meta,
+        data
+      }
+    } catch (err) {
+      console.error('Error Retrieving data object from shock :', err, meta.linkRef)
+    }
+  }
+
+  let result = {
+    meta,
+    data: res[0][0][1]
+  }
+
+  return result
+}
+
+
+export async function getDownloadUrls(paths: string | string[]) {
+  paths = paths instanceof Array ? paths : [paths]
+  const urls =  await rpc('get_download_url', { objects: paths })
+  return urls[0]
+}
+
+
+export function createFolder(path) {
   return rpc('create', { objects: [[path, 'Directory']] })
     .then(res => res)
 }
+
+
 
 
 

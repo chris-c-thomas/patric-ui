@@ -21,6 +21,7 @@ import HostTabs from './views/hosts/HostTabs'
 
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
+import JobResult from './workspaces/JobResult'
 import SUSignIn from './auth/SuSignIn'
 import NotFound404 from './404'
 import ErrorBoundary from './ErrorBoundary'
@@ -69,17 +70,23 @@ const App = () => {
                     <Route path="/" exact component={Home} />
                     <Route path="/search/" component={GlobalSearch} />
                     <Route path="/my-profile" exact component={Account} />
-                    <Route path="/apps/annotation" exact component={lazy(() => import('./apps/Annotation'))} />
-                    <Route path="/apps/assembly" exact component={lazy(() => import('./apps/Assembly'))} />
+                    <Route path="/apps/GenomeAnnotation" exact component={lazy(() => import('./apps/Annotation'))} />
+                    <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly'))} />
                     <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
                     <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
+                    <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />
 
                     <Route path="/jobs*" render={() =>
                       isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" />}
                     />
+
                     <Route path="/files/:path*" exact render={() =>
                       isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
                     />
+                    <Route path="/job-result/:path*" exact render={() =>
+                      isSignedIn() ? <JobResult/> : <SignIn title="Please sign in to use Workspaces" />}
+                    />
+
 
                     <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                       <TaxonTabs />

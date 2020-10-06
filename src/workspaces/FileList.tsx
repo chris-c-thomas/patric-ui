@@ -12,6 +12,7 @@ import WSIcon from '../../assets/icons/hdd-o.svg'
 import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
 import GroupIcon from '../../assets/icons/genome-group.svg'
 import FeaturesIcon from '../../assets/icons/genome-features.svg'
+import JobResultIcon from '@material-ui/icons/FlagRounded'
 
 import {bytesToSize, isoToHumanDateTime} from '../utils/units'
 
@@ -22,7 +23,13 @@ const columns = [
     label: 'Name',
     width: '45%',
     format: (val, obj) =>
-      <Link to={(`/files${obj.encodedPath}`)} className="inline-flex align-items-center">
+      <Link
+        to={obj.type == 'job_result' ?
+          `/job-result${obj.encodedPath}` :
+          `/files${obj.encodedPath}`
+        }
+        className="inline-flex align-items-center"
+      >
         {getIcon(obj)} {val}
       </Link>
   }, {
@@ -59,6 +66,8 @@ function getIcon({type, isWS, permissions}) {
     return <img src={GroupIcon} className="icon"/>
   else if (type == 'feature_group')
     return <img src={FeaturesIcon} className="icon"/>
+  else if (type == 'job_result')
+    return <JobResultIcon className="icon" />
   else
     return <File className="icon"/>
 }
@@ -78,6 +87,7 @@ type Props = {
   isObjectSelector?: boolean;
   onSelect: (obj: object) => void;
   onNavigate: (obj: object) => void;
+  isJobResult: boolean;
 }
 
 
@@ -87,7 +97,8 @@ export default function FileList(props: Props) {
     fileType,
     isObjectSelector,
     onSelect,
-    onNavigate
+    onNavigate,
+    isJobResult
   } = props
 
   if (fileType) {
