@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const usageError = (propName, value, label) => {
-  return `TextInput component with label="${label}" must have prop: ${propName}.  ` +
+  return `WSFileName component with label="${label}" must have prop: ${propName}.  ` +
     `Value was: ${value}`
 }
 

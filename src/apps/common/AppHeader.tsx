@@ -10,23 +10,16 @@ import { isSignedIn } from '../../api/auth'
 import { Section } from './FormLayout'
 
 
-import urlMapping from '../../jobs/url-mapping'
+// import urlMapping from '../../jobs/url-mapping'
 const p3Url = 'https://alpha.bv-brc.org'
 
 
-const getP3Url = (name) => {
-  const invert = {}
-  for(const key in urlMapping){
-    invert[urlMapping[key]] = key
-  }
-
-  return `${p3Url}/app/${invert[name]}`
-}
+const getP3Url = (name) => `${p3Url}/app/${name}`
 
 
 type Props = {
   title: string;
-  description: string;
+  description: string | JSX.Element;
   tutorialURL: string;
   userGuideURL: string;
   onUseExample?: () => void;
@@ -56,7 +49,7 @@ export default function AppHeader(props: Props) {
       </div>
 
       <AppDescription>
-        {description}
+        {description}{' '}
         For further explanation, please see the{' '}
         <a href={userGuideURL} target="_blank" rel="noopener noreferrer">User Guide </a> and{' '}
         <a href={tutorialURL} target="_blank" rel="noopener noreferrer">Tutorial</a>.

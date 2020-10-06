@@ -8,7 +8,7 @@ import CheckIcon from '@material-ui/icons/Check'
 
 
 const usageError = (propName, value) => (
-  `SelectedTable component must have prop: ${propName}.  Value was: ${value}`
+  `StepComponent must have prop: ${propName}.  Value was: ${value}`
 )
 
 

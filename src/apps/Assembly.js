@@ -10,7 +10,7 @@ import ReadSelector from './components/ReadSelector'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import Selector from './components/Selector'
 import TextInput from './components/TextInput'
-import AdvandedButton from './components/AdvancedButton'
+import AdvancedButton from './components/AdvancedButton'
 
 // auth is required
 import { isSignedIn } from '../api/auth'
@@ -123,7 +123,7 @@ export default function Assembly() {
         </Row>
 
 
-        <AdvandedButton onClick={open => setAdvParams(open)} />
+        <AdvancedButton onClick={open => setAdvParams(open)} />
 
         {advParams &&
           <>
