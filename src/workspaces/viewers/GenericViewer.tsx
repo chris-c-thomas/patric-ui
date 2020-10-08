@@ -9,7 +9,7 @@ const images = ['png', 'jpg', 'gif']
 
 const GenericViewer = (props) => {
   const {path} = props
-s
+
   const [data, setData] = useState(null)
 
   const [name, setName] = useState(null)

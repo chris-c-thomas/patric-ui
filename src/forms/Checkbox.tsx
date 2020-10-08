@@ -59,7 +59,7 @@ const useStyles = makeStyles({
 
 type Props = {
   checked: boolean
-  onChange: (evt: ChangeEvent<HTMLInputElement>) => void
+  onChange?: (evt: ChangeEvent<HTMLInputElement>) => void
   indeterminate?: boolean
   size?: null | 'small'
 }
@@ -77,7 +77,7 @@ const StyledCheckbox = memo(function StyledCheckbox(props: Props) {
       icon={<span className={classes.icon} />}
       inputProps={{ 'aria-label': 'checkbox' }}
       checked={props.checked || false}
-      onChange={props.onChange}
+      onChange={evt => props.onChange && props.onChange(evt)}
       style={{padding: '0 9px'}}
       indeterminate={props.indeterminate}
       size={props.size}

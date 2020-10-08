@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect, useRef, useMemo} from 'react'
 import styled from 'styled-components'
 
 import Tooltip from '@material-ui/core/Tooltip'
@@ -26,27 +26,18 @@ type Filter = {
 type Props = {
   core: string
   filters: Filter[],
-  onChange: (query: object, queryStr: string) => void
   collapsed: boolean
   onCollapse: (isCollapsed: boolean) => void
   applyOption?: boolean
 }
 
 
-const FilterSidebar = (props: Props) => {
+const FilterSidebar = (props) => {
   const {
     filters,
-    onChange,
     onCollapse
   } = props
 
-  //if (!onChange)
-  //  throw '`onChange` is required a prop for the sidebar component'
-
-  let ref = useRef(null)
-
-  // {fieldA: ['cat1', 'cat2'], fieldB: ['cat3', 'cat4']}
-  const [filterState, setFilterState] = useState({})
 
   const [collapsed, setCollapsed] = useState(props.collapsed)
   const [showApplyBtn, setShowApplyBtn] = useState(false)
@@ -56,28 +47,9 @@ const FilterSidebar = (props: Props) => {
 
 
   useEffect(() => {
-    if (!ref.current) {
-      ref.current = true
-      return
-    }
-
-    //const qStr = buildFilterString(filterState)
-    //onChange(filterState, qStr)
-    /*
-    if (qStr && props.applyOption) setShowApplyBtn(true)
-    else setShowApplyBtn(false)
-    */
-  }, [filterState])
-
-
-  useEffect(() => {
     setCollapsed(props.collapsed)
   }, [props.collapsed])
 
-
-  const onCheck = ({field, value}) => {
-    setFilterState(prev => ({...prev, [field]: value}))
-  }
 
   const onAddFilter = (newFilters) => {
     setNewFilters(newFilters)

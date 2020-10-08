@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createContext, useReducer, useRef} from 'react'
+import React, {useState, useEffect, createContext, useReducer} from 'react'
 import {useParams, useHistory, useLocation} from 'react-router-dom'
 
 import { listData, getGenomeIDs, getRepGenomeIDs } from '../api/data-api'
@@ -20,9 +20,8 @@ const isStateUpToDate = (filterStr, urlStr) =>
 
 const TabContext = createContext([null])
 
-const TabProvider = (props) => {
-  const ref = useRef(null)
 
+const TabProvider = (props) => {
   let {taxonID, genomeID} = useParams()
 
   const history = useHistory()
@@ -81,7 +80,7 @@ const TabProvider = (props) => {
       return
     }
 
-    dispatch({type: 'SET', value: {byCategory, range, filterString})
+    dispatch({type: 'SET', value: {byCategory, range, filterString}})
   }, [filter])
 
   // effect for fetching grid data

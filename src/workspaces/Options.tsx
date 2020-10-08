@@ -7,7 +7,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import UploadIcon from '@material-ui/icons/CloudUploadOutlined'
 import VisibilityIcon from '@material-ui/icons/Visibility'
-import MoreIcon from '@material-ui/icons/MoreVert'
+import InfoIcon from '@material-ui/icons/InfoOutlined'
 
 // import NewWSIcon from '../../assets/icons/add-workspace.svg'
 
@@ -61,7 +61,7 @@ const Options = (props: Props) => {
 
       <Tooltip title="show details">
         <IconButton onClick={() => implement()} size="small" color="primary" disableRipple >
-          <MoreIcon />
+          <InfoIcon />
         </IconButton>
       </Tooltip>
 

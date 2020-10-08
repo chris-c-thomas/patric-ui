@@ -22,7 +22,7 @@ export default function MetaSidebar(props) {
 
   return (
     <Slide direction="left" in={true} mountOnEnter unmountOnExit>
-      <Root>
+      <Root className="meta-sidebar">
         <Title>
           <div>
             {(selection || []).length == 1 && title &&
@@ -64,7 +64,7 @@ const Root = styled.div`
   background: #fff;
   width: 350px;
   padding: 0 5px;
-  border-left: 1px solid #e9e9e9;
+  border-left: 1px solid #c3c3c3;
   /*box-shadow: -2px 4px 5px 1px #f2f2f2;*/
 
   font-size: 13px;

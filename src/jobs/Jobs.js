@@ -61,7 +61,7 @@ const columns = [
 
       const name = obj.output_file,
         path = `${obj.output_path}/.${name}`
-      return  <Link to={`/files${path}`}>{name}</Link>
+      return  <Link to={`/job-result${path}`}>{name}</Link>
     },
   }, {
     id: 'submit_time',

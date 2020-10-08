@@ -176,7 +176,7 @@ type FacetParams = {
   field: string          // field to facet on
   taxonID?: string       // taxonID, or
   genomeID?: string      // genomeID
-  filterStr?: string // optional query string
+  filterStr?: string     // optional RQL string
   genomeIDs?: string[]   // genomeIDs (for non-genome core query)
 }
 

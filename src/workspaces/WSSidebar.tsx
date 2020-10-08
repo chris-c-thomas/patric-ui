@@ -47,6 +47,7 @@ const menu = [
 
 type Props = {
   isObjectSelector?: boolean
+  selected?: WSObject[]
 }
 
 const WSSideBar = (props: Props) => {

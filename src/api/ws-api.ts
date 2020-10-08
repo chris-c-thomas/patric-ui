@@ -131,11 +131,8 @@ function listPermissions(paths: string | string[]) {
 }
 
 
-type IsFolderArgs = {
-  path: string
-}
 
-export function isFolder(path: IsFolderArgs) {
+export function isFolder(path: string) {
   return rpc('get', { objects: [path], metadata_only: true})
     .then(res => res[0][0][1] == 'folder')
 }

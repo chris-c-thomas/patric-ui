@@ -12,8 +12,8 @@ import { WSObject } from '../api/ws-api'
 type Props = {
   path: string;
   selected: WSObject[]
-  onUpdateList: () => void;
-  isJobResult: boolen;
+  onUpdateList: () => void
+  isJobResult?: boolen
 }
 
 /**

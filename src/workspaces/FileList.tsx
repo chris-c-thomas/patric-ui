@@ -87,7 +87,7 @@ type Props = {
   isObjectSelector?: boolean;
   onSelect: (obj: object) => void;
   onNavigate: (obj: object) => void;
-  isJobResult: boolean;
+  isJobResult?: boolean;
 }
 
 
