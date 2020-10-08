@@ -1,20 +1,32 @@
 
-// handles selection of rows (to include shift/ctrl click)
+// handles selection of rows
 const selectedReducer = (state, action) => {
-  if (action.type == 'CLEAR') {
+
+  const {type} = action
+
+  if (type == 'SELECT_ALL') {
+    return {
+      ...state,
+      ids: action.rows.map(obj => obj.rowID),
+      objs: action.rows
+    }
+
+  } else if (type == 'CLEAR') {
     return {
       lastSelected: [],
       ids: [],
       objs: []
     }
-  } else if (action.type == 'SET' || !state.lastSelected) {
+
+  } else if (type == 'SET' || !state.lastSelected) {
     return {
       ...state,
       lastSelected: action.id,
       ids: [action.id],
       objs: [action.obj]
     }
-  } else if (action.type == 'SHIFT_SET' && state.lastSelected) {
+
+  } else if (type == 'SHIFT_SET' && state.lastSelected) {
     const {lastSelected} = state
 
     let newObjs
@@ -29,13 +41,15 @@ const selectedReducer = (state, action) => {
       ids: newObjs.map(o => o.rowID),
       objs: newObjs
     }
-  } else if (action.type == 'CTRL_SET') {
+
+  } else if (type == 'CTRL_SET') {
     return {
       ...state,
       lastSelected: action.id,
       ids: [...state.ids, action.id],
       objs: [...state.objs, action.obj]
     }
+
   } else {
     throw `selected object reducer: theres no action for '${action.type}`
   }

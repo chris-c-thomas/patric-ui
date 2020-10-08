@@ -122,7 +122,10 @@ const Row = (props: RowProps) => {
 
       {checkboxes &&
         <Cell key={id + '-checkbox'} style={{padding: 0, width: 1}}>
-          <Checkbox checked={selected.ids.includes(rowID)} onChange={evt => onSelect(evt, rowID, row)}/>
+          <Checkbox
+            checked={selected.ids.includes(rowID)}
+            onClick={evt => onSelect(evt, rowID, row)}
+          />
         </Cell>
       }
 
@@ -208,8 +211,8 @@ const TableHeadComponent = (props) => {
     <TableRow>
       {/* if table has checkboxes (if table has sslect all checkbox) */}
       {checkboxes &&
-        <TableCell style={{padding: 0, width: 1}}>
-          <Checkbox checked={allSelected} onChange={handleSelectAll} />
+        <TableCell style={{padding: 0, width: 1}} onClick={handleSelectAll}>
+          <Checkbox checked={allSelected} />
         </TableCell>
       }
 
@@ -381,7 +384,6 @@ export default function TableComponent(props: Props) {
     if (onSelect) onSelect(selected)
   }, [selected, onSelect])
 
-
   // enable/disable userSelect durring ctrl/shift+click
   const handleKeyDown = useCallback((evt) => {
     if (evt.shiftKey) {
@@ -407,11 +409,6 @@ export default function TableComponent(props: Props) {
     props.onPage(newPage)
   }
 
-  const handleSelectAll = () => {
-    alert('sorry, handleSelectAll needs to be re-implemented.  Thanks for your patience.')
-    setAllSelected(prev => !prev)
-  }
-
   const handleSelect = (evt, rowID, obj) => {
     let type
     if (evt.metaKey) {
@@ -420,12 +417,21 @@ export default function TableComponent(props: Props) {
       type = 'SHIFT_SET'
     } else {
       type = 'SET'
+      setAllSelected(false)
     }
 
-    dispatch({type, id: rowID, obj, rows })
+    dispatch({type, id: rowID, obj, rows})
 
     // enable text-selection again
     setUserSelect(true)
+  }
+
+  const handleSelectAll = () => {
+    setAllSelected(prev => {
+      if (prev) dispatch({type: 'CLEAR', rows})
+      else dispatch({type: 'SELECT_ALL', rows})
+      return !prev
+    })
   }
 
   const handleSort = (colObj) => {

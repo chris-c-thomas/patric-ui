@@ -6,11 +6,12 @@ const ActionBtn = styled.button`
   border: none;
   margin-right: 5px;
   border: 1px solid transparent;
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 3px;
   outline: none;
   cursor: pointer;
   text-transform: uppercase;
+  min-width: 50px;
 
   :hover {
     border: 1px solid #bbb;
