@@ -5,12 +5,17 @@ import {useEffect} from 'react'
 export default function useClickOutside(
   ref: {current: HTMLElement},
   callback: () => void,
-  except: string = 'button'
+  except: string | string[] = 'button'
 ) {
   useEffect(() => {
     function handleClickOutside(event) {
-      if (except && event.target.closest(except))
+      if (except &&
+        (Array.isArray(except) ? except : [except])
+          .filter(tag => event.target.closest(tag)).length
+      ) {
         return
+      }
+
 
       if (ref.current && !ref.current.contains(event.target))
         callback()

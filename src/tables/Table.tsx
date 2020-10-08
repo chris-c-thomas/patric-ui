@@ -309,11 +309,10 @@ type Props = {
   onSelect?: (any) => void        // todo: define
   onDoubleClick?: (any) => void
   onColumnMenuChange?: (any) => void | boolean
-
+  onShowDetails?: () => void      // useful for details sidebar
   openFilters?: boolean
   onOpenFilters?: () => void
-
-  onMore?: () => void             // todo: deprecate?
+  onMore?: () => void             // todo: remove?
 
   middleComponent?: JSX.Element
 }
@@ -355,33 +354,32 @@ export default function TableComponent(props: Props) {
     objs: [],
   })
 
-  const [showDetails, setShowDetails] = useState(false)
-
+  // when rows change, add row ids
   useEffect(() => {
     // todo: primary ids?
     setRows(props.rows.map((row, i) => ({...row, rowID: i})))
   }, [props.rows])
 
+  // listen to columns
+  useEffect(() => {
+    setColumns(getVisibleColumns(props.columns, activeColumns))
+  }, [activeColumns, props.columns])
 
+  // listen to page changes
   useEffect(() => {
     setPage(Number(props.page))
   }, [props.page])
 
-
+  // listen to sort changes
   useEffect(() => {
     if (!props.sort) return
     setSortBy(parseSort(props.sort))
   }, [props.sort])
 
-
-  useEffect(() => {
-    setColumns(getVisibleColumns(props.columns, activeColumns))
-  }, [activeColumns, props.columns])
-
-
+  // listen to selected
   useEffect(() => {
     if (onSelect) onSelect(selected)
-  }, [selected])
+  }, [selected, onSelect])
 
 
   // enable/disable userSelect durring ctrl/shift+click
@@ -400,8 +398,8 @@ export default function TableComponent(props: Props) {
 
 
   useClickOutside(tableRef, () => {
-    dispatch({type: 'CLEAR' })
-  })
+    dispatch({type: 'CLEAR'})
+  }, ['button', '.meta-sidebar'])
 
 
   const onChangePage = (event, newPage) => {
@@ -536,7 +534,7 @@ export default function TableComponent(props: Props) {
               className="hover"
               disableRipple
             >
-              <InfoIcon htmlColor={selected.ids.length && '#3a8cc2'}/>
+              <InfoIcon htmlColor={selected.ids.length ? '#3a8cc2' : ''}/>
             </IconButton>
           </Tooltip>
         }
