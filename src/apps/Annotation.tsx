@@ -69,9 +69,8 @@ export default function Annotation() {
 
   const onSubmit = () => {
     const values = getValues(form)
-    console.log('values', values)
-    setStatus('starting')
 
+    setStatus('starting')
     submitApp(appName, values)
       .then(() => setStatus('success'))
       .catch(error => setStatus(error))
