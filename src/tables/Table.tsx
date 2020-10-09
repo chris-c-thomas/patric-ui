@@ -428,7 +428,7 @@ export default function TableComponent(props: Props) {
 
   const handleSelectAll = () => {
     setAllSelected(prev => {
-      if (prev) dispatch({type: 'CLEAR', rows})
+      if (prev) dispatch({type: 'CLEAR'})
       else dispatch({type: 'SELECT_ALL', rows})
       return !prev
     })
@@ -439,13 +439,18 @@ export default function TableComponent(props: Props) {
     const direction = sortBy[id] == 'asc' ? 'dsc' : 'asc'
     const newState = {[id]: direction}
 
+    // if server-side sorting
     if (onSort) {
       onSort(decodeSort(newState))
+
+    // if client-side sorting
     } else  {
-      // otherwise do client-side sorting
       setRows(clientSideSort(rows, id, direction))
       setSortBy(newState)
     }
+
+    // select everything
+    dispatch({type: 'CLEAR'})
   }
 
   const onColumnChange = (activeCols) => {

@@ -60,7 +60,7 @@ const columns = [
       if (!isAvail) return '-'
 
       const name = obj.output_file,
-        path = `${obj.output_path}/.${name}`
+        path = `${obj.output_path}/${name}`
       return  <Link to={`/job-result${path}`}>{name}</Link>
     },
   }, {

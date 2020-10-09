@@ -31,23 +31,22 @@ export default function Workspaces(props: Props) {
   const [rows, setRows] = useState(null)
   const [selected, setSelected] = useState([])
 
+
   const updateList = useCallback(() => {
     setRows(null)
-
-    console.log('path', path)
 
     WS.isFolder(path)
       .then(isFolder => setIsObject(!isFolder))
 
     WS.list({path})
       .then(data => {
-        console.log('fetched workspace data:', data)
         setRows(data)
 
         // remove actions after list refresh
         setSelected([])
       })
   }, [path])
+
 
   // update workspace list whenever path changes
   useEffect(() => {

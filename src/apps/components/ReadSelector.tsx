@@ -13,19 +13,14 @@ import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
 import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
-import ArrowIcon from '../../../assets/icons/arrow-circle-o-right.svg'
 
 import ObjectSelector from './object-selector/ObjectSelector'
 import SelectedTable from './SelectedTable'
 import TextInput from './TextInput'
-import AdvandedButton from './AdvancedButton'
-import Selector from './Selector'
 
 
 import { parsePath } from '../../utils/paths'
-
 import {validateSRR} from '../../api/ncbi-eutils'
-import { Divider } from '@material-ui/core'
 
 
 const AddBtn = ({onAdd, disabled = false, ...rest}) =>

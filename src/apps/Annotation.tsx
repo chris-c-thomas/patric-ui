@@ -11,7 +11,6 @@ import Selector from './components/Selector'
 import WSFileName from './components/WSFileName'
 import TaxonSelector from './components/TaxonSelector'
 
-// auth is required
 import { isSignedIn, getUser } from '../api/auth'
 import SignInForm from '../auth/SignInForm'
 
@@ -31,8 +30,7 @@ const example = {
   taxonomy_id: '1280',
   code: 11,
   output_path: `/${getUser(true)}/home`,
-  my_label: 'example',
-  get output_file() { return `${this.scientific_name} ${this.my_label}` }
+  my_label: 'example'
 }
 
 const initialState = {
@@ -44,7 +42,7 @@ const initialState = {
   code: 11,
   output_path: null,
   my_label: null,
-  get output_file() { return `${this.scientific_name} ${this.my_label}` }
+  // output_file: will be `${this.scientific_name} ${this.my_label}`
 }
 
 const reducer = (state, action) => {
@@ -59,17 +57,21 @@ const reducer = (state, action) => {
 
 const getValues = (form) => {
   let params = {...form}
+  params.output_file = `${form.scientific_name} ${form.my_label}`
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
   return params
 }
 
+
 export default function Annotation() {
   const [form, dispatch] = useReducer(reducer, initialState)
-  const [status, setStatus] = useState(null)
+  const [status, setStatus] = useState<string>(null)
 
   const onSubmit = () => {
     const values = getValues(form)
+    console.log('values', values)
     setStatus('starting')
+
     submitApp(appName, values)
       .then(() => setStatus('success'))
       .catch(error => setStatus(error))
@@ -80,7 +82,7 @@ export default function Annotation() {
     form.code && form.recipe
 
   const isStep2Complete = () =>
-    form.output_file && form.my_label
+    form.output_path && form.my_label
 
 
   const serviceForm = (
@@ -157,6 +159,7 @@ export default function Annotation() {
         <Row>
           <ObjectSelector
             value={form.output_path}
+            onChange={val => dispatch({field: 'output_path', val})}
             placeholder="Select a folder..."
             label="Output Folder"
             type="folder"
