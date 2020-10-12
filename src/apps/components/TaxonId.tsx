@@ -72,6 +72,7 @@ export default function ObjectSelector(props: Props) {
 
 
   const handleOnChange = (evt, value) => {
+    console.log('changing id', value)
     onChange(value ? value : null)
   }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import TaxonName from './TaxonName'
 import TaxonId from './TaxonId'
@@ -8,43 +8,60 @@ type Props = {
   taxonName?: string
   taxonId?: string
   namePlaceholder?: string
-  idPlaceHolder?: string
+  idPlaceholder?: string
   onNameChange: (name: string) => void
   onIdChange: (id: string) => void
 }
 
 
-const TaxonSelector = (props) => {
+const TaxonSelector = (props: Props) => {
   const {
     taxonName, taxonId, namePlaceholder, idPlaceholder,
     onNameChange, onIdChange
   } = props
 
 
+  // local state to keep name and id components in sync
+  const [state, setState] = useState({taxonName, taxonId})
+
+
+  useEffect(() => {
+    setState(prev => ({...prev, taxonName}))
+  }, [taxonName])
+
+  useEffect(() => {
+    setState(prev => ({...prev, taxonId}))
+  }, [taxonId])
+
+
   const handleTaxonNameChange = (obj) => {
-    console.log('propagating ', obj)
-    onNameChange(obj && 'taxon_name' in obj ? obj.taxon_name : null)
+    const taxonName = obj && 'taxon_name' in obj ? obj.taxon_name : null
+    const taxonId = obj && 'taxon_id' in obj ? obj.taxon_id : null
+
+    setState({taxonName, taxonId})
+    onNameChange(taxonName)
   }
 
   const handleTaxonIdChange = (obj) => {
-    console.log('propagating ', obj)
-    onIdChange(obj && 'taxon_id' in obj ? obj.taxon_id : null)
+    const taxonName = obj && 'taxon_name' in obj ? obj.taxon_name : null
+    const taxonId = obj && 'taxon_id' in obj ? obj.taxon_id : null
+
+    setState({taxonName, taxonId})
+    onIdChange(taxonId)
   }
 
   return (
     <>
       <TaxonName
-        value={taxonName}
+        value={state.taxonName}
         placeholder={namePlaceholder || 'e.g. Brucella Cereus'}
         onChange={handleTaxonNameChange}
-        // noQueryText="Type to search for a taxonomy name..."
       />
 
       <TaxonId
-        value={taxonId}
+        value={state.taxonId}
         placeholder={idPlaceholder || ''}
         onChange={handleTaxonIdChange}
-        //noQueryText="Type to search IDs..."
       />
     </>
   )
