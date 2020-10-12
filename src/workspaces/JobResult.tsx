@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import Sidebar, {sidebarWidth} from './WSSidebar'
 import FileList from './FileList'
-import ActionBar from './ActionBar'
+import ActionBar from './WSActionBar'
 
 import * as WS from '../api/ws-api'
 

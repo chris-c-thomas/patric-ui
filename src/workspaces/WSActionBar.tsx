@@ -3,8 +3,8 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import Options from './Options'
-import Actions from './Actions'
+import Options from './WSOptions'
+import Actions from './WSActions'
 
 import { WSObject } from '../api/ws-api'
 
@@ -13,14 +13,15 @@ type Props = {
   path: string;
   selected: WSObject[]
   onUpdateList: () => void
-  isJobResult?: boolen
+  isJobResult?: boolean
+  isObjectSelector?: boolean
 }
 
 /**
  * Workspace-specific ActionBar / breadcrumbs.
  */
 export default function ActionBar(props: Props) {
-  const {path, onUpdateList, isJobResult} = props
+  const {path, onUpdateList, isJobResult, isObjectSelector} = props
 
   const [currentPath, setCurrentPath] = useState(path)
   const [parts, setParts] = useState([])
@@ -53,8 +54,10 @@ export default function ActionBar(props: Props) {
           path={currentPath}
           selected={selected}
           onUpdateList={onUpdateList}
+          isObjectSelector={isObjectSelector}
         />
       }
+
 
       {(!selected || selected.length == 0) &&
         <Breadcrumbs>
@@ -82,6 +85,7 @@ export default function ActionBar(props: Props) {
           <Options
             path={currentPath}
             onUpdateList={onUpdateList}
+            isObjectSelector
           />
         </Opts>
       }

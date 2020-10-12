@@ -29,10 +29,11 @@ const isWorkspace = path =>
 type Props = {
   path: string
   onUpdateList: () => void
+  isObjectSelector?: boolean
 }
 
 const Options = (props: Props) => {
-  const {path, onUpdateList} = props
+  const {path, onUpdateList, isObjectSelector} = props
 
   const [open, setOpen] = useState(false)
   const [snack, setSnack] = useState(null)
@@ -59,11 +60,13 @@ const Options = (props: Props) => {
         {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
       </Btn>
 
-      <Tooltip title="show details">
-        <IconButton onClick={() => implement()} size="small" color="primary" disableRipple >
-          <InfoIcon />
-        </IconButton>
-      </Tooltip>
+      {!isObjectSelector &&
+        <Tooltip title="show details">
+          <IconButton onClick={() => implement()} size="small" color="primary" disableRipple >
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
+      }
 
       {open &&
         <CreateDialog

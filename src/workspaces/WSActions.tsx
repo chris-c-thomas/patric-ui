@@ -27,10 +27,11 @@ type Props = {
   path: string
   selected: WSObject[]
   onUpdateList: () => void
+  isObjectSelector?: boolean
 }
 
 export default function Actions(props: Props) {
-  const { onUpdateList} = props
+  const { onUpdateList, isObjectSelector} = props
 
   const [selected, setSelected] = useState(props.selected || [])
   const [open, setOpen] = useState(false)
@@ -63,45 +64,47 @@ export default function Actions(props: Props) {
         }
       </FileName>
 
-      <ActionContainer>
-        <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
-          Share
-        </Btn>
-        {selected.length == 1 &&
-          <Btn startIcon={<RenameIcon />} onClick={() => implement()}>
-            Rename
+      {!isObjectSelector &&
+        <ActionContainer>
+          <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
+            Share
           </Btn>
-        }
-        <Btn startIcon={<CopyMoveIcon />} onClick={() => implement()}>
-          Move or Copy
-        </Btn>
-        {selected.length == 1 &&
-          <Btn startIcon={<LabelIcon />} onClick={() => implement()}>
-            Edit Type
+          {selected.length == 1 &&
+            <Btn startIcon={<RenameIcon />} onClick={() => implement()}>
+              Rename
+            </Btn>
+          }
+          <Btn startIcon={<CopyMoveIcon />} onClick={() => implement()}>
+            Move or Copy
           </Btn>
-        }
-        <Btn startIcon={<DeleteIcon />} onClick={() => setOpen(true)} className="failed">
-          Delete
-        </Btn>
+          {selected.length == 1 &&
+            <Btn startIcon={<LabelIcon />} onClick={() => implement()}>
+              Edit Type
+            </Btn>
+          }
+          <Btn startIcon={<DeleteIcon />} onClick={() => setOpen(true)} className="failed">
+            Delete
+          </Btn>
 
-        {open &&
-          <ConfirmDialog
-            title="Are you sure?"
-            content={`Are you sure you want to delete ${selected[0].name}?`}
-            loadingText="Deleting..."
-            onConfirm={handleDelete}
-            onClose={() => setOpen(false)}
-          />
-        }
+          {open &&
+            <ConfirmDialog
+              title="Are you sure?"
+              content={`Are you sure you want to delete ${selected[0].name}?`}
+              loadingText="Deleting..."
+              onConfirm={handleDelete}
+              onClose={() => setOpen(false)}
+            />
+          }
 
-        {snack &&
-          <Snackbar open autoHideDuration={5000} onClose={() => setSnack(null)}>
-            <Alert onClose={() => setSnack(null)} severity="success">
-              {snack}
-            </Alert>
-          </Snackbar>
-        }
-      </ActionContainer>
+          {snack &&
+            <Snackbar open autoHideDuration={5000} onClose={() => setSnack(null)}>
+              <Alert onClose={() => setSnack(null)} severity="success">
+                {snack}
+              </Alert>
+            </Snackbar>
+          }
+        </ActionContainer>
+      }
     </>
   )
 }

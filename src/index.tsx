@@ -70,8 +70,9 @@ const App = () => {
                     <Route path="/" exact component={Home} />
                     <Route path="/search/" component={GlobalSearch} />
                     <Route path="/my-profile" exact component={Account} />
-                    <Route path="/apps/GenomeAnnotation" exact component={lazy(() => import('./apps/Annotation'))} />
+
                     <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly'))} />
+                    <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
                     <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
                     <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
                     <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />

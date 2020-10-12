@@ -89,11 +89,9 @@ export function list(args: Args) {
     'recursive': recursive,
     ...(type ? {query: {type: [type]}} : {})
   }
-  console.log('params', params)
 
   return rpc('ls', params)
     .then(data => {
-      console.log('data', data)
       const meta = data[path]
       let objects = meta ? meta.map((m) => metaToObj(m)) : []
 
@@ -108,13 +106,11 @@ export function list(args: Args) {
 
 
       return permissionProm.then((permHash) => {
-        console.log('permhash', permHash)
         // join-in permissions if requested
         if (permHash) {
           objects = objects.map((obj) => ({...obj, permissions: permHash[obj.path]}))
         }
 
-        console.log('objects', objects)
         // we want to return folders followed by files
         const folders = objects.filter((obj) => obj.type == 'folder').reverse()
         const files = objects.filter((obj) => obj.type != 'folder'). reverse()
@@ -145,10 +141,7 @@ export async function get({path, onlyMeta = false}) {
   path = decodeURIComponent(path)
 
   const res = await rpc('get', {objects: [path], metadata_only: onlyMeta})
-  console.log('res', res)
-
   const meta = metaToObj(res[0][0])
-  console.log('meta', meta)
 
   if (onlyMeta) {
     return meta

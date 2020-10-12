@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import Sidebar, {sidebarWidth} from './WSSidebar'
 import FileList from './FileList'
-import ActionBar from './ActionBar'
+import ActionBar from './WSActionBar'
 
 import * as WS from '../api/ws-api'
 
@@ -19,6 +19,8 @@ type Props = {
 
 
 export default function Workspaces(props: Props) {
+  const {isObjectSelector} = props
+
   let path = decodeURIComponent('/' + useParams().path)
 
   if (props.path) {
@@ -75,7 +77,6 @@ export default function Workspaces(props: Props) {
   return (
     <Root>
       <Container>
-
         <Sidebar
           selected={selected}
           {...props}
@@ -87,6 +88,7 @@ export default function Workspaces(props: Props) {
               path={path}
               selected={selected}
               onUpdateList={() => updateList()}
+              isObjectSelector={isObjectSelector}
             />
           </ActionBarContainer>
 
@@ -97,7 +99,7 @@ export default function Workspaces(props: Props) {
                 rows={rows}
                 onSelect={handleSelect}
                 onNavigate={onNavigate}
-                isObjectSelector={props.isObjectSelector}
+                isObjectSelector={isObjectSelector}
               />
             }
           </FileListContainer>
