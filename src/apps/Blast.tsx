@@ -10,7 +10,7 @@ import ObjectSelector from './components/object-selector/ObjectSelector'
 import Selector from './components/Selector'
 import WSFileName from './components/WSFileName'
 import TaxonSelector from './components/TaxonSelector'
-import AutoSelect from './components/AutoSelect'
+import GenomeSelector from './components/GenomeSelector'
 
 // auth is required
 import { isSignedIn, getUser } from '../api/auth'
@@ -23,6 +23,8 @@ const appName = 'GenomeAnnotation'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`
 
+
+const example = {}
 
 
 const initialState = {
@@ -76,7 +78,7 @@ export default function Blast() {
 
       <Section column padRows>
         <Row>
-          <AutoSelect />
+          <GenomeSelector />
         </Row>
 
       </Section>

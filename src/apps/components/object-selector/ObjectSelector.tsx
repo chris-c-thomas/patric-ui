@@ -1,49 +1,59 @@
 import React, { useState, useEffect } from 'react'
-// import styled from 'styled-components'
 
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
-
-import AsyncSelect from 'react-select/async'
 import highlightText from '../../../utils/text'
 
 import ObjectSelectorDialog from './ObjectSelectorDialog'
 
-import { pathToOptionObj } from '../../../utils/paths'
 import * as WS from '../../../api/ws-api'
 import {getUser} from '../../../api/auth'
 
-const inputStyles = {
-  menu: styles => ({
-    ...styles,
-    zIndex: 9999
-  }),
-  input: styles => ({
-    ...styles,
-    width: '250px'
-  })
+import {WSObject} from '../../../api/ws-api'
+
+
+const usageError = (propName, value) =>
+  `ObjectSelector component must have prop: ${propName}.  Value was: ${value}`
+
+
+const formatOptionLabel = (option, query: string) => {
+  const label = option.path,
+    i = label.lastIndexOf('/') + 1,
+    path = label.slice(0, i),
+    name = label.slice(i)
+
+  return (
+    <div>
+      <small>
+        {query ?  highlightText(path, query) : path}
+      </small><br/>
+      <b>{query ?  highlightText(name, query) : name}</b>
+    </div>
+  )
 }
 
-const usageError = (propName, value) => {
-  return `ObjectSelector component must have prop: ${propName}.  Value was: ${value}`
-}
 
 type Props = {
   type?: string
+  includeHidden?: boolean
   dialogTitle: string | JSX.Element
-  placeholder: string
   label: string
   value: string // path
-  onChange: (path: string) => void
+  placeholder: string
+  onChange: (object: WSObject) => void
 }
 
-export default function ObjectSelector(props) {
+export default function ObjectSelector(props: Props) {
   const {
     type,
+    includeHidden,
     dialogTitle,
-    placeholder,
     label,
     value,
+    placeholder,
     onChange
   } = props
 
@@ -54,66 +64,45 @@ export default function ObjectSelector(props) {
   if (typeof value == 'undefined')
     throw usageError('value', value)
 
-  const [items, setItems] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [options, setOptions] = useState([])
+  const [query, setQuery] = useState('')
   const [error, setError] = useState(null)
-  const [selectedPath, setSelectedPath] = useState(null)
-  const [query, setQuery] = useState(null)
+  const [path, setPath] = useState(value)
 
-  // here allow the value to be set from outside this component
+
+  // allow the value to be set from outside this component
   useEffect(() => {
-    _setPath(props.value)
-  }, [props.value])
+    setPath(value)
+  }, [value])
+
+
+  useEffect(() => {
+    (async () => {
+      let path = `/${getUser(true)}/home`
+
+      let data
+      try {
+        setLoading(true)
+        data = await WS.list({path, type, recursive: true, includeHidden})
+      } catch (err) {
+        setError(err)
+      }
+
+      setOptions(data)
+      setLoading(false)
+    })()
+  }, [type, includeHidden])
+
 
   const onDialogSelect = (path) => {
-    _setPath(path)
+    setPath(path)
   }
 
-  const filterItems = () => {
-    return items.filter(i =>
-      i.value.toLowerCase().includes(query.toLowerCase())
-    )
+  const handleOnChange = (evt, obj) => {
+    onChange(obj ? obj.path : null)
   }
 
-  const loadOptions = (inputValue, callback) => {
-    if (items) {
-      callback(filterItems())
-      return
-    }
-
-    let path = `/${getUser(true)}/home`
-    WS.list({path, type, recursive: true})
-      .then(data => {
-        const items = data.map(obj => pathToOptionObj(obj.path))
-
-        setItems(items)
-        callback(items)
-      }).catch(err => {
-        setError(err)
-        callback([])
-      })
-  }
-
-  const formatOptionLabel = (opt) => {
-    let label = opt.label,
-      i = label.lastIndexOf('/') + 1,
-      path = label.slice(0, i),
-      name = label.slice(i)
-
-    return (
-      <div>
-        <small>
-          {query ?  highlightText(path, query) : path}
-        </small><br/>
-        <b>{query ?  highlightText(name, query) : name}</b>
-      </div>
-    )
-  }
-
-  const _setPath = (path) => {
-    const obj = pathToOptionObj(path)
-    setSelectedPath(obj)
-    if (onChange) onChange(path)
-  }
 
   return (
     <>
@@ -122,24 +111,40 @@ export default function ObjectSelector(props) {
           {label || ' '}
         </InputLabel>
 
-        <AsyncSelect
-          id={label}
-          cacheOptions
-          defaultOptions
-          placeholder={placeholder}
-          loadOptions={loadOptions}
-          styles={inputStyles}
-          formatOptionLabel={formatOptionLabel}
-          noOptionsMessage={() => 'No results'}
-          onInputChange={val => setQuery(val)}
-          onChange={obj => _setPath(obj.value)}
-          value={selectedPath}
+        <Autocomplete
+          autoComplete
+          style={{ width: 350 }}
+          getOptionLabel={({path}) => path.slice(path.lastIndexOf('/')+1)}
+          options={options}
+          value={path && {path}}
+          getOptionSelected={option => option.path == path}
+          onChange={handleOnChange}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              onChange={(evt) => setQuery(evt.target.value)}
+              size="small"
+              variant="outlined"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {loading ? <CircularProgress color="inherit" size={16} /> : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                )
+              }}
+              placeholder={placeholder || null}
+            />
+          )}
+          renderOption={(option) => formatOptionLabel(option, query)}
+
         />
-        {
-          error &&
-          <FormHelperText error={true}>
+
+        {error &&
+          <FormHelperText error>
             There was a problem fetching workspace data.
-            Please try to refresh/connect your browser or contact us.
+            Please try to refresh/connect your browser or contact us if this issue persists.
           </FormHelperText>
         }
       </div>

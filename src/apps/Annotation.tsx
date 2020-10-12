@@ -42,7 +42,8 @@ const initialState = {
   code: 11,
   output_path: null,
   my_label: null,
-  // output_file: will be `${this.scientific_name} ${this.my_label}`
+  // output_file: will end up being `${scientific_name} ${my_label}`
+  // scientific_name: will end up being `${scientific_name} ${my_label}`
 }
 
 const reducer = (state, action) => {
@@ -95,6 +96,7 @@ export default function Annotation() {
             label="Contigs"
             type="contigs"
             value={form.contigs}
+            includeHidden
             onChange={val => dispatch({field: 'contigs', val})}
             dialogTitle="Select a contigs file"
           />
@@ -119,8 +121,8 @@ export default function Annotation() {
             taxonName={form.scientific_name}
             taxonId={form.taxonomy_id}
             namePlaceholder="e.g. Brucella Cereus"
-            onNameChange={({taxon_name}) => dispatch({field: 'scientific_name', val: taxon_name})}
-            onIdChange={({taxon_id}) => dispatch({field: 'taxonomy_id', val: taxon_id})}
+            onNameChange={val => dispatch({field: 'scientific_name', val})}
+            onIdChange={val => dispatch({field: 'taxonomy_id', val})}
           />
         </Row>
 

@@ -8,7 +8,7 @@ import AppStatus from './common/AppStatus'
 import Step from './components/Step'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import WSFileName from './components/WSFileName'
-import AutoSelect from './components/AutoSelect'
+import GenomeSelector from './components/GenomeSelector'
 import AdvancedButton from './components/AdvancedButton'
 
 // auth is required
@@ -72,7 +72,7 @@ export default function GenomeAlignment() {
 
       <Section column padRows>
         <Row>
-          <AutoSelect />
+          <GenomeSelector />
         </Row>
 
         <Row>

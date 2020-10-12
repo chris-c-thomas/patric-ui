@@ -1,4 +1,3 @@
-// *https://www.registers.service.gov.uk/registers/country/use-the-api*
 import React, {useState, useEffect} from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -7,16 +6,8 @@ import LockIcon from '@material-ui/icons/Lock'
 
 import {queryGenomeNames} from '../../api/data-api'
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay)
-  })
-}
-
 export default function Asynchronous() {
-
   const [loading, setLoading] = useState(false)
-  const [open, setOpen] = useState(false)
   const [options, setOptions] = useState([])
   const [query, setQuery] = useState('')
 
@@ -24,27 +15,16 @@ export default function Asynchronous() {
     (async () => {
       setLoading(true)
       const data = await queryGenomeNames(query)
-      console.log('data', data)
       setOptions( data.map(obj => ({name: obj.genome_name, ...obj})) )
       setLoading(false)
     })()
   }, [query])
 
-  useEffect(() => {
-    if (!open) {
-      setOptions([])
-    }
-  }, [open])
 
   return (
     <Autocomplete
       id="asynchronous-selector"
       style={{ width: 350 }}
-      open={open}
-      onOpen={() => {
-        setOpen(true)
-      }}
-      onClose={() => setOpen(false)}
       getOptionLabel={(option) => option.genome_name}
       options={options}
       autoComplete
@@ -69,7 +49,7 @@ export default function Asynchronous() {
       )}
       renderOption={(option) => (
         <div>
-          {option.public && <LockIcon style={{fontSize: 12}} />} {option.name} [{option.genome_id}]
+          {!option.public && <LockIcon style={{fontSize: 12}} />} {option.name} [{option.genome_id}]
         </div>
       )}
     />
