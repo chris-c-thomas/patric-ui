@@ -76,7 +76,8 @@ const reducer = (state, action) => {
       ...state,
       paired_end_libs: reads.filter(o => o.type == 'paired_end_libs').map(o => o.value),
       single_end_libs: reads.filter(o => o.type == 'single_end_libs').map(o => o.value),
-      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value)
+      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value),
+      reads  // just to make validation easier (see isStep1Complete)
     }
   } else {
     return {...state, [action.field]: action.val}
@@ -105,8 +106,9 @@ export default function SARSCoV2() {
   }
 
   const isStep1Complete = () =>
-    (form.input_type == 'reads' && form.reads.length) > 0 ||
+    (form.input_type == 'reads' && form.reads.length > 0) ||
     (form.input_type == 'contigs' && form.contigs)
+
 
   const isStep2Complete = () =>
     isStep1Complete() && form.scientific_name && form.taxonomy_id
