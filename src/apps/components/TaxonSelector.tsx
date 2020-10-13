@@ -34,12 +34,17 @@ const TaxonSelector = (props: Props) => {
   }, [taxonId])
 
 
+  useEffect(() => {
+    onNameChange(state.taxonName)
+    onIdChange(state.taxonId)
+  }, [state])
+
+
   const handleTaxonNameChange = (obj) => {
     const taxonName = obj && 'taxon_name' in obj ? obj.taxon_name : null
     const taxonId = obj && 'taxon_id' in obj ? obj.taxon_id : null
 
     setState({taxonName, taxonId})
-    onNameChange(taxonName)
   }
 
   const handleTaxonIdChange = (obj) => {
@@ -47,7 +52,6 @@ const TaxonSelector = (props: Props) => {
     const taxonId = obj && 'taxon_id' in obj ? obj.taxon_id : null
 
     setState({taxonName, taxonId})
-    onIdChange(taxonId)
   }
 
   return (
