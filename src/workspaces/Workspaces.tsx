@@ -76,54 +76,51 @@ export default function Workspaces(props: Props) {
 
   return (
     <Root>
-      <Container>
-        <Sidebar
-          selected={selected}
-          {...props}
-        />
 
-        <Main>
-          <ActionBarContainer>
-            <ActionBar
-              path={path}
-              selected={selected}
-              onUpdateList={() => updateList()}
+      <Sidebar
+        selected={selected}
+        {...props}
+      />
+
+      <Main>
+        <ActionBarContainer>
+          <ActionBar
+            path={path}
+            selected={selected}
+            onUpdateList={() => updateList()}
+            isObjectSelector={isObjectSelector}
+          />
+        </ActionBarContainer>
+
+        <FileListContainer>
+          {isObject ?
+            <GenericViewer path={path} /> :
+            <FileList
+              rows={rows}
+              onSelect={handleSelect}
+              onNavigate={onNavigate}
               isObjectSelector={isObjectSelector}
             />
-          </ActionBarContainer>
+          }
+        </FileListContainer>
+      </Main>
 
-          <FileListContainer>
-            {isObject ?
-              <GenericViewer path={path} /> :
-              <FileList
-                rows={rows}
-                onSelect={handleSelect}
-                onNavigate={onNavigate}
-                isObjectSelector={isObjectSelector}
-              />
-            }
-          </FileListContainer>
-        </Main>
-
-      </Container>
     </Root>
   )
 }
 
 
 const Root = styled.div`
-
+  display: flex;
+  max-height: calc(100% - 55px);
+  height: 100%;
+  padding: 5px 5px 5px 0;
+  background: #fff;
 `
 
 const Main = styled.div`
+  position: relative;
   width: calc(100% - ${sidebarWidth});
-`
-
-const Container = styled.div`
-  display: flex;
-  height: calc(100% - 60px);
-  padding: 5px 5px 5px 0;
-  background: #fff;
 `
 
 const ActionBarContainer = styled.div`
