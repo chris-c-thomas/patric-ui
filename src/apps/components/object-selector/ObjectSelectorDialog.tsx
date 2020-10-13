@@ -92,7 +92,7 @@ export default function ObjectSelectorDialog(props: Props) {
           </div>
         </DialogTitle>
 
-        <DialogContent>
+        <DialogContent style={{position: 'relative'}}>
           <Workspaces
             isObjectSelector
             path={path}

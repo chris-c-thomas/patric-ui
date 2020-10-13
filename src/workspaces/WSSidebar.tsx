@@ -80,23 +80,20 @@ const WSSideBar = (props: Props) => {
 
       <Menu>
         {menu.map((item) => {
-          if (item.label == 'Shared with me')
-            return <></>
-
           return (
             <li key={item.label}>
               <MenuItem
                 indent={item.indent}
                 caret={item.caret ? 1 : 0}
-                className={item.path == path ? 'active no-style' : 'no-style hover'}
+                className={item.path == path && !isObjectSelector ? 'active no-style' : 'no-style hover'}
                 to={`/files/${item.path}`}
                 onClick={onNav}
               >
                 {item.caret &&
-                  <Caret><CaretIcon color={item.path == path ? 'primary' : 'inherit'} /></Caret>
+                  <Caret><CaretIcon color={item.path == path && !isObjectSelector ? 'primary' : 'inherit'} /></Caret>
                 }
                 {item.icon &&
-                  <Icon>{React.cloneElement(item.icon, {color: item.path == path ? 'primary' : 'inherit'})}</Icon>
+                  <Icon>{React.cloneElement(item.icon, {color: item.path == path && !isObjectSelector ? 'primary' : 'inherit'})}</Icon>
                 }
                 {item.label}
               </MenuItem>

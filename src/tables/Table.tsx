@@ -113,7 +113,8 @@ const Row = (props: RowProps) => {
   const {rowID} = row
 
   return (
-    <TableRowComponent hover={disableRowSelect(row)}
+    <TableRowComponent hover
+      style={row.type !== 'folder' && disableRowSelect(row) ? {background: '#f5f5f5', color: '#aaa !important'} : {}}
       tabIndex={-1}
       key={id}
       onClick={evt => onSelect(evt, rowID, row)}
