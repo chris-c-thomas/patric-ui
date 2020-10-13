@@ -46,7 +46,7 @@ const AppStatus = ({name, status} : Props) => {
       }
 
       {state instanceof Error &&
-        <Alert severity="error">
+        <Alert severity="error" onClose={() => setState(null)}>
           <AlertTitle>Error - There was an issue submitting your job</AlertTitle>
           {getErrorMsg(state)}
         </Alert>

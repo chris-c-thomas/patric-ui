@@ -11,9 +11,10 @@ import ObjectSelector from './components/object-selector/ObjectSelector'
 import Selector from './components/Selector'
 import TextInput from './components/TextInput'
 import AdvancedButton from './components/AdvancedButton'
+import WSFileName from './components/WSFileName'
 
 // auth is required
-import { isSignedIn } from '../api/auth'
+import { isSignedIn, getUser } from '../api/auth'
 import SignInForm from '../auth/SignInForm'
 
 import { submitApp } from '../api/app-service'
@@ -25,13 +26,11 @@ const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
 
 
 const example = {
-  reads: [],
-  paired_end_libs: [{
+  reads: [{ // not sent to server
     read1: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR3584989_1.fastq',
     read2: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR3584989_2.fastq',
-    interleaved: false,
-    read_orientation_outward: false,
-    platform: 'infer',
+    type: 'paired_end_libs',
+    label: 'SRR3584989_1.fastq, SRR3584989_2.fastq'
   }],
   racon_iter: 2,
   pilon_iter: 2,
@@ -39,8 +38,8 @@ const example = {
   min_contig_len: 300,
   min_contig_cov: 5,
   trim: false,
-  output_path: null,
-  output_file: null
+  output_path: `/${getUser(true)}/home`,
+  output_file: 'assembly example',
 }
 
 const initialState = {
@@ -54,7 +53,8 @@ const initialState = {
   min_contig_len: 300,
   min_contig_cov: 5,
   trim: false,
-  output_path: null
+  output_path: null,
+  output_file: null
 }
 
 const reducer = (state, action) => {
@@ -68,7 +68,8 @@ const reducer = (state, action) => {
       ...state,
       paired_end_libs: reads.filter(o => o.type == 'paired_end_libs').map(o => o.value),
       single_end_libs: reads.filter(o => o.type == 'single_end_libs').map(o => o.value),
-      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value)
+      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value),
+      reads   // just for validation
     }
   } else {
     return {...state, [action.field]: action.val}
@@ -83,8 +84,11 @@ export default function Assembly() {
   const [advParams, setAdvParams] = useState(false)
 
   const onSubmit = () => {
+    const params = {...form}
+    delete params.reads
+
     setStatus('starting')
-    submitApp(appName, form)
+    submitApp(appName, params)
       .then(() => setStatus('success'))
       .catch(error => setStatus(error))
   }
@@ -161,7 +165,7 @@ export default function Assembly() {
         }
       </Section>
 
-      <Step number="3" label="Select Output" completed={form.output_path != null && form.output_file != null} />
+      <Step number="3" label="Select Output" completed={!!form.output_path && !!form.output_file} />
 
       <Section column>
         <Row>
@@ -175,19 +179,20 @@ export default function Assembly() {
           />
         </Row>
 
-        <Row>
-          <TextInput
-            value={form.output_file}
-            label="Output Name"
-            onChange={val => dispatch({field: 'output_file', val})}
-          />
-        </Row>
+        <WSFileName
+          value={form.output_file}
+          onChange={val => dispatch({field: 'output_file', val})}
+          label="Output Name"
+          placeholder="Output name"
+          width="200px"
+        />
       </Section>
 
       <SubmitBtns
         onSubmit={onSubmit}
-        onChange={() => dispatch('RESET')}
+        onReset={() => dispatch('RESET')}
         status={status}
+        disabled={!(form.reads.length > 0 && form.output_path != null && !!form.output_file)}
       />
 
       <AppStatus name={appName} status={status} />

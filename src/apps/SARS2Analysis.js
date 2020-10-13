@@ -115,7 +115,7 @@ export default function SARSCoV2() {
 
 
   const isStep3Complete = () =>
-    form.output_path != null && form.output_file != null
+    form.output_path != null && !!form.my_label
 
 
   const serviceForm = (
