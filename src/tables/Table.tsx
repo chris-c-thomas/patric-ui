@@ -92,7 +92,8 @@ type RowProps = {
     row: object
   ) => void
   onDoubleClick: (row: object) => void
-  onMore: () => void
+  onMore?: () => void
+  disableRowSelect?: (row: object) => boolean
 }
 
 const Row = (props: RowProps) => {
@@ -105,13 +106,14 @@ const Row = (props: RowProps) => {
     checkboxes,
     onSelect,
     onDoubleClick,
-    onMore
+    onMore,
+    disableRowSelect
   } = props
 
   const {rowID} = row
 
   return (
-    <TableRowComponent hover
+    <TableRowComponent hover={disableRowSelect(row)}
       tabIndex={-1}
       key={id}
       onClick={evt => onSelect(evt, rowID, row)}
@@ -147,6 +149,7 @@ const Row = (props: RowProps) => {
 
 Row.displayName = 'TableComponent-Row'
 
+// todo(nc): deprecate?
 const TableRowComponent = styled(TableRow)`
   &:hover {
     .more-btn {
@@ -154,7 +157,7 @@ const TableRowComponent = styled(TableRow)`
     }
   }
 `
-
+// todo(nc): deprecate?
 const More = styled.span`
   position: absolute;
   background: #f5f5f5;
@@ -306,6 +309,7 @@ type Props = {
   checkboxes?: boolean
   searchPlaceholder?: string
   stripes?: boolean
+
   onSearch?: (string) => void
   onSort?: (string) => void       // for ajax pagination
   onPage?: (number) => void       // for ajax pagination
@@ -317,6 +321,9 @@ type Props = {
   onOpenFilters?: () => void
   onMore?: () => void             // todo: remove?
 
+  // todo(nc): think this through some more.  Need to add single select option.
+  disableRowSelect?: (row: object) => boolean
+
   middleComponent?: JSX.Element
 }
 
@@ -326,7 +333,8 @@ export default function TableComponent(props: Props) {
   const {
     pagination, offsetHeight, checkboxes, emptyNotice,
     middleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
-    enableTableOptions, stripes = true, onShowDetails
+    enableTableOptions, stripes = true, onShowDetails,
+    disableRowSelect = () => false
   } = props
 
   if (pagination && (props.page === undefined || !props.limit)) {
@@ -381,8 +389,11 @@ export default function TableComponent(props: Props) {
 
   // listen to selected
   useEffect(() => {
-    if (onSelect) onSelect(selected)
+    if (onSelect) {
+      onSelect(selected)
+    }
   }, [selected, onSelect])
+
 
   // enable/disable userSelect durring ctrl/shift+click
   const handleKeyDown = useCallback((evt) => {
@@ -410,6 +421,10 @@ export default function TableComponent(props: Props) {
   }
 
   const handleSelect = (evt, rowID, obj) => {
+    if (disableRowSelect && disableRowSelect(obj)) {
+      return
+    }
+
     let type
     if (evt.metaKey) {
       type = 'CTRL_SET'
@@ -578,6 +593,7 @@ export default function TableComponent(props: Props) {
               selected={selected}
               onDoubleClick={handleDoubleClick}
               onMore={props.onMore}
+              disableRowSelect={disableRowSelect}
             />
           </TableBody>
         </Table>

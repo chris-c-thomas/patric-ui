@@ -85,9 +85,12 @@ type Props = {
   rows: object[];
   fileType?: string;
   isObjectSelector?: boolean;
+  isJobResult?: boolean;
+
+  // for object selector
+  type?: string;
   onSelect: (obj: object) => void;
   onNavigate: (obj: object) => void;
-  isJobResult?: boolean;
 }
 
 
@@ -96,9 +99,10 @@ export default function FileList(props: Props) {
     rows,
     fileType,
     isObjectSelector,
+    isJobResult,
+    type,
     onSelect,
     onNavigate,
-    isJobResult
   } = props
 
   if (fileType) {
@@ -135,6 +139,10 @@ export default function FileList(props: Props) {
           onDoubleClick={navigate}
           emptyNotice="This folder is empty."
           stripes={false}
+          disableRowSelect={(row) => {
+            if (!row) return true
+            return row.type != type
+          }}
         />
       }
     </>

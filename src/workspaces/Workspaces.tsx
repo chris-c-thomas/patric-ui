@@ -13,13 +13,16 @@ import GenericViewer from './viewers/GenericViewer'
 
 
 type Props = {
+  // all of these options are for the object selector
   isObjectSelector?: boolean
-  path?: string // for object selector
+  path?: string
+  onSelect?: (obj: object) => void
+  type: string
 }
 
 
 export default function Workspaces(props: Props) {
-  const {isObjectSelector} = props
+  const {isObjectSelector, onSelect, type} = props
 
   let path = decodeURIComponent('/' + useParams().path)
 
@@ -63,6 +66,9 @@ export default function Workspaces(props: Props) {
 
   const handleSelect = (state) => {
     setSelected(state.objs)
+
+    if (onSelect)
+      onSelect(state.objs)
   }
 
   const onNavigate = (obj) => {
@@ -100,6 +106,7 @@ export default function Workspaces(props: Props) {
               onSelect={handleSelect}
               onNavigate={onNavigate}
               isObjectSelector={isObjectSelector}
+              type={type}
             />
           }
         </FileListContainer>

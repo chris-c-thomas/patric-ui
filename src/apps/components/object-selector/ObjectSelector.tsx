@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -96,7 +96,7 @@ export default function ObjectSelector(props: Props) {
 
 
   const onDialogSelect = (path) => {
-    setPath(path)
+    onChange(path)
   }
 
   const handleOnChange = (evt, obj) => {

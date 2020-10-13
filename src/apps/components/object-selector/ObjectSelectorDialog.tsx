@@ -7,27 +7,35 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import IconButton from '@material-ui/core/IconButton'
 import { useTheme } from '@material-ui/core/styles'
 
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
-
-// import { ButtonGroup } from '@material-ui/core';
-// import NavNextIcon from '@material-ui/icons/NavigateNextRounded';
-// import NavBeforeIcon from '@material-ui/icons/NavigateBeforeRounded';
+import Close from '@material-ui/icons/Close'
 
 import {getUser} from '../../../api/auth'
 import Workspaces from '../../../workspaces/Workspaces'
-import Close from '@material-ui/icons/Close'
-import IconButton from '@material-ui/core/IconButton'
 
 
 
-export default function ObjectSelectorDialog(props) {
+type Props = {
+  title: string
+  type: string
+  onSelect: (path: string) => void
+}
+
+export default function ObjectSelectorDialog(props: Props) {
+  const {
+    title,
+    type,
+    onSelect
+  } = props
+
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
   const path = `/${getUser(true)}/home`
 
-  const {title, type} = props
 
   const [open, setOpen] = useState(false)
   const [selectedPath, setSelectedPath] = useState(null)
@@ -41,11 +49,17 @@ export default function ObjectSelectorDialog(props) {
     setOpen(false)
   }
 
-  function onSelect(path) {
-    setSelectedPath(path)
+  function handleSelect(objs) {
+    if (!objs.length) return  // todo(nc): shouldn't need this check
+
+    const obj = objs[0]
+    const {path} = obj
 
     // callback for setting input box
-    props.onSelect(path)
+    if (selectedPath !== path)
+      onSelect(path)
+
+    setSelectedPath(path)
   }
 
   return (
@@ -82,6 +96,8 @@ export default function ObjectSelectorDialog(props) {
           <Workspaces
             isObjectSelector
             path={path}
+            onSelect={handleSelect}
+            type={type}
           />
         </DialogContent>
 
