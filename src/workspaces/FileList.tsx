@@ -73,12 +73,6 @@ function getIcon({type, isWS, permissions}) {
 }
 
 
-/* probably not even needed
-function getParentPath(path) {
-  const parts = path.split('/')
-  return parts.slice(0, parts.length - 1).join('/')
-}
-*/
 
 
 type Props = {
@@ -109,6 +103,9 @@ export default function FileList(props: Props) {
     // pass
   }
 
+
+  // additional conditions for object selector
+  let params = {}
   if (isObjectSelector) {
     // if object selector, we'll want to (somehow) use a
     // click event instead of routing
@@ -116,6 +113,11 @@ export default function FileList(props: Props) {
       <a onClick={() => navigate(obj)} className="inline-flex align-items-center">
         {getIcon(obj)} {val}
       </a>
+
+    params['disableRowSelect'] = (row) => {
+      if (!row) return true
+      return row.type != type
+    }
   }
 
   // use event for object select
@@ -139,10 +141,7 @@ export default function FileList(props: Props) {
           onDoubleClick={navigate}
           emptyNotice="This folder is empty."
           stripes={false}
-          disableRowSelect={(row) => {
-            if (!row) return true
-            return row.type != type
-          }}
+          {...params}
         />
       }
     </>

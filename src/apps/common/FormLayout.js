@@ -4,7 +4,7 @@ const indentPad = '10px' // 35px ?
 
 
 const Root = styled.div`
-  max-width: ${props => props.small ? '560px' : '800px'};
+  max-width: ${props => props.small ? '560px' : '960px'};
   background: #fff;
   margin: 50px auto;
   padding: 20px 20px 10px 20px;

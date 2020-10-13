@@ -21,7 +21,14 @@ export default function AdvancedButton(props) {
   }
 
   return (
-    <Button onClick={handleClick} size="small" {...rest} disableRipple>
+    <Button
+      className="align-self-start"
+      style={{margin: '5px 0'}}
+      onClick={handleClick}
+      size="small"
+      disableRipple
+      {...rest}
+    >
       {!open ?
         `${label ? label : 'Advanced'}` :
         `Hide ${label ? label.toLowerCase() : 'advanced'}`

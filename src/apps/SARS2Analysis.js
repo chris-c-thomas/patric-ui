@@ -43,7 +43,6 @@ const example = {
   taxonomy_id: '2697049',
   output_path: `/${getUser(true)}/home`,
   my_label: 'example',
-  get output_file() { return `${this.scientific_name} ${this.my_label}` }
 }
 
 
@@ -58,11 +57,12 @@ const initialState = {
   domain: 'Viruses',
   code: '1',
   scientific_name: 'Severe acute respiratory syndrome coronavirus 2',
-  taxonmy_id: '2697049',
+  taxonomy_id: '2697049',
   recipe: 'auto',
   output_path: null,
   my_label: null,
-  get output_file() { return `${this.scientific_name} ${this.my_label}` }
+  // output_file: will end up being `${scientific_name} ${my_label}`
+  // scientific_name: will end up being `${scientific_name} ${my_label}`
 }
 
 const reducer = (state, action) => {
@@ -84,8 +84,9 @@ const reducer = (state, action) => {
 }
 
 const getValues = (form) => {
-  let params = Object.assign({}, form)
+  let params = {...form}
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
+  params.output_file = `${form.scientific_name} ${form.my_label}`
   delete params.reads
   return params
 }
@@ -104,11 +105,12 @@ export default function SARSCoV2() {
   }
 
   const isStep1Complete = () =>
-    form.input_type == 'reads' && form.reads.length > 0 ||
-    form.input_type == 'contigs' && form.contigs
+    (form.input_type == 'reads' && form.reads.length) > 0 ||
+    (form.input_type == 'contigs' && form.contigs)
 
   const isStep2Complete = () =>
     isStep1Complete() && form.scientific_name && form.taxonomy_id
+
 
   const isStep3Complete = () =>
     form.output_path != null && form.output_file != null
@@ -178,10 +180,10 @@ export default function SARSCoV2() {
         <Row>
           <TaxonSelector
             taxonName={form.scientific_name}
-            taxonId={form.taxonmy_id}
+            taxonId={form.taxonomy_id}
             namePlaceholder="e.g. SARS CoV"
-            onNameChange={({taxon_name}) => dispatch({field: 'scientific_name', val: taxon_name})}
-            onIdChange={({taxon_id}) => dispatch({field: 'taxonmy_id', val: taxon_id})}
+            onNameChange={val => dispatch({field: 'scientific_name', val})}
+            onIdChange={val => dispatch({field: 'taxonomy_id', val})}
           />
         </Row>
       </Section>
