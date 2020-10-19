@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import Options from './WSOptions'
 import Actions from './WSActions'
 
-import { WSObject } from '../api/ws-api'
+import { WSObject } from '../api/workspace.d'
 
 
 type Props = {

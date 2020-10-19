@@ -2,8 +2,11 @@ import axios from 'axios'
 import config from '../config'
 
 import { getToken } from './auth'
-
 const { wsAPI } = config
+
+
+import {WSObject} from './workspace.d'
+
 
 const workspace = axios.create({
   headers: {
@@ -24,22 +27,8 @@ const rpc = (cmd: string, params: object) => {
     .then(res => res.data.result[0])
 }
 
-export type WSObject = {
-  encodedPath: string
-  path: string
-  name: string
-  parent: string
-  type: string
-  created: Date
-  hash: string
-  owner: string
-  size: string
-  priv: string
-  public: boolean
-  isWS: boolean
-}
 
-function metaToObj(m) {
+function metaToObj(m) : WSObject {
   const path = m[2] + m[0]
   return {
     // encode everything but user's root
@@ -55,11 +44,11 @@ function metaToObj(m) {
     size: m[6],
     userMeta: m[7],
     autoMeta: m[8],
-    priv: m[9],
+    userPerm: m[9],
     public: m[10] == 'r',
     linkRef: m[11],
-    isWS: (m[2].match(/\//g) || []).length == 2
-    // permissions: (added below in a second 'list_permissions' request)
+    isWS: (m[2].match(/\//g) || []).length == 2,
+    permissions: null // (added below in a second 'list_permissions' request)
   }
 }
 
@@ -134,18 +123,22 @@ export function isFolder(path: string) {
 }
 
 
-export async function get({path, onlyMeta = false}) {
-  if (!path) {
-    throw 'ws-api > `get`: Invalid Path(s) to retrieve'
-  }
-  path = decodeURIComponent(path)
 
-  const res = await rpc('get', {objects: [path], metadata_only: onlyMeta})
+
+export async function getMeta(path: string) : Promise<WSObject> {
+  const res = await rpc('get', {objects: [path], metadata_only: true})
   const meta = metaToObj(res[0][0])
 
-  if (onlyMeta) {
-    return meta
-  }
+  return meta
+}
+
+
+
+type GetObjectReturn = Promise<{meta: WSObject, data: any}>
+
+export async function getObject(path: string) : GetObjectReturn {
+  const res = await rpc('get', {objects: [path]})
+  const meta = metaToObj(res[0][0])
 
   // if there's a object ref, fetch it
   if (meta.linkRef) {
@@ -156,11 +149,7 @@ export async function get({path, onlyMeta = false}) {
 
     try {
       const data = await axios.get(meta.linkRef + '?download', {headers})
-
-      return {
-        meta,
-        data
-      }
+      return { meta, data }
     } catch (err) {
       console.error('Error Retrieving data object from shock :', err, meta.linkRef)
     }

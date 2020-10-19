@@ -9,7 +9,7 @@ type FilterState = {
   keywords: string[]
 }
 
-export default function parseQuery(filter: string) : FilterState{
+export default function parseQuery(filter: string) : FilterState {
 
   let _parsed
   try {

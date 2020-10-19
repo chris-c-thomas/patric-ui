@@ -19,15 +19,15 @@ import Workspaces from '../../../workspaces/Workspaces'
 
 
 type Props = {
-  title: string
-  type: string
+  title: string | JSX.Element
+  fileType: string
   onSelect: (path: string) => void
 }
 
 export default function ObjectSelectorDialog(props: Props) {
   const {
     title,
-    type,
+    fileType,
     onSelect
   } = props
 
@@ -97,7 +97,7 @@ export default function ObjectSelectorDialog(props: Props) {
             isObjectSelector
             path={path}
             onSelect={handleSelect}
-            type={type}
+            fileType={fileType}
           />
         </DialogContent>
 

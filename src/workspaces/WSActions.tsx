@@ -13,7 +13,9 @@ import ConfirmDialog from './ConfirmDialog'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
-import {deleteObjects, WSObject} from '../api/ws-api'
+import {deleteObjects} from '../api/ws-api'
+
+import {WSObject} from '../api/workspace.d'
 
 
 

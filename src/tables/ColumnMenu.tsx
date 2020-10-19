@@ -117,9 +117,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-
+// todo(nc): figure out what is happening with typing here.
 type Option = {
-  label: string
+  label?: string
   id?: string
   hide?: boolean
   type?: string
@@ -127,11 +127,11 @@ type Option = {
 
 type Props = {
   options: Option[]
-  onChange: (opt: Option[]) => void
   ButtonComponent?: JSX.Element
   header?: boolean
   headerText?: string
   noOptionsText?: string
+  onChange: (opt: (string | Option)[]) => void
 }
 
 export default function ColumnMenu(props: Props) {
@@ -146,8 +146,8 @@ export default function ColumnMenu(props: Props) {
 
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
-//  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(options.filter(obj => !obj.hide))
+
+  const [value, setValue] = useState<Option[]>(options.filter(obj => !obj.hide))
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)

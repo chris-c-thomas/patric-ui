@@ -1,10 +1,13 @@
 import buildFilterString from'./buildFilterString'
 
+type Range = {min: string, max: string} | {}
+
+type SET_TYPE = {byCategory: object, range: Range, filterString: string }
 
 type Action = {
-  type: 'SET' | 'UPDATE' | 'RANGE' | 'SELECT_ALL' | 'RESET' | 'URL_CHANGE'
+  type: 'SET' | 'UPDATE' | 'RANGE' | 'SELECT_ALL' | 'RESET'
   field?: string
-  value: string | {min: string, max: string} | string[]
+  value: SET_TYPE | string | Range | string[]
 }
 
 const filterReducer = (state, action: Action) => {
@@ -12,7 +15,7 @@ const filterReducer = (state, action: Action) => {
 
   switch (action.type) {
 
-  case 'SET': {   // useful for url changes?
+  case 'SET': {
     const {byCategory, range, filterString} = action.value
 
     return {

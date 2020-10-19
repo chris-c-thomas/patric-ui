@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import downloadIcon from '../../../assets/icons/download.svg'
 
-import {get, getDownloadUrls} from '../../api/ws-api'
+import {getMeta, getDownloadUrls} from '../../api/ws-api'
 
 const images = ['png', 'jpg', 'gif']
 
@@ -18,17 +18,18 @@ const GenericViewer = (props) => {
 
   useEffect(() => {
     (async () => {
-      const meta = await get({path, onlyMeta: true})
+      const meta = await getMeta(path)
       const url = await getDownloadUrls(path)
 
       setName(meta.name)
       setUrl(url)
+
       if (images.includes(meta.type)) {
         setIsImg(true)
       }
     })()
 
-  }, [])
+  }, [path])
 
   return (
     <Root>

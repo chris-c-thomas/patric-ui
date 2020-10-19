@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Sidebar, {sidebarWidth} from './WSSidebar'
 import FileList from './FileList'
 import ActionBar from './WSActionBar'
+import ErrorMsg from '../ErrorMsg'
 
 import * as WS from '../api/ws-api'
 
@@ -15,14 +16,14 @@ import GenericViewer from './viewers/GenericViewer'
 type Props = {
   // all of these options are for the object selector
   isObjectSelector?: boolean
+  fileType?: string
   path?: string
   onSelect?: (obj: object) => void
-  type: string
 }
 
 
 export default function Workspaces(props: Props) {
-  const {isObjectSelector, onSelect, type} = props
+  const {isObjectSelector, onSelect, fileType} = props
 
   let path = decodeURIComponent('/' + useParams().path)
 
@@ -34,6 +35,8 @@ export default function Workspaces(props: Props) {
 
   const [isObject, setIsObject] = useState(null)
   const [rows, setRows] = useState(null)
+  const [error, setError] = useState(null)
+
   const [selected, setSelected] = useState([])
 
 
@@ -41,7 +44,11 @@ export default function Workspaces(props: Props) {
     setRows(null)
 
     WS.isFolder(path)
-      .then(isFolder => setIsObject(!isFolder))
+      .then(isFolder => setIsObject(!isFolder)).catch(err => {
+        console.log('err',err)
+        setError(err)
+      })
+
 
     WS.list({path})
       .then(data => {
@@ -49,6 +56,9 @@ export default function Workspaces(props: Props) {
 
         // remove actions after list refresh
         setSelected([])
+      }).catch(err => {
+        console.log('err',err)
+        setError(err)
       })
   }, [path])
 
@@ -106,9 +116,11 @@ export default function Workspaces(props: Props) {
               onSelect={handleSelect}
               onNavigate={onNavigate}
               isObjectSelector={isObjectSelector}
-              type={type}
+              fileType={fileType}
             />
           }
+
+          {error && <ErrorMsg error={error} />}
         </FileListContainer>
       </Main>
 

@@ -11,7 +11,7 @@ import applyIcon from '../../assets/icons/apply-perspective-filter.svg'
 
 import FilterComponent from './Filter'
 // import FilterDialog from './FilterDialog'
-import MenuSelector from '../tables/MenuSelector'
+import MenuSelector from '../tables/ColumnMenu'
 
 
 

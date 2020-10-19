@@ -81,7 +81,7 @@ export default function GenomeAlignment() {
             value={null}
             type="genome_group"
             dialogTitle="Select genome group"
-            width="200px"
+            onChange={() => {}}
           />
         </Row>
       </Section>

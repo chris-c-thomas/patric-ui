@@ -67,17 +67,17 @@ const columns = [
     id: 'submit_time',
     label: 'Submitted',
     format: val => isoToHumanDateTime(val),
-    width: '125px'
+    width: '140px'
   }, {
     id: 'start_time',
     label: 'Started',
     format: val => isoToHumanDateTime(val),
-    width: '125px'
+    width: '140px'
   }, {
     id: 'completed_time',
     label: 'Completed',
     format: val => isoToHumanDateTime(val),
-    width: '125px'
+    width: '140px'
   }
 ]
 
@@ -232,7 +232,6 @@ export default function Jobs() {
   const limit = Number(params.get('limit')) || 200
 
   const [loading, setLoading] = useState(false)
-  // const [state, setState] = useState({app: 'AllServices'}) //page: 0, start: 0, limit: 200,
   const [rows, setRows] = useState(null)
   const [total, setTotal] = useState(null)
   const [error, setError] = useState(null)
@@ -307,7 +306,7 @@ export default function Jobs() {
     history.push({search: params.toString()})
   }
 
-  const onSort = (/*colObj*/) => {
+  const onSort = () => {
     alert('The app service currently does not have a sorting api method(?)')
   }
 

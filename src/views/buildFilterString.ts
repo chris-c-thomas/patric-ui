@@ -1,11 +1,11 @@
 
-type RangeFilters = {
-  [field: string]: Range
-}
-
 type Range = {
   min?: string | null
   max?: string | null
+}
+
+type RangeFilters = {
+  [field: string]: Range
 }
 
 
@@ -36,7 +36,7 @@ const getRangeStr = (range: RangeFilters) => {
 }
 
 
-export default function buildFilterString(state: object, range?: RangeFilters) {
+export default function buildFilterString(state: object, range: RangeFilters | {}) {
   let queryStr
 
   const fields = getFacetFields(state)

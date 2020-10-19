@@ -29,8 +29,6 @@ let filters =  [
 ]
 filters = getFilterSpec(filters, columns)
 
-console.log('filters', filters)
-
 
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)
@@ -81,7 +79,7 @@ export default function Genomes() {
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(!fullWidth)}
             middleComponent={selection && <Actions />}
-            onShowDetails={() => setShowDetails(!showDetails)}
+            onShowDetails={() => setShowDetails(prev => !!prev)}
             {...tableProps}
           />
         }

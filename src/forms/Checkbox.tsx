@@ -60,6 +60,7 @@ const useStyles = makeStyles({
 type Props = {
   checked: boolean
   onChange?: (evt: ChangeEvent<HTMLInputElement>) => void
+  onClick?: (evt: ChangeEvent<HTMLInputElement>) => void
   indeterminate?: boolean
   size?: null | 'small'
 }

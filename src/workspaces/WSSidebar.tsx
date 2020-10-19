@@ -13,7 +13,7 @@ import SpecialFolderIcon from '@material-ui/icons/FolderSpecialRounded'
 
 import {getUser} from '../api/auth'
 
-import { WSObject } from '../api/ws-api'
+import { WSObject } from '../api/workspace.d'
 
 
 // only for testing

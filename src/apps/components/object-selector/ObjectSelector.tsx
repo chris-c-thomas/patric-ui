@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -12,7 +12,7 @@ import ObjectSelectorDialog from './ObjectSelectorDialog'
 import * as WS from '../../../api/ws-api'
 import {getUser} from '../../../api/auth'
 
-import {WSObject} from '../../../api/ws-api'
+import {WSObject} from '../../../api/workspace.d'
 
 
 const usageError = (propName, value) =>
@@ -37,12 +37,12 @@ const formatOptionLabel = (option, query: string) => {
 
 
 type Props = {
-  type?: string
   includeHidden?: boolean
   dialogTitle: string | JSX.Element
   label: string
-  value: string // path
-  placeholder: string
+  value: string // workspace path in this case
+  type?: string
+  placeholder?: string
   onChange: (object: WSObject) => void
 }
 
@@ -151,7 +151,7 @@ export default function ObjectSelector(props: Props) {
 
       <ObjectSelectorDialog
         title={dialogTitle}
-        type={type}
+        fileType={type}
         onSelect={onDialogSelect}
       />
     </>

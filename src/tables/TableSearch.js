@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect, useRef, useCallback} from 'react'
 import styled from 'styled-components'
 import SearchIcon from '@material-ui/icons/SearchOutlined'
 import TextField from '@material-ui/core/TextField'
@@ -32,8 +32,14 @@ export default function TableControls(props) {
       return
     }
 
+    handleSearch()
+  }, [debounceQuery, handleSearch])
+
+
+  const handleSearch = useCallback(() => {
     onSearch({query})
-  }, [debounceQuery])
+  }, [onSearch, query])
+
 
   return (
     <>

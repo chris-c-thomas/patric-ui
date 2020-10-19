@@ -21,7 +21,7 @@ import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
 import filterIcon from '../../assets/icons/filter.svg'
 
-import ColumnMenu from './MenuSelector'
+import ColumnMenu from './ColumnMenu'
 import Checkbox from '../forms/Checkbox'
 import TableSearch from './TableSearch'
 import ActionBtn from './ActionBtn'
@@ -46,7 +46,7 @@ const exampleColumns = [
     id: 'population',
     label: 'Population',
     align: 'right', // or use type: 'number'
-    format: value => value.toLocaleString(),
+    format: (value, rowObj) => value.toLocaleString(),
   }
 ]
 */
@@ -114,7 +114,7 @@ const Row = (props: RowProps) => {
 
   return (
     <TableRowComponent hover
-      style={row.type !== 'folder' && disableRowSelect(row) ? {background: '#f5f5f5', color: '#aaa !important'} : {}}
+      style={disableRowSelect(row) ? {background: '#f5f5f5', color: '#aaa !important'} : {}}
       tabIndex={-1}
       key={id}
       onClick={evt => onSelect(evt, rowID, row)}
@@ -465,7 +465,7 @@ export default function TableComponent(props: Props) {
       setSortBy(newState)
     }
 
-    // select everything
+    // deselect everything
     dispatch({type: 'CLEAR'})
   }
 
@@ -648,10 +648,13 @@ const Container = styled(TableContainer)`
   border-collapse: separate;
 
   td {
+    /* if using ellipsis
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 0;
+    */
+
     font-size: 13px;
 
     /* size="small" */
