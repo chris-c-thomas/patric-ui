@@ -1,29 +1,28 @@
-import axios from 'axios';
-import config from '../config';
-const { appServiceAPI } = config;
+import axios from 'axios'
+import config from '../config'
 
-import {getToken} from './auth';
-
+import {getToken} from './auth'
 
 
 const api = axios.create({
+  timeout: config.timeout,
   headers: {
     Authorization: getToken()
   }
-});
+})
 
 const rpc = (cmd, params) => {
   const req = {
     id: String(Math.random()).slice(2),
     method: `AppService.${cmd}`,
     params: params || [],
-    jsonrpc: "2.0"
+    jsonrpc: '2.0'
   }
 
-  return api.post(appServiceAPI, req)
+  return api.post(config.appServiceAPI, req)
     .then(res => {
-      return res.data.result;
-    });
+      return res.data.result
+    })
 }
 
 

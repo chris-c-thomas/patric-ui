@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import Sidebar, {sidebarWidth} from './WSSidebar'
 import FileList from './FileList'
 import ActionBar from './WSActionBar'
+
+import Progress from '@material-ui/core/LinearProgress'
 import ErrorMsg from '../ErrorMsg'
 
 import * as WS from '../api/ws-api'
@@ -33,33 +35,35 @@ export default function Workspaces(props: Props) {
 
   const history = useHistory()
 
-  const [isObject, setIsObject] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [rows, setRows] = useState(null)
   const [error, setError] = useState(null)
 
+  const [isFolder, setIsFolder] = useState(null)
   const [selected, setSelected] = useState([])
 
 
   const updateList = useCallback(() => {
-    setRows(null)
 
-    WS.isFolder(path)
-      .then(isFolder => setIsObject(!isFolder)).catch(err => {
-        console.log('err',err)
-        setError(err)
-      })
+    (async function () {
+      setRows(null)
+      setLoading(true)
 
-
-    WS.list({path})
-      .then(data => {
+      try {
+        const isFolder = await WS.isFolder(path)
+        setIsFolder(isFolder)
+        const data = await WS.list({path})
         setRows(data)
 
         // remove actions after list refresh
         setSelected([])
-      }).catch(err => {
-        console.log('err',err)
+      } catch (err) {
         setError(err)
-      })
+      }
+
+      setLoading(false)
+    })()
+
   }, [path])
 
 
@@ -109,15 +113,17 @@ export default function Workspaces(props: Props) {
         </ActionBarContainer>
 
         <FileListContainer>
-          {isObject ?
-            <GenericViewer path={path} /> :
+          {loading && <Progress className="card-progress" /> }
+
+          {isFolder ?
             <FileList
               rows={rows}
               onSelect={handleSelect}
               onNavigate={onNavigate}
               isObjectSelector={isObjectSelector}
               fileType={fileType}
-            />
+            /> :
+            <GenericViewer path={path} />
           }
 
           {error && <ErrorMsg error={error} />}

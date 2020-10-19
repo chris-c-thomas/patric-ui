@@ -2,13 +2,12 @@ import axios from 'axios'
 import config from '../config'
 
 import { getToken } from './auth'
-const { wsAPI } = config
 
-
-import {WSObject} from './workspace.d'
+import { WSObject } from './workspace.d'
 
 
 const workspace = axios.create({
+  timeout: config.timeout,
   headers: {
     Authorization: getToken()
   }
@@ -23,7 +22,7 @@ const rpc = (cmd: string, params: object) => {
     jsonrpc: '2.0'
   }
 
-  return workspace.post(wsAPI, req)
+  return workspace.post(config.wsAPI, req)
     .then(res => res.data.result[0])
 }
 

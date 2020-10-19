@@ -45,7 +45,7 @@ export default function ErrorMsg(props) {
   return (
     <>
       <Alert severity="error" style={{wordBreak: 'break-all'}}>
-        {error.message} - {msg || 'Something has gone wrong.'}
+        {error.message} - {msg || 'Something has gone wrong'}
 
         {parseConfigURL(error)}
 

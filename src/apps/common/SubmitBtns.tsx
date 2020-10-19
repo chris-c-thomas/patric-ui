@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Button from '@material-ui/core/Button'
 
-import { Section, Row } from './FormLayout'
+import { Section } from './FormLayout'
 
 
 const usageError = (propName, value) => (

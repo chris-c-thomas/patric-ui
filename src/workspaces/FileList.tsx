@@ -1,12 +1,10 @@
 /* eslint-disable react/display-name */
-import React, { useRef } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 import Table from '../tables/Table'
 
 import Folder from '@material-ui/icons/FolderOutlined'
-// import ArrowDown from '@material-ui/icons/ArrowDropDown'
-// import ArrowBack from '@material-ui/icons/ArrowBack'
 import File from '@material-ui/icons/InsertDriveFileOutlined'
 import WSIcon from '../../assets/icons/hdd-o.svg'
 import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
@@ -76,15 +74,15 @@ function getIcon({type, isWS, permissions}) {
 
 
 type Props = {
-  rows: object[];
-  fileType?: string;
-  isObjectSelector?: boolean;
-  isJobResult?: boolean;
+  rows: object[]
+  fileType?: string
+  isJobResult?: boolean
 
   // for object selector
-  type?: string;
-  onSelect: (obj: object) => void;
-  onNavigate: (obj: object) => void;
+  isObjectSelector?: boolean
+  type?: string
+  onSelect: (obj: object) => void
+  onNavigate: (obj: object) => void
 }
 
 
@@ -116,7 +114,8 @@ export default function FileList(props: Props) {
 
     params['disableRowSelect'] = (row) => {
       if (!row) return true
-      return row.type != type
+
+      return row.type != 'folder' && row.type != type
     }
   }
 
