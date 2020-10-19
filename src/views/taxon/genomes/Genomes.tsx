@@ -79,7 +79,7 @@ export default function Genomes() {
             openFilters={fullWidth}
             onOpenFilters={() => setFullWidth(!fullWidth)}
             middleComponent={selection && <Actions />}
-            onShowDetails={() => setShowDetails(prev => !!prev)}
+            onShowDetails={() => setShowDetails(prev => !prev)}
             {...tableProps}
           />
         }
