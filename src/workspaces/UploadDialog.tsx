@@ -14,7 +14,11 @@ import SelectedTable from '../apps/components/SelectedTable'
 
 import uploadTypes from './uploadTypes'
 import Alert from '@material-ui/lab/Alert'
-import Chip from '@material-ui/core/Chip'
+
+
+
+import { create } from '../api/ws-api'
+import { uploadFile } from '../api/upload'
 
 
 /**
@@ -75,7 +79,33 @@ export default function UploadDialog(props: Props) {
 
   const onSubmit = (evt) => {
     evt.preventDefault()
-    setLoading(true)
+
+    var obj = {
+      path,
+      name: files[0].name,
+      type: files[0].fileType
+    }
+    return create(obj, true, true).then((obj) => {
+      let url = obj.linkRef
+
+      uploadFile(files[0], url, path, () => {
+        console.log('file upload started')
+      }, () => {
+        console.log('file progress')
+      }, () => {
+        console.log('file upload complete')
+      })
+    }).catch( (err) => {
+      // only show prompt if given file-already-exists error
+      if (err.indexOf('overwrite flag is not set') === -1) return
+
+      const message = 'Are you sure you want to overwrite <i>' + obj.path + obj.name + '</i> ?'
+      // show overwrite dialog
+    })
+
+
+
+
   }
 
   return (

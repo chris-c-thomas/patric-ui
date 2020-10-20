@@ -21,6 +21,8 @@ const GenericViewer = (props) => {
       const meta = await getMeta(path)
       const url = await getDownloadUrls(path)
 
+      console.log('generic viewer meta', meta)
+
       setName(meta.name)
       setUrl(url)
 

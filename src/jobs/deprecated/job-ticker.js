@@ -9,7 +9,7 @@ import InProgressIcon from '@material-ui/icons/PlaylistPlayRounded'
 import CompletedIcon from '@material-ui/icons/PlaylistAddCheckRounded'
 
 
-import { JobStatusContext} from '../job-status-context'
+import { JobStatusContext} from '../JobStatusContext'
 
 const useStyles = makeStyles({
   root: {

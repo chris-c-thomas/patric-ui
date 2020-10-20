@@ -34,7 +34,6 @@ export default function Actions() {
 
   return (
     <ActionContainer>
-
       <Tooltip title="Create a group...">
         <ActionBtn aria-label="group" onClick={onGroup}>
           <img src={genomeGroupIcon} />
@@ -55,7 +54,7 @@ export default function Actions() {
           <img src={downloadIcon} />
           <div>download</div>
         </ActionBtn>
-     </Tooltip>
+      </Tooltip>
 
       <GenomeGroupDialog open={showGroupDialog}/>
     </ActionContainer>

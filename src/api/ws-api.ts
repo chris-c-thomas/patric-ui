@@ -285,3 +285,43 @@ export function getUserCounts({user}) {
     })
 }
 
+
+export function create(obj, createUploadNodes = false, overwrite = false) {
+
+  if (obj.path.charAt(obj.path.length - 1) != '/') {
+    obj.path += '/'
+  }
+
+  return rpc('create', {
+    objects: [[(obj.path + obj.name), (obj.type || 'unspecified'), obj.userMeta || {}, (obj.content || '')]],
+    createUploadNodes,
+    overwrite
+  }).then((results) => {
+    if (!results[0][0] || !results[0][0]) {
+      throw 'Error Creating Object'
+    } else {
+      console.log('results', results)
+      return metaToObj(results[0][0])
+    }
+  })
+}
+
+
+export function updateMetadata(objs) {
+  objs = Array.isArray(objs) ? objs : [objs]
+
+  const objects = objs.map(obj => [obj.path, obj.userMeta, obj.type || undefined])
+
+  // note: update_metadata will replace userMeta
+  return rpc('update_metadata', { objects })
+    .then(res => res[0][0])
+}
+
+
+
+export function updateAutoMetadata (paths: string | string[]) {
+  paths = Array.isArray(paths) ? paths : [paths]
+  return rpc('update_metadata', { objects: paths })
+}
+
+

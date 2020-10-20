@@ -23,7 +23,7 @@ import Table from '../tables/Table'
 import { listJobs, getStats } from '../api/app-service'
 import { isoToHumanDateTime } from '../utils/units'
 
-import { JobStatusContext } from './job-status-context'
+import { JobStatusContext } from './JobStatusContext'
 
 import ErrorMsg from '../ErrorMsg'
 

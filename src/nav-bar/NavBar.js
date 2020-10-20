@@ -25,7 +25,7 @@ import SignInDialog from '../auth/SignInDialog'
 
 import DropdownMenu from './menu'
 
-import { JobStatusContext } from '../jobs/job-status-context'
+import { JobStatusContext } from '../jobs/JobStatusContext'
 
 import FancySearch from './FancySearch'
 

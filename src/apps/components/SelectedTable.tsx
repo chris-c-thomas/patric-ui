@@ -11,10 +11,10 @@
  * Examples:
  *
     columns: [{
-      name: 'Reads',
+      label: 'Reads',
       id: 'name'
     }, {
-      name: 'Platform',
+      label: 'Platform',
       id: 'platform'
     }]
  *
@@ -26,23 +26,12 @@ import IconButton from '@material-ui/core/IconButton'
 import RemoveIcon from '@material-ui/icons/CloseRounded'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 
-/*
-const exampleColumns = [{
-  id: 'foo',
-  label: 'Column 1',
-}, {
-  id: 'bar',
-  label: 'Column 2'
-}]
-*/
+
 
 const noSelection = (emptyNotice, columnCount) => (
   <tr>
     <td colSpan={columnCount} className="muted">
-      {emptyNotice ?
-        emptyNotice :
-        `No items currently selected`
-      }
+      {emptyNotice ? emptyNotice : `No items currently selected`}
     </td>
   </tr>
 )

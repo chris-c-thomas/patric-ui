@@ -39,7 +39,7 @@ export default function Workspaces(props: Props) {
   const [rows, setRows] = useState(null)
   const [error, setError] = useState(null)
 
-  const [isFolder, setIsFolder] = useState(null)
+  const [isFolder, setIsFolder] = useState(true)
   const [selected, setSelected] = useState([])
 
 
@@ -50,8 +50,14 @@ export default function Workspaces(props: Props) {
       setLoading(true)
 
       try {
-        const isFolder = await WS.isFolder(path)
-        setIsFolder(isFolder)
+        // determine if folder or not
+        let isFolder = true
+        if (path.split('/').length > 2) {
+          isFolder = await WS.isFolder(path)
+          setIsFolder(isFolder)
+        }
+
+        // get rows
         const data = await WS.list({path})
         setRows(data)
 
@@ -139,7 +145,7 @@ const Root = styled.div`
   display: flex;
   max-height: calc(100% - 55px);
   height: 100%;
-  padding: 5px 5px 5px 0;
+  padding: 1px 5px 5px 0;
   background: #fff;
 `
 

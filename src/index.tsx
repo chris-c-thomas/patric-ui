@@ -29,7 +29,7 @@ import ErrorBoundary from './ErrorBoundary'
 import {isSignedIn} from './api/auth'
 import SignIn from './auth/SignIn'
 
-import { JobStatusProvider } from './jobs/job-status-context'
+import { JobStatusProvider } from './jobs/JobStatusContext'
 
 import 'regenerator-runtime/runtime'
 

@@ -35,6 +35,8 @@ module.exports = {
     'localStorage': true,
     'window': true,
     'DOMParser': true,
-    'event': true
+    'event': true,
+    'XMLHttpRequest': true,
+    'FormData': true
   }
 }
