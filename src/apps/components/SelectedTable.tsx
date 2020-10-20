@@ -26,29 +26,28 @@ import IconButton from '@material-ui/core/IconButton'
 import RemoveIcon from '@material-ui/icons/CloseRounded'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 
-
-const defaultColumns = [{
-  name: 'Reads',
-  id: 'name'
+/*
+const exampleColumns = [{
+  id: 'foo',
+  label: 'Column 1',
 }, {
-  name: 'Platform',
-  id: 'platform'
+  id: 'bar',
+  label: 'Column 2'
 }]
+*/
 
-const noSelection = (emptyNotice, columns) => (
+const noSelection = (emptyNotice, columnCount) => (
   <tr>
-    <td colSpan={columns.length + 1} className="muted">
+    <td colSpan={columnCount} className="muted">
       {emptyNotice ?
         emptyNotice :
-        `No ${typeof col.label == 'function' ? col.label() : col.label.lowerCase()} currently selected.`
+        `No items currently selected`
       }
     </td>
   </tr>
 )
 
-const buttonTypes = ['removeButton', 'infoButton']
-
-const Cell = ({row, col, index, onRemove}) => {
+const Cell = ({row, col, index, onRemove, ...rest}) => {
   if (col.type == 'removeButton') {
     return (
       <td>
@@ -66,7 +65,7 @@ const Cell = ({row, col, index, onRemove}) => {
       </td>
     )
   } else {
-    return <td style={{wordBreak: 'break-all'}}>{row[col.id]}</td>
+    return <td style={{wordBreak: 'break-all', width: rest.width}}>{row[col.id]}</td>
   }
 }
 
@@ -86,24 +85,39 @@ const Rows = ({rows, columns, onRemove }) =>
   rows.map((row, index) =>
     <tr key={index}>
       {columns.map((col, j) =>
-        <Cell key={j} index={index} row={row} col={col} onRemove={onRemove} />
+        <Cell key={j} index={index} row={row} col={col} onRemove={onRemove} {...col} />
       )}
     </tr>
   )
 
+// todo(nc): button types?
+type Column = {
+  id?: string
+  label?: string | (() => JSX.Element)
+  width?: string | number
+  type?: 'removeButton' | 'infoButton' | string
+  format?: (value: any, row: object) => JSX.Element
+}
 
-export default function SelectedTable(props) {
-  const { columns, onRemove, emptyNotice } = props
+type Props = {
+  columns: Column[]
+  rows: object[]
+  emptyNotice?: string | JSX.Element
+  onRemove?: ({row: object, index: number}) => void
+}
+
+export default function SelectedTable(props: Props) {
+  const {
+    emptyNotice,
+    onRemove,
+  } = props
 
   const [rows, setRows] = useState(props.rows || [])
+  const [columns] = useState(props.columns || [])
 
   useEffect(() => {
     setRows(props.rows)
   }, [props.rows])
-
-  if (!columns) {
-    columns = defaultColumns;
-  }
 
   return (
     <Root>
@@ -111,20 +125,20 @@ export default function SelectedTable(props) {
         <thead>
           <tr>
             {/* all <th> elements that are not buttons */
-              columns.filter(col => !(col.type in buttonTypes))
-              .map((col, i) =>
-                <th key={i}>
-                  {typeof col.label == 'function' ? col.label() : col.label}
-                </th>
-              )}
+              columns.filter(col => !('type' in col))
+                .map((col) =>
+                  <th key={col.id} style={{width: col.width}}>
+                    {typeof col.label == 'function' ? col.label() : col.label}
+                  </th>
+                )}
             {/* empty <th> elements for buttons */
-              columns.filter(col => col.type in buttonTypes)
-                .map(() => <th style={{width: 1}}></th>)
+              columns.filter(col => 'type' in col)
+                .map((col) => <th key={col.id} style={{width: 1}}></th>)
             }
           </tr>
         </thead>
         <tbody>
-          {!rows.length && noSelection(emptyNotice, columns)}
+          {!rows.length && noSelection(emptyNotice, columns ? columns.length + 1 : 2)}
           {rows.length > 0 && <Rows {...{columns, rows, onRemove}} />}
         </tbody>
       </Table>
