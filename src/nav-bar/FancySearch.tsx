@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import InputBase from '@material-ui/core/InputBase'
 import { fade } from '@material-ui/core/styles'
 import SearchIcon from '@material-ui/icons/Search'
+import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
 
 import useClickOutside from '../hooks/useClickOutside'
 
@@ -81,10 +82,12 @@ const MainSearch = styled.form`
 
   select {
     /* todo(nc): fully style firefox */
+    -webkit-appearance: caret;
     -moz-appearance: none;
     background-color: ${fade('#fff', 0.15)};
     color: #fff;
     font-size: .8em;
+    height: 24px;
 
     &:hover {
       background-color: ${fade('#fff', 0.25)};

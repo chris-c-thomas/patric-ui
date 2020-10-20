@@ -1,9 +1,6 @@
 /**
  * Styled checkbox.  Taken directly from https://material-ui.com/components/checkboxes/.
  *
- * Optional props:
- *   - defaultchecked
- *   - disabled
  */
 
 import React, {memo, ChangeEvent} from 'react'

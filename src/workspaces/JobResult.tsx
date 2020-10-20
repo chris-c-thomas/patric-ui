@@ -39,7 +39,6 @@ export default function Workspaces(props: Props) {
     setRows(null)
     WS.list({path: jobDir, includeHidden: true})
       .then(data => {
-        console.log('fetched workspace data:', data)
         setRows(data)
 
         // remove actions after list refresh
