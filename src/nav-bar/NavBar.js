@@ -25,6 +25,7 @@ import SignInDialog from '../auth/SignInDialog'
 
 import DropdownMenu from './menu'
 
+import { UploadStatusContext } from '../workspaces/UploadStatusContext'
 import { JobStatusContext } from '../jobs/JobStatusContext'
 
 import FancySearch from './FancySearch'
@@ -143,7 +144,10 @@ const Column = styled.div`
 `
 
 const PatricMenus = () => {
+  const [uploads] = useContext(UploadStatusContext)
   const [jobs] = useContext(JobStatusContext)
+
+  console.log('uploads', uploads)
 
   return (
     <>
@@ -192,15 +196,17 @@ const PatricMenus = () => {
         </DropDown>
       }/>
 
-      <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
-        Workspaces
-      </Button>
+      <BadgeCount badgeContent={uploads.progress} max={999}>
+        <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
+          Workspaces
+        </Button>
+      </BadgeCount>
 
-      <JobCount badgeContent={jobs.queued + jobs.inProgress} max={999}>
+      <BadgeCount badgeContent={jobs.queued + jobs.inProgress} max={999}>
         <Button component={Link} to="/jobs" disableRipple>
           Job Status
         </Button>
-      </JobCount>
+      </BadgeCount>
     </>
   )
 }
@@ -225,9 +231,11 @@ const MenuSection = styled.div`
   margin-right: 5px;
 `
 
-const JobCount = styled(Badge)`
+const BadgeCount = styled(Badge)`
   .MuiBadge-badge {
-    right: -2;
+    font-size: 9px;
+    height: 18px;
+    right: 10;
     top: 10;
     border: 2px solid #2e75a3;
     padding: 0 4px;

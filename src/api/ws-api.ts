@@ -286,7 +286,7 @@ export function getUserCounts({user}) {
 }
 
 
-export function create(obj, createUploadNodes = false, overwrite = false) {
+export async function create(obj, createUploadNodes = false, overwrite = false) {
 
   if (obj.path.charAt(obj.path.length - 1) != '/') {
     obj.path += '/'
@@ -297,11 +297,10 @@ export function create(obj, createUploadNodes = false, overwrite = false) {
     createUploadNodes,
     overwrite
   }).then((results) => {
-    if (!results[0][0] || !results[0][0]) {
+    if (!results[0]) {
       throw 'Error Creating Object'
     } else {
-      console.log('results', results)
-      return metaToObj(results[0][0])
+      return metaToObj(results[0])
     }
   })
 }
@@ -314,14 +313,14 @@ export function updateMetadata(objs) {
 
   // note: update_metadata will replace userMeta
   return rpc('update_metadata', { objects })
-    .then(res => res[0][0])
+    .then(res => res[0])
 }
 
 
 
 export function updateAutoMetadata (paths: string | string[]) {
   paths = Array.isArray(paths) ? paths : [paths]
-  return rpc('update_metadata', { objects: paths })
+  return rpc('update_auto_meta', { objects: paths })
 }
 
 

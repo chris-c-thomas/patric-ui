@@ -31,7 +31,11 @@ const columns = [
   { label: 'Classification', id: 'classification', sortable: false, hide: true},
   { label: 'Antibiotics Class', id: 'antibiotics_class', hide: true },
   { label: 'Antibiotics', id: 'antibiotics', sortable: false, hide: true },
-  { label: 'Pubmed', id: 'pmid', sortable: false, width: '8%' },
+  { label: 'Pubmed', id: 'pmid', sortable: false, width: '8%',
+    format: (val) => {
+      val
+    }
+  },
   { label: 'Subject Coverage', id: 'subject_coverage', hide: true },
   { label: 'Query Coverage', id: 'query_coverage', hide: true },
   { label: 'Identity', id: 'identity' },

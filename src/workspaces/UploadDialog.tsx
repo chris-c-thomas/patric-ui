@@ -1,4 +1,4 @@
-import React, {useState, ChangeEvent} from 'react'
+import React, {useState, useContext, ChangeEvent} from 'react'
 import styled from 'styled-components'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
@@ -15,11 +15,7 @@ import SelectedTable from '../apps/components/SelectedTable'
 import uploadTypes from './uploadTypes'
 import Alert from '@material-ui/lab/Alert'
 
-
-
-import { create } from '../api/ws-api'
-import { uploadFile } from '../api/upload'
-
+import { UploadStatusContext } from './UploadStatusContext'
 
 /**
  * helpers for dealing with hash structure of uploadTypes
@@ -45,12 +41,13 @@ export default function UploadDialog(props: Props) {
     onClose
   } = props
 
-  const [loading, setLoading] = useState(false)
+  const [_, uploadFiles] = useContext(UploadStatusContext)
 
   const [fileType, setFileType] = useState('unspecified')
   const [info, setInfo] = useState(null)
   const [acceptType, setAcceptType] = useState(null)
 
+  const [fileObjs, setFileObjs] = useState(null)
   const [files, setFiles] = useState([])
 
 
@@ -58,12 +55,18 @@ export default function UploadDialog(props: Props) {
     setFileType(val)
     setAcceptType(getAcceptType(val))
 
+    // update helper text
     if (val != 'unspecified') {
       setInfo(getInfo(val))
+    } else {
+      setInfo(null)
     }
   }
 
   const handleFileSelect = (evt: ChangeEvent<HTMLInputElement>) => {
+    // store file objects
+    setFileObjs(evt.target.files)
+
     // add fileType to each file object
     const staged = Array.from(evt.target.files).map(file => {
       const {name, size} = file
@@ -73,43 +76,27 @@ export default function UploadDialog(props: Props) {
     setFiles(staged)
   }
 
+
   const onRemove = ({index}) => {
     setFiles(prev => prev.filter((_, i) => i != index))
   }
 
+
   const onSubmit = (evt) => {
     evt.preventDefault()
 
-    var obj = {
+    const fileMetas = files.map(file => ({
       path,
-      name: files[0].name,
-      type: files[0].fileType
-    }
-    return create(obj, true, true).then((obj) => {
-      let url = obj.linkRef
+      name: file.name,
+      type: file.fileType
+    }))
 
-      uploadFile(files[0], url, path, () => {
-        console.log('file upload started')
-      }, () => {
-        console.log('file progress')
-      }, () => {
-        console.log('file upload complete')
-      })
-    }).catch( (err) => {
-      // only show prompt if given file-already-exists error
-      if (err.indexOf('overwrite flag is not set') === -1) return
-
-      const message = 'Are you sure you want to overwrite <i>' + obj.path + obj.name + '</i> ?'
-      // show overwrite dialog
-    })
-
-
-
-
+    uploadFiles(fileMetas, fileObjs, path)
+    onClose()
   }
 
   return (
-    <Dialog open onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="md">
+    <Dialog open onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="sm">
       <form onSubmit={onSubmit}>
         <div className="flex space-between">
           <DialogTitle id="form-dialog-title">

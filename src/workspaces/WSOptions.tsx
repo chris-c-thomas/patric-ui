@@ -16,6 +16,8 @@ import UploadDialog from './UploadDialog'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
+import { UploadStatusProvider } from './UploadStatusContext'
+
 
 const Btn = (props) =>
   <Button size="small" variant="outlined" color="primary" disableRipple {...props}>
@@ -86,6 +88,7 @@ const Options = (props: Props) => {
           onClose={() => setDialog(null)}
         />
       }
+
 
       {snack &&
         <Snackbar open={true} autoHideDuration={5000} onClose={() => setSnack(null)}>

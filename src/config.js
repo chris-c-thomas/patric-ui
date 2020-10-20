@@ -7,7 +7,7 @@
 export default {
   timeout: 5000,  // use timeout for workspaces and jobs
 
-  dataAPI: 'https://alpha.bv-brc.org/api', //'https://patricbrc.org/api',
+  dataAPI: 'https://patricbrc.org/api', //'https://alpha.bv-brc.org/api', //
   appServiceAPI: 'https://p3.theseed.org/services/app_service',
   wsAPI: 'https://p3.theseed.org/services/Workspace',
   authAPI: 'https://user.patricbrc.org/authenticate',

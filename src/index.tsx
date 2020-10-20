@@ -29,6 +29,7 @@ import ErrorBoundary from './ErrorBoundary'
 import {isSignedIn} from './api/auth'
 import SignIn from './auth/SignIn'
 
+import { UploadStatusProvider } from './workspaces/UploadStatusContext'
 import { JobStatusProvider } from './jobs/JobStatusContext'
 
 import 'regenerator-runtime/runtime'
@@ -59,54 +60,57 @@ const App = () => {
     <BrowserRouter>
       <ErrorBoundary>
         <ThemeProvider theme={theme}>
-          <JobStatusProvider>
 
-            <NavBar />
+          <UploadStatusProvider>
+            <JobStatusProvider>
 
-            <Root>
-              <Main>
-                <Suspense fallback={<div>loading...</div>}>
-                  <Switch>
-                    <Route path="/" exact component={Home} />
-                    <Route path="/search/" component={GlobalSearch} />
-                    <Route path="/my-profile" exact component={Account} />
+              <NavBar />
 
-                    <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly'))} />
-                    <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
-                    <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
-                    <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
-                    <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />
+              <Root>
+                <Main>
+                  <Suspense fallback={<div>loading...</div>}>
+                    <Switch>
+                      <Route path="/" exact component={Home} />
+                      <Route path="/search/" component={GlobalSearch} />
+                      <Route path="/my-profile" exact component={Account} />
 
-                    <Route path="/jobs*" render={() =>
-                      isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" />}
-                    />
+                      <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly'))} />
+                      <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
+                      <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
+                      <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
+                      <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />
 
-                    <Route path="/files/:path*" exact render={() =>
-                      isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
-                    />
-                    <Route path="/job-result/:path*" exact render={() =>
-                      isSignedIn() ? <JobResult/> : <SignIn title="Please sign in to use Workspaces" />}
-                    />
+                      <Route path="/jobs*" render={() =>
+                        isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" />}
+                      />
+
+                      <Route path="/files/:path*" exact render={() =>
+                        isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
+                      />
+                      <Route path="/job-result/:path*" exact render={() =>
+                        isSignedIn() ? <JobResult/> : <SignIn title="Please sign in to use Workspaces" />}
+                      />
 
 
-                    <Route path="/taxonomy/:taxonID/:view" exact render={() =>
-                      <TaxonTabs />
-                    } />
-                    <Route path="/genome/:genomeID/:view" render={() =>
-                      <GenomeTabs />
-                    } />
-                    <Route path="/hosts/:taxonID/:view" render={() =>
-                      <HostTabs />
-                    } />
+                      <Route path="/taxonomy/:taxonID/:view" exact render={() =>
+                        <TaxonTabs />
+                      } />
+                      <Route path="/genome/:genomeID/:view" render={() =>
+                        <GenomeTabs />
+                      } />
+                      <Route path="/hosts/:taxonID/:view" render={() =>
+                        <HostTabs />
+                      } />
 
-                    <Route path="/susignin" exact component={SUSignIn} />
-                    <Route path="*" component={NotFound404} />
+                      <Route path="/susignin" exact component={SUSignIn} />
+                      <Route path="*" component={NotFound404} />
 
-                  </Switch>
-                </Suspense>
-              </Main>
-            </Root>
-          </JobStatusProvider>
+                    </Switch>
+                  </Suspense>
+                </Main>
+              </Root>
+            </JobStatusProvider>
+          </UploadStatusProvider>
 
         </ThemeProvider>
       </ErrorBoundary>
