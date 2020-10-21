@@ -1,31 +1,29 @@
-import React, {useState, useEffect, createContext, useCallback} from 'react'
+import React, {useState, useEffect, createContext } from 'react'
 
-import { create } from '../api/ws-api'
-import { uploadFile } from '../api/upload'
+import { create } from '../../api/ws-api'
+import { uploadFile } from '../../api/upload'
 
 
 
 const UploadStatusContext = createContext([{}])
 
 function UploadStatusProvider(props) {
-  const [progress, setProgress] = useState(0)
   const [active, setActive] = useState({})
+  const [progress, setProgress] = useState(0)
 
-  // add up total progress
+
+  // whenever active changes, update total progress
   useEffect(() => {
     const names = Object.keys(active)
 
-    if (!names.length) {
-      return
-    }
+    // if no uploads, nothing to do
+    if (!names.length) return
 
     const sum = names.reduce((acc, name) =>
       acc + (active[name].progress || 0)
     , 0)
 
-    const total = parseInt(sum / names.length)
-
-    setProgress(total)
+    setProgress(`${parseInt(sum / names.length)}%`)
   }, [active])
 
 
@@ -63,7 +61,7 @@ function UploadStatusProvider(props) {
 
       // const message = 'Are you sure you want to overwrite <i>' + fileMeta.path + fileMeta.name + '</i> ?'
       // implement overwrite dialog
-      alert(`could not over write object: ${fileMeta.name}`)
+      alert(`could not over write object: ${meta.name}`)
     })
   }
 

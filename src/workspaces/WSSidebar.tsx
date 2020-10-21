@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
-import InfoIcon from '@material-ui/icons/InfoOutlined'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
 import CaretIcon from '@material-ui/icons/ExpandMoreRounded'
 import FolderIcon  from '@material-ui/icons/FolderOutlined'
@@ -13,7 +12,7 @@ import SpecialFolderIcon from '@material-ui/icons/FolderSpecialRounded'
 
 import {getUser} from '../api/auth'
 
-import { UploadStatusContext } from './UploadStatusContext'
+import UploadStatus from './upload/UploadStatus'
 
 import { WSObject } from '../api/workspace.d'
 
@@ -55,10 +54,7 @@ type Props = {
 const WSSideBar = (props: Props) => {
   const {path} = useParams()
 
-  const [uploads] = useContext(UploadStatusContext)
-
   const {isObjectSelector} = props
-
 
   const onNav = (evt) => {
     if (isObjectSelector) {
@@ -106,21 +102,8 @@ const WSSideBar = (props: Props) => {
         })}
       </Menu>
 
+      <UploadStatus />
 
-      <div>
-        {
-          Object.keys(uploads.active)
-            .map(key => {
-              const {name, progress} = uploads.active[key]
-              return (
-                <>
-                  <div>{name}</div>
-                  <div>{progress}%</div>
-                </>
-              )
-            })
-        }
-      </div>
     </SidebarRoot>
   )
 }

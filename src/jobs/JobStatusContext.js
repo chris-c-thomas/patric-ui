@@ -16,7 +16,7 @@ interface State {
 
 const JobStatusContext = createContext([{}])
 
-const JobStatusProvider = (props) => {
+function JobStatusProvider(props) {
   const [state, setState] = useState({
     queued: null,
     inProgress: null,
@@ -31,6 +31,7 @@ const JobStatusProvider = (props) => {
     return () => timer.then(to => clearTimeout(to))
   }, [poll])
 
+
   const poll = useCallback(() => {
     return getStatus().then(status => {
       const queued = status.queued || 0,
@@ -39,12 +40,12 @@ const JobStatusProvider = (props) => {
         failed = status.failed || 0
 
       setState({queued, inProgress, completed, failed})
+
       return setTimeout(() => {
         poll()
       }, TIME_OUT)
     })
   }, [])
-
 
 
   return (

@@ -44,7 +44,6 @@ export default function Workspaces(props: Props) {
 
 
   const updateList = useCallback(() => {
-
     (async function () {
       setRows(null)
       setLoading(true)
@@ -69,7 +68,6 @@ export default function Workspaces(props: Props) {
 
       setLoading(false)
     })()
-
   }, [path])
 
 

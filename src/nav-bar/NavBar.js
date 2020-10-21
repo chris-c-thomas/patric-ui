@@ -25,7 +25,7 @@ import SignInDialog from '../auth/SignInDialog'
 
 import DropdownMenu from './menu'
 
-import { UploadStatusContext } from '../workspaces/UploadStatusContext'
+import { UploadStatusContext } from '../workspaces/upload/UploadStatusContext'
 import { JobStatusContext } from '../jobs/JobStatusContext'
 
 import FancySearch from './FancySearch'

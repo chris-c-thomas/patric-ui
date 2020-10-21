@@ -9,8 +9,8 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 
 
-import Selector from '../apps/components/Selector'
-import SelectedTable from '../apps/components/SelectedTable'
+import Selector from '../../apps/components/Selector'
+import SelectedTable from '../../apps/components/SelectedTable'
 
 import uploadTypes from './uploadTypes'
 import Alert from '@material-ui/lab/Alert'

@@ -12,11 +12,9 @@ import InfoIcon from '@material-ui/icons/InfoOutlined'
 // import NewWSIcon from '../../assets/icons/add-workspace.svg'
 
 import CreateDialog from './CreateDialog'
-import UploadDialog from './UploadDialog'
+import UploadDialog from './upload/UploadDialog'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
-
-import { UploadStatusProvider } from './UploadStatusContext'
 
 
 const Btn = (props) =>
