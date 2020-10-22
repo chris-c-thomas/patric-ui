@@ -31,7 +31,7 @@ class ErrorBoundary extends React.Component<{}, State> {
     if (this.state.hasError) {
       return (
         <Root>
-          <h1>Something went wrong.</h1>
+          <h1>Something went wrong</h1>
           <pre>
             {this.state.error.toString()}
           </pre>
@@ -49,7 +49,7 @@ class ErrorBoundary extends React.Component<{}, State> {
 }
 
 const Root = styled.div`
-  padding: 20px;
+  padding: 50px;
 `
 
 export default ErrorBoundary

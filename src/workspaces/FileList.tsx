@@ -75,7 +75,6 @@ function getIcon({type, isWS, permissions}) {
 
 type Props = {
   rows: object[]
-  fileType?: string
   isJobResult?: boolean
 
   // for object selector
@@ -89,17 +88,12 @@ type Props = {
 export default function FileList(props: Props) {
   const {
     rows,
-    fileType,
     isObjectSelector,
     isJobResult,
     type,
     onSelect,
     onNavigate,
   } = props
-
-  if (fileType) {
-    // pass
-  }
 
 
   // additional conditions for object selector

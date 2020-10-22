@@ -58,15 +58,16 @@ const theme = createMuiTheme({
 const App = () => {
   return (
     <BrowserRouter>
-      <ErrorBoundary>
-        <ThemeProvider theme={theme}>
 
-          <UploadStatusProvider>
-            <JobStatusProvider>
+      <ThemeProvider theme={theme}>
 
-              <NavBar />
+        <UploadStatusProvider>
+          <JobStatusProvider>
 
-              <Root>
+            <NavBar />
+
+            <Root>
+              <ErrorBoundary>
                 <Main>
                   <Suspense fallback={<div>loading...</div>}>
                     <Switch>
@@ -108,12 +109,14 @@ const App = () => {
                     </Switch>
                   </Suspense>
                 </Main>
-              </Root>
-            </JobStatusProvider>
-          </UploadStatusProvider>
+              </ErrorBoundary>
+            </Root>
 
-        </ThemeProvider>
-      </ErrorBoundary>
+          </JobStatusProvider>
+        </UploadStatusProvider>
+
+      </ThemeProvider>
+
     </BrowserRouter>
   )
 }

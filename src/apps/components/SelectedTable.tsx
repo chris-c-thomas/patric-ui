@@ -37,7 +37,7 @@ const noSelection = (emptyNotice, columnCount) => (
 )
 
 const Cell = ({row, col, index, onRemove, ...rest}) => {
-  if (col.type == 'removeButton') {
+  if (col.button == 'removeButton') {
     return (
       <td>
         <RmBtn size="small" onClick={() => onRemove({row, index})}>
@@ -45,7 +45,7 @@ const Cell = ({row, col, index, onRemove, ...rest}) => {
         </RmBtn>
       </td>
     )
-  } else if (col.type == 'infoButton') {
+  } else if (col.button == 'infoButton') {
     return (
       <td>
         <InfoBtn size="small">
@@ -54,7 +54,11 @@ const Cell = ({row, col, index, onRemove, ...rest}) => {
       </td>
     )
   } else {
-    return <td style={{wordBreak: 'break-all', width: rest.width}}>{row[col.id]}</td>
+    return (
+      <td style={{wordBreak: 'break-all', width: rest.width}}>
+        {'format' in col ? col.format(row[col.id], row) : row[col.id]}
+      </td>
+    )
   }
 }
 
@@ -79,13 +83,13 @@ const Rows = ({rows, columns, onRemove }) =>
     </tr>
   )
 
-// todo(nc): button types?
+
 type Column = {
   id?: string
   label?: string | (() => JSX.Element)
   width?: string | number
-  type?: 'removeButton' | 'infoButton' | string
-  format?: (value: any, row: object) => JSX.Element
+  button?: 'removeButton' | 'infoButton' | string
+  format?: (value: any, row: object) => string | JSX.Element
 }
 
 type Props = {
@@ -114,21 +118,25 @@ export default function SelectedTable(props: Props) {
         <thead>
           <tr>
             {/* all <th> elements that are not buttons */
-              columns.filter(col => !('type' in col))
+              columns.filter(col => !('button' in col))
                 .map((col) =>
                   <th key={col.id} style={{width: col.width}}>
                     {typeof col.label == 'function' ? col.label() : col.label}
                   </th>
                 )}
             {/* empty <th> elements for buttons */
-              columns.filter(col => 'type' in col)
+              columns.filter(col => 'button' in col)
                 .map((col) => <th key={col.id} style={{width: 1}}></th>)
             }
           </tr>
         </thead>
         <tbody>
-          {!rows.length && noSelection(emptyNotice, columns ? columns.length + 1 : 2)}
-          {rows.length > 0 && <Rows {...{columns, rows, onRemove}} />}
+          {!rows.length &&
+            noSelection(emptyNotice, columns ? columns.length + 1 : 2)
+          }
+          {rows.length > 0 &&
+            <Rows {...{columns, rows, onRemove}} />
+          }
         </tbody>
       </Table>
     </Root>

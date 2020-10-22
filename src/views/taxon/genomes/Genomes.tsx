@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import React, {useState, useEffect, useContext } from 'react'
 
 import FilterSidebar from '../../FilterSidebar'

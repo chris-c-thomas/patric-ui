@@ -3,26 +3,50 @@ import { getToken } from './auth'
 import { updateAutoMetadata } from './ws-api'
 
 
+interface AbortablePromise<T> extends Promise<T> {
+  abort: () => void;
+}
 
-export function uploadFile(file, url, path, onStart, onProgress, onComplete) {
+
+export type UploadStatus = {
+  fullPath: string
+  path: string
+  name: string
+  size?: number
+  progress?: number
+}
+
+
+
+export function uploadFile(
+  file,
+  url: string,
+  path: string,
+  onStart?: (status: UploadStatus) => void,
+  onProgress?: (status: UploadStatus) => void,
+  onComplete?: (status: UploadStatus) => void
+) : AbortablePromise<any> {
   const {name, size} = file
+  const fullPath = `${path}/${name}`
 
-  return new Promise((resolve, reject) => {
-    var fd = new FormData()
-    fd.append('upload', file)
+  const xhr = new XMLHttpRequest()
+  let fd = new FormData()
+  fd.append('upload', file)
 
-    var req = new XMLHttpRequest()
+  const promise = new Promise((resolve, reject) => {
+    xhr.upload.addEventListener('progress', (evt) => {
+      if (!onProgress) return
 
-    req.upload.addEventListener('progress', (evt) => {
       onProgress({
+        fullPath,
+        path,
         name,
         progress: parseInt((evt.loaded / evt.total) * 100),
-        url,
-        path
+        size
       })
     })
 
-    req.upload.addEventListener('load', (data) => {
+    xhr.upload.addEventListener('load', (data) => {
       let p = path
       if (p.charAt(p.length - 1) != '/') {
         p += '/'
@@ -30,31 +54,37 @@ export function uploadFile(file, url, path, onStart, onProgress, onComplete) {
       p += file.name
 
       updateAutoMetadata([p]).then(() => {
-        onComplete({
-          name,
-          size,
-          url,
-          path
-        })
+        if (!onComplete) return
 
+        onComplete({
+          fullPath,
+          path,
+          name,
+          size
+        })
         resolve(data)
       })
     })
 
-    req.upload.addEventListener('error', (error) => {
-      reject(error)
-    })
+    xhr.upload.addEventListener('error', (error) => reject(error))
 
-    req.open('PUT', url, true)
-    req.setRequestHeader( 'Authorization', 'OAuth ' + getToken())
+    xhr.open('PUT', url, true)
+    xhr.setRequestHeader( 'Authorization', 'OAuth ' + getToken())
+    xhr.send(fd)
 
-    onStart({
-      name,
-      size,
-      url,
-      path
-    })
+    if (!onStart) {
+      return
+    }
 
-    req.send(fd)
+    onStart({fullPath, path, name, size})
+
   })
+
+  // add promise cancel (not currently available on promises)
+  const abort = () => {
+    xhr.abort()
+  }
+  const abortablePromise = Object.assign(promise, { abort })
+
+  return abortablePromise
 }

@@ -62,9 +62,9 @@ const columns = [{
     </div>,
   format: (_, row) => <span>{row.reads}</span>
 }, {
-  type: 'infoButton'
+  button: 'infoButton'
 }, {
-  type: 'removeButton'
+  button: 'removeButton'
 }]
 
 // todo(nc): define reads

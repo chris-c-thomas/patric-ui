@@ -91,7 +91,10 @@ export default function Actions(props: Props) {
           {open &&
             <ConfirmDialog
               title="Are you sure?"
-              content={`Are you sure you want to delete ${selected[0].name}?`}
+              content={<>
+                Are you sure you want to delete{' '}
+                <b>{selected.length > 1 ? `${selected.length} items` : selected[0].name}</b>?
+              </>}
               loadingText="Deleting..."
               onConfirm={handleDelete}
               onClose={() => setOpen(false)}

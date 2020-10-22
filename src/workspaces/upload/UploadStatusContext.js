@@ -9,47 +9,62 @@ const UploadStatusContext = createContext([{}])
 
 function UploadStatusProvider(props) {
   const [active, setActive] = useState({})
+  const [complete, setComplete] = useState({})
   const [progress, setProgress] = useState(0)
+
+  const [promiseMapping, setPromiseMapping] = useState({})
 
 
   // whenever active changes, update total progress
   useEffect(() => {
-    const names = Object.keys(active)
+    const paths = Object.keys(active)
 
     // if no uploads, nothing to do
-    if (!names.length) return
+    if (!paths.length) return
 
-    const sum = names.reduce((acc, name) =>
-      acc + (active[name].progress || 0)
+    const sum = paths.reduce((acc, path) =>
+      acc + (active[path].progress || 0)
     , 0)
 
-    setProgress(`${parseInt(sum / names.length)}%`)
+    setProgress(`${parseInt(sum / paths.length)}%`)
   }, [active])
+
+
+  const onStart = (obj) => {
+    const {fullPath} = obj
+    setActive(prev => ({...prev, [fullPath]: obj}))
+  }
+
+
+  const onProgress = (obj) => {
+    const {fullPath} = obj
+    setActive(prev => ({...prev, [fullPath]: obj}))
+  }
+
+
+  const onComplete = (obj) => {
+    const {fullPath} = obj
+
+    setActive(prev => {
+      delete prev[fullPath]
+      return prev
+    })
+
+    setComplete(prev => ({...prev, [fullPath]: obj}))
+  }
 
 
   const upload = (meta, file, path) => {
 
-    // create node
+    // first create node
     create(meta, true, false).then((obj) => {
       let url = obj.linkRef
 
-      // start upload
-      uploadFile(file, url, path, (obj) => {
-        // onStarted
-        const {name} = obj
-        setActive(prev => ({...prev, [name]: obj}))
-      }, (obj) => {
-        // progress
-        const {name} = obj
-        setActive(prev => ({...prev, [name]: obj}))
-      }, (obj) => {
-        // completed
-        const {name} = obj
-        setActive(prev => {
-          delete prev[name]
-          return prev
-        })
-      })
+      // then start upload
+      const prom = uploadFile(file, url, path, onStart, onProgress, onComplete)
+
+      // store promise for cancellation
+      setPromiseMapping(prev => ({...prev, [`${path}/${file.name}`]: prom}))
 
     }).catch((err) => {
       // todo(nc): implemnt overwrite
@@ -74,8 +89,38 @@ function UploadStatusProvider(props) {
   }
 
 
+  const cancelUpload = (path) => {
+    promiseMapping[path].abort()
+    setActive(prev => {
+      delete prev[path]
+      return prev
+    })
+  }
+
+  const removeUpload = (path) => {
+    setComplete(prev => {
+      delete prev[path]
+      return prev
+    })
+  }
+
+
+
+
+  const cancelAll = () => {
+    for (const path in Object.keys(promiseMapping)) {
+      console.log('path')
+      promiseMapping[path].abort()
+    }
+
+    setActive({})
+  }
+
+
   return (
-    <UploadStatusContext.Provider value={[{progress, active}, uploadFiles]}>
+    <UploadStatusContext.Provider value={[
+      {progress, active, complete, cancelUpload, removeUpload, cancelAll}, uploadFiles
+    ]}>
       {props.children}
     </UploadStatusContext.Provider>
   )

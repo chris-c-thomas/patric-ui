@@ -118,6 +118,8 @@ const SidebarRoot = styled.div`
   .MuiTab-wrapper {
     display: inline-block;
   }
+
+  overflow-y: scroll;
 `
 
 const Title = styled.div`

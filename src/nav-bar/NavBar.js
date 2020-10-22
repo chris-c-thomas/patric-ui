@@ -147,8 +147,6 @@ const PatricMenus = () => {
   const [uploads] = useContext(UploadStatusContext)
   const [jobs] = useContext(JobStatusContext)
 
-  console.log('uploads', uploads)
-
   return (
     <>
       {/*
@@ -196,17 +194,16 @@ const PatricMenus = () => {
         </DropDown>
       }/>
 
-      <BadgeCount badgeContent={uploads.progress} max={999}>
-        <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
-          Workspaces
-        </Button>
-      </BadgeCount>
+      <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
+        Workspaces
+        <BadgeCount badgeContent={uploads.progress} max={999} />
+      </Button>
 
-      <BadgeCount badgeContent={jobs.queued + jobs.inProgress} max={999}>
-        <Button component={Link} to="/jobs" disableRipple>
-          Job Status
-        </Button>
-      </BadgeCount>
+      <Button component={Link} to="/jobs" disableRipple>
+        Job Status
+        <BadgeCount badgeContent={jobs.queued + jobs.inProgress} max={999} />
+      </Button>
+
     </>
   )
 }
@@ -233,11 +230,7 @@ const MenuSection = styled.div`
 
 const BadgeCount = styled(Badge)`
   .MuiBadge-badge {
-    font-size: 9px;
-    height: 18px;
-    right: 10;
-    top: 10;
-    border: 2px solid #2e75a3;
+    top: -11;
     padding: 0 4px;
     background-color: #de9302;
   }

@@ -7,13 +7,14 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
+import Alert from '@material-ui/lab/Alert'
 
 
 import Selector from '../../apps/components/Selector'
 import SelectedTable from '../../apps/components/SelectedTable'
 
 import uploadTypes from './uploadTypes'
-import Alert from '@material-ui/lab/Alert'
+import { bytesToSize } from '../../utils/units'
 
 import { UploadStatusContext } from './UploadStatusContext'
 
@@ -151,10 +152,10 @@ export default function UploadDialog(props: Props) {
           <Section>
             <SelectedTable
               columns={[
-                {id: 'name', label: 'File', width: '70%'},
+                {id: 'name', label: 'File', width: '50%'},
                 {id: 'fileType', label: 'Type'},
-                {id: 'size', label: 'Size'},
-                {type: 'removeButton'}
+                {id: 'size', label: 'Size', format: val => bytesToSize(val)},
+                {button: 'removeButton'}
               ]}
               rows={files}
               onRemove={onRemove}

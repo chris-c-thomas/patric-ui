@@ -125,7 +125,6 @@ export default function Workspaces(props: Props) {
               onSelect={handleSelect}
               onNavigate={onNavigate}
               isObjectSelector={isObjectSelector}
-              fileType={fileType}
             /> :
             <GenericViewer path={path} />
           }
