@@ -64,7 +64,6 @@ export default function ObjectSelector(props: Props) {
         setError(err)
       }
 
-      console.log('data', data)
       setOptions(data)
       setLoading(false)
     })()
@@ -72,7 +71,6 @@ export default function ObjectSelector(props: Props) {
 
 
   const handleOnChange = (evt, value) => {
-    console.log('changing id', value)
     onChange(value ? value : null)
   }
 

@@ -61,8 +61,9 @@ export default function AppHeader(props: Props) {
 }
 
 
-const AppDescription = styled.span`
-  font-size: .9em;
+const AppDescription = styled.p`
+  font-size: 1em;
+  margin-bottom: 0;
 `
 
 const SampleData = styled.div`

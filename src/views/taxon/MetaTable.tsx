@@ -8,7 +8,7 @@ import {getTaxon} from '../../api/data-api'
 import { getGenomeMeta }  from '../../api/data-api'
 import genomeIcon from '../../../assets/icons/genome.svg'
 
-import columns from './genomes/columns'
+import columns from './genomes/genomeColumns'
 
 let metaSpec = {
   'Organism Info':  [

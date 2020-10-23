@@ -1,7 +1,7 @@
 
 
 import React, {lazy, Suspense} from 'react'
-import { BrowserRouter, Switch, Route} from 'react-router-dom'
+import { BrowserRouter, Switch, Route, useParams} from 'react-router-dom'
 import { render } from 'react-dom'
 import styled from 'styled-components'
 
@@ -23,6 +23,8 @@ import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
 import JobResult from './workspaces/JobResult'
 import SUSignIn from './auth/SuSignIn'
+
+import Progress from './utils/ui/Progress'
 import NotFound404 from './404'
 import ErrorBoundary from './ErrorBoundary'
 
@@ -56,6 +58,7 @@ const theme = createMuiTheme({
 
 
 const App = () => {
+
   return (
     <BrowserRouter>
 
@@ -69,22 +72,16 @@ const App = () => {
             <Root>
               <ErrorBoundary>
                 <Main>
-                  <Suspense fallback={<div>loading...</div>}>
+                  <Suspense fallback={<Progress />}>
                     <Switch>
                       <Route path="/" exact component={Home} />
                       <Route path="/search/" component={GlobalSearch} />
                       <Route path="/my-profile" exact component={Account} />
 
-                      <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly'))} />
-                      <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
-                      <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
-                      <Route path="/apps/blast" exact component={lazy(() => import('./apps/Blast'))} />
-                      <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />
-
+                      {/* workspac / job routes */}
                       <Route path="/jobs*" render={() =>
                         isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" />}
                       />
-
                       <Route path="/files/:path*" exact render={() =>
                         isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
                       />
@@ -92,7 +89,7 @@ const App = () => {
                         isSignedIn() ? <JobResult/> : <SignIn title="Please sign in to use Workspaces" />}
                       />
 
-
+                      {/* views */}
                       <Route path="/taxonomy/:taxonID/:view" exact render={() =>
                         <TaxonTabs />
                       } />
@@ -102,6 +99,14 @@ const App = () => {
                       <Route path="/hosts/:taxonID/:view" render={() =>
                         <HostTabs />
                       } />
+
+                      {/* service routes */}
+                      <Route path={'/apps/Assembly2'} exact component={lazy(() => import('./apps/Assembly2'))} />
+                      <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
+                      <Route path="/apps/ComprehensiveGenomeAnalysis" exact component={lazy(() => import('./apps/ComprehensiveGenomeAnalysis'))} />
+                      <Route path="/apps/Blast" exact component={lazy(() => import('./apps/Blast'))} />
+                      <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />
+                      <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
 
                       <Route path="/susignin" exact component={SUSignIn} />
                       <Route path="*" component={NotFound404} />

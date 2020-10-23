@@ -110,12 +110,16 @@ const allOrganisms = [
 ]
 
 
-const services = [
+const bacteriaServices = [
   {label: 'Assembly', url: '/apps/Assembly2'},
   {label: 'Annotation', url: '/apps/Annotation'},
-  {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/ComprehensiveSARS2Analysis'},
+  {label: 'Comprehensive Genome Analysis', url: '/apps/ComprehensiveGenomeAnalysis'},
   // {label: 'GenomeAlignment', url: '/apps/GenomeAlignment'},
   // {label: 'BLAST', url: '/apps/blast'},
+]
+
+const viralServices = [
+  {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/ComprehensiveSARS2Analysis'}
 ]
 
 const getMiddle = data => Math.round(data.length / 2)
@@ -188,15 +192,21 @@ const PatricMenus = () => {
       <DropdownMenu label="Services" menu={
         <DropDown>
           <MenuSection>
-            <MenuTitle>Genomics</MenuTitle>
-            <ServicesColumn data={services} />
+            <MenuTitle>Bacterial Genomics</MenuTitle>
+            <ServicesColumn data={bacteriaServices} />
+
+            <MenuTitle>Viral</MenuTitle>
+            <ServicesColumn data={viralServices} />
           </MenuSection>
         </DropDown>
       }/>
 
       <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
         Workspaces
-        <BadgeCount badgeContent={uploads.progress} max={999} />
+        <BadgeCount
+          badgeContent={uploads.progress}
+          invisible={uploads.progress == 0 || uploads.progress == '100%'}
+        />
       </Button>
 
       <Button component={Link} to="/jobs" disableRipple>

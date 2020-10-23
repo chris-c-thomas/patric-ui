@@ -12,7 +12,7 @@ import MetaSidebar from '../MetaSidebar'
 
 import useLocalStorage from '../../../hooks/useLocalStorage'
 
-import columns from './columns'
+import columns from './genomeColumns'
 
 const core = 'genome'
 

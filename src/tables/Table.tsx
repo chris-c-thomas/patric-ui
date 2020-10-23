@@ -30,6 +30,7 @@ import downloadIcon from '../../assets/icons/download.svg'
 import selectedReducer from './selectedReducer'
 
 import useClickOutside from '../hooks/useClickOutside'
+import { RowingRounded } from '@material-ui/icons'
 
 /*
 const exampleColumns = [
@@ -329,6 +330,15 @@ type Props = {
 }
 
 
+type Row = {
+  rowID: number
+}
+
+type Rows = Row[]
+
+
+
+
 
 export default function TableComponent(props: Props) {
   const {
@@ -345,7 +355,7 @@ export default function TableComponent(props: Props) {
 
   const tableRef = useRef(null)
 
-  const [rows, setRows] = useState(props.rows.map((row, i) => ({...row, rowID: i})))
+  const [rows, setRows] = useState<Rows>(props.rows.map((row, i) => ({...row, rowID: i})))
   const [columns, setColumns] = useState(getVisibleColumns(props.columns))
   const [page, setPage] = useState(Number(props.page))
   const [sortBy, setSortBy] = useState((props.sort && parseSort(props.sort)) || {})

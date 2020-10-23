@@ -109,7 +109,6 @@ function UploadStatusProvider(props) {
 
   const cancelAll = () => {
     for (const path in Object.keys(promiseMapping)) {
-      console.log('path')
       promiseMapping[path].abort()
     }
 
