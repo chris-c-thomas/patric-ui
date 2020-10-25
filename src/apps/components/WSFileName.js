@@ -7,6 +7,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import InputBase from '@material-ui/core/InputBase'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
+// import TextField from '@material-ui/core/TextField'
 
 
 const CustomInput = withStyles((theme) => ({
@@ -94,6 +95,12 @@ export default function WSFileName(props) {
         value={val}
         onChange={handleChange}
         placeholder={placeholder}
+        /*
+        label={label}
+        InputLabelProps={{shrink: true}}
+        variant="outlined"
+        margin="dense"
+        */
         {...(adornment ? inputProps : {})}
         {...(noLabel ? {style: {margin: 0}} : {})}
         {...(style ? {style} : {})}

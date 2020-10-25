@@ -9,44 +9,18 @@
 import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 
-import Button from '@material-ui/core/Button'
 import Tooltip from '@material-ui/core/Tooltip'
-import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
 
 import ObjectSelector from './object-selector/ObjectSelector'
 import SelectedTable from './SelectedTable'
 import TextInput from './TextInput'
 
+import AddButton from '../common/AddButton'
 
 import { parsePath } from '../../utils/paths'
 import {validateSRR} from '../../api/ncbi-eutils'
 
-
-const AddBtn = ({onAdd, disabled = false, ...rest}) =>
-  <Tooltip
-    title={<>{disabled ? 'First, select some read files' : 'Add item to selected libraries'}</>}
-    placement="top"
-  >
-    <span>
-      <AddItemBtn
-        aria-label="add item"
-        onClick={onAdd}
-        disabled={disabled}
-        color="primary"
-        endIcon={<AddIcon />}
-        disableRipple
-        {...rest}
-      >
-        Add
-      </AddItemBtn>
-    </span>
-  </Tooltip>
-
-
-const AddItemBtn = styled(Button)`
-
-`
 
 const columns = [{
   id: 'label',
@@ -59,8 +33,7 @@ const columns = [{
       >
         <HelpIcon color="primary" className="hover" style={{fontSize: '1.2em'}}/>
       </Tooltip>
-    </div>,
-  format: (_, row) => <span>{row.reads}</span>
+    </div>
 }, {
   button: 'infoButton'
 }, {
@@ -79,7 +52,7 @@ type Props = {
 export default function ReadSelector(props: Props) {
   const { onChange, advancedOptions} = props
 
-  const didMountdRef = useRef()
+  const ref = useRef()
 
   // currently selected path (for single reads)
   const [path, setPath] = useState(null)
@@ -105,11 +78,6 @@ export default function ReadSelector(props: Props) {
 
 
   useEffect(() => {
-    /*if (!didMountdRef.current) {
-      didMountdRef.current = true]
-      return
-    }*/
-
     setReads(props.reads)
   }, [props.reads])
 
@@ -189,7 +157,7 @@ export default function ReadSelector(props: Props) {
             </Title>
             <Row>
               <ObjectSelector
-                label=" "
+                // noLabel
                 value={path1}
                 onChange={val => setPath1(val)}
                 type="reads"
@@ -199,7 +167,7 @@ export default function ReadSelector(props: Props) {
             </Row>
             <Row>
               <ObjectSelector
-                label=" "
+                // noLabel
                 value={path2}
                 onChange={val => setPath2(val)}
                 type="reads"
@@ -212,7 +180,7 @@ export default function ReadSelector(props: Props) {
 
           {path1 && path2 &&
             <div className="align-self-center" >
-              <AddBtn onAdd={() => onAdd('paired')}/>
+              <AddButton onAdd={() => onAdd('paired')}/>
             </div>
           }
         </Row>
@@ -224,7 +192,7 @@ export default function ReadSelector(props: Props) {
             </Title>
             <Row>
               <ObjectSelector
-                label=" "
+                // noLabel
                 value={path}
                 onChange={val => setPath(val)}
                 type="reads"
@@ -234,7 +202,7 @@ export default function ReadSelector(props: Props) {
 
               {path &&
                 <div className="align-self-center" >
-                  <AddBtn onAdd={() => onAdd('single')} />
+                  <AddButton onAdd={() => onAdd('single')} />
                 </div>
               }
             </Row>
@@ -259,7 +227,7 @@ export default function ReadSelector(props: Props) {
 
               {sraID &&
                 <div className="align-self-center">
-                  <AddBtn onAdd={() => onAddSRA('sra')} />
+                  <AddButton onAdd={() => onAddSRA('sra')} />
                 </div>
               }
             </Row>

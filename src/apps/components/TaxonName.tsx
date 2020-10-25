@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import InputLabel from '@material-ui/core/InputLabel'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import Tooltip from '@material-ui/core/Tooltip'
-import HelpIcon from '@material-ui/icons/HelpOutline'
+import HelpIcon from '@material-ui/icons/InfoOutlined'
 import highlightText from '../../utils/text'
 
 import { queryTaxon } from '../../api/data-api'
@@ -73,7 +73,7 @@ export default function ObjectSelector(props: Props) {
 
 
   return (
-    <div>
+    <div style={{position: 'relative'}}>
       <InputLabel shrink htmlFor="taxon-name">
           Taxonomy Name{' '}
         <Tooltip
@@ -83,6 +83,15 @@ export default function ObjectSelector(props: Props) {
           <HelpIcon color="primary" className="hover" fontSize="small"/>
         </Tooltip>
       </InputLabel>
+
+      {/*
+      <Tooltip
+        title="Taxon must be specified at genus level or below to get the latest protein family predictions"
+        placement="right"
+      >
+        <HelpIcon color="primary" className="hover" style={{position: 'absolute', right: 20, top: -20, fontSize: 16}} />
+      </Tooltip>
+      */}
 
       <Autocomplete
         autoComplete
@@ -98,6 +107,8 @@ export default function ObjectSelector(props: Props) {
             onChange={(evt) => setQuery(evt.target.value)}
             size="small"
             variant="outlined"
+            /* label="Taxonomy Name"
+            InputLabelProps={{shrink: true}}*/
             InputProps={{
               ...params.InputProps,
               endAdornment: (

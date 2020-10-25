@@ -6,6 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import Select from '@material-ui/core/Select'
 import TextInputCustom from './TextInputCustom'
+// import TextField from '@material-ui/core/TextField'
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -31,16 +32,25 @@ export default function Selector(props) {
     if (props.onChange) props.onChange(val)
   }
 
+
   return (
     <FormControl className={classes.margin}>
-      <InputLabel id="custom-select">{label}</InputLabel>
+      <InputLabel id="custom-select">
+        {label}
+      </InputLabel>
       <Select
         labelId="custom-select"
         size="small"
         value={val}
         style={{minWidth: width}}
         onChange={handleChange}
-        input={<TextInputCustom name={label} id={label} size="small"/>}
+        /*
+        label={label}
+        variant="outlined"
+        margin="dense"
+        InputLabelProps={{shrink: true}}
+        */
+        input={<TextInputCustom  name={label} id={label} size="small"/>}
       >
         {
           options.map((obj, i) => <MenuItem key={i} value={obj.value}>{obj.label}</MenuItem>)

@@ -30,22 +30,45 @@ const tutorialURL = `${config.docsURL}/tutorial/comprehensive-genome-analysis/co
 
 
 const example = {
+  genome_size: 5000000,
+  debug_level: 0,
+  pilon_iter: 2,
+  min_contig_cov: 5,
+  domain: 'Bacteria',
   input_type: 'reads',
-  skip_indexing: true,
+  paired_end_libs: [],
+  code: '11',
+  min_contig_len: 300,
   reads: [{ // not sent to server
     type: 'srr_ids',
-    label: 'ERR4208068',
-    value: 'ERR4208068'
+    label: 'SRR1955831',
+    value: 'SRR1955831'
+  }, {
+    type: 'srr_ids',
+    label: 'SRR1955832',
+    value: 'SRR1955832'
+  } ,
+  {
+    type: 'srr_ids',
+    label: 'SRR1955833',
+    value: 'SRR1955833'
   }],
-  srr_ids: ['ERR4208068'],
-  recipe: 'auto',
+  srr_ids: [
+    'SRR1955831',
+    'SRR1955832',
+    'SRR1955833'
+  ],
   trim: 'false',
-  domain: 'Bacteria',
-  code: 11,
-  scientific_name: 'Severe acute respiratory syndrome coronavirus 2',
-  taxonomy_id: '2697049',
+  skip_indexing: '0',
+  taxonomy_id: '1280',
+  scientific_name: 'Staphylococcus aureus SRR1955831_SRR1955832_SRR1955833',
+  racon_iter: 2,
+  recipe: 'unicycler',
   output_path: `/${getUser(true)}/home`,
   my_label: 'CGA example',
+
+  // output_file: will end up being `${scientific_name} ${my_label}`
+  // scientific_name: will end up being `${scientific_name} ${my_label}`
 }
 
 

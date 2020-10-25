@@ -109,6 +109,7 @@ export default function SelectedTable(props: Props) {
   const [columns] = useState(props.columns || [])
 
   useEffect(() => {
+    console.log('setting rows', props.rows)
     setRows(props.rows)
   }, [props.rows])
 

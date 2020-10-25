@@ -167,7 +167,7 @@ export default function Assembly() {
 
       <Step number="3" label="Select Output" completed={!!form.output_path && !!form.output_file} />
 
-      <Section column>
+      <Section column padRows>
         <Row>
           <ObjectSelector
             value={form.output_path}
@@ -179,13 +179,15 @@ export default function Assembly() {
           />
         </Row>
 
-        <WSFileName
-          value={form.output_file}
-          onChange={val => dispatch({field: 'output_file', val})}
-          label="Output Name"
-          placeholder="Output name"
-          width="200px"
-        />
+        <Row>
+          <WSFileName
+            value={form.output_file}
+            onChange={val => dispatch({field: 'output_file', val})}
+            label="Output Name"
+            placeholder="Output name"
+            width="200px"
+          />
+        </Row>
       </Section>
 
       <SubmitBtns

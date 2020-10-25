@@ -96,6 +96,10 @@ export default function ObjectSelector(props: Props) {
             onChange={(evt) => setQuery(evt.target.value)}
             size="small"
             variant="outlined"
+            /*
+            label="Taxonomy ID"
+            InputLabelProps={{shrink: true}}
+            */
             InputProps={{
               ...params.InputProps,
               endAdornment: (

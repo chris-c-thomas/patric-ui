@@ -39,8 +39,8 @@ const formatOptionLabel = (option, query: string) => {
 type Props = {
   includeHidden?: boolean
   dialogTitle: string | JSX.Element
-  label: string
   value: string // workspace path in this case
+  label?: string
   type?: string
   placeholder?: string
   onChange: (object: WSObject) => void
@@ -125,6 +125,10 @@ export default function ObjectSelector(props: Props) {
               onChange={(evt) => setQuery(evt.target.value)}
               size="small"
               variant="outlined"
+              /*
+              label={label || ''}
+              InputLabelProps={{shrink: true}}
+              */
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
@@ -138,7 +142,6 @@ export default function ObjectSelector(props: Props) {
             />
           )}
           renderOption={(option) => formatOptionLabel(option, query)}
-
         />
 
         {error &&

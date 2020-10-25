@@ -114,6 +114,7 @@ const bacteriaServices = [
   {label: 'Assembly', url: '/apps/Assembly2'},
   {label: 'Annotation', url: '/apps/Annotation'},
   {label: 'Comprehensive Genome Analysis', url: '/apps/ComprehensiveGenomeAnalysis'},
+  {label: 'Phylogentic Tree', url: '/apps/PhylogenticTree'},
   // {label: 'GenomeAlignment', url: '/apps/GenomeAlignment'},
   // {label: 'BLAST', url: '/apps/blast'},
 ]
@@ -194,8 +195,9 @@ const PatricMenus = () => {
           <MenuSection>
             <MenuTitle>Bacterial Genomics</MenuTitle>
             <ServicesColumn data={bacteriaServices} />
-
-            <MenuTitle>Viral</MenuTitle>
+          </MenuSection>
+          <MenuSection>
+            <MenuTitle>Viral Genomics</MenuTitle>
             <ServicesColumn data={viralServices} />
           </MenuSection>
         </DropDown>

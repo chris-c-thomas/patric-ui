@@ -19,6 +19,12 @@ const Row = styled.div`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+
+  /* pad all <Row> components if "padRows" */
+  > div {
+    ${props => props.padRows &&
+      'margin-bottom: 10px;'}
+  }
 `
 
 const Section = styled.div`
