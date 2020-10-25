@@ -1,4 +1,4 @@
-import React, {useState, useContext, ChangeEvent} from 'react'
+import React, {useState, useContext} from 'react'
 import styled from 'styled-components'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
@@ -10,6 +10,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import Alert from '@material-ui/lab/Alert'
 
 
+import FileDrop from './FileDrop'
 import Selector from '../../apps/components/Selector'
 import SelectedTable from '../../apps/components/SelectedTable'
 
@@ -48,9 +49,25 @@ export default function UploadDialog(props: Props) {
   const [info, setInfo] = useState(null)
   const [acceptType, setAcceptType] = useState(null)
 
+  const [fileMetas, setFileMetas] = useState([])
   const [fileObjs, setFileObjs] = useState(null)
-  const [files, setFiles] = useState([])
 
+
+  const updateFiles = (fileObjects) => {
+    const names = fileMetas.map(f => f.name)
+    fileObjects = fileObjects.filter(f => !names.includes(f.name))
+
+    // store file objects
+    setFileObjs(prev => Object.assign({}, prev, fileObjects))
+
+    // add fileType
+    const staged = Array.from(fileObjects).map(file => {
+      const {name, size} = file
+      return {name, size, fileType}
+    })
+
+    setFileMetas(prev => [...prev, ...staged])
+  }
 
   const handleTypeChange = (val) => {
     setFileType(val)
@@ -64,37 +81,25 @@ export default function UploadDialog(props: Props) {
     }
   }
 
-  const handleFileSelect = (evt: ChangeEvent<HTMLInputElement>) => {
-    // store file objects
-    setFileObjs(evt.target.files)
-
-    // add fileType to each file object
-    const staged = Array.from(evt.target.files).map(file => {
-      const {name, size} = file
-      return {name, size, fileType}
-    })
-
-    setFiles(staged)
-  }
-
-
   const onRemove = ({index}) => {
-    setFiles(prev => prev.filter((_, i) => i != index))
+    setFileMetas(prev => prev.filter((_, i) => i != index))
   }
 
 
   const onSubmit = (evt) => {
     evt.preventDefault()
 
-    const fileMetas = files.map(file => ({
+    const files = fileMetas.map(file => ({
       path,
       name: file.name,
       type: file.fileType
     }))
 
-    uploadFiles(fileMetas, fileObjs, path)
+    uploadFiles(files, fileObjs, path)
     onClose()
   }
+
+
 
   return (
     <Dialog open onClose={onClose} aria-labelledby="form-dialog-title" fullWidth maxWidth="sm">
@@ -116,10 +121,10 @@ export default function UploadDialog(props: Props) {
           <Section className="flex align-items-end pad">
             <div>
               <Selector
-                label="File type"
+                label="Upload Type"
                 width="200px"
                 value={fileType}
-                onChange={val => handleTypeChange(val)}
+                onChange={handleTypeChange}
                 options={getKnownTypes()}
               />
             </div>
@@ -134,19 +139,21 @@ export default function UploadDialog(props: Props) {
           </Section>
 
           <Section>
-            <input
-              accept={acceptType}
-              id="upload-files-button"
-              multiple
-              type="file"
-              style={{display: 'none'}}
-              onChange={handleFileSelect}
-            />
-            <label htmlFor="upload-files-button">
-              <Button variant="contained" color="primary" component="span" disableRipple>
-                Select files
-              </Button>
-            </label>
+            <FileDrop onDrop={updateFiles}>
+              <input
+                accept={acceptType}
+                id="upload-files-button"
+                multiple
+                type="file"
+                style={{display: 'none'}}
+                onChange={evt => updateFiles(evt.target.files)}
+              />
+              <label htmlFor="upload-files-button">
+                <Button variant="contained" color="primary" component="span" disableRipple>
+                  Select files
+                </Button>
+              </label>
+            </FileDrop>
           </Section>
 
           <Section>
@@ -157,8 +164,9 @@ export default function UploadDialog(props: Props) {
                 {id: 'size', label: 'Size', format: val => bytesToSize(val)},
                 {button: 'removeButton'}
               ]}
-              rows={files}
+              rows={fileMetas}
               onRemove={onRemove}
+              emptyNotice="No files currently selected"
             />
           </Section>
 
@@ -173,7 +181,7 @@ export default function UploadDialog(props: Props) {
             type="submit"
             color="primary"
             variant="contained"
-            disabled={!files.length}
+            disabled={!fileMetas.length}
           >
             Start upload
           </Button>
@@ -186,7 +194,7 @@ export default function UploadDialog(props: Props) {
 
 
 const Section = styled.div`
-  margin: 0 0 40px 0;
+  margin: 0 0 20px 0;
 
   &.pad .MuiInputBase-root  {
     margin-right: 10px;

@@ -27,12 +27,6 @@ const uploads = {
       path: '/file/path2/',
       name: 'foo bar 1234',
       progress: 20
-    },
-    '/file/path4/upload4': {
-      fullPath: '/file/path4/upload4',
-      path: '/file/path4/',
-      name: 'foo bar abc',
-      progress: 65
     }
   },
   complete: {

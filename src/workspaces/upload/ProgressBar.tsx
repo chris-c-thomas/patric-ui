@@ -3,14 +3,10 @@ import React from 'react'
 import styled from 'styled-components'
 
 
-
-
-
 type Props = {
   value: number
   showValue?: boolean
 }
-
 
 const ProgressBar = (props: Props) => {
   const {value, showValue} = props
@@ -51,7 +47,6 @@ const Bar = styled.div`
 
 const Value = styled.div`
 `
-
 
 
 export default ProgressBar

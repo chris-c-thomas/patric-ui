@@ -41,8 +41,8 @@ export function uploadFile(
         fullPath,
         path,
         name,
-        progress: parseInt((evt.loaded / evt.total) * 100),
-        size
+        size,
+        progress: parseInt((evt.loaded / evt.total) * 100)
       })
     })
 
@@ -60,7 +60,8 @@ export function uploadFile(
           fullPath,
           path,
           name,
-          size
+          size,
+          progress: 100
         })
         resolve(data)
       })
