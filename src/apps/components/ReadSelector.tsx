@@ -6,20 +6,20 @@
  *  - provide onAdd/onRemove methods?
  */
 
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
-
-import Tooltip from '@material-ui/core/Tooltip'
-import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
-
-import ObjectSelector from './object-selector/ObjectSelector'
-import SelectedTable from './SelectedTable'
-import TextInput from './TextInput'
-
-import AddButton from '../common/AddButton'
 
 import { parsePath } from '../../utils/paths'
 import {validateSRR} from '../../api/ncbi-eutils'
+import ObjectSelector from './object-selector/ObjectSelector'
+import SelectedTable from './SelectedTable'
+import TextInput from './TextInput'
+import AddButton from '../common/AddButton'
+
+import Tooltip from '@material-ui/core/Tooltip'
+import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
+import FormHelperText from '@material-ui/core/FormHelperText'
+
 
 
 const columns = [{
@@ -51,8 +51,6 @@ type Props = {
 
 export default function ReadSelector(props: Props) {
   const { onChange, advancedOptions} = props
-
-  const ref = useRef()
 
   // currently selected path (for single reads)
   const [path, setPath] = useState(null)
@@ -175,10 +173,14 @@ export default function ReadSelector(props: Props) {
                 placeholder="Read file 2"
               />
             </Row>
-
+            {path1 && path2 && path1 == path2 &&
+              <FormHelperText error>
+                Paired-end read files can not be the same
+              </FormHelperText>
+            }
           </Column>
 
-          {path1 && path2 &&
+          {path1 && path2 && path1 !== path2 &&
             <div className="align-self-center" >
               <AddButton onAdd={() => onAdd('paired')}/>
             </div>
