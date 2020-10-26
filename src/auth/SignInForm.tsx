@@ -6,7 +6,6 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import DialogActions from '@material-ui/core/DialogActions'
 import LockIcon from '@material-ui/icons/LockOutlined'
 import { Step, StepIcon, StepLabel } from '@material-ui/core'
 

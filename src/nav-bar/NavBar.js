@@ -103,7 +103,7 @@ const viruses = [
 ]
 
 const allOrganisms = [
-  {label: 'All Bacteria', taxon: 1},
+  {label: 'All Bacteria', taxon: 2},
   {label: 'All Phages', taxon: 10239},
   {label: 'All Archea', taxon: 2157},
   {label: 'Eukaryotic Hosts', taxon: 2759},
