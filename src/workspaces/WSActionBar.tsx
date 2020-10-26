@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, MouseEvent} from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -9,19 +9,65 @@ import Actions from './WSActions'
 import { WSObject } from '../api/workspace.d'
 
 
+const Breadcrumbs = (props) => {
+  const {topLevel, parts, currentLevel, onNavigate} = props
+  return (
+    <div>
+      {' / '}
+      <Link
+        to={`/files/${topLevel}`}
+        onClick={(evt) => onNavigate(evt, `/${topLevel}`)}>
+        {topLevel.split('@')[0]}
+      </Link>
+      {' / '}
+      {
+        parts.slice(1).map((name, i) => {
+          const userPath = parts.slice(1, i-1).join('/')
+          const path = `/files/${topLevel}/${userPath}`
+
+          return (
+            <span key={i}>
+              {i == currentLevel - 1 ?
+                name :
+                <Link
+                  to={path}
+                  onClick={(evt) => onNavigate(evt, `/${topLevel}/${userPath}`)}
+                >
+                  {name}
+                </Link>
+              }
+              {' / '}
+            </span>
+          )
+        })
+      }
+    </div>
+  )
+}
+
+
 type Props = {
   path: string;
   selected: WSObject[]
   onUpdateList: () => void
   isJobResult?: boolean
   isObjectSelector?: boolean
+  onNavigateBreadcrumbs?: (evt: MouseEvent<Element>, string) => void
 }
+
 
 /**
  * Workspace-specific ActionBar / breadcrumbs.
  */
 export default function ActionBar(props: Props) {
-  const {path, onUpdateList, isJobResult, isObjectSelector} = props
+  const {
+    path,
+    isJobResult,
+    isObjectSelector,
+    onUpdateList,
+    onNavigateBreadcrumbs
+  } = props
+
 
   const [currentPath, setCurrentPath] = useState(path)
   const [parts, setParts] = useState([])
@@ -58,26 +104,13 @@ export default function ActionBar(props: Props) {
         />
       }
 
-
       {(!selected || selected.length == 0) &&
-        <Breadcrumbs>
-          {' / '}
-          <Link to={`/files/${topLevel}`}>{topLevel.split('@')[0]}</Link>
-          {' / '}
-          {
-            parts.slice(1).map((name, i) => {
-              const userPath = parts.slice(1, i-1).join('/')
-              const path = `/files/${topLevel}/${userPath}`
-
-              return (
-                <span key={i}>
-                  {i == currentLevel - 1 ? name : <Link to={path}>{name}</Link>}
-                  {' / '}
-                </span>
-              )
-            })
-          }
-        </Breadcrumbs>
+        <Breadcrumbs
+          topLevel={topLevel}
+          currentLevel={currentLevel}
+          parts={parts}
+          onNavigate={onNavigateBreadcrumbs}
+        />
       }
 
       {(!selected || selected.length == 0) && !isJobResult &&
@@ -99,11 +132,6 @@ const Root = styled.div`
   button {
     margin-right: 10px;
   }
-`
-
-
-const Breadcrumbs = styled.div`
-
 `
 
 const Opts = styled.div`

@@ -10,6 +10,7 @@ import WSIcon from '../../assets/icons/hdd-o.svg'
 import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
 import GroupIcon from '../../assets/icons/genome-group.svg'
 import FeaturesIcon from '../../assets/icons/genome-features.svg'
+import ContigsIcon from '../../assets/icons/contigs.svg'
 import JobResultIcon from '@material-ui/icons/FlagRounded'
 
 import {bytesToSize, isoToHumanDateTime} from '../utils/units'
@@ -59,7 +60,7 @@ function getIcon({type, isWS, permissions}) {
   else if (type == 'folder')
     return <Folder className="icon" />
   else if (type == 'contigs')
-    return <File className="icon"/>
+    return <img src={ContigsIcon} className="icon" style={{fill: '#000'}}/>
   else if (type == 'genome_group')
     return <img src={GroupIcon} className="icon"/>
   else if (type == 'feature_group')
@@ -102,9 +103,10 @@ export default function FileList(props: Props) {
     // if object selector, we'll want to (somehow) use a
     // click event instead of routing
     columns[0].format = (val, obj) =>
-      <a onClick={() => navigate(obj)} className="inline-flex align-items-center">
+      <a onClick={() => onNavigate(obj)} className="inline-flex align-items-center">
         {getIcon(obj)} {val}
       </a>
+
 
     params['disableRowSelect'] = (row) => {
       if (!row) return true
@@ -118,8 +120,7 @@ export default function FileList(props: Props) {
     if (onSelect) onSelect(state)
   }
 
-  const navigate = (obj) => {
-    if (isObjectSelector) return
+  const handleDoubleClick = (obj) => {
     if (onNavigate) onNavigate(obj)
   }
 
@@ -131,7 +132,7 @@ export default function FileList(props: Props) {
           columns={columns}
           rows={rows}
           onSelect={handleSelect}
-          onDoubleClick={navigate}
+          onDoubleClick={handleDoubleClick}
           emptyNotice="This folder is empty."
           stripes={false}
           {...params}

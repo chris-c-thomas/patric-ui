@@ -47,8 +47,7 @@ const example = {
     type: 'srr_ids',
     label: 'SRR1955832',
     value: 'SRR1955832'
-  } ,
-  {
+  }, {
     type: 'srr_ids',
     label: 'SRR1955833',
     value: 'SRR1955833'

@@ -25,16 +25,15 @@ type Props = {
 
 
 export default function Workspaces(props: Props) {
-  const {isObjectSelector, onSelect, fileType} = props
-
-  let path = decodeURIComponent('/' + useParams().path)
-
-  if (props.path) {
-    path = props.path
-  }
+  const {
+    isObjectSelector,
+    onSelect
+  } = props
 
   const history = useHistory()
+  const paramPath = useParams().path
 
+  const [path, setPath] = useState(props.path || decodeURIComponent('/' + paramPath))
   const [loading, setLoading] = useState(false)
   const [rows, setRows] = useState(null)
   const [error, setError] = useState(null)
@@ -42,7 +41,20 @@ export default function Workspaces(props: Props) {
   const [isFolder, setIsFolder] = useState(true)
   const [selected, setSelected] = useState([])
 
+  // listen for path changes for object selector
+  useEffect(() => {
+    if (!props.path) return
+    setPath(props.path)
+  }, [props.path])
 
+  // listen for path changes for workspace browser
+  useEffect(() => {
+    if (!paramPath) return
+    setPath('/' + paramPath)
+  }, [paramPath])
+
+
+  // update rows displayed to user
   const updateList = useCallback(() => {
     (async function () {
       setRows(null)
@@ -89,7 +101,24 @@ export default function Workspaces(props: Props) {
       onSelect(state.objs)
   }
 
+
+  // for object selector
+  const onNavigateBreadcrumbs = (evt, path) => {
+    if (!isObjectSelector) return
+
+    evt.preventDefault()
+    evt.stopPropagation()
+    setPath(path)
+  }
+
+
+  // onNavigate deals with double click events and object selector navigation
   const onNavigate = (obj) => {
+    if (isObjectSelector) {
+      setPath(obj.encodedPath)
+      return
+    }
+
     if (obj.type == 'job_result') {
       history.push(`/job-result${obj.encodedPath}`)
       return
@@ -113,6 +142,7 @@ export default function Workspaces(props: Props) {
             selected={selected}
             onUpdateList={() => updateList()}
             isObjectSelector={isObjectSelector}
+            onNavigateBreadcrumbs={onNavigateBreadcrumbs}
           />
         </ActionBarContainer>
 
