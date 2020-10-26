@@ -68,7 +68,7 @@ const Home = () =>
               */}
 
               <div className="btns">
-                <Button variant="contained" style={{background: '#42a242', color: '#fff'}} href="https://patricbrc.org/" disableRipple>
+                <Button variant="contained" color="secondary" href="https://patricbrc.org/" disableRipple>
                   Visit PATRIC
                 </Button>
               </div>
@@ -173,6 +173,8 @@ const Root = styled.div`
 
   .btns a {
     margin-right: 10px;
+    // background: #eb592a; //#f15a29;
+    // color: #fff;
   }
 `
 

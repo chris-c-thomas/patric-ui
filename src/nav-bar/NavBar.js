@@ -324,8 +324,8 @@ export function NavBar(props) {
   )
 
   return (
-    <NavBarRoot>
-      <Toolbar variant="dense" style={{height: 35, justifyContent: 'flex-end'}}>
+    <NavBarRoot className="nav-bar">
+      <Toolbar variant="dense" style={{height: 38, justifyContent: 'flex-end'}}>
 
         {Logo ? <Logo /> : <LogoComponent />}
 
@@ -366,7 +366,7 @@ export function NavBar(props) {
 
         {Auth.isSignedIn() &&
           <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
-            <AccountIcon/>&nbsp;{Auth.getUser()} {/*<Avatar className="avatar"></Avatar>*/}
+            <AccountIcon/> {/* &nbsp;{Auth.getUser()}<Avatar className="avatar"></Avatar>*/}
           </AccountBtn>
         }
 
@@ -391,8 +391,8 @@ export function NavBar(props) {
 }
 
 const NavBarRoot = styled(AppBar)`
-  background: '#2e76a3';
-  border-top: 3px solid #154e72;
+  // background: '#2e76a3';
+  // border-top: 3px solid #154e72;
   position: fixed;
   top: 0;
 
@@ -448,6 +448,8 @@ const AccountMenu = styled(Menu)`
 
 
 const AccountBtn = styled(Button)`
-  min-width: 30px;
+  &.MuiButtonBase-root {
+    min-width: 0px;
+  }
 `
 

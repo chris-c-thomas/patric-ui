@@ -6,13 +6,14 @@ import Facebook from '@material-ui/icons/Facebook'
 import Twitter from '@material-ui/icons/Twitter'
 import Github from '@material-ui/icons/GitHub'
 
-import pngs from '../../assets/bv-brc/*.png'
+//import logo1 from '../../assets/bv-brc/brc-logo.png'
+import logo2 from '../../assets/bv-brc/brc-logo-inv-tag.png'
 
 const Footer = () =>
   <Root>
     <div className="brc-program">
       <a href="https://www.niaid.nih.gov/research/bioinformatics-resource-centers">
-        <img src={pngs['brc-logo']} alt="BRC Logo" height="80" />
+        <img src={logo2} alt="BRC Logo" height="70" />
       </a>
 
       {/*

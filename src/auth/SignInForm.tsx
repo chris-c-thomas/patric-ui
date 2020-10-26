@@ -78,20 +78,22 @@ export default function SignInDialog(props) {
           </Step>
         }
 
-        <TextInput label="Username" onChange={val => setUser(val)} fullWidth autoFocus/>
-        <TextInput label="Password" type="password" onChange={val => setPass(val)} fullWidth/>
+        <TextInput label="Username" onChange={val => setUser(val)} autoFocus/>
+        <TextInput label="Password" type="password" onChange={val => setPass(val)}/>
 
         {isInvalid && <div>Invalid username and/or password</div>}
         {failMsg && <div>{failMsg}</div>}
 
-        <Button color="primary"
-          variant="contained"
-          disabled={!user || !pass || inProgress}
-          type="submit"
-          disableRipple
-        >
-          {inProgress ? 'Signing in...' : 'Sign in'}
-        </Button>
+        <div>
+          <Button color="primary"
+            variant="contained"
+            disabled={!user || !pass || inProgress}
+            type="submit"
+            disableRipple
+          >
+            {inProgress ? 'Signing in...' : 'Sign in'}
+          </Button>
+        </div>
       </Content>
 
     </form>
@@ -101,7 +103,7 @@ export default function SignInDialog(props) {
 
 const Content = styled.div`
   padding: 20px;
-  max-width: 300px;
+  max-width: 250px;
 
   button {
     margin: 20px 0;
