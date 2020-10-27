@@ -91,11 +91,9 @@ function UploadStatusProvider(props) {
 
   const cancelUpload = (path) => {
     promiseMapping[path].abort()
-    setActive(prev => {
-      delete prev[path]
-      return prev
-    })
+    removeUpload(path)
   }
+
 
   const removeUpload = (path) => {
     setComplete(prev => {
@@ -105,10 +103,8 @@ function UploadStatusProvider(props) {
   }
 
 
-
-
   const cancelAll = () => {
-    for (const path in Object.keys(promiseMapping)) {
+    for (const path of Object.keys(promiseMapping)) {
       promiseMapping[path].abort()
     }
 
