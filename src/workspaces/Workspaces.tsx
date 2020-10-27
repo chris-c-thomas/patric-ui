@@ -27,6 +27,7 @@ type Props = {
 export default function Workspaces(props: Props) {
   const {
     isObjectSelector,
+    fileType,
     onSelect
   } = props
 
@@ -115,7 +116,7 @@ export default function Workspaces(props: Props) {
   // onNavigate deals with double click events and object selector navigation
   const onNavigate = (obj) => {
     if (isObjectSelector) {
-      setPath(obj.encodedPath)
+      setPath(obj.path)
       return
     }
 
@@ -155,6 +156,7 @@ export default function Workspaces(props: Props) {
               onSelect={handleSelect}
               onNavigate={onNavigate}
               isObjectSelector={isObjectSelector}
+              fileType={fileType}
             /> :
             <GenericViewer path={path} />
           }

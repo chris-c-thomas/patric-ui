@@ -80,7 +80,7 @@ type Props = {
 
   // for object selector
   isObjectSelector?: boolean
-  type?: string
+  fileType?: string
   onSelect: (obj: object) => void
   onNavigate: (obj: object) => void
 }
@@ -91,7 +91,7 @@ export default function FileList(props: Props) {
     rows,
     isObjectSelector,
     isJobResult,
-    type,
+    fileType,
     onSelect,
     onNavigate,
   } = props
@@ -102,16 +102,19 @@ export default function FileList(props: Props) {
   if (isObjectSelector) {
     // if object selector, we'll want to (somehow) use a
     // click event instead of routing
-    columns[0].format = (val, obj) =>
-      <a onClick={() => onNavigate(obj)} className="inline-flex align-items-center">
-        {getIcon(obj)} {val}
-      </a>
-
+    columns[0].format = (val, obj) => (
+      obj.type == 'folder' ?
+        <a onClick={() => onNavigate(obj)} className="inline-flex align-items-center">
+          {getIcon(obj)} {val}
+        </a> :
+        <span className="inline-flex align-items-center">
+          {getIcon(obj)} {val}
+        </span>
+    )
 
     params['disableRowSelect'] = (row) => {
       if (!row) return true
-
-      return row.type != 'folder' && row.type != type
+      return row.type != 'folder' && row.type != fileType
     }
   }
 

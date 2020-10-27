@@ -30,7 +30,7 @@ import downloadIcon from '../../assets/icons/download.svg'
 import selectedReducer from './selectedReducer'
 
 import useClickOutside from '../hooks/useClickOutside'
-import { RowingRounded } from '@material-ui/icons'
+
 
 /*
 const exampleColumns = [
@@ -115,7 +115,7 @@ const Row = (props: RowProps) => {
 
   return (
     <TableRowComponent hover
-      style={disableRowSelect(row) ? {background: '#f5f5f5', color: '#aaa !important'} : {}}
+      className={disableRowSelect(row) && 'disabled'}
       tabIndex={-1}
       key={id}
       onClick={evt => onSelect(evt, rowID, row)}
@@ -151,15 +151,28 @@ const Row = (props: RowProps) => {
 
 Row.displayName = 'TableComponent-Row'
 
-// todo(nc): deprecate?
 const TableRowComponent = styled(TableRow)`
+  // todo(nc)?: remove more button option
   &:hover {
     .more-btn {
       display: block;
     }
   }
+
+  // disabledRowSelect Styling
+  &.disabled {
+    background: #fcfcfc;
+
+    td {
+      color: #c7c7c7;
+    }
+  }
+  &.disabled:hover {
+    cursor: not-allowed;
+  }
 `
-// todo(nc): deprecate?
+
+// todo(nc)?: remove more button option
 const More = styled.span`
   position: absolute;
   background: #f5f5f5;
@@ -330,13 +343,8 @@ type Props = {
 }
 
 
-type Row = {
-  rowID: number
-}
-
+type Row = { rowID: number }
 type Rows = Row[]
-
-
 
 
 
@@ -432,7 +440,7 @@ export default function TableComponent(props: Props) {
   }
 
   const handleSelect = (evt, rowID, obj) => {
-    if (disableRowSelect && disableRowSelect(obj)) {
+    if (disableRowSelect && obj.type == 'folder') {
       return
     }
 

@@ -92,14 +92,14 @@ export default function ObjectSelectorDialog(props: Props) {
           </div>
         </DialogTitle>
 
-        <DialogContent style={{position: 'relative'}}>
+        {/*<DialogContent style={{overflowY: 'hidden'}}>*/
           <Workspaces
             isObjectSelector
             path={path}
             onSelect={handleSelect}
             fileType={fileType}
           />
-        </DialogContent>
+        /*</DialogContent>*/}
 
         <DialogActions>
           <Button onClick={handleClose} color="primary" disableRipple autoFocus>

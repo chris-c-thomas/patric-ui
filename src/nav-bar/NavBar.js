@@ -391,8 +391,8 @@ export function NavBar(props) {
 }
 
 const NavBarRoot = styled(AppBar)`
-  // background: '#2e76a3';
-  // border-top: 3px solid #154e72;
+  background: '#2e76a3';
+  border-top: 3px solid #154e72;
   position: fixed;
   top: 0;
 
