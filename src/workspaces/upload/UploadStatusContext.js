@@ -67,15 +67,12 @@ function UploadStatusProvider(props) {
       setPromiseMapping(prev => ({...prev, [`${path}/${file.name}`]: prom}))
 
     }).catch((err) => {
-      // todo(nc): implemnt overwrite
-      const msg = err.response.data.error.message
+      // todo(nc): implemnt overwrite option
       // only show prompt if given file-already-exists error
+      const msg = err.response.data.error.message
       if (msg.indexOf('overwrite flag is not set') === -1) {
         return
       }
-
-      // const message = 'Are you sure you want to overwrite <i>' + fileMeta.path + fileMeta.name + '</i> ?'
-      // implement overwrite dialog
       alert(`could not over write object: ${meta.name}`)
     })
   }
@@ -109,6 +106,7 @@ function UploadStatusProvider(props) {
     }
 
     setActive({})
+    setProgress(0)
   }
 
 

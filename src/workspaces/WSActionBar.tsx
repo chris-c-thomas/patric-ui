@@ -23,6 +23,7 @@ const Breadcrumbs = (props) => {
       {
         parts.slice(1).map((name, i) => {
           const userPath = parts.slice(1, i-1).join('/')
+          console.log('userPath', userPath)
           const path = `/files/${topLevel}/${userPath}`
 
           return (
