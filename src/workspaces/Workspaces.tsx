@@ -114,8 +114,10 @@ export default function Workspaces(props: Props) {
 
 
   // onNavigate deals with double click events and object selector navigation
-  const onNavigate = (obj) => {
+  const onNavigate = (evt, obj) => {
     if (isObjectSelector) {
+      evt.preventDefault()
+      evt.stopPropagation()
       setPath(obj.path)
       return
     }
@@ -129,8 +131,7 @@ export default function Workspaces(props: Props) {
   }
 
   return (
-    <Root>
-
+    <Root isObjectSelector={isObjectSelector}>
       <Sidebar
         selected={selected}
         {...props}
@@ -172,9 +173,9 @@ export default function Workspaces(props: Props) {
 
 const Root = styled.div`
   display: flex;
-  max-height: calc(100% - 55px);
+  max-height: calc(100% - ${p => p.isObjectSelector ? `${32 * 2 + 64 + 120}px` : '55px'});
   height: 100%;
-  padding: 1px 5px 5px 0;
+  padding: 4px 5px 5px 0;
   background: #fff;
 `
 

@@ -92,9 +92,9 @@ type RowProps = {
     id: number,
     row: object
   ) => void
-  onDoubleClick: (row: object) => void
+  onDoubleClick: (evt: MouseEvent, row: object) => void
   onMore?: () => void
-  disableRowSelect?: (row: object) => boolean
+  greyRow?: (row: object) => boolean
 }
 
 const Row = (props: RowProps) => {
@@ -108,18 +108,18 @@ const Row = (props: RowProps) => {
     onSelect,
     onDoubleClick,
     onMore,
-    disableRowSelect
+    greyRow
   } = props
 
   const {rowID} = row
 
   return (
     <TableRowComponent hover
-      className={disableRowSelect(row) && 'disabled'}
+      className={greyRow(row) && 'grey'}
       tabIndex={-1}
       key={id}
       onClick={evt => onSelect(evt, rowID, row)}
-      onDoubleClick={() => onDoubleClick(row)}
+      onDoubleClick={evt => onDoubleClick(evt, row)}
       selected={selected.ids.includes(rowID)}
     >
       {emptyCell && <Cell></Cell>}
@@ -160,7 +160,7 @@ const TableRowComponent = styled(TableRow)`
   }
 
   // disabledRowSelect Styling
-  &.disabled {
+  &.grey {
     background: #fcfcfc;
 
     td {
@@ -329,14 +329,15 @@ type Props = {
   onSort?: (string) => void       // for ajax pagination
   onPage?: (number) => void       // for ajax pagination
   onSelect?: (any) => void        // todo: define
-  onDoubleClick?: (any) => void
+  onDoubleClick?: (evt: MouseEvent, row: object) => void
   onColumnMenuChange?: (any) => void | boolean
   onShowDetails?: () => void      // useful for details sidebar
   openFilters?: boolean
   onOpenFilters?: () => void
   onMore?: () => void             // todo: remove?
 
-  // todo(nc): think this through some more.  Need to add single select option.
+  // options for greying out and disabling selection on row
+  greyRow?: (row: object) => boolean
   disableRowSelect?: (row: object) => boolean
 
   middleComponent?: JSX.Element
@@ -353,6 +354,7 @@ export default function TableComponent(props: Props) {
     pagination, offsetHeight, checkboxes, emptyNotice,
     middleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
     enableTableOptions, stripes = true, onShowDetails,
+    greyRow = () => false,
     disableRowSelect = () => false
   } = props
 
@@ -440,7 +442,7 @@ export default function TableComponent(props: Props) {
   }
 
   const handleSelect = (evt, rowID, obj) => {
-    if (disableRowSelect && obj.type == 'folder') {
+    if (disableRowSelect && disableRowSelect(obj)) {
       return
     }
 
@@ -492,9 +494,8 @@ export default function TableComponent(props: Props) {
     onColumnMenuChange(activeCols)
   }
 
-  const handleDoubleClick = (row) => {
-    if (onDoubleClick)
-      onDoubleClick(row)
+  const handleDoubleClick = (evt, row) => {
+    if (onDoubleClick) onDoubleClick(evt, row)
   }
 
   const handleShowDetails = () => {
@@ -612,6 +613,7 @@ export default function TableComponent(props: Props) {
               selected={selected}
               onDoubleClick={handleDoubleClick}
               onMore={props.onMore}
+              greyRow={greyRow}
               disableRowSelect={disableRowSelect}
             />
           </TableBody>

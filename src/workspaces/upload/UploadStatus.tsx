@@ -4,13 +4,11 @@ import { Link } from 'react-router-dom'
 
 import CloseIcon from '@material-ui/icons/Close'
 import CheckIcon from '@material-ui/icons/CheckCircleOutline'
-
 import { IconButton, Divider, Button, Tooltip } from '@material-ui/core'
 
 import ProgressBar from './ProgressBar'
 
 import { UploadStatusContext } from './UploadStatusContext'
-
 import { UploadStatus } from '../../api/upload'
 
 /*
@@ -56,7 +54,7 @@ const UploadList = (props: UploadListProps) => {
           const {fullPath, path, name, progress} = mapping[key]
 
           return (
-            <>
+            <div key={key}>
               <Upload key={fullPath}>
                 <Name>
                   <Link to={`/files${path}`}>{name}</Link>
@@ -83,7 +81,7 @@ const UploadList = (props: UploadListProps) => {
               </Upload>
 
               {i < Object.keys(mapping).length - 1  && <Divider />}
-            </>
+            </div>
           )
         })
       }

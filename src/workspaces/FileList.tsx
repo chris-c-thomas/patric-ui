@@ -82,7 +82,7 @@ type Props = {
   isObjectSelector?: boolean
   fileType?: string
   onSelect: (obj: object) => void
-  onNavigate: (obj: object) => void
+  onNavigate: (evt: MouseEvent, obj: object) => void
 }
 
 
@@ -100,31 +100,42 @@ export default function FileList(props: Props) {
   // additional conditions for object selector
   let params = {}
   if (isObjectSelector) {
-    // if object selector, we'll want to (somehow) use a
+
+    // if object selector, we'll want to use a
     // click event instead of routing
     columns[0].format = (val, obj) => (
       obj.type == 'folder' ?
-        <a onClick={() => onNavigate(obj)} className="inline-flex align-items-center">
+        <Link
+          to={obj.type == 'job_result' ?
+            `/job-result${obj.encodedPath}` :
+            `/files${obj.encodedPath}`
+          }
+          onClick={evt => onNavigate(evt, obj)}
+          className="inline-flex align-items-center"
+        >
           {getIcon(obj)} {val}
-        </a> :
+        </Link> :
         <span className="inline-flex align-items-center">
           {getIcon(obj)} {val}
         </span>
     )
 
-    params['disableRowSelect'] = (row) => {
-      if (!row) return true
+    params['greyRow'] = (row) => {
       return row.type != 'folder' && row.type != fileType
+    }
+
+    params['disableRowSelect'] = (row) => {
+      return row.type != fileType
     }
   }
 
-  // use event for object select
+
   const handleSelect = (state) => {
     if (onSelect) onSelect(state)
   }
 
-  const handleDoubleClick = (obj) => {
-    if (onNavigate) onNavigate(obj)
+  const handleDoubleClick = (evt, obj) => {
+    if (onNavigate) onNavigate(evt, obj)
   }
 
   return (

@@ -72,12 +72,13 @@ export default function ObjectSelectorDialog(props: Props) {
         <FolderIcon />
       </FolderBtn>
 
-      <Dialog
+      <DialogRoot
         className="dialog"
         fullWidth
         maxWidth="md"
         fullScreen={fullScreen} // for mobile
         open={open}
+        scroll="paper"
         onClose={handleClose}
         aria-labelledby="dialog-title"
       >
@@ -92,14 +93,14 @@ export default function ObjectSelectorDialog(props: Props) {
           </div>
         </DialogTitle>
 
-        {/*<DialogContent style={{overflowY: 'hidden'}}>*/
+        <DialogContent>
           <Workspaces
             isObjectSelector
             path={path}
             onSelect={handleSelect}
             fileType={fileType}
           />
-        /*</DialogContent>*/}
+        </DialogContent>
 
         <DialogActions>
           <Button onClick={handleClose} color="primary" disableRipple autoFocus>
@@ -109,15 +110,19 @@ export default function ObjectSelectorDialog(props: Props) {
             OK
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogRoot>
     </>
   )
 }
 
+const DialogRoot = styled(Dialog)`
+  .MuiDialogTitle-root {
+    padding: 16px 24px 0 16px;
+  }
 
-const Header = styled(DialogTitle)`
-  && .MuiDialogTitle-root {
-    padding: 0;
+  // override for sticky actions and table header
+  .MuiDialog-paperScrollPaper {
+    display: block;
   }
 `
 
@@ -126,4 +131,5 @@ const FolderBtn = styled(Button)`
     min-width: 0;
     margin-left: 2px;
   }
+
 `
