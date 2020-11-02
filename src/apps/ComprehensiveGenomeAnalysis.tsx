@@ -83,7 +83,7 @@ const initialState = {
   genome_size: 500000,
   contigs: null,
   domain: 'Bacteria',
-  code: 11,
+  code: '11',
   scientific_name: null,
   taxonomy_id: null,
   racon_iter: 2,
@@ -306,20 +306,8 @@ export default function SARSCoV2() {
             taxonId={form.taxonomy_id}
             onNameChange={val => dispatch({field: 'scientific_name', val})}
             onIdChange={val => dispatch({field: 'taxonomy_id', val})}
-          />
-        </Row>
-
-        <Row>
-          <Selector
-            label="Genetic Code"
-            value={form.code}
-            onChange={val => dispatch({field: 'code', val})}
-            width="200px"
-            options={[
-              {value: '11', label: '11 (Archaea & most bacteria)'},
-              {value: '4', label: '4 (Mycoplasma, Spiroplasma & Ureaplasma)'},
-              {value: '25', label: '25 (Candidate Divsion SR1 & Gracilibacteria)'},
-            ]}
+            geneticCode={form.code}
+            onGeneticCodeChange={val => dispatch({field: 'code', val})}
           />
         </Row>
       </Section>

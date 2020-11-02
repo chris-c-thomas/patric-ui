@@ -116,27 +116,14 @@ export default function Annotation() {
           />
         </Row>
 
-        <Row>
+        <Row noPad>
           <TaxonSelector
             taxonName={form.scientific_name}
             taxonId={form.taxonomy_id}
-            namePlaceholder="e.g. Brucella Cereus"
             onNameChange={val => dispatch({field: 'scientific_name', val})}
             onIdChange={val => dispatch({field: 'taxonomy_id', val})}
-          />
-        </Row>
-
-        <Row>
-          <Selector
-            label="Genetic Code"
-            value={form.code}
-            onChange={val => dispatch({field: 'code', val})}
-            width="200px"
-            options={[
-              {value: '11', label: '11 (Archaea & most bacteria)'},
-              {value: '4', label: '4 (Mycoplasma, Spiroplasma & Ureaplasma)'},
-              {value: '25', label: '25 (Candidate Divsion SR1 & Gracilibacteria)'},
-            ]}
+            geneticCode={form.code}
+            onGeneticCodeChange={val => dispatch({field: 'code', val})}
           />
         </Row>
 

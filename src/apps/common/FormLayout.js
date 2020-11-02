@@ -14,6 +14,10 @@ const Root = styled.div`
 const Row = styled.div`
   display: flex;
   align-items: flex-end;
+
+  /* don't pad a <Row> component if "noPad" */
+  ${props => props.noPad &&
+    'margin-bottom: 0px !important;'}
 `
 
 const Column = styled.div`

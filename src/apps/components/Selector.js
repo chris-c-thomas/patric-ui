@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -24,7 +24,11 @@ export default function Selector(props) {
   if (typeof value == 'undefined')
     throw (`Selector component must have prop: value.  Was: ${value}`)
 
-  const [val, setVal] = useState(value || props.default)
+  const [val, setVal] = useState(value)
+
+  useEffect(() => {
+    setVal(value)
+  }, [value])
 
   const handleChange = (evt) => {
     const val = evt.target.value
