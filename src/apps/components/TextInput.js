@@ -1,5 +1,5 @@
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputAdornment'
 import TextField from '@material-ui/core/TextField'
@@ -21,6 +21,11 @@ export default function TextInput(props) {
     throw usageError('label', label)
 
   const [val, setVal] = useState(value)
+
+  useEffect(() => {
+    setVal(value)
+  },[value])
+
 
   const handleChange = evt => {
     const val = evt.target.value

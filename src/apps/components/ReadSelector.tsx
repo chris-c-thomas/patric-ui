@@ -64,7 +64,7 @@ export default function ReadSelector(props: Props) {
   const [path2, setPath2] = useState(null)
 
   // current SRA ID input
-  const [sraID, setSraID] = useState(null)
+  const [sraID, setSraID] = useState('')
 
   // list of selected reads
   const [reads, setReads] = useState(props.reads)
@@ -135,8 +135,9 @@ export default function ReadSelector(props: Props) {
     setValidatingSRA(true)
 
     try {
-      const title = await validateSRR(sraID)
-      if (!title) {
+      const res = await validateSRR(sraID)
+
+      if (!res.isValid) {
         setValidatingSRA(false)
         setSRAError(`Your SRA ID ${sraID} is not valid`)
         return
@@ -162,7 +163,7 @@ export default function ReadSelector(props: Props) {
 
     setReads(prev => ([...prev, row]))
     setValidatingSRA(false)
-    setSraID(null)
+    setSraID('')
   }
 
 

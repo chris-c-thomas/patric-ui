@@ -22,10 +22,10 @@ export function getPublications(taxonID, max = 5) {
 
 
 
-// example ids: SRR5121082, ERR3827346, SRX981334
-export async function validateSRR(id: string) : Promise<string | false> {
+// example ids: SRR5121082, ERR3827346, SRX981334, SRR5660159 (id that doesn't have title)
+export async function validateSRR(id: string) : Promise<{isValid: boolean, title}>  {
   if (!id.match(/^[a-z]{3}[0-9]+$/i)) {
-    return false
+    return {isValid: false, title: ''}
   }
 
   const res = await api.get(`efetch.fcgi?retmax=10&db=sra&id=${id}`, {timeout: 1000})
@@ -39,14 +39,14 @@ export async function validateSRR(id: string) : Promise<string | false> {
     title = ''
   }
 
-  let isRun
+  let isValid = false
   xml.querySelectorAll('RUN_SET').forEach((item) => {
     item.childNodes.forEach((node) => {
       if (id == node.attributes.accession.nodeValue) {
-        isRun = true
+        isValid = true
       }
     })
   })
 
-  return isRun ? title : false
+  return {isValid, title}
 }
