@@ -15,6 +15,14 @@ import './workspaces.scss'
 import GenericViewer from './viewers/GenericViewer'
 
 
+const getJobResultDir = (path) => {
+  const parts = path.split('/')
+  const name = parts.pop()
+  return `${parts.join('/')}/.${name}`
+}
+
+
+
 type Props = {
   isJobResult?: boolean
 
@@ -67,22 +75,17 @@ export default function Workspaces(props: Props) {
       setLoading(true)
 
       try {
-        // determine if folder or not
+        // determine if folder
         let isFolder = true
-        if (path.split('/').length > 2) {
+        if (!isJobResult && path.split('/').length > 2) {
           isFolder = await WS.isFolder(path)
           setIsFolder(isFolder)
         }
 
-        // if job result, fetch data from dot folder instead
-        let jobDir
-        if (isJobResult) {
-          const parts = path.split('/')
-          const name = parts.pop()
-          jobDir = `${parts.join('/')}/.${name}`
-        }
+        // if job result, we'll fetch data from dot folder instead
+        let jobDir = isJobResult ? getJobResultDir(path) : null
 
-        // get rows
+        // get list of objects (table rows)
         const data = await WS.list({path: jobDir ? jobDir : path})
         setRows(data)
 

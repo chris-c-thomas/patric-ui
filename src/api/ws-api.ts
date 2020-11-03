@@ -84,14 +84,13 @@ export function list(args: Args) {
       let objects = meta ? meta.map((m) => metaToObj(m)) : []
 
       if (!includeHidden) {
-        objects = objects.filter(obj => obj.path.indexOf('/.') == -1)
+        objects = objects.filter(obj => obj.name.charAt(0) != '.')
       }
 
       let permissionProm: Promise<any>
       if (includePermissions) {
         permissionProm = listPermissions(objects.map(o => o.path))
       }
-
 
       return permissionProm.then((permHash) => {
         // join-in permissions if requested
