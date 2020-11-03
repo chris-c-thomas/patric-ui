@@ -23,85 +23,30 @@ export function getPublications(taxonID, max = 5) {
 
 
 // example ids: SRR5121082, ERR3827346, SRX981334
-export function validateSRR(id: string) : Promise<any> {
+export async function validateSRR(id: string) : Promise<string | false> {
   if (!id.match(/^[a-z]{3}[0-9]+$/i)) {
-    throw 'Invalid SRR accession'
+    return false
   }
 
-  return api.get(`efetch.fcgi?retmax=10&db=sra&id=${id}`, {timeout: 1000})
-    .then(res => {
-      const xml = new DOMParser().parseFromString(res.data, 'text/xml')
+  const res = await api.get(`efetch.fcgi?retmax=10&db=sra&id=${id}`, {timeout: 1000})
 
-      let title
-      try {
-        title = xml.querySelector('TITLE').innerHTML
-      } catch (e) {
-        title = ''
-      }
+  const xml = new DOMParser().parseFromString(res.data, 'text/xml')
 
-      /*
-      xml.querySelectorAll('RUN_SET').forEach((item) => {
-        item.forEach((currentValue) => {
-          if (id == currentValue.attributes.accession.nodeValue) {
-            isrun = true
-          }
-        })
-      })
-      */
+  let title
+  try {
+    title = xml.querySelector('TITLE').innerHTML
+  } catch (e) {
+    title = ''
+  }
 
-      return {
-        title
+  let isRun
+  xml.querySelectorAll('RUN_SET').forEach((item) => {
+    item.childNodes.forEach((node) => {
+      if (id == node.attributes.accession.nodeValue) {
+        isRun = true
       }
     })
+  })
 
-
-   /*
-      try {
-        title = xml_resp.children[0].children[0].childNodes[3].children[1].childNodes[0].innerHTML
-      }
-      catch (e) {
-        console.log(xml_resp)
-        console.error('Could not get title from SRA record.  Error: ' + e)
-      }
-      try {
-        xml_resp.children[0].children[0].childNodes.forEach(function (item) {
-          if (item.nodeName == 'RUN_SET') {
-            item.childNodes.forEach(function (currentValue) {
-              if (id == currentValue.attributes.accession.nodeValue) {
-                isrun = true
-              }
-            })
-          }
-        })
-      }
-      catch (e) {
-        console.log(xml_resp)
-        console.error('Could not get run id from SRA record.  Error: ' + e)
-      }
-      if (isrun) {
-        this.onAddSRRHelper(title)
-      } else {
-        this.srr_accession.set('disabled', false)
-        this.srr_accession_validation_message.innerHTML = ' The accession is not a run id.'
-      }
-    }),
-    lang.hitch(this,
-      function (err) {
-        var status = err.response.status
-        this.srr_accession.set('disabled', false)
-        //                console.log(status);
-        //                console.log(err);
-        if (status >= 400 && status < 500) {
-          // NCBI eutils gives error code 400 when the accession does not exist.
-          this.srr_accession_validation_message.innerHTML = ' Your input ' + accession + ' is not valid'
-        } else if (err.message.startsWith('Timeout exceeded')) {
-          this.onAddSRRHelper(title)
-          this.srr_accession_validation_message.innerHTML = ' Timeout exceeded.'
-        } else {
-          throw new Error('Unhandled SRA validation error.')
-        }
-      })
-  )
-  */
-
+  return isRun ? title : false
 }

@@ -4,6 +4,8 @@
  *
  * Todo:
  *  - provide onAdd/onRemove methods?
+ *
+ * example SRR ids: SRR5121082, ERR3827346, SRX981334
  */
 
 import React, {useState, useEffect} from 'react'
@@ -15,6 +17,9 @@ import ObjectSelector from './object-selector/ObjectSelector'
 import SelectedTable from './SelectedTable'
 import TextInput from './TextInput'
 import AddButton from '../common/AddButton'
+import ArrowIcon from '@material-ui/icons/ArrowForwardRounded'
+import Progress from '@material-ui/core/CircularProgress'
+
 
 import Tooltip from '@material-ui/core/Tooltip'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
@@ -41,7 +46,6 @@ const columns = [{
 }]
 
 // todo(nc): define reads
-
 type Props = {
   onChange: (object) => void
   advancedOptions?: boolean
@@ -71,6 +75,7 @@ export default function ReadSelector(props: Props) {
   const [read_orientation_outward, setMatePaired] = useState('false')
   const [platform, setPlatform] = useState('infer')
 
+  const [validatingSRA, setValidatingSRA] = useState(false)
   const [sraMsg, setSRAMsg] = useState(null)
   const [sraError, setSRAError] = useState(null)
 
@@ -116,31 +121,53 @@ export default function ReadSelector(props: Props) {
     setReads(prev => ([...prev, row]))
   }
 
-  const onAddSRA = (id) => {
-    if (id != '')
-      validateSra(id)
+
+  const handleSRAChange = (val) => {
+    // we want to clear the messages when a user types
+    setSRAMsg(null)
+    setSRAError(null)
+    setSraID(val)
   }
 
-  const onRemoveAll = () => {
-    setReads([])
+
+  // when adding SRA, do some validation first
+  const onAddSRA = async () => {
+    setValidatingSRA(true)
+
+    try {
+      const title = await validateSRR(sraID)
+      if (!title) {
+        setValidatingSRA(false)
+        setSRAError(`Your SRA ID ${sraID} is not valid`)
+        return
+      }
+
+    } catch (err) {
+      setValidatingSRA(false)
+
+      const status = err.response.status
+      if (status >= 400 && status < 500) {
+        setSRAError(`Your SRA ID ${sraID} is not valid`)
+        return
+      }
+
+      setSRAMsg(`Note: we could not validate your SRA ID, but it was still added`)
+    }
+
+    const row = {
+      type: 'srr_ids',
+      label: sraID,
+      value: sraID
+    }
+
+    setReads(prev => ([...prev, row]))
+    setValidatingSRA(false)
+    setSraID(null)
   }
+
 
   const onRemove = ({index}) => {
     setReads(prev => prev.filter((_, i) => i != index))
-  }
-
-  const validateSra = (id) => {
-    console.log('validating', id)
-
-    try {
-      const blah = validateSRR(id).catch(() => {
-        alert('not valid')
-      })
-      console.log('blah', blah)
-    } catch (e) {
-      console.log(e)
-      setSRAError(e)
-    }
   }
 
 
@@ -182,7 +209,10 @@ export default function ReadSelector(props: Props) {
 
           {path1 && path2 && path1 !== path2 &&
             <div className="align-self-center" >
-              <AddButton onAdd={() => onAdd('paired')}/>
+              <AddButton
+                onAdd={() => onAdd('paired')}
+                endIcon={<ArrowIcon />}
+              />
             </div>
           }
         </Row>
@@ -204,7 +234,9 @@ export default function ReadSelector(props: Props) {
 
               {path &&
                 <div className="align-self-center" >
-                  <AddButton onAdd={() => onAdd('single')} />
+                  <AddButton onAdd={() => onAdd('single')}
+                    endIcon={<ArrowIcon />}
+                  />
                 </div>
               }
             </Row>
@@ -221,15 +253,22 @@ export default function ReadSelector(props: Props) {
               <TextInput
                 placeholder="SRR"
                 value={sraID}
-                onChange={val => setSraID(val)}
+                onChange={handleSRAChange}
                 noLabel
                 error={!!sraError}
                 helperText={sraMsg || sraError}
+                style={{marginRight: 10}}
               />
 
               {sraID &&
                 <div className="align-self-center">
-                  <AddButton onAdd={() => onAddSRA('sra')} />
+                  {validatingSRA ?
+                    <Progress size="30" /> :
+                    <AddButton
+                      onAdd={() => onAddSRA()}
+                      endIcon={<ArrowIcon />}
+                    />
+                  }
                 </div>
               }
             </Row>
@@ -288,3 +327,5 @@ const Column = styled.div`
   display: flex;
   flex-direction: column;
 `
+
+
