@@ -72,6 +72,8 @@ export default function FancySearch (props: Props) {
   )
 }
 
+const opacity = 0.15
+
 const MainSearch = styled.form`
   display: flex;
   margin: 0 4px;
@@ -84,13 +86,13 @@ const MainSearch = styled.form`
     /* todo(nc): fully style firefox */
     -webkit-appearance: caret;
     -moz-appearance: none;
-    background-color: ${fade('#fff', 0.15)};
+    background-color: ${fade('#fff', opacity)};
     color: #fff;
-    font-size: .8em;
+    font-size: .85em;
     height: 24px;
 
     &:hover {
-      background-color: ${fade('#fff', 0.25)};
+      background-color: ${fade('#fff', opacity + .1)};
     }
   }
 
@@ -100,13 +102,13 @@ const MainSearch = styled.form`
 
 const SearchContainer = styled.div`
   position: relative;
-  background-color: ${fade('#fff', 0.15)};
+  background-color: ${fade('#fff', opacity)};
   color: #fff;
   padding: 0 5px;
   width: 100%;
 
   &:hover {
-    background-color: ${fade('#fff', 0.25)};
+    background-color: ${fade('#fff', opacity + .1)};
   }
 
   .MuiInputBase-root {
@@ -126,17 +128,20 @@ const SearchContainer = styled.div`
   }
 `
 
+const borderHex = '#234d69' // #2e75a3
+const radius = '4px'
+
 const SearchType = styled.select`
-  border-radius: 3px 0 0 3px;
+  border-radius: ${radius} 0 0 ${radius};
   border: none;
-  border-right: 1px solid #2e75a3;
-  padding-left: 3px;
-  width: 100px;
+  border-right: 1px solid ${borderHex};
+  padding-left: 4px;
+  width: 105px;
 `
 
 const SearchLogic = styled.select`
-  border-radius: 0 3px 3px 0;
+  border-radius: 0 ${radius} ${radius} 0;
   border: none;
-  border-left: 1px solid #2e75a3;
+  border-left: 1px solid ${borderHex};
   width: 75px;
 `

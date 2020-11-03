@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
-import Sidebar, {sidebarWidth} from './WSSidebar'
+import WSSidebar, {sidebarWidth} from './WSSidebar'
 import FileList from './FileList'
 import ActionBar from './WSActionBar'
 
@@ -16,6 +16,8 @@ import GenericViewer from './viewers/GenericViewer'
 
 
 type Props = {
+  isJobResult?: boolean
+
   // all of these options are for the object selector
   isObjectSelector?: boolean
   fileType?: string
@@ -26,6 +28,7 @@ type Props = {
 
 export default function Workspaces(props: Props) {
   const {
+    isJobResult,
     isObjectSelector,
     fileType,
     onSelect
@@ -42,11 +45,13 @@ export default function Workspaces(props: Props) {
   const [isFolder, setIsFolder] = useState(true)
   const [selected, setSelected] = useState([])
 
+
   // listen for path changes for object selector
   useEffect(() => {
     if (!props.path) return
     setPath(props.path)
   }, [props.path])
+
 
   // listen for path changes for workspace browser
   useEffect(() => {
@@ -69,8 +74,16 @@ export default function Workspaces(props: Props) {
           setIsFolder(isFolder)
         }
 
+        // if job result, fetch data from dot folder instead
+        let jobDir
+        if (isJobResult) {
+          const parts = path.split('/')
+          const name = parts.pop()
+          jobDir = `${parts.join('/')}/.${name}`
+        }
+
         // get rows
-        const data = await WS.list({path})
+        const data = await WS.list({path: jobDir ? jobDir : path})
         setRows(data)
 
         // remove actions after list refresh
@@ -81,7 +94,7 @@ export default function Workspaces(props: Props) {
 
       setLoading(false)
     })()
-  }, [path])
+  }, [path, isJobResult])
 
 
   // update workspace list whenever path changes
@@ -109,6 +122,7 @@ export default function Workspaces(props: Props) {
 
     evt.preventDefault()
     evt.stopPropagation()
+
     setPath(path)
   }
 
@@ -118,6 +132,7 @@ export default function Workspaces(props: Props) {
     if (isObjectSelector) {
       evt.preventDefault()
       evt.stopPropagation()
+
       setPath(obj.path)
       return
     }
@@ -132,9 +147,10 @@ export default function Workspaces(props: Props) {
 
   return (
     <Root isObjectSelector={isObjectSelector}>
-      <Sidebar
-        selected={selected}
-        {...props}
+      <WSSidebar
+        path={path}
+        isObjectSelector={isObjectSelector}
+        onNavigate={onNavigate}
       />
 
       <Main>
@@ -146,6 +162,11 @@ export default function Workspaces(props: Props) {
             isObjectSelector={isObjectSelector}
             onNavigateBreadcrumbs={onNavigateBreadcrumbs}
           />
+
+          {isJobResult &&
+            <h3>Job Result</h3>
+          }
+
         </ActionBarContainer>
 
         <FileListContainer>

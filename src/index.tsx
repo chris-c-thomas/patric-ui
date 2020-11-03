@@ -86,7 +86,7 @@ const App = () => {
                         isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
                       />
                       <Route path="/job-result/:path*" exact render={() =>
-                        isSignedIn() ? <JobResult/> : <SignIn title="Please sign in to use Workspaces" />}
+                        isSignedIn() ? <Workspaces isJobResult /> : <SignIn title="Please sign in to use Workspaces" />}
                       />
 
                       {/* views */}

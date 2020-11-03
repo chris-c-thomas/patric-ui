@@ -32,6 +32,7 @@ const Breadcrumbs = (props: BreadcrumbProps) => {
         {topLevel.split('@')[0]}
       </Link>
       {' / '}
+
       {parts.slice(1).map((name, i) => {
         const userPath = parts.slice(1, 2 + i).join('/')
         const fullPath = `/${topLevel}/${userPath}`
@@ -41,14 +42,16 @@ const Breadcrumbs = (props: BreadcrumbProps) => {
           <span key={i}>
             {i == currentLevel - 1 ?
               name :
-              <Link
-                to={path}
-                onClick={(evt) => onNavigate(evt, fullPath)}
-              >
-                {name}
-              </Link>
+              <>
+                <Link
+                  to={path}
+                  onClick={(evt) => onNavigate(evt, fullPath)}
+                >
+                  {name}
+                </Link>
+                {' / '}
+              </>
             }
-            {' / '}
           </span>
         )
       })

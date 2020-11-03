@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Link, useParams} from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -14,32 +14,32 @@ import {getUser} from '../api/auth'
 
 import UploadStatus from './upload/UploadStatus'
 
-import { WSObject } from '../api/workspace.d'
-
 
 // only for testing
 import config from '../config'
 
 const menu = [
   {
-    path: `${getUser(true)}`, label: 'My Workspaces',
+    path: `/${getUser(true)}`, label: 'My Workspaces',
     icon: <MyIcon />, caret: true
   }, {
-    path: `${getUser(true)}/home`, label: 'Home',
+    path: `/${getUser(true)}/home`, label: 'Home',
     indent: 2, icon: <FolderIcon />, caret: true
   }, {
-    path: `${getUser(true)}/home/Genome Groups`, label: 'Genome Groups',
+    path: `/${getUser(true)}/home/Genome Groups`, label: 'Genome Groups',
     indent: 3, icon: <SpecialFolderIcon />
   },{
-    path: `${getUser(true)}/home/Feature Groups`, label: 'Feature Groups',
+    path: `/${getUser(true)}/home/Feature Groups`, label: 'Feature Groups',
     indent: 3, icon: <SpecialFolderIcon />
   }, {
-    path: `${getUser(true)}/home/Experiment Groups`, label: 'Experiment Groups',
+    path: `/${getUser(true)}/home/Experiment Groups`, label: 'Experiment Groups',
     indent: 3, icon: <SpecialFolderIcon />
   }, {
+    path: `/shared-with-me/${getUser(true)}`,
     label: 'Shared with me',
     icon: <SharedIcon />
   }, {
+    path: `/public/${getUser(true)}`,
     label: 'Public Workspaces',
     icon: <PublicIcon />
   }
@@ -47,19 +47,22 @@ const menu = [
 
 
 type Props = {
+  path: string
   isObjectSelector?: boolean
-  selected?: WSObject[]
+  onNavigate: (evt: MouseEvent, obj: {path?: string}) => void
 }
 
 const WSSideBar = (props: Props) => {
-  const {path} = useParams()
+  const {path, isObjectSelector, onNavigate} = props
 
-  const {isObjectSelector} = props
+  const [activePath, setActivePath] = useState(path)
 
-  const onNav = (evt) => {
-    if (isObjectSelector) {
-      evt.preventDefault()
-    }
+  useEffect(() => {
+    setActivePath(path)
+  }, [path])
+
+  const handleNavigate = (evt, item) => {
+    onNavigate(evt, item)
   }
 
   return (
@@ -85,15 +88,15 @@ const WSSideBar = (props: Props) => {
               <MenuItem
                 indent={item.indent}
                 caret={item.caret ? 1 : 0}
-                className={item.path == path && !isObjectSelector ? 'active no-style' : 'no-style hover'}
-                to={`/files/${item.path}`}
-                onClick={onNav}
+                className={item.path == activePath ? 'active no-style' : 'no-style hover'}
+                to={`/files${item.path}`}
+                onClick={evt => handleNavigate(evt, item)}
               >
                 {item.caret &&
-                  <Caret><CaretIcon color={item.path == path && !isObjectSelector ? 'primary' : 'inherit'} /></Caret>
+                  <Caret><CaretIcon color={item.path == activePath ? 'primary' : 'inherit'} /></Caret>
                 }
                 {item.icon &&
-                  <Icon>{React.cloneElement(item.icon, {color: item.path == path && !isObjectSelector ? 'primary' : 'inherit'})}</Icon>
+                  <Icon>{React.cloneElement(item.icon, {color: item.path == activePath ? 'primary' : 'inherit'})}</Icon>
                 }
                 {item.label}
               </MenuItem>
