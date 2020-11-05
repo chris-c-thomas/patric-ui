@@ -6,13 +6,19 @@ import {parseTokenStr} from '../utils/parse'
 import {queryParams} from '../utils/query-params'
 
 
-export function signIn(username, password) {
+export function signIn(
+  username: string, password: string, reload: boolean = true
+) : Promise<string> {
   const params = queryParams({username, password})
   return axios.post(authAPI, params)
     .then(res => {
       const token = res.data
       storeToken('token', token)
-      window.location.reload()
+
+      if (reload)
+        window.location.reload()
+
+      return getUser(true)
     })
 }
 
@@ -30,10 +36,10 @@ export function isSignedIn() {
 }
 
 
-export function getUser(full = false) {
+export function getUser(fullName: boolean = false) {
   if (!isSignedIn())
     return null
-  return getUsername(full)
+  return getUsername(fullName)
 }
 
 
@@ -50,7 +56,7 @@ export function isAdmin() {
 }
 
 
-export function suSignIn(username, password, targetUser) {
+export function suSignIn(username: string, password: string, targetUser: string) {
   const params = queryParams({username, password, targetUser})
   return axios.post(`${authAPI}/sulogin`, params)
     .then(res => {
@@ -74,7 +80,7 @@ export function suSwitchBack() {
  * adminSignIn
  *  - this function is currently only used for systems dashboard prototype
  */
-export function adminSignIn(username, password) {
+export function adminSignIn(username: string, password: string) {
   const params = queryParams({username, password, targetUser: username})
   return axios.post(`${authAPI}/sulogin`, params)
     .then(res => {
@@ -86,13 +92,13 @@ export function adminSignIn(username, password) {
 /**
  * helpers
  */
-function getUsername(full) {
+function getUsername(fullName: boolean) {
   const userID = parseTokenStr(localStorage.getItem('token')).un
-  const username = full ? userID : userID.split('@')[0]
+  const username = fullName ? userID : userID.split('@')[0]
   return username
 }
 
-function storeToken(key, token) {
+function storeToken(key: string, token: string) {
   localStorage.setItem(key, token)
 }
 

@@ -219,7 +219,7 @@ export default function Assembly() {
 
       <br/>
 
-      {isSignedIn() ? serviceForm : <SignInForm forApp />}
+      {isSignedIn() ? serviceForm : <SignInForm type="service" />}
     </Root>
   )
 }

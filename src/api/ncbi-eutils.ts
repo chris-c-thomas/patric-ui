@@ -8,13 +8,13 @@ const api = axios.create({
 })
 
 
-const _getPubs = (ids, max) => {
+const _getPubs = (ids: number[], max: number) => {
   return api.get(`esummary.fcgi?id=${ids.join(',')}&db=pubmed&retmax=${max}&retmode=json`)
     .then(res => res.data.result.uids.map(k => res.data.result[k]))
 }
 
 
-export function getPublications(taxonID, max = 5) {
+export function getPublications(taxonID: string, max: number = 5) {
   return getRepGenomeIDs(taxonID).then(ids => {
     return _getPubs(ids, max)
   })
@@ -23,7 +23,7 @@ export function getPublications(taxonID, max = 5) {
 
 
 // example ids: SRR5121082, ERR3827346, SRX981334, SRR5660159 (id that doesn't have title)
-export async function validateSRR(id: string) : Promise<{isValid: boolean, title}>  {
+export async function validateSRR(id: string) : Promise<{isValid: boolean, title: string}>  {
   if (!id.match(/^[a-z]{3}[0-9]+$/i)) {
     return {isValid: false, title: ''}
   }
@@ -42,7 +42,7 @@ export async function validateSRR(id: string) : Promise<{isValid: boolean, title
   let isValid = false
   xml.querySelectorAll('RUN_SET').forEach((item) => {
     item.childNodes.forEach((node) => {
-      if (id == node.attributes.accession.nodeValue) {
+      if (id == node['attributes'].accession.nodeValue) {
         isValid = true
       }
     })

@@ -19,17 +19,17 @@ import TaxonTabs from './views/taxon/TaxonTabs'
 import GenomeTabs from './views/genome/GenomeTabs'
 import HostTabs from './views/hosts/HostTabs'
 
+
+import {isSignedIn} from './api/auth'
+import SignIn from './auth/SignIn'
+
 import Jobs from './jobs/Jobs'
 import Workspaces from './workspaces/Workspaces'
-import JobResult from './workspaces/JobResult'
 import SUSignIn from './auth/SuSignIn'
 
 import Progress from './utils/ui/Progress'
 import NotFound404 from './404'
 import ErrorBoundary from './ErrorBoundary'
-
-import {isSignedIn} from './api/auth'
-import SignIn from './auth/SignIn'
 
 import { UploadStatusProvider } from './workspaces/upload/UploadStatusContext'
 import { JobStatusProvider } from './jobs/JobStatusContext'
@@ -80,13 +80,13 @@ const App = () => {
 
                       {/* workspac / job routes */}
                       <Route path="/jobs*" render={() =>
-                        isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" />}
+                        isSignedIn() ? <Jobs/> : <SignIn title="Please sign in to view Job Status" type="workspace"/>}
                       />
                       <Route path="/files/:path*" exact render={() =>
-                        isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" />}
+                        isSignedIn() ? <Workspaces/> : <SignIn title="Please sign in to use Workspaces" type="workspace" />}
                       />
                       <Route path="/job-result/:path*" exact render={() =>
-                        isSignedIn() ? <Workspaces isJobResult /> : <SignIn title="Please sign in to use Workspaces" />}
+                        isSignedIn() ? <Workspaces isJobResult /> : <SignIn title="Please sign in to use Workspaces" type="workspace" />}
                       />
 
                       {/* views */}

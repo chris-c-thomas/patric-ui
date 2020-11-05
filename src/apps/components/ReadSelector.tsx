@@ -135,9 +135,9 @@ export default function ReadSelector(props: Props) {
     setValidatingSRA(true)
 
     try {
-      const res = await validateSRR(sraID)
+      const {isValid} = await validateSRR(sraID)
 
-      if (!res.isValid) {
+      if (!isValid) {
         setValidatingSRA(false)
         setSRAError(`Your SRA ID ${sraID} is not valid`)
         return

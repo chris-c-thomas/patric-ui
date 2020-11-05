@@ -10,10 +10,11 @@ import LockIcon from '@material-ui/icons/LockOutlined'
 
 type Props = {
   title?: string
+  type?: 'service' | 'workspace'
 }
 
 export default function SignIn(props: Props) {
-  const {title} = props
+  const {title, type} = props
 
   return(
     <Root>
@@ -24,7 +25,7 @@ export default function SignIn(props: Props) {
         </StepLabel>
       </Step>
 
-      <SignInForm />
+      <SignInForm type={type} />
     </Root>
   )
 }

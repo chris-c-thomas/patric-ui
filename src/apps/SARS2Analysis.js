@@ -244,7 +244,7 @@ export default function SARSCoV2() {
 
       <br/>
 
-      {isSignedIn() ? serviceForm : <SignInForm forApp />}
+      {isSignedIn() ? serviceForm : <SignInForm type="service" />}
     </Root>
   )
 }

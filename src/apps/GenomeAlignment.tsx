@@ -148,7 +148,7 @@ export default function GenomeAlignment() {
       />
 
       <br/>
-      {isSignedIn() ? serviceForm : <SignInForm forApp />}
+      {isSignedIn() ? serviceForm : <SignInForm type="service" />}
     </Root>
   )
 }

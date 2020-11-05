@@ -189,7 +189,7 @@ export default function Annotation() {
       />
 
       <br/>
-      {isSignedIn() ? serviceForm : <SignInForm forApp />}
+      {isSignedIn() ? serviceForm : <SignInForm type="service" />}
     </Root>
   )
 }

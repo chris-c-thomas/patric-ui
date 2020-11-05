@@ -4,7 +4,6 @@
 //
 import React, {useState} from 'react'
 import styled from 'styled-components'
-import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import LockIcon from '@material-ui/icons/LockOutlined'
 import { Step, StepIcon, StepLabel } from '@material-ui/core'
@@ -15,32 +14,16 @@ import TextInput from '../apps/components/TextInput'
 import * as Auth from '../api/auth'
 
 
-const useStyles = makeStyles({
-  root: {
-    backgroundColor: '#555',
-    color: '#666',
-    width: 50,
-    height: 50,
-    display: 'flex',
-    borderRadius: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  active: {
-    backgroundImage:
-      'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
-  }
-})
+type Props = {
+  type?: 'service' | 'workspace'
+}
 
 
-export default function SignInDialog(props) {
-  const styles = useStyles()
+export default function SignInDialog(props: Props) {
+  const {type} = props
 
-  const {forApp} = props
-
-  const [user, setUser] = useState(null)
-  const [pass, setPass] = useState(null)
+  const [user, setUser] = useState('')
+  const [pass, setPass] = useState('')
 
   const [inProgress, setInProgress] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
@@ -50,8 +33,13 @@ export default function SignInDialog(props) {
     evt.preventDefault()
 
     setInProgress(true)
-    Auth.signIn(user, pass)
-      .catch(err => {
+
+    Auth.signIn(user, pass, type != 'workspace')
+      .then((fullUsername) => {
+        if (type == 'workspace')
+          window.location.href = `/files/${fullUsername}/home`
+
+      }).catch(err => {
         setInProgress(false)
 
         const error = err.response.data
@@ -68,43 +56,45 @@ export default function SignInDialog(props) {
   }
 
   return (
-    <form onSubmit={handleSignIn}>
-      <Content>
-        {forApp &&
-          <Step active={true} completed={false}>
-            <StepIcon className={styles.root} icon={<div><LockIcon /></div>} />
-            <StepLabel>Please sign in to use this service</StepLabel>
-          </Step>
-        }
+    <Form onSubmit={handleSignIn} className="flex-column justify-center">
+      {type == 'service' &&
+        <Step active={true} completed={false}>
+          <StepIcon icon={<div><LockIcon /></div>} />
+          <StepLabel>Please sign in to use this service</StepLabel>
+        </Step>
+      }
 
-        <TextInput label="Username" onChange={val => setUser(val)} autoFocus/>
-        <TextInput label="Password" type="password" onChange={val => setPass(val)}/>
+      <TextInput label="Username" value={user} onChange={val => setUser(val)} autoFocus/>
+      <TextInput label="Password" type="password" value={pass} onChange={val => setPass(val)}/>
 
-        {isInvalid && <div>Invalid username and/or password</div>}
-        {failMsg && <div>{failMsg}</div>}
+      {isInvalid && <div>Invalid username and/or password</div>}
+      {failMsg && <div>{failMsg}</div>}
 
-        <div>
-          <Button color="primary"
-            variant="contained"
-            disabled={!user || !pass || inProgress}
-            type="submit"
-            disableRipple
-          >
-            {inProgress ? 'Signing in...' : 'Sign in'}
-          </Button>
-        </div>
-      </Content>
-
-    </form>
+      <div>
+        <Button color="primary"
+          variant="contained"
+          disabled={!user || !pass || inProgress}
+          type="submit"
+          disableRipple
+        >
+          {inProgress ? 'Signing in...' : 'Sign in'}
+        </Button>
+      </div>
+    </Form>
   )
 }
 
 
-const Content = styled.div`
+const Form = styled.form`
+  margin: 0 auto;
   padding: 20px;
   max-width: 250px;
 
   button {
     margin: 20px 0;
+  }
+
+  .MuiInputBase-root {
+    margin-bottom: 5px
   }
 `
