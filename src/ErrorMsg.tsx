@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {AxiosError} from 'axios'
 import ContactDialog from './outreach/contact-dialog'
 import Alert from '@material-ui/lab/Alert'
 
@@ -20,7 +21,12 @@ const parseTraceback = (res) => {
   }
 }
 
-export default function ErrorMsg(props) {
+type Props = {
+  error: AxiosError
+  noContact?: boolean
+}
+
+export default function ErrorMsg(props: Props) {
   const [open, setOpen] = useState(false)
   const {error, noContact} = props
 
@@ -42,10 +48,15 @@ export default function ErrorMsg(props) {
     msg = null
   }
 
+  msg = msg.replaceAll('_ERROR_', '')
+
+
   return (
     <>
       <Alert severity="error" style={{wordBreak: 'break-all'}}>
-        {error.message} - {msg || 'Something has gone wrong'}
+        {'message' in error && error.message + ' - '}
+        {msg || 'Something has gone wrong'}
+
 
         {parseConfigURL(error)}
 

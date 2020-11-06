@@ -76,10 +76,9 @@ function getIcon({type, isWS, permissions}) {
 
 type Props = {
   rows: object[]
-  isJobResult?: boolean
+  viewType?: 'jobResult' | 'objectSelector'
 
   // for object selector
-  isObjectSelector?: boolean
   fileType?: string
   onSelect: (obj: object) => void
   onNavigate: (evt: MouseEvent, obj: object) => void
@@ -89,8 +88,7 @@ type Props = {
 export default function FileList(props: Props) {
   const {
     rows,
-    isObjectSelector,
-    isJobResult,
+    viewType,
     fileType,
     onSelect,
     onNavigate,
@@ -99,7 +97,7 @@ export default function FileList(props: Props) {
 
   // additional conditions for object selector
   let params = {}
-  if (isObjectSelector) {
+  if (viewType == 'objectSelector') {
 
     // if object selector, we'll want to use a
     // click event instead of routing
@@ -140,9 +138,9 @@ export default function FileList(props: Props) {
 
   return (
     <>
-      {
-        rows &&
+      {rows &&
         <Table
+          offsetHeight={viewType == 'jobResult' && '210px'}
           columns={columns}
           rows={rows}
           onSelect={handleSelect}

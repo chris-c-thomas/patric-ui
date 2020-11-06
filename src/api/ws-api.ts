@@ -126,7 +126,6 @@ export function isFolder(path: string) {
 export async function getMeta(path: string) : Promise<WSObject> {
   const res = await rpc('get', {objects: [path], metadata_only: true})
   const meta = metaToObj(res[0][0])
-
   return meta
 }
 

@@ -18,7 +18,7 @@ export function timeToHumanTime(dateTime) {
 }
 
 // to MM/DD/YYYY, HH:MM <AM/PM>
-export function isoToHumanDateTime(dateTime: Date) {
+export function isoToHumanDateTime(dateTime: Date | number) {
   return new Date(dateTime).toLocaleTimeString([], {
     month: 'numeric', day: 'numeric', year: 'numeric',
     hour: 'numeric', minute: 'numeric', hour12: true

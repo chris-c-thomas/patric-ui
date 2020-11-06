@@ -320,7 +320,7 @@ type Props = {
   emptyNotice?: string
   enableTableOptions?: boolean
   pagination?: boolean
-  offsetHeight?: string
+  offsetHeight?: string | boolean
   checkboxes?: boolean
   searchPlaceholder?: string
   stripes?: boolean

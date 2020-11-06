@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import WSSidebar, {sidebarWidth} from './WSSidebar'
 import FileList from './FileList'
 import ActionBar from './WSActionBar'
+import JobResultOverview from './JobResultOverview'
 
 import Progress from '@material-ui/core/LinearProgress'
 import ErrorMsg from '../ErrorMsg'
@@ -24,9 +25,9 @@ const getJobResultDir = (path) => {
 
 
 type Props = {
-  isJobResult?: boolean
+  viewType?: 'jobResult' | 'objectSelector'
 
-  // all of these options are for the object selector
+  // options for the object selector
   isObjectSelector?: boolean
   fileType?: string
   path?: string
@@ -36,8 +37,6 @@ type Props = {
 
 export default function Workspaces(props: Props) {
   const {
-    isJobResult,
-    isObjectSelector,
     fileType,
     onSelect
   } = props
@@ -50,7 +49,9 @@ export default function Workspaces(props: Props) {
   const [rows, setRows] = useState(null)
   const [error, setError] = useState(null)
 
+
   const [isFolder, setIsFolder] = useState(true)
+  const [viewType, setViewType] = useState(props.viewType)
   const [selected, setSelected] = useState([])
 
 
@@ -68,6 +69,12 @@ export default function Workspaces(props: Props) {
   }, [paramPath])
 
 
+  // listen if we need to change to job result view
+  useEffect(() => {
+    setViewType(props.viewType)
+  }, [props.viewType])
+
+
   // update rows displayed to user
   const updateList = useCallback(() => {
     (async function () {
@@ -77,13 +84,13 @@ export default function Workspaces(props: Props) {
       try {
         // determine if folder
         let isFolder = true
-        if (!isJobResult && path.split('/').length > 2) {
+        if (viewType != 'jobResult' && path.split('/').length > 2) {
           isFolder = await WS.isFolder(path)
           setIsFolder(isFolder)
         }
 
         // if job result, we'll fetch data from dot folder instead
-        let jobDir = isJobResult ? getJobResultDir(path) : null
+        let jobDir = viewType == 'jobResult' ? getJobResultDir(path) : null
 
         // get list of objects (table rows)
         const data = await WS.list({path: jobDir ? jobDir : path})
@@ -97,7 +104,7 @@ export default function Workspaces(props: Props) {
 
       setLoading(false)
     })()
-  }, [path, isJobResult])
+  }, [path, viewType])
 
 
   // update workspace list whenever path changes
@@ -119,9 +126,9 @@ export default function Workspaces(props: Props) {
   }
 
 
-  // for object selector
+  // breadcrumb navigation for object selector
   const onNavigateBreadcrumbs = (evt, path) => {
-    if (!isObjectSelector) return
+    if (viewType != 'objectSelector') return
 
     evt.preventDefault()
     evt.stopPropagation()
@@ -132,7 +139,7 @@ export default function Workspaces(props: Props) {
 
   // onNavigate deals with double click events and object selector navigation
   const onNavigate = (evt, obj) => {
-    if (isObjectSelector) {
+    if (viewType == 'objectSelector') {
       evt.preventDefault()
       evt.stopPropagation()
 
@@ -148,11 +155,13 @@ export default function Workspaces(props: Props) {
     history.push(`/files${obj.encodedPath}`)
   }
 
+
+
   return (
-    <Root isObjectSelector={isObjectSelector}>
+    <Root viewType={viewType}>
       <WSSidebar
         path={path}
-        isObjectSelector={isObjectSelector}
+        isObjectSelector={viewType == 'objectSelector'}
         onNavigate={onNavigate}
       />
 
@@ -162,12 +171,12 @@ export default function Workspaces(props: Props) {
             path={path}
             selected={selected}
             onUpdateList={() => updateList()}
-            isObjectSelector={isObjectSelector}
+            isObjectSelector={viewType == 'objectSelector'}
             onNavigateBreadcrumbs={onNavigateBreadcrumbs}
           />
 
-          {isJobResult &&
-            <h3>Job Result</h3>
+          {viewType == 'jobResult' &&
+            <JobResultOverview path={path} />
           }
 
         </ActionBarContainer>
@@ -180,7 +189,7 @@ export default function Workspaces(props: Props) {
               rows={rows}
               onSelect={handleSelect}
               onNavigate={onNavigate}
-              isObjectSelector={isObjectSelector}
+              viewType={viewType}
               fileType={fileType}
             /> :
             <GenericViewer path={path} />
@@ -194,10 +203,19 @@ export default function Workspaces(props: Props) {
   )
 }
 
+const headerHeight = 55
+
+const getOffset = (type) => {
+  if (type == 'objectSelector') {
+    return `${32 * 2 + 64 + 120}px`
+  }
+
+  return `${headerHeight}px`
+}
 
 const Root = styled.div`
   display: flex;
-  max-height: calc(100% - ${p => p.isObjectSelector ? `${32 * 2 + 64 + 120}px` : '55px'});
+  max-height: calc(100% - ${p => getOffset(p.viewType)});
   height: 100%;
   padding: 4px 5px 5px 0;
   background: #fff;
@@ -216,5 +234,4 @@ const ActionBarContainer = styled.div`
 const FileListContainer = styled.div`
   padding: 0 5px;
 `
-
 

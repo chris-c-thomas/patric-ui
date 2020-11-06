@@ -95,7 +95,7 @@ export default function ObjectSelectorDialog(props: Props) {
 
         <DialogContent>
           <Workspaces
-            isObjectSelector
+            viewType="objectSelector"
             path={path}
             onSelect={handleSelect}
             fileType={fileType}

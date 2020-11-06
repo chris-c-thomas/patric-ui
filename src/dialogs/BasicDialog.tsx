@@ -14,7 +14,7 @@ const usageError = (propName, value) =>
   `BasicDialog component must have prop: ${propName}.  Value was: ${value}`
 
 type Props = {
-  title: string
+  title: string | JSX.Element
   onClose?: () => void
   onPrimaryClick?: () => void
   primaryBtnText?: string
