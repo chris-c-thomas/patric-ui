@@ -32,11 +32,11 @@ type DialogTypes = 'upload' | 'newFolder'
 type Props = {
   path: string
   onUpdateList: () => void
-  isObjectSelector?: boolean
+  viewType?: 'jobResult' | 'objectSelector' | 'file'
 }
 
 const Options = (props: Props) => {
-  const {path, onUpdateList, isObjectSelector} = props
+  const {path, onUpdateList, viewType} = props
 
   const [dialog, setDialog] = useState<DialogTypes>(null)
   const [snack, setSnack] = useState(null)
@@ -63,7 +63,7 @@ const Options = (props: Props) => {
         {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
       </Btn>
 
-      {!isObjectSelector &&
+      {viewType != 'objectSelector' &&
         <Tooltip title="show details">
           <IconButton onClick={() => implement()} size="small" color="primary" disableRipple >
             <InfoIcon />

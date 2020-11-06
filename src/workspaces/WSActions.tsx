@@ -29,11 +29,12 @@ type Props = {
   path: string
   selected: WSObject[]
   onUpdateList: () => void
-  isObjectSelector?: boolean
+
+  viewType?: 'jobResult' | 'objectSelector' | 'file'
 }
 
 export default function Actions(props: Props) {
-  const { onUpdateList, isObjectSelector} = props
+  const { onUpdateList, viewType} = props
 
   const [selected, setSelected] = useState(props.selected || [])
   const [open, setOpen] = useState(false)
@@ -66,7 +67,7 @@ export default function Actions(props: Props) {
         }
       </FileName>
 
-      {!isObjectSelector &&
+      {viewType != 'objectSelector' &&
         <ActionContainer>
           <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
             Share

@@ -587,7 +587,7 @@ export default function TableComponent(props: Props) {
       </CtrlContainer>
 
       <Container
-        offset={offsetHeight}
+        offset={offsetHeight ? offsetHeight : 0}
         stripes={stripes ? 1 : 0}
         userselect={userSelect ? 1 : 0}
       >

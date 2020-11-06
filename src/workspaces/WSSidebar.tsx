@@ -48,12 +48,12 @@ const menu = [
 
 type Props = {
   path: string
-  isObjectSelector?: boolean
+  viewType: 'jobResult' | 'objectSelector' | 'file'
   onNavigate: (evt: MouseEvent, obj: {path?: string}) => void
 }
 
 const WSSideBar = (props: Props) => {
-  const {path, isObjectSelector, onNavigate} = props
+  const {path, viewType, onNavigate} = props
 
   const [activePath, setActivePath] = useState(path)
 
@@ -67,7 +67,7 @@ const WSSideBar = (props: Props) => {
 
   return (
     <SidebarRoot>
-      {!isObjectSelector &&
+      {viewType != 'objectSelector' &&
         <Title>
           Workspaces
           <sup>

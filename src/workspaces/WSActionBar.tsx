@@ -3,8 +3,8 @@ import React, {useState, useEffect, MouseEvent} from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import Options from './WSOptions'
-import Actions from './WSActions'
+import WSOptions from './WSOptions'
+import WSActions from './WSActions'
 
 import { WSObject } from '../api/workspace.d'
 
@@ -65,8 +65,7 @@ type Props = {
   path: string;
   selected: WSObject[]
   onUpdateList: () => void
-  isJobResult?: boolean
-  isObjectSelector?: boolean
+  viewType?: 'jobResult' | 'objectSelector' | 'file'
   onNavigateBreadcrumbs?: (evt: MouseEvent<Element>, string) => void
 }
 
@@ -77,8 +76,7 @@ type Props = {
 export default function ActionBar(props: Props) {
   const {
     path,
-    isJobResult,
-    isObjectSelector,
+    viewType,
     onUpdateList,
     onNavigateBreadcrumbs
   } = props
@@ -100,11 +98,11 @@ export default function ActionBar(props: Props) {
   return (
     <Root className="row align-items-center space-between">
       {selected && selected.length != 0 &&
-        <Actions
+        <WSActions
           path={currentPath}
           selected={selected}
           onUpdateList={onUpdateList}
-          isObjectSelector={isObjectSelector}
+          viewType={viewType}
         />
       }
 
@@ -115,12 +113,12 @@ export default function ActionBar(props: Props) {
         />
       }
 
-      {(!selected || selected.length == 0) && !isJobResult &&
+      {(!selected || selected.length == 0) && viewType != 'jobResult' &&
         <Opts>
-          <Options
+          <WSOptions
             path={currentPath}
             onUpdateList={onUpdateList}
-            isObjectSelector
+            viewType={viewType}
           />
         </Opts>
       }

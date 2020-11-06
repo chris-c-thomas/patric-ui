@@ -25,7 +25,7 @@ const getJobResultDir = (path) => {
 
 
 type Props = {
-  viewType?: 'jobResult' | 'objectSelector'
+  viewType?: 'jobResult' | 'objectSelector' | 'file'
 
   // options for the object selector
   isObjectSelector?: boolean
@@ -50,7 +50,6 @@ export default function Workspaces(props: Props) {
   const [error, setError] = useState(null)
 
 
-  const [isFolder, setIsFolder] = useState(true)
   const [viewType, setViewType] = useState(props.viewType)
   const [selected, setSelected] = useState([])
 
@@ -82,13 +81,6 @@ export default function Workspaces(props: Props) {
       setLoading(true)
 
       try {
-        // determine if folder
-        let isFolder = true
-        if (viewType != 'jobResult' && path.split('/').length > 2) {
-          isFolder = await WS.isFolder(path)
-          setIsFolder(isFolder)
-        }
-
         // if job result, we'll fetch data from dot folder instead
         let jobDir = viewType == 'jobResult' ? getJobResultDir(path) : null
 
@@ -111,6 +103,18 @@ export default function Workspaces(props: Props) {
   useEffect(() => {
     updateList()
   }, [path, updateList])
+
+
+  // determine if viewing file
+  useEffect(() => {
+    if (viewType == 'jobResult' || path.split('/').length <= 2) return
+
+    (async () => {
+      const isFile = !(await WS.isFolder(path))
+      setViewType(prev => isFile ? 'file' : prev)
+    })()
+  }, [path, viewType])
+
 
   // remove actions on path change
   useEffect(() => {
@@ -161,7 +165,7 @@ export default function Workspaces(props: Props) {
     <Root viewType={viewType}>
       <WSSidebar
         path={path}
-        isObjectSelector={viewType == 'objectSelector'}
+        viewType={viewType}
         onNavigate={onNavigate}
       />
 
@@ -171,7 +175,7 @@ export default function Workspaces(props: Props) {
             path={path}
             selected={selected}
             onUpdateList={() => updateList()}
-            isObjectSelector={viewType == 'objectSelector'}
+            viewType={viewType}
             onNavigateBreadcrumbs={onNavigateBreadcrumbs}
           />
 
@@ -184,15 +188,15 @@ export default function Workspaces(props: Props) {
         <FileListContainer>
           {loading && <Progress className="card-progress" /> }
 
-          {isFolder ?
+          {viewType =='file' ?
+            <GenericViewer path={path} /> :
             <FileList
               rows={rows}
               onSelect={handleSelect}
               onNavigate={onNavigate}
               viewType={viewType}
               fileType={fileType}
-            /> :
-            <GenericViewer path={path} />
+            />
           }
 
           {error && <ErrorMsg error={error} />}

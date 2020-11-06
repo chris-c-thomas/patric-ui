@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Menu from '@material-ui/core/Menu'
@@ -41,7 +42,7 @@ export default function CustomizedMenus(props) {
 
   return (
     <span>
-      <Button
+      <Btn
         aria-controls="menu"
         aria-haspopup="true"
         disableRipple
@@ -50,7 +51,7 @@ export default function CustomizedMenus(props) {
         {...rest}
       >
         {label} {caret && <CaretIcon/>}
-      </Button>
+      </Btn>
       <StyledMenu
         id="menu"
         anchorEl={anchorEl}
@@ -64,4 +65,10 @@ export default function CustomizedMenus(props) {
   )
 }
 
+
+const Btn = styled(Button)`
+  &&.MuiButton-root:hover span  {
+    color: #efefef;
+  }
+`
 
