@@ -42,10 +42,10 @@ export default function ErrorMsg(props: Props) {
     } else if (res && 'statusText' in res) {
       msg = res.statusText
     } else {
-      msg = null
+      msg = ''
     }
   } catch(e) {
-    msg = null
+    msg = ''
   }
 
   msg = msg.replaceAll('_ERROR_', '')

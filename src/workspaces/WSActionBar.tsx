@@ -76,13 +76,13 @@ type Props = {
 export default function ActionBar(props: Props) {
   const {
     path,
-    viewType,
     onUpdateList,
     onNavigateBreadcrumbs
   } = props
 
   const [currentPath, setCurrentPath] = useState(path)
   const [selected, setSelected] = useState(props.selected)
+  const [viewType, setViewType] = useState(props.viewType)
 
 
   useEffect(() => {
@@ -93,6 +93,15 @@ export default function ActionBar(props: Props) {
   useEffect(() => {
     setSelected(props.selected)
   }, [props.selected])
+
+  useEffect(() => {
+    setViewType(props.viewType)
+  }, [props.viewType])
+
+
+  const showOptions = () =>
+    (!selected || selected.length == 0) && !['jobResult', 'file'].includes(viewType)
+
 
 
   return (
@@ -113,7 +122,7 @@ export default function ActionBar(props: Props) {
         />
       }
 
-      {(!selected || selected.length == 0) && viewType != 'jobResult' &&
+      {showOptions() &&
         <Opts>
           <WSOptions
             path={currentPath}

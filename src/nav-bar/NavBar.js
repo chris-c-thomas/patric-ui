@@ -222,7 +222,7 @@ const PatricMenus = () => {
 
 const Btn = styled(Button)`
   &&.MuiButton-root:hover span  {
-    color: #efefef;
+    // color: #efefef;
   }
 `
 
@@ -397,8 +397,8 @@ export function NavBar(props) {
 }
 
 const NavBarRoot = styled(AppBar)`
-  background: #234d69 !important; //'#2e76a3';
-  border-top: 3px solid #234d69; // #154e72;
+  background: #2e76a3; // #234d69 !important; //
+  border-top: 3px solid #154e72; //#234d69;
   position: fixed;
   top: 0;
 

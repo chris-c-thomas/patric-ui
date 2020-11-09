@@ -39,9 +39,13 @@ const GenericViewer = (props) => {
         <span>{name}</span>
         {url && <a href={url}><img src={downloadIcon} className="icon hover"/> </a>}
       </Title>
-      {isImg &&
-        <img src={url} />
-      }
+
+      <Content>
+        {isImg &&
+          <img src={url} />
+        }
+      </Content>
+
     </Root>
   )
 }
@@ -55,6 +59,11 @@ const Title = styled.h3`
   span {
     margin-right: 10px;
   }
+`
+
+const Content = styled.div`
+  overflow: scroll;
+  max-height: calc(100% - 100px);
 `
 
 export default GenericViewer

@@ -115,20 +115,23 @@ function listPermissions(paths: string | string[]) {
 
 
 
-export function isFolder(path: string) {
-  return rpc('get', { objects: [path], metadata_only: true})
-    .then(res => res[0][0][1] == 'folder')
-}
-
-
-
-
 export async function getMeta(path: string) : Promise<WSObject> {
   const res = await rpc('get', {objects: [path], metadata_only: true})
   const meta = metaToObj(res[0][0])
   return meta
 }
 
+
+export async function getType(path: string) {
+  const meta = await getMeta(path)
+  return meta.type
+}
+
+
+export async function isFile(path: string) {
+  const type = await getType(path)
+  return type !== 'folder'
+}
 
 
 type GetObjectReturn = Promise<{meta: WSObject, data: any}>

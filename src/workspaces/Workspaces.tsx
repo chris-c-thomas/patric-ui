@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect, useCallback, useLayoutEffect} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -84,6 +84,19 @@ export default function Workspaces(props: Props) {
         // if job result, we'll fetch data from dot folder instead
         let jobDir = viewType == 'jobResult' ? getJobResultDir(path) : null
 
+        // determine file type so we can set the workspace view type if needed
+        if (!['objectSelector', 'jobResult'].includes(viewType) && path.split('/').length > 2) {
+          const type = await WS.getType(path)
+
+          if (type != 'job_result' && type != 'folder') {
+            setLoading(false)
+            setViewType('file')
+            return
+          } else {
+            setViewType(undefined)
+          }
+        }
+
         // get list of objects (table rows)
         const data = await WS.list({path: jobDir ? jobDir : path})
         setRows(data)
@@ -100,20 +113,9 @@ export default function Workspaces(props: Props) {
 
 
   // update workspace list whenever path changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     updateList()
   }, [path, updateList])
-
-
-  // determine if viewing file
-  useEffect(() => {
-    if (viewType == 'jobResult' || path.split('/').length <= 2) return
-
-    (async () => {
-      const isFile = !(await WS.isFolder(path))
-      setViewType(prev => isFile ? 'file' : prev)
-    })()
-  }, [path, viewType])
 
 
   // remove actions on path change
