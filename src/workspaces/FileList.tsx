@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import Table from '../tables/Table'
@@ -16,21 +16,27 @@ import JobResultIcon from '@material-ui/icons/FlagRounded'
 import {bytesToSize, isoToHumanDateTime} from '../utils/units'
 
 
-const columns = [
+const getColumns = (onNavigate, isObjSelector) => [
   {
     id: 'name',
     label: 'Name',
     width: '45%',
-    format: (val, obj) =>
-      <Link
-        to={obj.type == 'job_result' ?
-          `/job-result${obj.encodedPath}` :
-          `/files${obj.encodedPath}`
-        }
-        className="inline-flex align-items-center"
-      >
-        {getIcon(obj)} {val}
-      </Link>
+    format: (val, obj) => (
+      isObjSelector && obj.type != 'folder' ?
+        <span className="inline-flex align-items-center">
+          {getIcon(obj)} {val}
+        </span> :
+        <Link
+          to={obj.type == 'job_result' ?
+            `/job-result${obj.encodedPath}` :
+            `/files${obj.encodedPath}`
+          }
+          onClick={evt => onNavigate(evt, obj)}
+          className="inline-flex align-items-center"
+        >
+          {getIcon(obj)} {val}
+        </Link>
+    )
   }, {
     id: 'size',
     label: 'Size',
@@ -95,29 +101,13 @@ export default function FileList(props: Props) {
   } = props
 
 
+  // if object selector, we'll want to use a
+  // click event instead of routing
+  const [columns] = useState(getColumns(onNavigate, viewType == 'objectSelector'))
+
   // additional conditions for object selector
   let params = {}
   if (viewType == 'objectSelector') {
-
-    // if object selector, we'll want to use a
-    // click event instead of routing
-    columns[0].format = (val, obj) => (
-      obj.type == 'folder' ?
-        <Link
-          to={obj.type == 'job_result' ?
-            `/job-result${obj.encodedPath}` :
-            `/files${obj.encodedPath}`
-          }
-          onClick={evt => onNavigate(evt, obj)}
-          className="inline-flex align-items-center"
-        >
-          {getIcon(obj)} {val}
-        </Link> :
-        <span className="inline-flex align-items-center">
-          {getIcon(obj)} {val}
-        </span>
-    )
-
     params['greyRow'] = (row) => {
       return row.type != 'folder' && row.type != fileType
     }
