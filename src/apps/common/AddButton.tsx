@@ -7,23 +7,22 @@ import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 
 
 type Props = {
-  onAdd: () => void
+  onClick: () => void
   disable?: boolean
   [rest: string]: any
 }
 
 const AddButton = (props: Props) => {
-  const {onAdd, disabled = false, ...rest} = props
+  const {disabled = false, ...rest} = props
 
   return (
     <Tooltip
-      title={<>{disabled ? 'First, select some read files' : 'Add item to selected libraries'}</>}
+      title={<>{disabled ? 'First, select an item' : 'Add item to table'}</>}
       placement="top"
     >
       <span>
         <Button
           aria-label="add item"
-          onClick={onAdd}
           disabled={disabled}
           color="primary"
           endIcon={<AddIcon />}

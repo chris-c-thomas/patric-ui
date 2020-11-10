@@ -55,7 +55,7 @@ const Cell = ({row, col, index, onRemove, ...rest}) => {
     )
   } else {
     return (
-      <td style={{wordBreak: 'break-all', width: rest.width}}>
+      <td style={{width: rest.width}}>
         {'format' in col ? col.format(row[col.id], row) : row[col.id]}
       </td>
     )
@@ -109,7 +109,6 @@ export default function SelectedTable(props: Props) {
   const [columns] = useState(props.columns || [])
 
   useEffect(() => {
-    console.log('setting rows', props.rows)
     setRows(props.rows)
   }, [props.rows])
 
@@ -124,10 +123,11 @@ export default function SelectedTable(props: Props) {
                   <th key={col.id} style={{width: col.width}}>
                     {typeof col.label == 'function' ? col.label() : col.label}
                   </th>
-                )}
+                )
+            }
             {/* empty <th> elements for buttons */
               columns.filter(col => 'button' in col)
-                .map((col) => <th key={col.id} style={{width: 1}}></th>)
+                .map((col, i) => <th key={i} style={{width: 1}}></th>)
             }
           </tr>
         </thead>
@@ -155,7 +155,10 @@ const Table = styled.table`
     background: #fff;
     position: sticky;
     top: 0;
+  }
 
+  td {
+    word-wrap: none;
   }
 `
 

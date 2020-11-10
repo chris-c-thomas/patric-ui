@@ -128,7 +128,7 @@ const SearchContainer = styled.div`
   }
 `
 
-const borderHex = '#234d69' // #2e75a3
+const borderHex = '#2e75a3' // '#234d69'
 const radius = '4px'
 
 const SearchType = styled.select`

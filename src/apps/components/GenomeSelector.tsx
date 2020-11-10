@@ -2,28 +2,65 @@ import React, {useState, useEffect} from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
+
+import IconButton from '@material-ui/core/IconButton'
+
+import FilterIcon from '@material-ui/icons/FilterListOutlined'
 import LockIcon from '@material-ui/icons/Lock'
 
 import {queryGenomeNames} from '../../api/data-api'
 import InputLabel from '@material-ui/core/InputLabel'
 
 
-export default function GenomeSelector(props) {
-  const {label = 'Select Genome'} = props
+
+type Genome = {
+  genome_id: string
+  genome_name: string
+  owner: string
+  public: boolean
+  taxon_id: number
+}
+
+
+
+type Props = {
+  // value: Genome
+  label?: string
+  onChange: (genome: Genome) => void
+}
+
+
+export default function GenomeSelector(props: Props) {
+  const {
+    // value,
+    label = 'Select Genome',
+    onChange
+  } = props
 
   const [loading, setLoading] = useState(false)
   const [options, setOptions] = useState([])
   const [query, setQuery] = useState('')
+  // const [genome, setGenome] = useState(value)
+
+  /*
+  useEffect(() => {
+    setGenome(value)
+  }, [value])
+  */
 
   useEffect(() => {
     (async () => {
       setLoading(true)
       const data = await queryGenomeNames(query)
-      setOptions( data.map(obj => ({name: obj.genome_name, ...obj})) )
+      setOptions(data)
       setLoading(false)
     })()
   }, [query])
 
+
+  const handleOnChange = (evt, obj) => {
+    onChange(obj)
+  }
 
   return (
     <div>
@@ -36,7 +73,7 @@ export default function GenomeSelector(props) {
         getOptionLabel={(option) => option.genome_name}
         options={options}
         autoComplete
-        includeInputInList
+        onChange={handleOnChange}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -51,6 +88,9 @@ export default function GenomeSelector(props) {
             */
             InputProps={{
               ...params.InputProps,
+              startAdornment: (
+                <IconButton size="small"><FilterIcon /></IconButton>
+              ),
               endAdornment: (
                 <>
                   {loading ? <CircularProgress color="inherit" size={16} /> : null}
@@ -62,7 +102,7 @@ export default function GenomeSelector(props) {
         )}
         renderOption={(option) => (
           <div>
-            {!option.public && <LockIcon style={{fontSize: 12}} />} {option.name} [{option.genome_id}]
+            {!option.public && <LockIcon style={{fontSize: 12}} />} {option.genome_name} [{option.genome_id}]
           </div>
         )}
       />

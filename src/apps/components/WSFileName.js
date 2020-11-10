@@ -60,7 +60,8 @@ export default function WSFileName(props) {
   const classes = useStyles()
   const {
     label, value, adornment, type,
-    onChange, style, noLabel, placeholder, prefix
+    onChange, style, noLabel, placeholder, prefix,
+    showHelperText = false, ...rest
   } = props
 
   if (!label && !noLabel)
@@ -105,7 +106,7 @@ export default function WSFileName(props) {
         {...(noLabel ? {style: {margin: 0}} : {})}
         {...(style ? {style} : {})}
       />
-      {(prefix || value) &&
+      {(prefix || value) && showHelperText &&
         <FormHelperText>
           <b>Output Name</b>: {prefix} {val}
         </FormHelperText>

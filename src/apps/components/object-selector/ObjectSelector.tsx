@@ -28,7 +28,7 @@ const formatOptionLabel = (option, query: string) => {
   return (
     <div>
       <small>
-        {query ?  highlightText(path, query) : path}
+        {path}
       </small><br/>
       <b>{query ?  highlightText(name, query) : name}</b>
     </div>
@@ -43,7 +43,7 @@ type Props = {
   label?: string
   type?: string
   placeholder?: string
-  onChange: (object: WSObject) => void
+  onChange: (path: string) => void
 }
 
 export default function ObjectSelector(props: Props) {

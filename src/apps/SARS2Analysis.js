@@ -212,6 +212,7 @@ export default function SARSCoV2() {
           placeholder="My label 123"
           prefix={form.scientific_name}
           width="200px"
+          showHelperText
         />
       </Section>
 

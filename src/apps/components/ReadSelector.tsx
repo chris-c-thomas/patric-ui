@@ -211,7 +211,7 @@ export default function ReadSelector(props: Props) {
           {path1 && path2 && path1 !== path2 &&
             <div className="align-self-center" >
               <AddButton
-                onAdd={() => onAdd('paired')}
+                onClick={() => onAdd('paired')}
                 endIcon={<ArrowIcon />}
               />
             </div>
@@ -235,7 +235,7 @@ export default function ReadSelector(props: Props) {
 
               {path &&
                 <div className="align-self-center" >
-                  <AddButton onAdd={() => onAdd('single')}
+                  <AddButton onClick={() => onAdd('single')}
                     endIcon={<ArrowIcon />}
                   />
                 </div>
@@ -266,7 +266,7 @@ export default function ReadSelector(props: Props) {
                   {validatingSRA ?
                     <Progress size="30" /> :
                     <AddButton
-                      onAdd={() => onAddSRA()}
+                      onClick={() => onAddSRA()}
                       endIcon={<ArrowIcon />}
                     />
                   }

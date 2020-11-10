@@ -134,11 +134,12 @@ export async function isFile(path: string) {
 }
 
 
-type GetObjectReturn = Promise<{meta: WSObject, data: any}>
+type GetReturnType = Promise<{meta: WSObject, data: object}>
 
-export async function getObject(path: string) : GetObjectReturn {
+export async function getObject(path: string) : GetReturnType {
   const res = await rpc('get', {objects: [path]})
   const meta = metaToObj(res[0][0])
+
 
   // if there's a object ref, fetch it
   if (meta.linkRef) {
@@ -149,6 +150,7 @@ export async function getObject(path: string) : GetObjectReturn {
 
     try {
       const data = await axios.get(meta.linkRef + '?download', {headers})
+      console.log('data', data)
       return { meta, data }
     } catch (err) {
       console.error('Error Retrieving data object from shock :', err, meta.linkRef)
@@ -157,7 +159,7 @@ export async function getObject(path: string) : GetObjectReturn {
 
   let result = {
     meta,
-    data: res[0][0][1]
+    data: JSON.parse(res[0][1])
   }
 
   return result

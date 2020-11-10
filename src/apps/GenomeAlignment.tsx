@@ -105,7 +105,6 @@ export default function GenomeAlignment() {
           onChange={val => dispatch({field: 'my_label', val})}
           label="My Label"
           placeholder="My label 123"
-          prefix={form.scientific_name}
           width="200px"
         />
 

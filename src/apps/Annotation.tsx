@@ -163,6 +163,7 @@ export default function Annotation() {
             placeholder="My label 123"
             prefix={form.scientific_name}
             width="200px"
+            showHelperText
           />
         </Row>
       </Section>
