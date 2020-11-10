@@ -22,7 +22,7 @@ const CustomInput = withStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
-    width: 'auto',
+    width: '250px',
     padding: '10px 26px 10px 12px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     // Use the system font instead of the default Roboto font.
@@ -60,7 +60,7 @@ export default function WSFileName(props) {
   const classes = useStyles()
   const {
     label, value, adornment, type,
-    onChange, style, noLabel, placeholder, prefix,
+    onChange, noLabel, placeholder, prefix,
     showHelperText = false, ...rest
   } = props
 
@@ -104,7 +104,6 @@ export default function WSFileName(props) {
         */
         {...(adornment ? inputProps : {})}
         {...(noLabel ? {style: {margin: 0}} : {})}
-        {...(style ? {style} : {})}
       />
       {(prefix || value) && showHelperText &&
         <FormHelperText>

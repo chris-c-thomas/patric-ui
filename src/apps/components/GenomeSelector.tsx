@@ -5,7 +5,8 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 
 import IconButton from '@material-ui/core/IconButton'
 
-import FilterIcon from '@material-ui/icons/FilterListOutlined'
+// import FilterIcon from '@material-ui/icons/FilterListOutlined'
+import filterIcon from '../../../assets/icons/filter.svg'
 import LockIcon from '@material-ui/icons/Lock'
 
 import {queryGenomeNames} from '../../api/data-api'
@@ -89,7 +90,7 @@ export default function GenomeSelector(props: Props) {
             InputProps={{
               ...params.InputProps,
               startAdornment: (
-                <IconButton size="small"><FilterIcon /></IconButton>
+                <IconButton size="small"><img src={filterIcon} width="18" /></IconButton>
               ),
               endAdornment: (
                 <>

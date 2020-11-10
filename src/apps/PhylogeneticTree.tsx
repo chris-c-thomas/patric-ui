@@ -27,7 +27,6 @@ const tutorialURL = `${config.docsURL}/tutorial/codon_tree_building/codon_tree_b
 const example = {
   bootstraps: '100',
   optional_genome_ids: [],
-  output_file: 'Endosymbiont with suggested removed genomes 50_0_0',
   genome_ids: [
     '1401651.3', '428411.4', '401619.4', '401619.6', '515618.4', '1719125.3',
     '203907.6', '1505596.4', '1240471.4', '291272.6', '1505597.4', '859654.3',
@@ -41,7 +40,7 @@ const example = {
   max_genomes_missing: 0,
   max_allowed_dups: 0,
   output_path: `/${getUser(true)}/home`,
-  outPath_file: 'phylogentic tree example',
+  output_file: 'Endosymbiont with suggested removed genomes 50_0_0'
 }
 
 

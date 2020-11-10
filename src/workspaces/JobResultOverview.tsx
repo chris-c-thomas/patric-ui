@@ -7,8 +7,9 @@ import { getMeta } from '../api/ws-api'
 import Dialog from '../dialogs/BasicDialog'
 import ErrorMsg from '../ErrorMsg'
 
-import Button from '@material-ui/core/Button'
 
+import Button from '@material-ui/core/Button'
+import ListIcon from '@material-ui/icons/ListRounded'
 
 
 const OverviewTable = ({data}) => {
@@ -56,7 +57,11 @@ const JobResultOverview = (props: Props) => {
           <OverviewTable data={meta} />
 
           <div className="flex-column">
-            <Button onClick={() => setShowDialog(true)} size="small" disableRipple>
+            <Button
+              onClick={() => setShowDialog(true)}
+              startIcon={<ListIcon/>}
+              disableRipple
+            >
               View Parameters
             </Button>
           </div>
@@ -73,12 +78,9 @@ const JobResultOverview = (props: Props) => {
         />
       }
 
-
       {error &&
         <ErrorMsg error={error} noContact/>
       }
-
-
     </Root>
   )
 }
