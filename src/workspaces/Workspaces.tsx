@@ -27,8 +27,7 @@ const getJobResultDir = (path) => {
 type Props = {
   viewType?: 'jobResult' | 'objectSelector' | 'file'
 
-  // options for the object selector
-  isObjectSelector?: boolean
+  // options for the object selector 'viewType'
   fileType?: string
   path?: string
   onSelect?: (obj: object) => void

@@ -149,8 +149,7 @@ export async function getObject(path: string) : GetReturnType {
     }
 
     try {
-      const data = await axios.get(meta.linkRef + '?download', {headers})
-      console.log('data', data)
+      const {data} = await axios.get(meta.linkRef + '?download', {headers})
       return { meta, data }
     } catch (err) {
       console.error('Error Retrieving data object from shock :', err, meta.linkRef)

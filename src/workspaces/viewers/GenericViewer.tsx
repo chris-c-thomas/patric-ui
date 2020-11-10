@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
-
-import Progress from '@material-ui/core/CircularProgress'
-
 import styled from 'styled-components'
 import ErrorMsg from '../../ErrorMsg'
 
+import Alert from '@material-ui/lab/Alert'
+import Progress from '@material-ui/core/CircularProgress'
+
 import downloadIcon from '../../../assets/icons/download.svg'
-import { getDownloadUrls, getObject} from '../../api/ws-api'
-import {bytesToSize, isoToHumanDateTime} from '../../utils/units'
+import { getDownloadUrls, getMeta, getObject } from '../../api/ws-api'
+import { bytesToSize, isoToHumanDateTime } from '../../utils/units'
+import { AxiosError } from 'axios'
 
 
-
+const TOO_LARGE_THRESHOLD = 10000000 // ~10mb
 
 
 const OverviewTable = ({data}) => {
@@ -32,7 +33,8 @@ const OverviewTable = ({data}) => {
   )
 }
 
-const Switch = ({meta, data, type, url}) => {
+const Viewer = ({meta, data, url}) => {
+  const {type} = meta
 
   if (imageTypes.includes(type))
     return (<img src={url} />)
@@ -74,29 +76,26 @@ const imageTypes = ['png', 'jpg', 'gif']
 const GenericViewer = (props) => {
   const {path} = props
 
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<AxiosError>(null)
 
-  const [type, setType] = useState(null)
-  const [name, setName] = useState(null)
-  const [meta, setMeta] = useState(null)
-  const [data, setData] = useState(null)
-  const [url, setUrl] = useState(null)
+  // don't show stuff that is too large until user clicks 'load anyway'
+  const [shouldLoad, setShouldLoad] = useState<boolean>(false)
+  const [isRendering, setIsRendering] = useState<boolean>(false)
+
+  const [state, setState] = useState({
+    meta: null,
+    data: null,
+    url: null
+  })
 
   useEffect(() => {
     (async () => {
       setLoading(true)
       try {
-        const {meta, data} = await getObject(path)
-        const url = await getDownloadUrls(path)
-
-        const {type, name} = meta
-
-        setType(type)
-        setName(name)
-        setMeta(meta)
-        setData(data)
-        setUrl(url)
+        const [meta, url] = await Promise.all([await getMeta(path), await getDownloadUrls(path)])
+        setState(prev => ({...prev, meta, url}))
+        setShouldLoad(meta.size < TOO_LARGE_THRESHOLD)
       } catch (err) {
         setError(err)
       }
@@ -105,20 +104,64 @@ const GenericViewer = (props) => {
 
   }, [path])
 
+
+  useEffect(() => {
+    (async () => {
+      if (!state.meta || !shouldLoad) return
+
+      setLoading(true)
+      try {
+        const {path} = state.meta
+        const {data} = await getObject(path)
+
+        setIsRendering(true)
+        // don't block main proccess so we can indicate that rendering-in-progress
+        setTimeout(() => {
+          setState(prev => ({...prev, data}))
+          setIsRendering(false)
+        })
+      } catch (err) {
+        setError(err)
+      }
+      setLoading(false)
+    })()
+  }, [state.meta, shouldLoad])
+
   return (
     <Root>
-      <Title className="align-items-center">
-        <span>{name}</span>
-        {url && <a href={url}><img src={downloadIcon} className="icon hover"/> </a>}
-      </Title>
+      {state.meta && state.url &&
+        <Title className="align-items-center">
+          <span>{state.meta.name}</span>
+          <a href={state.url}><img src={downloadIcon} className="icon hover"/></a>
+        </Title>
+      }
 
       <Content>
-        {loading && !error && <Progress />}
+        {loading && !error && !isRendering &&
+          <Progress />
+        }
 
-        {error && <ErrorMsg error={error} />}
+        {state.meta && !shouldLoad &&
+          <Alert severity="info">
+            Note, this file is large ({bytesToSize(state.meta.size)}) and so it is not automatically rendered.<br/>
+            <br/>
+            <a onClick={() => setShouldLoad(true)}>show it anyway</a>
+          </Alert>
+        }
 
-        {data && url && type &&
-          <Switch {...{meta, data: data.data, type, url}} />
+        {isRendering &&
+          <Alert severity="info">
+            The browser is now rendering your data.<br/>
+            This may take a long time depending on the size of your data...
+          </Alert>
+        }
+
+        {error &&
+          <ErrorMsg error={error} />
+        }
+
+        {state.data && shouldLoad &&
+          <Viewer {...state} />
         }
       </Content>
 
@@ -145,6 +188,7 @@ const Title = styled.h3`
 `
 
 const Content = styled.div`
+  margin-top: 20px;
   overflow: scroll;
   max-height: calc(100% - 100px);
 `

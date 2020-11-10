@@ -8,7 +8,7 @@ export type WSObject = {
   created: Date
   hash: string
   owner: string
-  size: string
+  size: number
   userMeta: object
   autoMeta: object
   userPerm: string

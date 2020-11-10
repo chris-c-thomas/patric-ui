@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import Table from '../tables/Table'
@@ -31,7 +31,7 @@ const getColumns = (onNavigate, isObjSelector) => [
             `/job-result${obj.encodedPath}` :
             `/files${obj.encodedPath}`
           }
-          onClick={evt => onNavigate(evt, obj)}
+          onClick={evt => isObjSelector && onNavigate(evt, obj)}
           className="inline-flex align-items-center"
         >
           {getIcon(obj)} {val}
