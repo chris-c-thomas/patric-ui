@@ -37,7 +37,6 @@ import { JobStatusProvider } from './jobs/JobStatusContext'
 import 'regenerator-runtime/runtime'
 
 import './styles/styles.scss'
-import '../node_modules/material-design-icons/iconfont/material-icons.css'
 
 
 const colors = {
