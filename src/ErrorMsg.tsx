@@ -8,16 +8,16 @@ const parseConfigURL = (error) => {
   try {
     return error && 'config' in error && 'url' in error.config && `: ${error.config.url}`
   } catch(e) {
-    return null
+    return ''
   }
 }
 
 const parseTraceback = (res) => {
   try {
     if (res && 'data' in res)
-      return <pre>{res.data}</pre>
+      return <pre>{JSON.stringify(res.data, null, 4)}</pre>
   } catch(e) {
-    return null
+    return ''
   }
 }
 
@@ -31,7 +31,6 @@ export default function ErrorMsg(props: Props) {
   const {error, noContact} = props
 
   const res = error.response
-  console.log('res', res)
 
 
   let msg
@@ -54,8 +53,8 @@ export default function ErrorMsg(props: Props) {
   return (
     <>
       <Alert severity="error" style={{wordBreak: 'break-all'}}>
-        {'message' in error && error.message + ' - '}
-        {msg || 'Something has gone wrong'}
+        {'message' in error && error.message}
+        {msg && ` - ${msg}`}
 
 
         {parseConfigURL(error)}

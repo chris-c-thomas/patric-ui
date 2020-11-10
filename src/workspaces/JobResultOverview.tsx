@@ -39,8 +39,12 @@ const JobResultOverview = (props: Props) => {
   useEffect(() => {
     getMeta(path)
       .then(obj => setMeta(obj.autoMeta))
-      .catch(err => setError(err))
-
+      .catch(err => {
+        const errMsg = err.response.data.error.data
+        if (errMsg.includes('Object not found'))
+          err = Error('Object not found.  This may be because your job is still running or because the job result no longer exists.')
+        setError(err)
+      })
   }, [path])
 
   return (
@@ -71,7 +75,7 @@ const JobResultOverview = (props: Props) => {
 
 
       {error &&
-        <ErrorMsg error={error} />
+        <ErrorMsg error={error} noContact/>
       }
 
 
