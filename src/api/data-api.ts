@@ -280,13 +280,13 @@ export function getRepGenomeIDs(taxonID: string) {
 }
 
 
-export function queryGenomeNames(query: string) {
+export function queryGenomeNames(query?: string, filterString?: string) {
   let q = '?'
   if (query) {
     q += `or(eq(genome_name,*${query}*),eq(genome_id,*${query}*))&`
   }
 
-  q += `or(eq(public,true),eq(public,false))` +
+  q += (filterString ? filterString : `or(eq(public,true),eq(public,false))`) +
       `&select(genome_id,genome_name,strain,public,owner,reference_genome,taxon_id)` +
       `&limit(20,0)`
 
