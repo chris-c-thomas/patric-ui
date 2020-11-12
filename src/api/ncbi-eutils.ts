@@ -21,14 +21,17 @@ export function getPublications(taxonID: string, max: number = 5) {
 }
 
 
-
-// example ids: SRR5121082, ERR3827346, SRX981334, SRR5660159 (id that doesn't have title)
+// example ids:
+//    valid ids:
+//        SRR5121082, ERR3827346 SRR5660159 (id that doesn't have title)
+//    bad id:
+//        SRX981334
 export async function validateSRR(id: string) : Promise<{isValid: boolean, title: string}>  {
   if (!id.match(/^[a-z]{3}[0-9]+$/i)) {
     return {isValid: false, title: ''}
   }
 
-  const res = await api.get(`efetch.fcgi?retmax=10&db=sra&id=${id}`, {timeout: 1000})
+  const res = await api.get(`efetch.fcgi?retmax=10&db=sra&id=${id}`, {timeout: 10000})
 
   const xml = new DOMParser().parseFromString(res.data, 'text/xml')
 

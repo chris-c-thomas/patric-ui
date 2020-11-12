@@ -5,7 +5,6 @@
  * Todo:
  *  - provide onAdd/onRemove methods?
  *
- * example SRR ids: SRR5121082, ERR3827346, SRX981334
  */
 
 import React, {useState, useEffect} from 'react'
@@ -20,7 +19,7 @@ import AddButton from '../common/AddButton'
 import ArrowIcon from '@material-ui/icons/ArrowForwardRounded'
 import Progress from '@material-ui/core/CircularProgress'
 
-
+import InputLabel from '@material-ui/core/InputLabel'
 import Tooltip from '@material-ui/core/Tooltip'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
 import FormHelperText from '@material-ui/core/FormHelperText'
@@ -40,10 +39,10 @@ const columns = [{
       </Tooltip>
     </div>
 }, {
-  button: 'infoButton'
-}, {
   button: 'removeButton'
-}]
+},
+// { button: 'infoButton'} // todo: implement
+]
 
 // todo(nc): define reads
 type Props = {
@@ -146,8 +145,9 @@ export default function ReadSelector(props: Props) {
     } catch (err) {
       setValidatingSRA(false)
 
-      const status = err.response.status
+      const status = err.code == 'ECONNABORTED' ? 0 : err.response.status
       if (status >= 400 && status < 500) {
+        console.log('returning')
         setSRAError(`Your SRA ID ${sraID} is not valid`)
         return
       }
@@ -178,9 +178,9 @@ export default function ReadSelector(props: Props) {
 
         <Row>
           <Column>
-            <Title>
+            <InputLabel shrink>
               Paired Read Library
-            </Title>
+            </InputLabel>
             <Row>
               <ObjectSelector
                 // noLabel
@@ -220,9 +220,9 @@ export default function ReadSelector(props: Props) {
 
         <Row>
           <Column>
-            <Title>
+            <InputLabel shrink>
               Single Read Library
-            </Title>
+            </InputLabel>
             <Row>
               <ObjectSelector
                 // noLabel
@@ -246,31 +246,27 @@ export default function ReadSelector(props: Props) {
 
         <Row>
           <Column>
-            <Title>
-              SRA run accession
-            </Title>
-
             <Row>
               <TextInput
+                label="SRA run accession"
                 placeholder="SRR"
                 value={sraID}
                 onChange={handleSRAChange}
-                noLabel
                 error={!!sraError}
                 helperText={sraMsg || sraError}
                 style={{marginRight: 10}}
               />
 
               {sraID &&
-                <div className="align-self-center">
-                  {validatingSRA ?
-                    <Progress size="30" /> :
-                    <AddButton
-                      onClick={() => onAddSRA()}
-                      endIcon={<ArrowIcon />}
-                    />
-                  }
-                </div>
+              <div className="align-self-center">
+                {validatingSRA ?
+                  <Progress size="30" /> :
+                  <AddButton
+                    onClick={() => onAddSRA()}
+                    endIcon={<ArrowIcon />}
+                  />
+                }
+              </div>
               }
             </Row>
 
@@ -301,16 +297,9 @@ const Inputs = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   flex: 1;
-`
-
-const Title = styled.div`
-  margin: 0 0 0px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(0, 0, 0, 0.87);
-  font-weight: 500;
-  font-size: .85em;
+  & > div {
+    margin-bottom: 10px;
+  }
 `
 
 const TableContainer = styled.div`
