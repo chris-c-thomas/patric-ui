@@ -13,7 +13,7 @@ import ConfirmDialog from './ConfirmDialog'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
-import {deleteObjects} from '../api/ws-api'
+import {deleteObjects, omitSpecialFolders} from '../api/ws-api'
 
 import {WSObject} from '../api/workspace.d'
 
@@ -40,6 +40,9 @@ export default function Actions(props: Props) {
   const [open, setOpen] = useState(false)
   const [snack, setSnack] = useState(null)
 
+  const [notAllowedMsg, setNotAllowedMsg] = useState<string>(null)
+
+
   useEffect(() => {
     setSelected(props.selected)
   }, [props.selected])
@@ -49,9 +52,19 @@ export default function Actions(props: Props) {
     alert('Not implemented yet :(')
   }
 
+  const openDeleteDialog = () => {
+    const paths = selected.map(o => o.path)
+    try {
+      omitSpecialFolders(paths, 'delete')
+      setOpen(true)
+    } catch (errStr) {
+      setNotAllowedMsg(errStr)
+    }
+  }
+
   const handleDelete = () => {
     return deleteObjects(selected, true).then(() => {
-      setSnack(`Deleted ${selected.length} items`)
+      setSnack(`Deleted ${selected.length} item${selected.length > 1 ? 's' : ''}`)
       onUpdateList()
     })
   }
@@ -85,7 +98,7 @@ export default function Actions(props: Props) {
               Edit Type
             </Btn>
           }
-          <Btn startIcon={<DeleteIcon />} onClick={() => setOpen(true)} className="failed">
+          <Btn startIcon={<DeleteIcon />} onClick={openDeleteDialog} className="failed">
             Delete
           </Btn>
 
@@ -99,6 +112,15 @@ export default function Actions(props: Props) {
               loadingText="Deleting..."
               onConfirm={handleDelete}
               onClose={() => setOpen(false)}
+            />
+          }
+
+          {notAllowedMsg &&
+            <ConfirmDialog
+              title="Sorry, you can't delete that."
+              content={<div dangerouslySetInnerHTML={{__html: notAllowedMsg}}></div>}
+              onConfirm={() => setNotAllowedMsg(null)}
+              onClose={() => setNotAllowedMsg(null)}
             />
           }
 

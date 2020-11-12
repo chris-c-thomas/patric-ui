@@ -33,6 +33,8 @@ const OverviewTable = ({data}) => {
   )
 }
 
+const imageTypes = ['png', 'jpg', 'gif']
+
 const Viewer = ({meta, data, url}) => {
   const {type} = meta
 
@@ -70,12 +72,8 @@ const Viewer = ({meta, data, url}) => {
 }
 
 
-const imageTypes = ['png', 'jpg', 'gif']
 
-
-const GenericViewer = (props) => {
-  const {path} = props
-
+const GenericViewer = ({path}) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<AxiosError>(null)
 
@@ -89,6 +87,8 @@ const GenericViewer = (props) => {
     url: null
   })
 
+  // first fetch object meta and download url and
+  // set shouldLoad based on file size
   useEffect(() => {
     (async () => {
       setLoading(true)
@@ -105,6 +105,8 @@ const GenericViewer = (props) => {
   }, [path])
 
 
+  // once we have the above, fetch actual data and render
+  // if reasonable size or if you choses to render anyway
   useEffect(() => {
     (async () => {
       if (!state.meta || !shouldLoad) return
@@ -115,7 +117,7 @@ const GenericViewer = (props) => {
         const {data} = await getObject(path)
 
         setIsRendering(true)
-        // don't block main proccess so we can indicate that rendering-in-progress
+        // don't block main proccess toindicate rendering-in-progress
         setTimeout(() => {
           setState(prev => ({...prev, data}))
           setIsRendering(false)
@@ -126,6 +128,7 @@ const GenericViewer = (props) => {
       setLoading(false)
     })()
   }, [state.meta, shouldLoad])
+
 
   return (
     <Root>

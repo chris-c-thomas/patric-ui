@@ -6,6 +6,9 @@ import Table from '../tables/Table'
 
 import Folder from '@material-ui/icons/FolderOutlined'
 import File from '@material-ui/icons/InsertDriveFileOutlined'
+import FileAlt from '@material-ui/icons/DescriptionOutlined'
+import PDF from '@material-ui/icons/PictureAsPdfOutlined'
+import Image from '@material-ui/icons/ImageOutlined'
 import WSIcon from '../../assets/icons/hdd-o.svg'
 import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
 import GroupIcon from '../../assets/icons/genome-group.svg'
@@ -57,6 +60,7 @@ const getColumns = (onNavigate, isObjSelector) => [
   }
 ]
 
+const imageTypes = ['png', 'jpg', 'gif']
 
 function getIcon({type, isWS, permissions}) {
   if (isWS && permissions.length > 1)
@@ -66,13 +70,19 @@ function getIcon({type, isWS, permissions}) {
   else if (type == 'folder')
     return <Folder className="icon" />
   else if (type == 'contigs')
-    return <img src={ContigsIcon} className="icon" style={{fill: '#000'}}/>
+    return <img src={ContigsIcon} className="icon"/>
   else if (type == 'genome_group')
     return <img src={GroupIcon} className="icon"/>
   else if (type == 'feature_group')
     return <img src={FeaturesIcon} className="icon"/>
   else if (type == 'job_result')
     return <JobResultIcon className="icon" />
+  else if (type == 'pdf')
+    return <PDF className="icon"/>
+  else if (type == 'reads')
+    return <FileAlt className="icon"/>
+  else if (imageTypes.includes(type))
+    return <Image className="icon"/>
   else
     return <File className="icon"/>
 }

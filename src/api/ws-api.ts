@@ -134,7 +134,7 @@ export async function isFile(path: string) {
 }
 
 
-type GetReturnType = Promise<{meta: WSObject, data: object}>
+type GetReturnType = Promise<{meta: WSObject, data: object | string}>
 
 export async function getObject(path: string) : GetReturnType {
   const res = await rpc('get', {objects: [path]})
@@ -144,7 +144,6 @@ export async function getObject(path: string) : GetReturnType {
   // if there's a object ref, fetch it
   if (meta.linkRef) {
     let headers = {
-      // 'X-Requested-With': null,
       Authorization: getToken() ? 'OAuth ' + getToken() : null
     }
 
@@ -152,13 +151,23 @@ export async function getObject(path: string) : GetReturnType {
       const {data} = await axios.get(meta.linkRef + '?download', {headers})
       return { meta, data }
     } catch (err) {
-      console.error('Error Retrieving data object from shock :', err, meta.linkRef)
+      return {
+        meta,
+        data: `Sorry, there was an issue fetching your data from shock.  The file size was ${meta.size} bytes.`
+      }
     }
+  }
+
+  let data = res[0][1]
+  try {
+    data = JSON.parse(res[0][1])
+  } catch (e) {
+    // pass
   }
 
   let result = {
     meta,
-    data: JSON.parse(res[0][1])
+    data
   }
 
   return result
@@ -186,7 +195,7 @@ export function deleteObjects(objs: WSObject[], deleteJobData?: boolean) : Promi
   const paths = objs.map(o => o.path)
 
   // throw error for any special folder
-  _omitSpecialFolders(paths, 'delete')
+  omitSpecialFolders(paths, 'delete')
 
   // delete objects prom
   const prom = rpc('delete', {
@@ -232,7 +241,7 @@ function _deleteJobData(paths: string[]) {
   return proms
 }
 
-function _omitSpecialFolders(paths, operation) {
+export function omitSpecialFolders(paths, operation) {
   paths = Array.isArray(paths) ? paths : [paths]
 
   //  regect home workspaces (must check for anybody's home)
