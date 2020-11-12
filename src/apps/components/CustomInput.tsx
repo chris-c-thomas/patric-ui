@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core/styles'
 import InputBase from '@material-ui/core/InputBase'
+import { withStyles } from '@material-ui/core/styles'
 
 const CustomInput = withStyles((theme) => ({
   root: {
@@ -13,16 +13,14 @@ const CustomInput = withStyles((theme) => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
-    height: 10,
+    width: '250px',
     padding: '10px 26px 10px 12px',
-    transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
-      borderRadius: 4,
+      borderWidth: '2px',
       borderColor: theme.palette.primary.main,
     }
-  }
+  },
 }))(InputBase)
 
 
 export default CustomInput
-

@@ -81,8 +81,7 @@ export default function Annotation() {
     form.contigs && form.domain && form.scientific_name && form.taxonomy_id &&
     form.code && form.recipe
 
-  const isStep2Complete = () =>
-    form.output_path && form.my_label
+  const isStep2Complete = () => !!form.output_path && !!form.my_label
 
 
   const serviceForm = (

@@ -1,7 +1,8 @@
 
 import React, {useState, useEffect} from 'react'
-import FormControl from '@material-ui/core/FormControl'
+
 import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel'
 
 
 const usageError = (propName, value, label) => {
@@ -13,8 +14,9 @@ const usageError = (propName, value, label) => {
 export default function TextInput(props) {
   const {
     label, value, type,
-    onChange, style, noLabel, placeholder, ...rest
+    onChange, noLabel, placeholder, ...rest
   } = props
+
 
   if (!label && !noLabel)
     throw usageError('label', label)
@@ -33,27 +35,21 @@ export default function TextInput(props) {
   }
 
   return (
-    <FormControl>
-      {/*
-      <InputLabel shrink>
+    <div>
+      <InputLabel shrink htmlFor="custom-text-field">
         {label}
       </InputLabel>
-      */}
       <TextField
-        label={label}
-        size="small"
+        id="custom-text-field"
         variant="outlined"
         type={type}
         value={val}
         onChange={handleChange}
         placeholder={placeholder}
         margin="dense"
-        InputLabelProps={{shrink: true}}
-        {...(noLabel ? {style: {margin: 0}} : {})}
-        {...(style ? {style} : {})}
+        {...(noLabel ? {style: {margin: 0}} : {style: {marginTop: '20px'}} )}
         {...rest}
       />
-    </FormControl>
+    </div>
   )
 }
-

@@ -59,15 +59,14 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else if (action.type == 'ADD_GENOME') {
+  else if (action.type == 'ADD_GENOME')
     return { ...state, genome_ids: [...state.genome_ids, action.val] }
-  } else if (action.type == 'ADD_GENOME_GROUP') {
+  else if (action.type == 'ADD_GENOME_GROUP')
     return { ...state, genome_ids: [...state.genome_ids, ...action.val] }
-  } else if (action.type == 'REMOVE_GENOME') {
+  else if (action.type == 'REMOVE_GENOME')
     return { ...state, genome_ids: state.genome_ids.filter((_, i) => i != action.val) }
-  } else {
+  else
     return { ...state, [action.field]: action.val }
-  }
 }
 
 
@@ -88,8 +87,7 @@ export default function PhylogeneticTree() {
 
   const isStep2Complete = () => isStep1Complete()
 
-  const isStep3Complete = () =>
-    form.output_path != null && form.output_file != null
+  const isStep3Complete = () => !!form.output_path  && !!form.output_file
 
 
   const isOutOfRange = (field) => form[field] < 0 || form[field] > 10
@@ -171,7 +169,6 @@ export default function PhylogeneticTree() {
           onChange={val => dispatch({ field: 'output_file', val })}
           label="Output Name"
           placeholder="Output name"
-
         />
       </Section>
 

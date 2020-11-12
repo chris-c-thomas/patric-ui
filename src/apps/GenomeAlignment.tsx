@@ -1,6 +1,10 @@
 import React, { useState, useReducer } from 'react'
 
+import { isSignedIn, getUser } from '../api/auth'
+import SignInForm from '../auth/SignInForm'
 import { Root, Section, Row } from './common/FormLayout'
+import { submitApp } from '../api/app-service'
+
 import AppHeader from './common/AppHeader'
 import SubmitBtns from './common/SubmitBtns'
 import AppStatus from './common/AppStatus'
@@ -8,14 +12,8 @@ import AppStatus from './common/AppStatus'
 import Step from './components/Step'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import WSFileName from './components/WSFileName'
-import GenomeSelector from './components/GenomeSelector'
+import GenomeTableSelector from './components/GenomeTableSelector'
 import AdvancedButton from './components/AdvancedButton'
-
-// auth is required
-import { isSignedIn } from '../api/auth'
-import SignInForm from '../auth/SignInForm'
-
-// import { submitApp } from '../api/app-service'
 
 import config from '../config'
 
@@ -23,12 +21,41 @@ const appName = 'GenomeAlignment'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_alignment_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_alignment/genome_alignment.html`
 
-
 const example = {
+  hmmPGoUnrelated: null,
+  hmmPGoHomologous: null,
+  maxBreakpointDistanceScale: null,
+  seedWeight: null,
+  maxGappedAlignerLength: null,
+  genome_ids: [
+    '224914.11',
+    '204722.5',
+    '568815.3',
+    '359391.4',
+    '262698.4'
+  ],
+
+  minScaledPenalty: null,
+  weight: null,
+  recipe: 'progressiveMauve',
+  conservationDistanceScale: null,
+  output_path: `/${getUser(true)}/home`,
+  output_file: '5 Brucella genomes 16M reference',
 }
 
-
 const initialState = {
+  hmmPGoUnrelated: null,
+  hmmPGoHomologous: null,
+  maxBreakpointDistanceScale: null,
+  seedWeight: null,
+  maxGappedAlignerLength: null,
+  genome_ids: [],
+  minScaledPenalty: null,
+  weight: null,
+  recipe: 'progressiveMauve',
+  conservationDistanceScale: null,
+  output_path: null,
+  output_file: null
 }
 
 const reducer = (state, action) => {
@@ -36,34 +63,35 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else {
-    return {...state, [action.field]: action.val}
-  }
+  else if (action.type == 'ADD_GENOME')
+    return { ...state, genome_ids: [...state.genome_ids, action.val] }
+  else if (action.type == 'ADD_GENOME_GROUP')
+    return { ...state, genome_ids: [...state.genome_ids, ...action.val] }
+  else if (action.type == 'REMOVE_GENOME')
+    return { ...state, genome_ids: state.genome_ids.filter((_, i) => i != action.val) }
+  else
+    return { ...state, [action.field]: action.val }
 }
 
-const getValues = (form) => {
-  let params = {...form}
-  params.scientific_name = `${form.scientific_name} ${form.my_label}`
-  return params
-}
+
 
 export default function GenomeAlignment() {
   const [form, dispatch] = useReducer(reducer, initialState)
   const [status, setStatus] = useState(null)
+  // const [advParams, setAdvParams] = useState(false)
 
-  const [advParams, setAdvParams] = useState(false)
 
   const onSubmit = () => {
-    const values = getValues(form)
     setStatus('starting')
+    submitApp(appName, form)
+      .then(() => setStatus('success'))
+      .catch(error => setStatus(error))
   }
 
-  const isStep1Complete = () =>
-    form.contigs && form.domain && form.scientific_name && form.taxonomy_id &&
-    form.code && form.recipe
 
-  const isStep2Complete = () =>
-    form.output_path != null && form.output_file != null
+  const isStep1Complete = () => !!form.genome_ids.length
+
+  const isStep2Complete = () => !!form.output_path && !!form.output_file
 
 
   const serviceForm = (
@@ -72,19 +100,10 @@ export default function GenomeAlignment() {
 
       <Section column padRows>
         <Row>
-          <GenomeSelector />
-        </Row>
-
-        <Row>
-          <ObjectSelector
-            label="And/or select genome group(s)"
-            value={null}
-            type="genome_group"
-            dialogTitle="Select genome group"
-            onChange={() => {}}
-          />
+          <GenomeTableSelector genomeIDs={form.genome_ids} dispatch={dispatch} />
         </Row>
       </Section>
+
 
       <Step number="2" label="Select Output" completed={isStep2Complete()} />
 
@@ -101,24 +120,25 @@ export default function GenomeAlignment() {
         </Row>
 
         <WSFileName
-          value={form.my_label}
-          onChange={val => dispatch({field: 'my_label', val})}
-          label="My Label"
-          placeholder="My label 123"
-          width="200px"
+          value={form.output_file}
+          onChange={val => dispatch({ field: 'output_file', val })}
+          label="Output Name"
+          placeholder="Output name"
         />
-
-        <AdvancedButton onClick={open => setAdvParams(open)} className="justify-start" />
-
-        {advParams &&
-          <Row>
-            <p>
-              advanced stuff goes here
-            </p>
-          </Row>
-
-        }
       </Section>
+
+
+      {/*
+        <Section>
+          <AdvancedButton onClick={open => setAdvParams(open)} className="justify-start" />
+
+          {advParams &&
+            <Row>
+                advanced stuff goes here
+            </Row>
+          }
+        </Section>
+      */}
 
 
       <SubmitBtns
@@ -136,7 +156,7 @@ export default function GenomeAlignment() {
     <Root small>
       <AppHeader
         title="Genome Alignment"
-        // onUseExample={() => dispatch('EXAMPLE')}
+        onUseExample={() => dispatch('EXAMPLE')}
         description={
           <>
             The Whole Genome Alignment Service aligns genomes using <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0011147" target="_blank">progressiveMauve</a>.

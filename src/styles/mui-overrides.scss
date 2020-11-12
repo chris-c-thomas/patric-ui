@@ -1,5 +1,5 @@
 /**
-* material overrides
+* Global material ui overrides
 */
 
 /* only do uppercases on custom Subtitle component for now */
@@ -10,6 +10,11 @@
 div.MuiToolbar-dense {
   min-height: 30px ;
 }
+
+
+/**
+ * Tabs
+ */
 
 .MuiTabs-root {
   background: #fff !important;
@@ -37,7 +42,6 @@ div.MuiToolbar-dense {
 }
 
 
-
 .MuiButtonBase-root.Mui-selected {
   color: #333;
 }
@@ -55,6 +59,10 @@ div.MuiToolbar-dense {
 .MuiCircularProgress-indeterminate {
   animation-duration: 0.8s !important;
 }
+
+/**
+ * cards & paper
+ */
 
 // re-style paper except for app bar, alerts, and menu
 .MuiCard-root,
@@ -75,6 +83,11 @@ div.MuiToolbar-dense {
   text-transform: none;
 }
 
+/**
+ * steps
+ */
+
+
 .MuiStep-root {
   display: inline-flex;
   margin-bottom: 10px;
@@ -84,9 +97,10 @@ div.MuiToolbar-dense {
   font-size: 1em;
 }
 
-.MuiTableCell-stickyHeader {
-  background-color: #fff;
-}
+
+/**
+ * chips
+ */
 
 .MuiChip-outlined {
   color: #333;
@@ -97,8 +111,15 @@ a.MuiListItem-root {
   color: initial;
 }
 
-.no-elevation {
-  box-shadow: none !important;
+
+/**
+ * forms
+ */
+
+.MuiFormLabel-root {
+  font-weight: bold;
 }
 
-
+.MuiFormControl-marginDense {
+  margin-top: 0;
+}
