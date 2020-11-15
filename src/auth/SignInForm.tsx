@@ -63,9 +63,12 @@ export default function SignInDialog(props: Props) {
           <StepLabel>Please sign in to use this service</StepLabel>
         </Step>
       }
-
-      <TextInput label="Username" value={user} onChange={val => setUser(val)} autoFocus/>
-      <TextInput label="Password" type="password" value={pass} onChange={val => setPass(val)}/>
+      <div>
+        <TextInput label="Username" value={user} onChange={val => setUser(val)} autoFocus/>
+      </div>
+      <div>
+        <TextInput label="Password" type="password" value={pass} onChange={val => setPass(val)}/>
+      </div>
 
       {isInvalid && <div>Invalid username and/or password</div>}
       {failMsg && <div>{failMsg}</div>}

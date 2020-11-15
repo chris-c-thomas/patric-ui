@@ -11,8 +11,14 @@ const usageError = (propName, value) => (
   `StepComponent must have prop: ${propName}.  Value was: ${value}`
 )
 
+type Props = {
+  label: string
+  completed?: boolean
+  number?: number | string
+  noNumber?: boolean
+}
 
-const StepComponent = (props) => {
+const StepComponent = (props: Props) => {
   const {completed, number, label, noNumber} = props
 
   if (!label)
@@ -35,9 +41,6 @@ const StepComponent = (props) => {
   )
 }
 
-const Root = styled.div`
-
-`
 
 const CheckMark = styled.span`
   position: relative;

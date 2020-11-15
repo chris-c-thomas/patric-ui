@@ -1,38 +1,49 @@
-// from https://usehooks.com/useLocalStorage/
+/* eslint-disable react/display-name */
+import {useState, useEffect, useMemo} from 'react'
 
-import { useState } from 'react'
+
+const defaultSetings = {
+  uiSettings: {
+    showDetails: true
+  }
+}
 
 
-export default function useLocalStorage<T>(key: string, initialValue: T) {
+function useLocalStorage (storageKey, key) {
 
-  // State to store our value
-  // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState<T>(() => {
+  const initial = useMemo(() => {
+    const jsonStr = localStorage.getItem(storageKey)
+
+    let init
     try {
-      const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : initialValue
-    } catch (error) {
-
-      // If error also return initialValue
-      console.log(error)
-      return initialValue
+      init = jsonStr ? JSON.parse(jsonStr) : defaultSetings[storageKey]
+    } catch (err) {
+      console.warn('useLocalStorage: could not parse object.  Using default settings.')
+      init = defaultSetings[storageKey]
     }
-  })
+
+    return init
+  }, [storageKey])
 
 
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value
+  const [state, setState] = useState<object>(initial)
 
-      setStoredValue(valueToStore)
-      window.localStorage.setItem(key, JSON.stringify(valueToStore))
-    } catch (error) {
-      // A more advanced implementation would handle the error case
-      console.log(error)
-    }
+
+  useEffect(() => {
+    localStorage.setItem(storageKey, JSON.stringify(state))
+  }, [storageKey, key, state])
+
+
+  const storeValue = val => {
+    const value =
+      val instanceof Function ? val(state[key]) : val
+
+    setState(prev => ({...prev, [key]: value}))
   }
 
-  return [storedValue, setValue]
+  return [state[key], storeValue]
 }
+
+
+
+export default useLocalStorage

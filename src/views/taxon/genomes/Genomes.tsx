@@ -41,7 +41,7 @@ export default function Genomes() {
     ...tableProps // see TabContext for rest of table params
   } = state
 
-  const [showDetails, setShowDetails] = useLocalStorage<boolean>('showGridDetails', false)
+  const [showDetails, setShowDetails] = useLocalStorage('uiSettings', 'showDetails')
   const [fullWidth, setFullWidth] = useState(false)
   const [selection, setSelection] = useState(null)
 

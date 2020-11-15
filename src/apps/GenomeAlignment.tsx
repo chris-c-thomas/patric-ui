@@ -1,21 +1,15 @@
 import React, { useState, useReducer } from 'react'
 
-import { isSignedIn, getUser } from '../api/auth'
-import SignInForm from '../auth/SignInForm'
-import { Root, Section, Row } from './common/FormLayout'
-import { submitApp } from '../api/app-service'
+import {
+  isSignedIn, getUser, SignInForm,
+  AppHeader, SubmitBtns, AppStatus,
+  submitApp, config, Root, Section, Row, Step
+} from './common'
 
-import AppHeader from './common/AppHeader'
-import SubmitBtns from './common/SubmitBtns'
-import AppStatus from './common/AppStatus'
-
-import Step from './components/Step'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import WSFileName from './components/WSFileName'
 import GenomeTableSelector from './components/GenomeTableSelector'
 import AdvancedButton from './components/AdvancedButton'
-
-import config from '../config'
 
 const appName = 'GenomeAlignment'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_alignment_service.html`

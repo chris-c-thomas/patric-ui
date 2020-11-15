@@ -1,42 +1,22 @@
 import React, { useState, useReducer } from 'react'
 
-import { Root, Section, Row } from './common/FormLayout'
-import AppHeader from './common/AppHeader'
-import SubmitBtns from './common/SubmitBtns'
-import AppStatus from './common/AppStatus'
+import {
+  isSignedIn, getUser, SignInForm,
+  AppHeader, SubmitBtns, AppStatus,
+  submitApp, config, Root, Section, Row, Step
+} from './common'
 
-import Step from './components/Step'
-import ObjectSelector from './components/object-selector/ObjectSelector'
-import Selector from './components/Selector'
-import WSFileName from './components/WSFileName'
-import TaxonSelector from './components/TaxonSelector'
 import GenomeSelector from './components/GenomeSelector'
 
-// auth is required
-import { isSignedIn, getUser } from '../api/auth'
-import SignInForm from '../auth/SignInForm'
-
-import { submitApp } from '../api/app-service'
-
-import config from '../config'
 const appName = 'GenomeAnnotation'
-const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`
-const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`
+const userGuideURL =  `${config.docsURL}/services/blast.html`
+const tutorialURL = `${config.docsURL}/tutorial/blast/blast.html`
 
 
 const example = {}
 
 
 const initialState = {
-  contigs: null,
-  domain: 'Bacteria',
-  recipe: 'default',
-  scientific_name: null,
-  taxonomy_id: null,
-  code: 11,
-  output_path: null,
-  my_label: null,
-  get output_file() { return `${this.scientific_name} ${this.my_label}` }
 }
 
 const reducer = (state, action) => {
@@ -49,27 +29,18 @@ const reducer = (state, action) => {
   }
 }
 
-const getValues = (form) => {
-  let params = {...form}
-  params.scientific_name = `${form.scientific_name} ${form.my_label}`
-  return params
-}
 
 export default function Blast() {
   const [form, dispatch] = useReducer(reducer, initialState)
   const [status, setStatus] = useState(null)
 
   const onSubmit = () => {
-    const values = getValues(form)
     setStatus('starting')
   }
 
-  const isStep1Complete = () =>
-    form.contigs && form.domain && form.scientific_name && form.taxonomy_id &&
-    form.code && form.recipe
+  const isStep1Complete = () => false
 
-  const isStep2Complete = () =>
-    form.output_file && form.my_label
+  const isStep2Complete = () => false
 
 
   const serviceForm = (
@@ -78,7 +49,9 @@ export default function Blast() {
 
       <Section column padRows>
         <Row>
-          <GenomeSelector />
+          <GenomeSelector
+            onChange={genome => dispatch({field: 'targetGenome', val: genome.genome_id})}
+          />
         </Row>
 
       </Section>
@@ -99,7 +72,7 @@ export default function Blast() {
       <AppHeader
         title="BLAST"
         // onUseExample={() => dispatch('EXAMPLE')}
-        description="The Genome Annotation Service uses the RAST tool kit (RASTtk) to provide annotation of genomic features."
+        description="The PATRIC BLAST service integrates the BLAST (Basic Local Aligment Search Tool) algorithms to perform searches against against public or private genomes in PATRIC or other reference databases using a DNA or protein sequence and find matching genomes, genes, RNAs, or proteins"
         userGuideURL={userGuideURL}
         tutorialURL={tutorialURL}
       />

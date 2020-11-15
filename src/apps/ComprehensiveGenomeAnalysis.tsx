@@ -2,12 +2,12 @@
 // example ids: SRR5121082, ERR3827346, SRX981334
 import React, { useState, useReducer } from 'react'
 
-import { Root, Section, Row } from './common/FormLayout'
-import AppHeader from './common/AppHeader'
-import SubmitBtns from './common/SubmitBtns'
-import AppStatus from './common/AppStatus'
+import {
+  isSignedIn, getUser, SignInForm,
+  AppHeader, SubmitBtns, AppStatus,
+  submitApp, config, Root, Section, Row, Step
+} from './common'
 
-import Step from './components/Step'
 import ReadSelector from './components/ReadSelector'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import Selector from './components/Selector'
@@ -17,13 +17,6 @@ import TextInput from './components/TextInput'
 import AdvancedButton from './components/AdvancedButton'
 import WSFileName from './components/WSFileName'
 
-// auth is required
-import { isSignedIn, getUser} from '../api/auth'
-import SignInForm from '../auth/SignInForm'
-
-import { submitApp } from '../api/app-service'
-
-import config from '../config'
 const appName = 'ComprehensiveGenomeAnalysis'
 const userGuideURL = `${config.docsURL}/user_guides/services/comprehensive_genome_analysis_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/comprehensive-genome-analysis/comprehensive-genome-analysis2.html`

@@ -76,8 +76,9 @@ export default function Workspaces(props: Props) {
   // update rows displayed to user
   const updateList = useCallback(() => {
     (async function () {
-      setRows(null)
       setLoading(true)
+      setRows(null)
+      setError(null)
 
       try {
         // if job result, we'll fetch data from dot folder instead

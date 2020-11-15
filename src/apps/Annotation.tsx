@@ -1,22 +1,16 @@
 import React, { useState, useReducer } from 'react'
 
-import { Root, Section, Row } from './common/FormLayout'
-import AppHeader from './common/AppHeader'
-import SubmitBtns from './common/SubmitBtns'
-import AppStatus from './common/AppStatus'
+import {
+  isSignedIn, getUser, SignInForm,
+  AppHeader, SubmitBtns, AppStatus,
+  submitApp, config, Root, Section, Row, Step
+} from './common'
 
-import Step from './components/Step'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import Selector from './components/Selector'
 import WSFileName from './components/WSFileName'
 import TaxonSelector from './components/TaxonSelector'
 
-import { isSignedIn, getUser } from '../api/auth'
-import SignInForm from '../auth/SignInForm'
-
-import { submitApp } from '../api/app-service'
-
-import config from '../config'
 const appName = 'GenomeAnnotation'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_annotation_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_annotation/annotation.html`
