@@ -65,6 +65,8 @@ type Props = {
   path: string;
   selected: WSObject[]
   onUpdateList: () => void
+  onShowHidden: () => void
+  onShowDetails: () => void
   viewType?: 'jobResult' | 'objectSelector' | 'file'
   onNavigateBreadcrumbs?: (evt: MouseEvent<Element>, string) => void
 }
@@ -75,19 +77,17 @@ type Props = {
  */
 export default function ActionBar(props: Props) {
   const {
-    path,
-    onUpdateList,
     onNavigateBreadcrumbs
   } = props
 
-  const [currentPath, setCurrentPath] = useState(path)
+  const [path, setPath] = useState(props.path)
   const [selected, setSelected] = useState(props.selected)
   const [viewType, setViewType] = useState(props.viewType)
 
 
   useEffect(() => {
-    setCurrentPath(path)
-  }, [path])
+    setPath(props.path)
+  }, [props.path])
 
 
   useEffect(() => {
@@ -100,7 +100,7 @@ export default function ActionBar(props: Props) {
 
 
   const showOptions = () =>
-    (!selected || selected.length == 0) && !['jobResult', 'file'].includes(viewType)
+    (!selected || selected.length == 0) && !['file'].includes(viewType)
 
 
 
@@ -108,10 +108,8 @@ export default function ActionBar(props: Props) {
     <Root className="row align-items-center space-between">
       {selected && selected.length != 0 &&
         <WSActions
-          path={currentPath}
-          selected={selected}
-          onUpdateList={onUpdateList}
-          viewType={viewType}
+          path={path}
+          {...props}
         />
       }
 
@@ -125,9 +123,8 @@ export default function ActionBar(props: Props) {
       {showOptions() &&
         <Opts>
           <WSOptions
-            path={currentPath}
-            onUpdateList={onUpdateList}
-            viewType={viewType}
+            path={path}
+            {...props}
           />
         </Opts>
       }

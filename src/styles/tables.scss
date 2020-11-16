@@ -52,3 +52,16 @@ table.bordered {
 table.striped tbody tr:nth-of-type(odd) {
   background: rgba(0,0,0,.03);
 }
+
+/**
+ * basic key/value table
+ */
+
+ table.key-value {
+  font-size: 1.1em;
+}
+
+table.key-value tr td:first-child {
+  vertical-align: top;
+  font-weight: bold;
+}

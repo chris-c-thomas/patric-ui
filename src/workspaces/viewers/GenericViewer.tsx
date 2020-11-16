@@ -74,9 +74,14 @@ const Viewer = ({meta, data, url}) => {
   return view
 }
 
+type Props = {
+  path: string
+}
 
 
-const GenericViewer = ({path}) => {
+const GenericViewer = (props: Props) => {
+  const {path} = props
+
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<AxiosError>(null)
 
@@ -104,7 +109,6 @@ const GenericViewer = ({path}) => {
       }
       setLoading(false)
     })()
-
   }, [path])
 
 

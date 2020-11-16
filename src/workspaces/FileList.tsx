@@ -63,7 +63,7 @@ const getColumns = (onNavigate, isObjSelector) => [
 
 const imageTypes = ['png', 'jpg', 'gif', 'svg']
 
-function getIcon({type, isWS, permissions}) {
+export function getIcon({type, isWS, permissions}) {
   if (isWS && permissions.length > 1)
     return <img src={WSSharedIcon} className="icon"/>
   else if (isWS)

@@ -114,7 +114,7 @@ const WSSideBar = (props: Props) => {
 const sidebarWidth = '210px'
 
 const SidebarRoot = styled.div`
-  width: ${sidebarWidth};
+  min-width: ${sidebarWidth};
   padding: 5px 0 10px 0px;
   border-right: 1px solid #ccc;
 

@@ -7,8 +7,18 @@
   text-transform: uppercase;
 }
 
+
+/**
+ * Toolbars
+ */
+
 div.MuiToolbar-dense {
-  min-height: 30px ;
+  min-height: 30px;
+}
+
+div.MuiToolbar-gutters {
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 

@@ -335,3 +335,15 @@ export function updateAutoMetadata (paths: string | string[]) {
 }
 
 
+
+export function permissionMap(perm) {
+  const mapping = {
+    'n': 'No access',
+    'r': 'Can view',
+    'w': 'Can edit',
+    'a': 'Admin'
+  }
+  return mapping[perm]
+}
+
+

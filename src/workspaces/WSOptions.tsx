@@ -31,20 +31,23 @@ type DialogTypes = 'upload' | 'newFolder'
 
 type Props = {
   path: string
-  onUpdateList: () => void
   viewType?: 'jobResult' | 'objectSelector' | 'file'
+  onUpdateList: () => void
+  onShowHidden: () => void
+  onShowDetails: () => void
 }
 
 const Options = (props: Props) => {
-  const {path, onUpdateList, viewType} = props
+  const {
+    path,
+    viewType,
+    onUpdateList,
+    onShowHidden,
+    onShowDetails
+  } = props
 
   const [dialog, setDialog] = useState<DialogTypes>(null)
   const [snack, setSnack] = useState(null)
-
-
-  const implement = () => {
-    alert('Not implemented yet :(')
-  }
 
   const onSuccess = (msg: string) => {
     setSnack(msg)
@@ -53,19 +56,23 @@ const Options = (props: Props) => {
 
   return (
     <Root>
-      <Button startIcon={<VisibilityIcon />} onClick={() => implement()} size="small" disableRipple>
-        Show hidden
-      </Button>
-      <Btn startIcon={<UploadIcon />} onClick={() => setDialog('upload')}>
-        Upload
-      </Btn>
-      <Btn startIcon={<FolderIcon />} onClick={() => setDialog('newFolder')}>
-        {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
-      </Btn>
+      {!['jobResult', 'file'].includes(viewType) &&
+        <>
+          <Button startIcon={<VisibilityIcon />} onClick={onShowHidden} size="small" disableRipple>
+            Show hidden
+          </Button>
+          <Btn startIcon={<UploadIcon />} onClick={() => setDialog('upload')}>
+            Upload
+          </Btn>
+          <Btn startIcon={<FolderIcon />} onClick={() => setDialog('newFolder')}>
+            {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
+          </Btn>
+        </>
+      }
 
       {viewType != 'objectSelector' &&
         <Tooltip title="show details">
-          <IconButton onClick={() => implement()} size="small" color="primary" disableRipple >
+          <IconButton onClick={onShowDetails} size="small" color="primary" disableRipple >
             <InfoIcon />
           </IconButton>
         </Tooltip>

@@ -83,6 +83,10 @@ $spacing: 8px;
 .pull-right { float: right; }
 .pull-left { float: left; }
 
+.no-margin { margin: 0; }
+.no-padding { padding: 0; }
+
+
 /**
  * alerts
  */
@@ -103,9 +107,6 @@ $spacing: 8px;
   }
 }
 
-/**
- * floating (useful when grid is overkill)
- */
 
 /**
  * general colors
@@ -137,7 +138,19 @@ $spacing: 8px;
 }
 
 .avatar {
+  text-transform: uppercase;
+  background: $secondary-color;
   font-size: 1em;
   width: 30px;
   height: 30px;
+}
+
+
+/**
+ *  lists
+ */
+
+ul.list-style-none {
+  padding: 0;
+  list-style: none;
 }

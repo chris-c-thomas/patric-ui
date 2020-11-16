@@ -3,9 +3,9 @@ import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
 import WSSidebar, {sidebarWidth} from './WSSidebar'
-import DetailsSidebar from './DetailsSidebar'
+import WSDetailsSidebar from './WSDetailsSidebar'
 import FileList from './FileList'
-import ActionBar from './WSActionBar'
+import WSActionBar from './WSActionBar'
 import JobResultOverview from './JobResultOverview'
 
 import useLocalStorage from '../hooks/useLocalStorage'
@@ -53,6 +53,7 @@ export default function Workspaces(props: Props) {
   const [error, setError] = useState(null)
 
   const [showDetails, setShowDetails] = useLocalStorage('uiSettings', 'showDetails')
+  const [showHidden, setShowHidden] = useLocalStorage('uiSettings', 'workspaceShowHidden')
 
   const [viewType, setViewType] = useState(props.viewType)
   const [selected, setSelected] = useState([])
@@ -177,11 +178,14 @@ export default function Workspaces(props: Props) {
       />
 
       <Main>
+
         <ActionBarContainer>
-          <ActionBar
+          <WSActionBar
             path={path}
             selected={selected}
             onUpdateList={() => updateList()}
+            onShowDetails={() => setShowDetails(prev => !prev)}
+            onShowHidden={() => setShowHidden(prev => !prev)}
             viewType={viewType}
             onNavigateBreadcrumbs={onNavigateBreadcrumbs}
           />
@@ -192,7 +196,6 @@ export default function Workspaces(props: Props) {
               wsObjects={rows}
             />
           }
-
         </ActionBarContainer>
 
         <FileListContainer>
@@ -211,11 +214,12 @@ export default function Workspaces(props: Props) {
 
           {error && <ErrorMsg error={error} />}
         </FileListContainer>
+
       </Main>
 
       {showDetails &&
-        <DetailsSidebar
-          selection={selection}
+        <WSDetailsSidebar
+          selection={selected}
           onClose={() => setShowDetails(false)}
         />
       }

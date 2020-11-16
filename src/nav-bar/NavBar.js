@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Badge from '@material-ui/core/Badge'
+import Avatar from '@material-ui/core/Avatar'
 
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/ExitToApp'
@@ -154,21 +155,6 @@ const PatricMenus = () => {
 
   return (
     <>
-      {/*
-      <DropdownMenu label="About" menu={
-        <DropDown className="about-menu" >
-          <MenuSection>
-            <MenuTitle>{'About & Help'}</MenuTitle>
-            <Column>
-              <NavItem label="coming soon!" to="/"/>
-            </Column>
-          </MenuSection>
-        </DropDown>
-      }/>
-
-      <Spacer flexItem orientation="vertical" />
-      */}
-
       <DropdownMenu label="Organisms" menu={
         <DropDown>
           <MenuSection>
@@ -246,6 +232,9 @@ const MenuSection = styled.div`
   margin-right: 5px;
 `
 
+const AccountSection = styled.div`
+`
+
 const BadgeCount = styled(Badge)`
   .MuiBadge-badge {
     top: -11;
@@ -261,6 +250,42 @@ const Spacer = styled(Divider)`
   }
 `
 
+const userAccount = () => (
+  <DropdownMenu
+    label={
+      <Avatar className="avatar">
+        {Auth.getUser().charAt(0)}
+      </Avatar>
+    }
+    caret={false}
+    style={{minWidth: 1, margin: '0 8px 0 0'}}
+    menu={
+      <DropDown>
+        <AccountSection>
+          <MenuTitle style={{padding: 10, fontWeight: '1.2em'}}>
+            Signed in as: <b>{Auth.getUser()}</b>
+          </MenuTitle>
+          <MenuItem component={Link} to="/my-profile" disableRipple>
+            <AccountIcon/> My profile
+          </MenuItem>
+          {
+            Auth.isAdmin() ?
+              <MenuItem onClick={Auth.suSwitchBack} disableRipple>
+                <ExitIcon/> SU switch Back
+              </MenuItem> :
+              <MenuItem component={Link} to="/susignin" disableRipple>
+                <SUIcon/> SU sign in
+              </MenuItem>
+          }
+
+          <MenuItem onClick={Auth.signOut} disableRipple>
+            <ExitIcon/> Sign out
+          </MenuItem>
+        </AccountSection>
+      </DropDown>
+    }
+  />
+)
 
 
 export function NavBar(props) {
@@ -291,30 +316,6 @@ export function NavBar(props) {
     setSearchFocus(isFocused)
   }
 
-  const userAccount = () => (
-    <AccountMenu
-      anchorEl={anchorEl}
-      open={isMenuOpen}
-      onClose={closeMenu}
-    >
-      <MenuItem component={Link} to="/my-profile" onClick={closeMenu} disableRipple>
-        <AccountIcon/> My profile
-      </MenuItem>
-      {
-        Auth.isAdmin() ?
-          <MenuItem onClick={Auth.suSwitchBack} disableRipple>
-            <ExitIcon/> SU switch Back
-          </MenuItem> :
-          <MenuItem component={Link} to="/susignin" onClick={closeMenu} disableRipple>
-            <SUIcon/> SU sign in
-          </MenuItem>
-      }
-
-      <MenuItem onClick={Auth.signOut} disableRipple>
-        <ExitIcon/> Sign out
-      </MenuItem>
-    </AccountMenu>
-  )
 
   // used for one-off applications likee the system-status
   const adminAccount = () => (
@@ -355,8 +356,8 @@ export function NavBar(props) {
         }
 
         <DropdownMenu
-          label={<MenuIcon />}
-          style={{minWidth: 1, margin: '0 10px 0 8px'}}
+          label="About" // {<MenuIcon />}
+          style={{minWidth: 1, margin: '0 8px'}}
           caret={false}
           menu={
             <DropDown className="about-menu" >
@@ -370,12 +371,6 @@ export function NavBar(props) {
           }
         />
 
-        {Auth.isSignedIn() &&
-          <AccountBtn color="inherit" onClick={openAccountMenu} disableRipple>
-            <AccountIcon/> {/* &nbsp;{Auth.getUser()}<Avatar className="avatar"></Avatar>*/}
-          </AccountBtn>
-        }
-
         {!Auth.isSignedIn() && !isAdminApp &&
           <SignInBtn
             size="small"
@@ -388,7 +383,10 @@ export function NavBar(props) {
           </SignInBtn>
         }
 
-        {isAdminApp ? adminAccount() : userAccount()}
+        {isAdminApp ?
+          adminAccount() :
+          (Auth.isSignedIn() ? userAccount() : <></>)
+        }
       </Toolbar>
 
       <SignInDialog open={openSignIn} onClose={() => setOpenSignIn(false)}/>
