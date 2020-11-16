@@ -258,7 +258,7 @@ const userAccount = () => (
       </Avatar>
     }
     caret={false}
-    style={{minWidth: 1, margin: '0 8px 0 0'}}
+    style={{minWidth: 1, margin: 0}}
     menu={
       <DropDown>
         <AccountSection>

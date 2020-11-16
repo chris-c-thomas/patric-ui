@@ -29,14 +29,17 @@ const PermissionsList =  (props: WSObject) => {
         <li>
           {userPerm == 'o' ? `${getUser()} (me) - Owner` : `${owner} - Owner`}
         </li>
-        {permissions.slice(1).map(perm => {
-          const user = perm[0].split('@')[0]
-          return (
-            <li key={user}>
-              {user == getUser() ? `${user} (me)` : `${user} - ${permissionMap(perm[1])}`}
-            </li>
-          )
-        })}
+        {permissions
+          .filter(perm => perm[0] != 'global_permission')
+          .map(perm => {
+            const user = perm[0].split('@')[0]
+            return (
+              <li key={user}>
+                {user == getUser() ? `${user} (me)` : `${user} - ${permissionMap(perm[1])}`}
+              </li>
+            )
+          })
+        }
       </ul>
     </MembersContainer>
   )
