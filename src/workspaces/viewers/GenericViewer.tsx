@@ -9,6 +9,7 @@ import downloadIcon from '../../../assets/icons/download.svg'
 import { getDownloadUrls, getMeta, getObject } from '../../api/ws-api'
 import { bytesToSize, isoToHumanDateTime } from '../../utils/units'
 import { AxiosError } from 'axios'
+import PhylogeneticTree from '../../views/viewers/PhylogeneticTree'
 
 
 const TOO_LARGE_THRESHOLD = 10000000 // ~10mb
@@ -38,37 +39,39 @@ const imageTypes = ['png', 'jpg', 'gif']
 const Viewer = ({meta, data, url}) => {
   const {type} = meta
 
+  let view
   if (imageTypes.includes(type))
-    return (<img src={url} />)
+    view = <img src={url} />
   else if (type == 'html')
-    return (
+    view =
       <iframe srcDoc={data}
         width="100%"
         height="100%"
         frameBorder="0"
         sandbox="allow-same-origin"
       />
-    )
   else if (type == 'pdf')
-    return (
+    view =
       <iframe src={`http://docs.google.com/gview?url=${url}&embedded=true`}
         width="100%"
         height="100%"
         frameBorder="0"
       />
-    )
+
   else if (type == 'unspecified')
-    return (
-      <OverviewTable data={meta} />
-    )
+    view = <OverviewTable data={meta} />
+  else if (type == 'nwk')
+    view = <PhylogeneticTree />
+
   else
-    return (
+    view =
       <pre
         style={{fontSize: '.8em', background:'#ffffff'}}
         dangerouslySetInnerHTML={{__html: data}}
       >
       </pre>
-    )
+
+  return view
 }
 
 

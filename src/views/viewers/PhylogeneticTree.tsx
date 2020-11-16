@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect}from 'react'
-import { useParams} from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Phylocanvas from 'phylocanvas'
 
@@ -7,8 +7,19 @@ import {getPhyloData} from '../../api/data-api'
 
 import ErrorMsg from '../../ErrorMsg'
 
+import {list, getObject} from '../../api/ws-api'
+
+
 
 const config = {}
+
+
+const getJobResultDir = (path) => {
+  const parts = path.split('/')
+  const name = parts.pop()
+  return `${parts.join('/')}/.${name}`
+}
+
 
 
 const loadTree = (domRef, newick) => {
@@ -21,11 +32,18 @@ const loadTree = (domRef, newick) => {
 export default function Phylogeny() {
   const ref = useRef(null)
   const {taxonID, genomeID} = useParams()
+  const location = useLocation()
+
+  const params = new URLSearchParams(location.search)
+  const wsTreeFolder = params.get('wsTreeFolder')
+
 
   const [notFound, setNotFound] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    if (!taxonID || !genomeID) return
+
     getPhyloData({taxonID, genomeID}).then(res => {
       loadTree(ref, res.tree)
     }).catch(err => {
@@ -39,6 +57,27 @@ export default function Phylogeny() {
   }, [taxonID, genomeID])
 
 
+  useEffect(() => {
+    (async () => {
+      if (!wsTreeFolder) return
+      console.log('wsTreeFolder', wsTreeFolder)
+
+      try {
+        const path = getJobResultDir(wsTreeFolder)
+        const objs = await list({path, showHidden: true, recursive: true})
+        const nwkFiles = objs.filter((obj) => obj.path.endsWith('treeWithGenomeIds.nwk'))
+        const nwkPath = nwkFiles[0].path
+
+        const data = await getObject(nwkPath)
+        loadTree(ref, data.data)
+      } catch(err) {
+        setError(err)
+      }
+    })()
+  }, [wsTreeFolder])
+
+
+
   return (
     <Root>
       {notFound &&
@@ -47,6 +86,7 @@ export default function Phylogeny() {
       {error &&
         <ErrorMsg error={error} />
       }
+
       <Container ref={ref}>
       </Container>
     </Root>

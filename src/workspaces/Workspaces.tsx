@@ -3,9 +3,13 @@ import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
 import WSSidebar, {sidebarWidth} from './WSSidebar'
+import DetailsSidebar from './DetailsSidebar'
 import FileList from './FileList'
 import ActionBar from './WSActionBar'
 import JobResultOverview from './JobResultOverview'
+
+import useLocalStorage from '../hooks/useLocalStorage'
+
 
 import Progress from '@material-ui/core/LinearProgress'
 import ErrorMsg from '../ErrorMsg'
@@ -48,6 +52,7 @@ export default function Workspaces(props: Props) {
   const [rows, setRows] = useState(null)
   const [error, setError] = useState(null)
 
+  const [showDetails, setShowDetails] = useLocalStorage('uiSettings', 'showDetails')
 
   const [viewType, setViewType] = useState(props.viewType)
   const [selected, setSelected] = useState([])
@@ -182,7 +187,10 @@ export default function Workspaces(props: Props) {
           />
 
           {viewType == 'jobResult' &&
-            <JobResultOverview path={path} />
+            <JobResultOverview
+              path={path}
+              wsObjects={rows}
+            />
           }
 
         </ActionBarContainer>
@@ -204,6 +212,13 @@ export default function Workspaces(props: Props) {
           {error && <ErrorMsg error={error} />}
         </FileListContainer>
       </Main>
+
+      {showDetails &&
+        <DetailsSidebar
+          selection={selection}
+          onClose={() => setShowDetails(false)}
+        />
+      }
 
     </Root>
   )

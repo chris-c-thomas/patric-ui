@@ -15,6 +15,7 @@ import Home from './home/BVBRC'
 import GlobalSearch from './search/GlobalSearch'
 import Account from './user-profile/my-profile'
 
+import ViewerRouter from './views/viewers/'
 import TaxonTabs from './views/taxon/TaxonTabs'
 import GenomeTabs from './views/genome/GenomeTabs'
 import HostTabs from './views/hosts/HostTabs'
@@ -90,12 +91,13 @@ const App = () => {
                       />
 
                       {/* views */}
+                      <Route path="/view/:view" exact component={ViewerRouter} />
                       <Route path="/taxonomy/:taxonID/:view" exact component={TaxonTabs} />
                       <Route path="/genome/:genomeID/:view" component={GenomeTabs} />
                       <Route path="/hosts/:taxonID/:view" render={HostTabs} />
 
                       {/* service routes */}
-                      <Route path={'/apps/Assembly2'} exact component={lazy(() => import('./apps/Assembly2'))} />
+                      <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly2'))} />
                       <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
                       <Route path="/apps/ComprehensiveGenomeAnalysis" exact component={lazy(() => import('./apps/ComprehensiveGenomeAnalysis'))} />
                       <Route path="/apps/PhylogeneticTree" exact component={lazy(() => import('./apps/PhylogeneticTree'))} />

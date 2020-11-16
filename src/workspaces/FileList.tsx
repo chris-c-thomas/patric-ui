@@ -15,6 +15,7 @@ import GroupIcon from '../../assets/icons/genome-group.svg'
 import FeaturesIcon from '../../assets/icons/genome-features.svg'
 import ContigsIcon from '../../assets/icons/contigs.svg'
 import JobResultIcon from '@material-ui/icons/FlagRounded'
+import TreeIcon from '@material-ui/icons/AccountTreeRounded'
 
 import {bytesToSize, isoToHumanDateTime} from '../utils/units'
 
@@ -60,7 +61,7 @@ const getColumns = (onNavigate, isObjSelector) => [
   }
 ]
 
-const imageTypes = ['png', 'jpg', 'gif']
+const imageTypes = ['png', 'jpg', 'gif', 'svg']
 
 function getIcon({type, isWS, permissions}) {
   if (isWS && permissions.length > 1)
@@ -83,6 +84,8 @@ function getIcon({type, isWS, permissions}) {
     return <FileAlt className="icon"/>
   else if (imageTypes.includes(type))
     return <Image className="icon"/>
+  else if (type == 'nwk')
+    return <TreeIcon className="icon" />
   else
     return <File className="icon"/>
 }
