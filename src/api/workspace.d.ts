@@ -12,7 +12,7 @@ export type WSObject = {
   userMeta: object
   autoMeta: object
   userPerm: string
-  public: boolean
+  isPublic: boolean
   isWS: boolean
   linkRef: string
   permissions: [string[]]

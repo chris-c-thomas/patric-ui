@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Link, useParams} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import styled from 'styled-components'
 
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
@@ -35,11 +35,11 @@ const menu = [
     path: `/${getUser(true)}/home/Experiment Groups`, label: 'Experiment Groups',
     indent: 3, icon: <SpecialFolderIcon />
   }, {
-    path: `/shared-with-me/${getUser(true)}`,
+    path: `/shared-with-me`,
     label: 'Shared with me',
     icon: <SharedIcon />
   }, {
-    path: `/public/${getUser(true)}`,
+    path: `/public`,
     label: 'Public Workspaces',
     icon: <PublicIcon />
   }

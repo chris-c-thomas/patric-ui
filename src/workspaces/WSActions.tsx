@@ -34,8 +34,9 @@ type Props = {
 
 const WSActions = (props: Props) => {
   const {
+    path,
+    viewType,
     onUpdateList,
-    viewType
   } = props
 
   const [selected, setSelected] = useState(props.selected || [])
@@ -44,6 +45,7 @@ const WSActions = (props: Props) => {
 
   const [notAllowedMsg, setNotAllowedMsg] = useState<string>(null)
 
+  console.log('path', path)
 
   useEffect(() => {
     setSelected(props.selected)
@@ -71,9 +73,15 @@ const WSActions = (props: Props) => {
     })
   }
 
+  const shouldShowActions = () =>
+    viewType != 'objectSelector' &&
+    !path.startsWith('/public') &&
+    !path.startsWith('/shared-with-me')
+
+
   return (
     <Root>
-      {viewType != 'objectSelector' &&
+      {shouldShowActions() &&
         <>
           <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
             Share

@@ -52,9 +52,15 @@ const Options = (props: Props) => {
     onUpdateList()
   }
 
+
+  const shouldShowOptions = () =>
+    !['jobResult', 'file'].includes(viewType)  &&
+    !path.startsWith('/public') &&
+    !path.startsWith('/shared-with-me')
+
   return (
     <Root>
-      {!['jobResult', 'file'].includes(viewType) &&
+      {shouldShowOptions() &&
         <>
           <Button
             startIcon={showHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}

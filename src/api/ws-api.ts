@@ -44,7 +44,7 @@ function metaToObj(m) : WSObject {
     userMeta: m[7],
     autoMeta: m[8],
     userPerm: m[9],
-    public: m[10] == 'r',
+    isPublic: m[10] == 'r',
     linkRef: m[11],
     isWS: (m[2].match(/\//g) || []).length == 2,
     permissions: null // (added below in a second 'list_permissions' request)
@@ -57,9 +57,10 @@ type Args = {
   recursive?: boolean;
   showHidden?: boolean;
   includePermissions?: boolean;
+  onlyPublic?: boolean
 }
 
-export function list(args: Args) {
+export async function list(args: Args) {
   if (typeof args !== 'object')
     throw Error('Workspace API: the "list" method requires an object')
 
@@ -68,7 +69,8 @@ export function list(args: Args) {
     type,
     recursive = false,
     showHidden = false,
-    includePermissions = true
+    includePermissions = true,
+    onlyPublic = false
   } = args
 
   const params = {
@@ -77,32 +79,30 @@ export function list(args: Args) {
     ...(type ? {query: {type: [type]}} : {})
   }
 
-  return rpc('ls', params)
-    .then(data => {
-      const meta = data[path]
-      let objects = meta ? meta.map((m) => metaToObj(m)) : []
+  const data = await rpc('ls', params)
+  const meta = data[path]
 
-      if (!showHidden) {
-        objects = objects.filter(obj => obj.name.charAt(0) != '.')
-      }
+  let objects = meta ? meta.map((m) => metaToObj(m)) : []
 
-      let permissionProm: Promise<any>
-      if (includePermissions) {
-        permissionProm = listPermissions(objects.map(o => o.path))
-      }
+  if (!showHidden) {
+    objects = objects.filter(obj => obj.name.charAt(0) != '.')
+  }
 
-      return permissionProm.then((permHash) => {
-        // join-in permissions if requested
-        if (permHash) {
-          objects = objects.map((obj) => ({...obj, permissions: permHash[obj.path]}))
-        }
+  if (onlyPublic) {
+    console.log('onlypublic', onlyPublic)
+    objects = objects.filter(obj => obj.isPublic)
+  }
 
-        // we want to return folders followed by files
-        const folders = objects.filter((obj) => obj.type == 'folder').reverse()
-        const files = objects.filter((obj) => obj.type != 'folder'). reverse()
-        return [...folders, ...files]
-      })
-    })
+  let permHash
+  if (includePermissions) {
+    permHash = await listPermissions(objects.map(o => o.path))
+    objects = objects.map((obj) => ({...obj, permissions: permHash[obj.path]}))
+  }
+
+  // we want to return folders followed by files
+  const folders = objects.filter((obj) => obj.type == 'folder').reverse()
+  const files = objects.filter((obj) => obj.type != 'folder'). reverse()
+  return [...folders, ...files]
 }
 
 

@@ -9,6 +9,7 @@ import File from '@material-ui/icons/InsertDriveFileOutlined'
 import FileAlt from '@material-ui/icons/DescriptionOutlined'
 import PDF from '@material-ui/icons/PictureAsPdfOutlined'
 import Image from '@material-ui/icons/ImageOutlined'
+import PublicIcon from '@material-ui/icons/PublicRounded'
 import WSIcon from '../../assets/icons/hdd-o.svg'
 import WSSharedIcon from '../../assets/icons/shared-workspace.svg'
 import GroupIcon from '../../assets/icons/genome-group.svg'
@@ -25,22 +26,33 @@ const getColumns = (onNavigate, isObjSelector) => [
     id: 'name',
     label: 'Name',
     width: '45%',
-    format: (val, obj) => (
-      isObjSelector && obj.type != 'folder' ?
-        <span className="inline-flex align-items-center">
-          {getIcon(obj)} {val}
-        </span> :
+    format: (val, obj) => {
+      if (isObjSelector && obj.type != 'folder' ) {
+        return (
+          <span className="inline-flex align-items-center">
+            {getIcon(obj)} {val}
+          </span>
+        )
+      }
+
+      let url
+      if (obj.isPublic)
+        url = `/files/public${obj.encodedPath}`
+      else if (obj.type == 'job_result')
+        url = `/job-result${obj.encodedPath}`
+      else
+        url = `/files${obj.encodedPath}`
+
+      return (
         <Link
-          to={obj.type == 'job_result' ?
-            `/job-result${obj.encodedPath}` :
-            `/files${obj.encodedPath}`
-          }
+          to={url}
           onClick={evt => isObjSelector && onNavigate(evt, obj)}
           className="inline-flex align-items-center"
         >
           {getIcon(obj)} {val}
         </Link>
-    )
+      )
+    }
   }, {
     id: 'size',
     label: 'Size',
@@ -63,13 +75,15 @@ const getColumns = (onNavigate, isObjSelector) => [
 
 const imageTypes = ['png', 'jpg', 'gif', 'svg']
 
-export function getIcon({type, isWS, permissions}) {
-  if (isWS && permissions.length > 1)
+export function getIcon({type, isWS, isPublic, permissions}) {
+  if (isWS && isPublic)
+    return <PublicIcon className="icon"/>
+  else if (isWS && permissions.length > 1)
     return <img src={WSSharedIcon} className="icon"/>
   else if (isWS)
     return <img src={WSIcon} className="icon"/>
   else if (type == 'folder')
-    return <Folder className="icon" />
+    return <Folder className="icon"/>
   else if (type == 'contigs')
     return <img src={ContigsIcon} className="icon"/>
   else if (type == 'genome_group')
@@ -77,7 +91,7 @@ export function getIcon({type, isWS, permissions}) {
   else if (type == 'feature_group')
     return <img src={FeaturesIcon} className="icon"/>
   else if (type == 'job_result')
-    return <JobResultIcon className="icon" />
+    return <JobResultIcon className="icon"/>
   else if (type == 'pdf')
     return <PDF className="icon"/>
   else if (type == 'reads')
@@ -85,7 +99,7 @@ export function getIcon({type, isWS, permissions}) {
   else if (imageTypes.includes(type))
     return <Image className="icon"/>
   else if (type == 'nwk')
-    return <TreeIcon className="icon" />
+    return <TreeIcon className="icon"/>
   else
     return <File className="icon"/>
 }

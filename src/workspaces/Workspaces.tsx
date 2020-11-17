@@ -87,12 +87,19 @@ export default function Workspaces(props: Props) {
       setError(null)
 
       try {
-        // if job result, we'll fetch data from dot folder instead
-        let jobDir = viewType == 'jobResult' ? getJobResultDir(path) : null
+        let _path = path
+
+        // if public, always strip out '/public'
+        const onlyPublic = _path.startsWith('/public')
+        _path = onlyPublic ? `${_path.slice(7)}/` : _path
+
+        // if public, always strip out '/public'
+        const onlySharedWithMe = _path.startsWith('/shared-with-me')
+        _path = onlySharedWithMe ? `${_path.slice(15)}/` : _path
 
         // determine file type so we can set the workspace view type if needed
-        if (!['objectSelector', 'jobResult'].includes(viewType) && path.split('/').length > 2) {
-          const type = await WS.getType(path)
+        if (!['objectSelector', 'jobResult'].includes(viewType) && _path.split('/').length > 2) {
+          const type = await WS.getType(_path)
 
           if (type != 'job_result' && type != 'folder') {
             setLoading(false)
@@ -103,11 +110,14 @@ export default function Workspaces(props: Props) {
           }
         }
 
+        // if job result, we'll fetch data from dot folder instead
+        _path = viewType == 'jobResult' ? getJobResultDir(_path) : _path
+
         // get list of objects (table rows)
-        console.log('show Hidden', showHidden)
         const data = await WS.list({
-          path: jobDir ? jobDir : path,
-          showHidden
+          path: _path,
+          showHidden,
+          onlyPublic
         })
         setRows(data)
 
