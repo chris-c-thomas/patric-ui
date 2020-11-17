@@ -10,9 +10,7 @@ import ErrorMsg from '../../ErrorMsg'
 import {list, getObject} from '../../api/ws-api'
 
 
-
 const config = {}
-
 
 const getJobResultDir = (path) => {
   const parts = path.split('/')
@@ -21,12 +19,12 @@ const getJobResultDir = (path) => {
 }
 
 
-
 const loadTree = (domRef, newick) => {
   const tree = Phylocanvas.createTree(domRef.current, config)
   tree.load(newick, () => console.log('tree loaded'))
   tree.setTreeType('rectangular')
 }
+
 
 
 export default function Phylogeny() {
@@ -42,7 +40,7 @@ export default function Phylogeny() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!taxonID || !genomeID) return
+    if (!taxonID && !genomeID) return
 
     getPhyloData({taxonID, genomeID}).then(res => {
       loadTree(ref, res.tree)
@@ -60,7 +58,6 @@ export default function Phylogeny() {
   useEffect(() => {
     (async () => {
       if (!wsTreeFolder) return
-      console.log('wsTreeFolder', wsTreeFolder)
 
       try {
         const path = getJobResultDir(wsTreeFolder)
