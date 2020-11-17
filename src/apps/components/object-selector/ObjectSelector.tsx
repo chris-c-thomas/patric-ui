@@ -37,7 +37,7 @@ const formatOptionLabel = (option, query: string) => {
 
 
 type Props = {
-  includeHidden?: boolean
+  showHidden?: boolean
   dialogTitle: string | JSX.Element
   value: string // workspace path in this case
   label?: string
@@ -49,7 +49,7 @@ type Props = {
 export default function ObjectSelector(props: Props) {
   const {
     type,
-    includeHidden,
+    showHidden,
     dialogTitle,
     label,
     value,
@@ -84,7 +84,7 @@ export default function ObjectSelector(props: Props) {
       let data
       try {
         setLoading(true)
-        data = await WS.list({path, type, recursive: true, includeHidden})
+        data = await WS.list({path, type, recursive: true, showHidden})
       } catch (err) {
         setError(err)
       }
@@ -92,7 +92,7 @@ export default function ObjectSelector(props: Props) {
       setOptions(data)
       setLoading(false)
     })()
-  }, [type, includeHidden])
+  }, [type, showHidden])
 
 
   const onDialogSelect = (path) => {

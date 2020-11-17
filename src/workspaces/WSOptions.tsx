@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button'
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import UploadIcon from '@material-ui/icons/CloudUploadOutlined'
 import VisibilityIcon from '@material-ui/icons/Visibility'
-
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOffOutlined'
 
 // import NewWSIcon from '../../assets/icons/add-workspace.svg'
 
@@ -29,6 +29,7 @@ type DialogTypes = 'upload' | 'newFolder'
 
 type Props = {
   path: string
+  showHidden: boolean,
   viewType?: 'jobResult' | 'objectSelector' | 'file'
   onUpdateList: () => void
   onShowHidden: () => void
@@ -38,6 +39,7 @@ const Options = (props: Props) => {
   const {
     path,
     viewType,
+    showHidden,
     onUpdateList,
     onShowHidden
   } = props
@@ -54,8 +56,13 @@ const Options = (props: Props) => {
     <Root>
       {!['jobResult', 'file'].includes(viewType) &&
         <>
-          <Button startIcon={<VisibilityIcon />} onClick={onShowHidden} size="small" disableRipple>
-            Show hidden
+          <Button
+            startIcon={showHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            onClick={onShowHidden}
+            size="small"
+            disableRipple
+          >
+            {showHidden ? 'Hide' : 'Show'} hidden
           </Button>
 
           <Btn startIcon={<UploadIcon />} onClick={() => setDialog('upload')}>

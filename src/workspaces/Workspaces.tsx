@@ -104,7 +104,11 @@ export default function Workspaces(props: Props) {
         }
 
         // get list of objects (table rows)
-        const data = await WS.list({path: jobDir ? jobDir : path})
+        console.log('show Hidden', showHidden)
+        const data = await WS.list({
+          path: jobDir ? jobDir : path,
+          showHidden
+        })
         setRows(data)
 
         // remove actions after list refresh
@@ -115,7 +119,7 @@ export default function Workspaces(props: Props) {
 
       setLoading(false)
     })()
-  }, [path, viewType])
+  }, [path, viewType, showHidden])
 
 
   // update workspace list whenever path changes
@@ -185,6 +189,7 @@ export default function Workspaces(props: Props) {
             selected={selected}
             onUpdateList={() => updateList()}
             onShowDetails={() => setShowDetails(prev => !prev)}
+            showHidden={showHidden}
             onShowHidden={() => setShowHidden(prev => !prev)}
             viewType={viewType}
             onNavigateBreadcrumbs={onNavigateBreadcrumbs}

@@ -89,9 +89,9 @@ export default function Annotation() {
             label="Contigs"
             type="contigs"
             value={form.contigs}
-            includeHidden
             onChange={val => dispatch({field: 'contigs', val})}
             dialogTitle="Select a contigs file"
+            showHidden
           />
         </Row>
 

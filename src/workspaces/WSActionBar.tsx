@@ -68,6 +68,7 @@ const Breadcrumbs = (props: BreadcrumbProps) => {
 type Props = {
   path: string;
   selected: WSObject[]
+  showHidden: boolean
   onUpdateList: () => void
   onShowHidden: () => void
   onShowDetails: () => void

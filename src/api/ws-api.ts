@@ -56,7 +56,6 @@ type Args = {
   type?: string;
   recursive?: boolean;
   showHidden?: boolean;
-  includeHidden?: boolean;
   includePermissions?: boolean;
 }
 
@@ -68,7 +67,7 @@ export function list(args: Args) {
     path,
     type,
     recursive = false,
-    includeHidden = false,
+    showHidden = false,
     includePermissions = true
   } = args
 
@@ -83,7 +82,7 @@ export function list(args: Args) {
       const meta = data[path]
       let objects = meta ? meta.map((m) => metaToObj(m)) : []
 
-      if (!includeHidden) {
+      if (!showHidden) {
         objects = objects.filter(obj => obj.name.charAt(0) != '.')
       }
 
