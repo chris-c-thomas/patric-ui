@@ -13,17 +13,22 @@ import TextInput from './components/TextInput'
 import AdvancedButton from './components/AdvancedButton'
 import WSFileName from './components/WSFileName'
 
-const appName = 'Assembly2'
+const appName = 'GenomeAssembly2'
 const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service.html`
 const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
 
 
 const example = {
-  reads: [{ // not sent to server
-    read1: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR3584989_1.fastq',
-    read2: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR3584989_2.fastq',
+  reads: [{
     type: 'paired_end_libs',
-    label: 'SRR3584989_1.fastq, SRR3584989_2.fastq'
+    label: 'SRR7796591_1.fastq.gz, SRR7796591_2.fastq.gz',
+    value: { // not sent to server
+      read1: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR779651/SRR7796591_1.fastq.gz',
+      read2: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR779651/SRR7796591_2.fastq.gz',
+      interleaved: 'false',
+      platform: 'infer',
+      read_orientation_outward: 'false'
+    }
   }],
   recipe: 'auto',
   racon_iter: 2,
@@ -86,9 +91,17 @@ export default function Assembly() {
       .catch(error => setStatus(error))
   }
 
+
+  const isStep1Complete = () => form.reads.length > 0
+
+  const isStep2Complete = () => form.reads.length > 0
+
+  const isStep3Complete = () => !!form.output_path  && !!form.output_file
+
+
   const serviceForm = (
     <>
-      <Step number="1" label="Input File(s)" completed={form.reads.length > 0} />
+      <Step number="1" label="Input File(s)" completed={isStep1Complete()} />
 
       <Section>
         <ReadSelector
@@ -98,7 +111,7 @@ export default function Assembly() {
         />
       </Section>
 
-      <Step number="2" label="Set Parameters" completed={form.reads.length > 0} />
+      <Step number="2" label="Set Parameters" completed={isStep2Complete()} />
 
       <Section column>
         <Row>
@@ -158,7 +171,7 @@ export default function Assembly() {
         }
       </Section>
 
-      <Step number="3" label="Select Output" completed={!!form.output_path && !!form.output_file} />
+      <Step number="3" label="Select Output" completed={isStep3Complete()} />
 
       <Section column padRows>
         <Row>
@@ -187,7 +200,7 @@ export default function Assembly() {
         onSubmit={onSubmit}
         onReset={() => dispatch('RESET')}
         status={status}
-        disabled={!(form.reads.length > 0 && form.output_path != null && !!form.output_file)}
+        disabled={!isStep1Complete() || !isStep3Complete()}
       />
 
       <AppStatus name={appName} status={status} />

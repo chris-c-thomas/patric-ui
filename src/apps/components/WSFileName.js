@@ -26,8 +26,7 @@ export default function WSFileName(props) {
   const [error] = useState(false)
 
   useEffect(() => {
-    if (!value) return
-    setVal(value)
+    setVal(value || '')
   }, [value])
 
   let inputProps = {
