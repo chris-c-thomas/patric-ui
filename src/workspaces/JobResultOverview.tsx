@@ -8,15 +8,14 @@ import { getMeta } from '../api/ws-api'
 import Dialog from '../dialogs/BasicDialog'
 import ErrorMsg from '../ErrorMsg'
 
-
 import Button from '@material-ui/core/Button'
+
 import ListIcon from '@material-ui/icons/ListRounded'
 import StdOutIcon from '@material-ui/icons/FeaturedPlayList'
 import StdErrorIcon from '@material-ui/icons/WarningRounded'
-
-// view icons
 import ViewIcon from '@material-ui/icons/VisibilityRounded'
 import TreeIcon from '@material-ui/icons/AccountTreeRounded'
+
 import { WSObject } from 'api/workspace.d'
 
 
@@ -38,6 +37,12 @@ const getViewerURL = (meta, objs) => {
     url = `/view/PhylogeneticTree?labelSearch=true&idType=genome_id&labelType=genome_name&wsTreeFolder=${encodePath(path)}`
   } else if (['GenomeAnnotation'].includes(jobType)) {
     url = `/genome/${getGenomeID(objs)}/overview`
+  } else if (['ComprehensiveGenomeAnalysis'].includes(jobType)) {
+    url = `/files${getReportPath(objs)}`
+  } else if (['GenomeAssembly2'].includes(jobType)) {
+    url = `/files${getReportPath(objs)}`
+  } else if (['ComprehensiveSARS2Analysis'].includes(jobType)) {
+    url = `/files${getReportPath(objs)}`
   }
 
   return url
@@ -60,10 +65,19 @@ const getIcon = (meta) => {
 
 const getGenomeID = (objs) => {
   const genomes = objs.filter((o) => o.type == 'genome')
-  const id = genomes[0].autoMeta.genome_id
+  const id = genomes[0]?.autoMeta?.genome_id
   if (id) return id
 
-  throw Error('Missing ID')
+  throw Error('Could not find genome_id')
+}
+
+
+const getReportPath = (objs) => {
+  const htmls = objs.filter((o) => o.type == 'html')
+  const id = htmls[0]?.path
+  if (id) return id
+
+  throw Error('Could not find a report path')
 }
 
 
