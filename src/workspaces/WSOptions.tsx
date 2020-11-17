@@ -2,12 +2,10 @@ import React, {useState} from 'react'
 import styled from 'styled-components'
 
 import Button from '@material-ui/core/Button'
-import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
 import FolderIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import UploadIcon from '@material-ui/icons/CloudUploadOutlined'
 import VisibilityIcon from '@material-ui/icons/Visibility'
-import InfoIcon from '@material-ui/icons/InfoOutlined'
+
 
 // import NewWSIcon from '../../assets/icons/add-workspace.svg'
 
@@ -34,7 +32,6 @@ type Props = {
   viewType?: 'jobResult' | 'objectSelector' | 'file'
   onUpdateList: () => void
   onShowHidden: () => void
-  onShowDetails: () => void
 }
 
 const Options = (props: Props) => {
@@ -42,8 +39,7 @@ const Options = (props: Props) => {
     path,
     viewType,
     onUpdateList,
-    onShowHidden,
-    onShowDetails
+    onShowHidden
   } = props
 
   const [dialog, setDialog] = useState<DialogTypes>(null)
@@ -61,21 +57,15 @@ const Options = (props: Props) => {
           <Button startIcon={<VisibilityIcon />} onClick={onShowHidden} size="small" disableRipple>
             Show hidden
           </Button>
+
           <Btn startIcon={<UploadIcon />} onClick={() => setDialog('upload')}>
             Upload
           </Btn>
+
           <Btn startIcon={<FolderIcon />} onClick={() => setDialog('newFolder')}>
             {isWorkspace(path) ? 'New Workspace' : 'New Folder'}
           </Btn>
         </>
-      }
-
-      {viewType != 'objectSelector' &&
-        <Tooltip title="show details">
-          <IconButton onClick={onShowDetails} size="small" color="primary" disableRipple >
-            <InfoIcon />
-          </IconButton>
-        </Tooltip>
       }
 
       {dialog == 'newFolder' &&
@@ -93,7 +83,6 @@ const Options = (props: Props) => {
           onClose={() => setDialog(null)}
         />
       }
-
 
       {snack &&
         <Snackbar open={true} autoHideDuration={5000} onClose={() => setSnack(null)}>

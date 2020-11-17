@@ -6,6 +6,10 @@ import { Link } from 'react-router-dom'
 import WSOptions from './WSOptions'
 import WSActions from './WSActions'
 
+import IconButton from '@material-ui/core/IconButton'
+import InfoIcon from '@material-ui/icons/InfoOutlined'
+import Tooltip from '@material-ui/core/Tooltip'
+
 import { WSObject } from '../api/workspace.d'
 
 type BreadcrumbProps = {
@@ -77,7 +81,8 @@ type Props = {
  */
 export default function ActionBar(props: Props) {
   const {
-    onNavigateBreadcrumbs
+    onNavigateBreadcrumbs,
+    onShowDetails
   } = props
 
   const [path, setPath] = useState(props.path)
@@ -99,20 +104,15 @@ export default function ActionBar(props: Props) {
   }, [props.viewType])
 
 
+  const showActions = () => (selected || []).length > 0
+
   const showOptions = () =>
     (!selected || selected.length == 0) && !['file'].includes(viewType)
 
 
 
   return (
-    <Root className="row align-items-center space-between">
-      {selected && selected.length != 0 &&
-        <WSActions
-          path={path}
-          {...props}
-        />
-      }
-
+    <Root className="flex align-items-center space-between">
       {(!selected || selected.length == 0) &&
         <Breadcrumbs
           path={path}
@@ -120,14 +120,40 @@ export default function ActionBar(props: Props) {
         />
       }
 
-      {showOptions() &&
-        <Opts>
+      {selected.length > 0 &&
+        <FileName>
+          {selected.length == 1 &&
+            <>{selected[0].name}<span> is selected</span></>
+          }
+          {selected.length > 1 &&
+            <span>{selected.length} items are selected</span>
+          }
+        </FileName>
+      }
+
+      <div className="flex">
+        {showOptions() &&
           <WSOptions
             path={path}
             {...props}
           />
-        </Opts>
-      }
+        }
+
+        {showActions() &&
+          <WSActions
+            path={path}
+            {...props}
+          />
+        }
+
+        {viewType != 'objectSelector' &&
+          <Tooltip title="show details">
+            <IconButton onClick={onShowDetails} size="small" color="primary" disableRipple>
+              <InfoIcon />
+            </IconButton>
+          </Tooltip>
+        }
+      </div>
     </Root>
   )
 }
@@ -135,11 +161,19 @@ export default function ActionBar(props: Props) {
 
 const Root = styled.div`
   /* styling for all children buttons */
-  button {
-    margin-right: 10px;
+  .MuiButton-root { margin-right: 10px; }
+  .MuiIconButton-root { margin-right: 10px; padding: 0; }
+`
+
+const FileName = styled.div`
+  font-weight: bold;
+  font-size: 1.1em;
+
+  span {
+    font-size: .85em;
+    font-weight: normal;
   }
 `
 
-const Opts = styled.div`
 
-`
+

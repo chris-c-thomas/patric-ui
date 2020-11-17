@@ -28,13 +28,15 @@ const Btn = (props) =>
 type Props = {
   path: string
   selected: WSObject[]
-  onUpdateList: () => void
-
   viewType?: 'jobResult' | 'objectSelector' | 'file'
+  onUpdateList: () => void
 }
 
-export default function Actions(props: Props) {
-  const { onUpdateList, viewType} = props
+const WSActions = (props: Props) => {
+  const {
+    onUpdateList,
+    viewType
+  } = props
 
   const [selected, setSelected] = useState(props.selected || [])
   const [open, setOpen] = useState(false)
@@ -70,83 +72,74 @@ export default function Actions(props: Props) {
   }
 
   return (
-    <>
-      <FileName>
-        {selected.length == 1 &&
-          <>{selected[0].name}<span> is selected</span></>
-        }
-        {selected.length > 1 &&
-          <span>{selected.length} items are selected</span>
-        }
-      </FileName>
-
+    <Root>
       {viewType != 'objectSelector' &&
-        <ActionContainer>
+        <>
           <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
             Share
           </Btn>
+
           {selected.length == 1 &&
             <Btn startIcon={<RenameIcon />} onClick={() => implement()}>
               Rename
             </Btn>
           }
+
           <Btn startIcon={<CopyMoveIcon />} onClick={() => implement()}>
             Move or Copy
           </Btn>
+
           {selected.length == 1 &&
             <Btn startIcon={<LabelIcon />} onClick={() => implement()}>
               Edit Type
             </Btn>
           }
+
           <Btn startIcon={<DeleteIcon />} onClick={openDeleteDialog} className="failed">
             Delete
           </Btn>
-
-          {open &&
-            <ConfirmDialog
-              title="Are you sure?"
-              content={<>
-                Are you sure you want to delete{' '}
-                <b>{selected.length > 1 ? `${selected.length} items` : selected[0].name}</b>?
-              </>}
-              loadingText="Deleting..."
-              onConfirm={handleDelete}
-              onClose={() => setOpen(false)}
-            />
-          }
-
-          {notAllowedMsg &&
-            <ConfirmDialog
-              title="Sorry, you can't delete that."
-              content={<div dangerouslySetInnerHTML={{__html: notAllowedMsg}}></div>}
-              onConfirm={() => setNotAllowedMsg(null)}
-              onClose={() => setNotAllowedMsg(null)}
-            />
-          }
-
-          {snack &&
-            <Snackbar open autoHideDuration={5000} onClose={() => setSnack(null)}>
-              <Alert onClose={() => setSnack(null)} severity="success">
-                {snack}
-              </Alert>
-            </Snackbar>
-          }
-        </ActionContainer>
+        </>
       }
-    </>
+
+      {open &&
+        <ConfirmDialog
+          title="Are you sure?"
+          content={<>
+            Are you sure you want to delete{' '}
+            <b>{selected.length > 1 ? `${selected.length} items` : selected[0].name}</b>?
+          </>}
+          loadingText="Deleting..."
+          onConfirm={handleDelete}
+          onClose={() => setOpen(false)}
+        />
+      }
+
+      {notAllowedMsg &&
+        <ConfirmDialog
+          title="Sorry, you can't delete that."
+          content={<div dangerouslySetInnerHTML={{__html: notAllowedMsg}}></div>}
+          onConfirm={() => setNotAllowedMsg(null)}
+          onClose={() => setNotAllowedMsg(null)}
+        />
+      }
+
+      {snack &&
+        <Snackbar open autoHideDuration={5000} onClose={() => setSnack(null)}>
+          <Alert onClose={() => setSnack(null)} severity="success">
+            {snack}
+          </Alert>
+        </Snackbar>
+      }
+
+    </Root>
   )
 }
 
 
-const FileName = styled.div`
-  font-weight: bold;
-  font-size: 1.1em;
+const Root = styled.div`
 
-  span {
-    font-size: .85em;
-    font-weight: normal;
-  }
 `
 
-const ActionContainer = styled.div`
-`
+
+export default WSActions
+
