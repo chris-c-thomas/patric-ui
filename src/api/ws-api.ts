@@ -320,14 +320,15 @@ export function getUserCounts({user}) {
 export async function create(
   obj: WSObject,
   createUploadNodes: boolean = false,
-  overwrite: boolean = false
+  overwrite: boolean = false,
+  content: any = ''
 ) {
   if (obj.path.charAt(obj.path.length - 1) != '/') {
     obj.path += '/'
   }
 
   return rpc('create', {
-    objects: [[(obj.path + obj.name), (obj.type || 'unspecified'), obj.userMeta || {}, (obj.content || '')]],
+    objects: [[(obj.path + obj.name), (obj.type || 'unspecified'), obj.userMeta || {}, content]],
     createUploadNodes,
     overwrite
   }).then((results) => {
