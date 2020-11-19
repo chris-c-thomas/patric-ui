@@ -152,7 +152,7 @@ const GenomeTableSelector = (props: Props) => {
 
         {error && <ErrorMsg error={error} />}
 
-        <h4 className="flex space-between">
+        <h4 className="flex space-between" style={{margin: '15px 0'}}>
           <div>
             Selected Genomes
             {rows.length > 0 &&

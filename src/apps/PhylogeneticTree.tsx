@@ -167,7 +167,7 @@ export default function PhylogeneticTree() {
 
 
       <SubmitBtns
-        disabled={!(isStep1Complete() && isStep2Complete())}
+        disabled={!(isStep1Complete() && isStep2Complete() && isStep3Complete())}
         onSubmit={onSubmit}
         status={status}
         onReset={() => dispatch('RESET')}

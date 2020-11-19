@@ -56,7 +56,7 @@ function metaToObj(m) : WSObject {
 
 
 
-type Args = {
+type ListArgs = {
   path: string;
   type?: string;
   recursive?: boolean;
@@ -66,7 +66,7 @@ type Args = {
   onlySharedWithMe?: boolean
 }
 
-export async function list(args: Args) {
+export async function list(args: ListArgs) {
   if (typeof args !== 'object')
     throw Error('Workspace API: the "list" method requires an object')
 
@@ -238,11 +238,10 @@ export function deleteObjects(objs: WSObject[], deleteJobData?: boolean) : Promi
 
 
 
-function _deleteJobData(paths: string[]) {
+function _deleteJobData(paths: string | string[]) {
   paths = Array.isArray(paths) ? paths : [paths]
 
-  // log what is happening so that console error is expected
-  const proms = paths.map(function (path) {
+  const proms = paths.map(path => {
     const parts = path.split('/'),
       jobName = parts.pop(),
       dotPath = parts.join('/') + '/.' + jobName
@@ -258,18 +257,19 @@ function _deleteJobData(paths: string[]) {
 }
 
 
+type Operation = 'delete' | 'move' | 'rename'
 
-export function omitSpecialFolders(paths, operation) {
+export function omitSpecialFolders(paths: string | string[], operation: Operation) {
   paths = Array.isArray(paths) ? paths : [paths]
 
-  //  regect home workspaces (must check for anybody's home)
-  var isHome = paths.filter((p) => {
-    var parts = p.split('/')
+  // regect home workspaces (must check for anybody's home)
+  const isHome = paths.filter((p) => {
+    let parts = p.split('/')
     return parts.length == 3 && parts[2] == 'home'
   }).length
 
   if (isHome) {
-    throw new Error('Your <i>home</i> workspace is a special workspace which cannot be ' + operation + 'd.')
+    throw new Error(`Your <i>home</i> workspace is a special workspace which cannot be ${operation}d.`)
   }
 
   // also reject these home folders
@@ -317,7 +317,11 @@ export function getUserCounts({user}) {
 
 
 
-export async function create(obj, createUploadNodes = false, overwrite = false) {
+export async function create(
+  obj: WSObject,
+  createUploadNodes: boolean = false,
+  overwrite: boolean = false
+) {
   if (obj.path.charAt(obj.path.length - 1) != '/') {
     obj.path += '/'
   }
@@ -337,7 +341,7 @@ export async function create(obj, createUploadNodes = false, overwrite = false) 
 
 
 
-export function updateMetadata(objs) {
+export function updateMetadata(objs: WSObject[]) {
   objs = Array.isArray(objs) ? objs : [objs]
 
   const objects = objs.map(obj => [obj.path, obj.userMeta, obj.type || undefined])
