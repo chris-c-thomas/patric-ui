@@ -1,9 +1,11 @@
 import axios from 'axios'
 import config from '../config'
-
 import { getToken, getUser } from './auth'
 
-import { WSObject } from './workspace.d'
+// types
+import {
+  WSObject, Permission, PermissionObj
+} from './workspace.d'
 
 
 const workspace = axios.create({
@@ -25,6 +27,7 @@ const rpc = (cmd: string, params: object) => {
   return workspace.post(config.wsAPI, req)
     .then(res => res.data.result[0])
 }
+
 
 
 function metaToObj(m) : WSObject {
@@ -50,6 +53,8 @@ function metaToObj(m) : WSObject {
     permissions: null // (added below in a second 'list_permissions' request)
   }
 }
+
+
 
 type Args = {
   path: string;
@@ -99,10 +104,10 @@ export async function list(args: Args) {
     objects = objects.filter(obj => obj.owner !== getUser(true) && !obj.isPublic)
   }
 
-  let permHash
+  let permObj: PermissionObj
   if (includePermissions) {
-    permHash = await listPermissions(objects.map(o => o.path))
-    objects = objects.map((obj) => ({...obj, permissions: permHash[obj.path]}))
+    permObj = await listPermissions(objects.map(o => o.path))
+    objects = objects.map((obj) => ({...obj, permissions: permObj[obj.path]}))
   }
 
   // we want to return folders followed by files
@@ -112,7 +117,8 @@ export async function list(args: Args) {
 }
 
 
-function listPermissions(paths: string | string[]) {
+
+function listPermissions(paths: string | string[]) : Promise<PermissionObj> {
   const objects = Array.isArray(paths) ? paths : [paths]
 
   return rpc('list_permissions', {objects})
@@ -127,16 +133,19 @@ export async function getMeta(path: string) : Promise<WSObject> {
 }
 
 
+
 export async function getType(path: string) {
   const meta = await getMeta(path)
   return meta.type
 }
 
 
+
 export async function isFile(path: string) {
   const type = await getType(path)
   return type !== 'folder'
 }
+
 
 
 type GetReturnType = Promise<{meta: WSObject, data: object | string}>
@@ -179,6 +188,7 @@ export async function getObject(path: string) : GetReturnType {
 }
 
 
+
 export async function getDownloadUrls(paths: string | string[]) {
   paths = paths instanceof Array ? paths : [paths]
   const urls =  await rpc('get_download_url', { objects: paths })
@@ -186,12 +196,11 @@ export async function getDownloadUrls(paths: string | string[]) {
 }
 
 
+
 export function createFolder(path) {
   return rpc('create', { objects: [[path, 'Directory']] })
     .then(res => res)
 }
-
-
 
 
 
@@ -227,6 +236,8 @@ export function deleteObjects(objs: WSObject[], deleteJobData?: boolean) : Promi
   }
 }
 
+
+
 function _deleteJobData(paths: string[]) {
   paths = Array.isArray(paths) ? paths : [paths]
 
@@ -245,6 +256,8 @@ function _deleteJobData(paths: string[]) {
 
   return proms
 }
+
+
 
 export function omitSpecialFolders(paths, operation) {
   paths = Array.isArray(paths) ? paths : [paths]
@@ -280,6 +293,7 @@ export function omitSpecialFolders(paths, operation) {
 }
 
 
+
 export function getUserCounts({user}) {
   const paths = [
     `/${user}/`,
@@ -302,8 +316,8 @@ export function getUserCounts({user}) {
 }
 
 
-export async function create(obj, createUploadNodes = false, overwrite = false) {
 
+export async function create(obj, createUploadNodes = false, overwrite = false) {
   if (obj.path.charAt(obj.path.length - 1) != '/') {
     obj.path += '/'
   }
@@ -320,6 +334,7 @@ export async function create(obj, createUploadNodes = false, overwrite = false) 
     }
   })
 }
+
 
 
 export function updateMetadata(objs) {
@@ -341,7 +356,7 @@ export function updateAutoMetadata (paths: string | string[]) {
 
 
 
-export function permissionMap(perm) {
+export function permissionMap(perm: Permission) {
   const mapping = {
     'n': 'No access',
     'r': 'Can view',

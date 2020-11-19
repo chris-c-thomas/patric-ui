@@ -15,5 +15,14 @@ export type WSObject = {
   isPublic: boolean
   isWS: boolean
   linkRef: string
-  permissions: [string[]]
+  permissions: Permissions
+}
+
+
+export type Permission = 'r' | 'w' | 'o' | 'n'
+
+export type Permissions = [userName: string, permission: Permission][]
+
+export type PermissionObj = {
+  [path: string]: Permissions
 }
