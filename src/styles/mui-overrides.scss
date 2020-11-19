@@ -18,8 +18,18 @@ div.MuiToolbar-dense {
 
 div.MuiToolbar-gutters {
   padding-left: 16px;
-  padding-right: 16px;
+  padding-right: 8px;
 }
+
+
+/**
+ * buttons
+ */
+
+.MuiToolbar-dense .MuiButton-root:hover span {
+  color: #efefef;
+}
+
 
 
 /**
@@ -97,7 +107,6 @@ div.MuiToolbar-gutters {
  * steps
  */
 
-
 .MuiStep-root {
   display: inline-flex;
   margin-bottom: 10px;
@@ -106,6 +115,7 @@ div.MuiToolbar-gutters {
   margin-left: 10px;
   font-size: 1em;
 }
+
 
 
 /**

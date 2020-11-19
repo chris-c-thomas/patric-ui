@@ -338,7 +338,7 @@ export default function Jobs() {
             onPage={onPage}
             onSort={onSort}
             onSearch={onSearch}
-            searchPlaceholder={'Search files and parameters'}
+            searchPlaceholder={'Search files and params'}
             middleComponent={
               <Filters>
                 {app && app !== 'AllServices' &&

@@ -189,28 +189,23 @@ const PatricMenus = () => {
         </DropDown>
       }/>
 
-      <Btn component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
+      <Button component={Link} to={`/files/${Auth.getUser(true)}/home`} disableRipple>
         Workspaces
         <BadgeCount
           badgeContent={uploads.progress}
           invisible={uploads.progress == 0 || uploads.progress == '100%'}
         />
-      </Btn>
+      </Button>
 
-      <Btn component={Link} to="/jobs" disableRipple>
+      <Button component={Link} to="/jobs" disableRipple>
         Job Status
         <BadgeCount badgeContent={jobs.queued + jobs.inProgress} max={999} />
-      </Btn>
+      </Button>
 
     </>
   )
 }
 
-const Btn = styled(Button)`
-  &&.MuiButton-root:hover span  {
-    // color: #efefef;
-  }
-`
 
 const DropDown = styled.div`
   display: flex;

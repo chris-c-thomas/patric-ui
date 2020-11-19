@@ -100,8 +100,10 @@ const GenericViewer = (props: Props) => {
   useEffect(() => {
     (async () => {
       setLoading(true)
+      let _path = path.startsWith('/public') ? `${path.slice(7)}/` : path
+      _path = path.startsWith('/shared-with-me') ? `${path.slice(15)}/` : _path
       try {
-        const [meta, url] = await Promise.all([await getMeta(path), await getDownloadUrls(path)])
+        const [meta, url] = await Promise.all([await getMeta(_path), await getDownloadUrls(_path)])
         setState(prev => ({...prev, meta, url}))
         setShouldLoad(meta.size < TOO_LARGE_THRESHOLD)
       } catch (err) {

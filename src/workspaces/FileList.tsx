@@ -64,7 +64,7 @@ const getColumns = (onNavigate, isObjSelector) => [
   }, {
     id: 'permissions',
     label: 'Members',
-    format: (perms, obj) => obj.public ?
+    format: (perms, obj) => obj.isPublic ?
       'Public' : (perms.length == 1 ? 'Only me' : `${perms.length} members`)
   }, {
     id: 'created',

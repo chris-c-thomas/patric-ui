@@ -35,7 +35,9 @@ const PermissionsList =  (props: WSObject) => {
             const user = perm[0].split('@')[0]
             return (
               <li key={user}>
-                {user == getUser() ? `${user} (me)` : `${user} - ${permissionMap(perm[1])}`}
+                {user == getUser() ?
+                  `${user} (me) - ${permissionMap(perm[1])}` :
+                  `${user} - ${permissionMap(perm[1])}`}
               </li>
             )
           })

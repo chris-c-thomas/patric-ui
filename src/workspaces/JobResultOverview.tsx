@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button'
 import ListIcon from '@material-ui/icons/ListRounded'
 import StdOutIcon from '@material-ui/icons/FeaturedPlayList'
 import StdErrorIcon from '@material-ui/icons/WarningRounded'
-import ViewIcon from '@material-ui/icons/VisibilityRounded'
+import ViewIcon from '@material-ui/icons/AssessmentRounded'
 import TreeIcon from '@material-ui/icons/AccountTreeRounded'
 
 import { WSObject } from 'api/workspace.d'
@@ -28,7 +28,7 @@ const encodePath = path => path.split('/')
  * takes object meta, returns appropriate viewer url
  * @param meta object meta
  */
-const getViewerURL = (meta, objs) => {
+const getViewerURL = (meta: WSObject, objs: WSObject[]) => {
   const {path, autoMeta} = meta
   const jobType = autoMeta.app.id
 
@@ -49,22 +49,25 @@ const getViewerURL = (meta, objs) => {
 }
 
 
-const getIcon = (meta) => {
+const getViewBtn = (meta: WSObject) => {
   const {autoMeta} = meta
   const jobType = autoMeta.app.id
 
-  let icn
+  let icon = <ViewIcon />, text = 'View'
   if (['CodonTree', 'PhylogeneticTree'].includes(jobType))
-    icn = <TreeIcon />
-  else
-    icn = <ViewIcon />
+    icon = <TreeIcon />
+  else if (['GenomeAnnotation'].includes(jobType)) {
+    text = 'View genome'
+  }
 
-  return icn
+  return {icon, text: text || 'View'}
 }
 
 
-const getGenomeID = (objs) => {
-  const genomes = objs.filter((o) => o.type == 'genome')
+const getGenomeID = (objs: WSObject[]) => {
+  if (!objs) return
+
+  const genomes = objs.filter(o => o.type == 'genome')
   const id = genomes[0]?.autoMeta?.genome_id
   if (id) return id
 
@@ -72,8 +75,10 @@ const getGenomeID = (objs) => {
 }
 
 
-const getReportPath = (objs) => {
-  const htmls = objs.filter((o) => o.type == 'html')
+const getReportPath = (objs: WSObject[]) => {
+  if (!objs) return
+
+  const htmls = objs.filter(o => o.type == 'html')
   const id = htmls[0]?.path
   if (id) return id
 
@@ -106,6 +111,7 @@ const JobResultOverview = (props: Props) => {
   const [meta, setMeta] = useState(null)
   const [autoMeta, setAutoMeta] = useState(null)
   const [viewURL, setViewURL] = useState(null)
+  const [viewBtn, setViewBtn] = useState(null)
   const [error, setError] = useState(null)
 
   const [showDialog, setShowDialog] = useState(false)
@@ -116,6 +122,7 @@ const JobResultOverview = (props: Props) => {
         setMeta(obj)
         setAutoMeta(obj.autoMeta)
         setViewURL(getViewerURL(obj, wsObjects))
+        setViewBtn(getViewBtn(obj))
       })
       .catch(err => {
         const errMsg = err.response.data.error.data
@@ -135,15 +142,15 @@ const JobResultOverview = (props: Props) => {
           <div className="flex align-items-center">
             <OverviewTable data={autoMeta} />
 
-            {viewURL &&
+            {viewURL && viewBtn &&
               <Button
                 component={Link}
                 to={viewURL}
-                startIcon={getIcon(meta)}
+                startIcon={viewBtn.icon}
                 variant="outlined"
                 disableRipple
               >
-                View
+                {viewBtn.text}
               </Button>
             }
           </div>

@@ -42,6 +42,11 @@ const menu = [
     path: `/public`,
     label: 'Public Workspaces',
     icon: <PublicIcon />
+  }, {
+    path: `/public/PATRIC@patricbrc.org/PATRIC Workshop`,
+    label: 'Sample Data',
+    icon: <SpecialFolderIcon />,
+    hide: viewType => viewType !== 'objectSelector'
   }
 ]
 
@@ -82,27 +87,30 @@ const WSSideBar = (props: Props) => {
       }
 
       <Menu>
-        {menu.map((item) => {
-          return (
-            <li key={item.label}>
-              <MenuItem
-                indent={item.indent}
-                caret={item.caret ? 1 : 0}
-                className={item.path == activePath ? 'active no-style' : 'no-style hover'}
-                to={`/files${item.path}`}
-                onClick={evt => handleNavigate(evt, item)}
-              >
-                {item.caret &&
-                  <Caret><CaretIcon color={item.path == activePath ? 'primary' : 'inherit'} /></Caret>
-                }
-                {item.icon &&
-                  <Icon>{React.cloneElement(item.icon, {color: item.path == activePath ? 'primary' : 'inherit'})}</Icon>
-                }
-                {item.label}
-              </MenuItem>
-            </li>
-          )
-        })}
+        {menu
+          .filter(item => 'hide' in item ? !item.hide(viewType) : true)
+          .map(item => {
+            return (
+              <li key={item.label}>
+                <MenuItem
+                  indent={item.indent}
+                  caret={item.caret ? 1 : 0}
+                  className={item.path == activePath ? 'active no-style' : 'no-style hover'}
+                  to={`/files${item.path}`}
+                  onClick={evt => viewType == 'objectSelector' && handleNavigate(evt, item)}
+                >
+                  {item.caret &&
+                    <Caret><CaretIcon color={item.path == activePath ? 'primary' : 'inherit'} /></Caret>
+                  }
+                  {item.icon &&
+                    <Icon>{React.cloneElement(item.icon, {color: item.path == activePath ? 'primary' : 'inherit'})}</Icon>
+                  }
+                  {item.label}
+                </MenuItem>
+              </li>
+            )
+          })
+        }
       </Menu>
 
       <UploadStatus />

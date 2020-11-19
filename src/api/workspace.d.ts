@@ -10,7 +10,7 @@ export type WSObject = {
   owner: string
   size: number
   userMeta: object
-  autoMeta: object
+  autoMeta: any
   userPerm: string
   isPublic: boolean
   isWS: boolean

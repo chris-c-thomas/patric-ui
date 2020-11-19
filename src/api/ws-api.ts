@@ -1,7 +1,7 @@
 import axios from 'axios'
 import config from '../config'
 
-import { getToken } from './auth'
+import { getToken, getUser } from './auth'
 
 import { WSObject } from './workspace.d'
 
@@ -58,6 +58,7 @@ type Args = {
   showHidden?: boolean;
   includePermissions?: boolean;
   onlyPublic?: boolean
+  onlySharedWithMe?: boolean
 }
 
 export async function list(args: Args) {
@@ -70,7 +71,8 @@ export async function list(args: Args) {
     recursive = false,
     showHidden = false,
     includePermissions = true,
-    onlyPublic = false
+    onlyPublic = false,
+    onlySharedWithMe = false
   } = args
 
   const params = {
@@ -91,6 +93,10 @@ export async function list(args: Args) {
   if (onlyPublic) {
     console.log('onlypublic', onlyPublic)
     objects = objects.filter(obj => obj.isPublic)
+  }
+
+  if (onlySharedWithMe) {
+    objects = objects.filter(obj => obj.owner !== getUser(true) && !obj.isPublic)
   }
 
   let permHash
