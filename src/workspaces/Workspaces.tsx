@@ -93,7 +93,7 @@ export default function Workspaces(props: Props) {
         const onlyPublic = _path.startsWith('/public')
         _path = onlyPublic ? `${_path.slice(7)}/` : _path
 
-        // if public, always strip out '/public'
+        // if 'shared with me', always strip out '/shared-with-me'
         const onlySharedWithMe = _path.startsWith('/shared-with-me')
         _path = onlySharedWithMe ? `${_path.slice(15)}/` : _path
 
@@ -117,7 +117,8 @@ export default function Workspaces(props: Props) {
         const data = await WS.list({
           path: _path,
           showHidden,
-          onlyPublic
+          onlyPublic,
+          onlySharedWithMe
         })
         setRows(data)
 
