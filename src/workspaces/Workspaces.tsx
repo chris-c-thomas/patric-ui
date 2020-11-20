@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useLayoutEffect} from 'react'
+import React, {useState, useEffect, useCallback, useLayoutEffect, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -10,6 +10,7 @@ import JobResultOverview from './JobResultOverview'
 
 import useLocalStorage from '../hooks/useLocalStorage'
 
+import { UploadStatusContext } from './upload/UploadStatusContext'
 
 import Progress from '@material-ui/core/LinearProgress'
 import ErrorMsg from '../ErrorMsg'
@@ -18,6 +19,7 @@ import * as WS from '../api/ws-api'
 
 import './workspaces.scss'
 import GenericViewer from './viewers/GenericViewer'
+import { isWorkspace } from './WSUtils'
 
 
 const getJobResultDir = (path) => {
@@ -52,6 +54,8 @@ export default function Workspaces(props: Props) {
   const [rows, setRows] = useState(null)
   const [error, setError] = useState(null)
 
+  const [uploads] = useContext(UploadStatusContext)
+
   const [showDetails, setShowDetails] = useLocalStorage('uiSettings', 'showDetails')
   const [showHidden, setShowHidden] = useLocalStorage('uiSettings', 'workspaceShowHidden')
 
@@ -66,14 +70,14 @@ export default function Workspaces(props: Props) {
   }, [props.path])
 
 
-  // listen for path changes for workspace browser
+  // listen for url path changes for workspace browser
   useEffect(() => {
     if (!paramPath) return
     setPath('/' + paramPath)
   }, [paramPath])
 
 
-  // listen if we need to change to job result view
+  // listen if we need to change view type
   useEffect(() => {
     setViewType(props.viewType)
   }, [props.viewType])
@@ -98,7 +102,8 @@ export default function Workspaces(props: Props) {
         _path = onlySharedWithMe ? `${_path.slice(15)}/` : _path
 
         // determine file type so we can set the workspace view type if needed
-        if (!['objectSelector', 'jobResult'].includes(viewType) && _path.split('/').length > 2) {
+        if (!['objectSelector', 'jobResult'].includes(viewType) && !isWorkspace(_path)) {
+          console.log('calling get', _path)
           const type = await WS.getType(_path)
 
           if (type != 'job_result' && type != 'folder') {
@@ -137,6 +142,15 @@ export default function Workspaces(props: Props) {
   useLayoutEffect(() => {
     updateList()
   }, [path, updateList])
+
+
+  // update workspace list whenever upload state on that folder changes too
+  useLayoutEffect(() => {
+    const paths = uploads.inProgress.map(obj => obj.path)
+    if (paths.includes(path))
+      updateList()
+
+  }, [path, updateList, uploads.inProgress])
 
 
   // remove actions on path change

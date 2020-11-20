@@ -36,10 +36,10 @@ const getColumns = (onNavigate, isObjSelector) => [
       }
 
       let url
-      if (obj.isPublic)
-        url = `/files/public${obj.encodedPath}`
-      else if (obj.type == 'job_result')
+      if (obj.type == 'job_result')
         url = `/job-result${obj.encodedPath}`
+      else if (obj.isPublic)
+        url = `/files/public${obj.encodedPath}`
       else
         url = `/files${obj.encodedPath}`
 

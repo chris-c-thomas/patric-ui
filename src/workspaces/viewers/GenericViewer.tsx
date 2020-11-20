@@ -11,6 +11,8 @@ import { bytesToSize, isoToHumanDateTime } from '../../utils/units'
 import { AxiosError } from 'axios'
 import PhylogeneticTree from '../../views/viewers/PhylogeneticTree'
 
+import { isWorkspace } from '../WSUtils'
+
 
 const TOO_LARGE_THRESHOLD = 10000000 // ~10mb
 
@@ -31,7 +33,7 @@ const OverviewTable = ({data}) => {
   } = data
 
   return (
-    <table className="simple">
+    <table className="simple striped">
       <tbody>
         <tr><td>Filename</td><td>{name}</td></tr>
         <tr><td>Type</td><td>{type}</td></tr>
@@ -118,6 +120,11 @@ const GenericViewer = (props: Props) => {
       setLoading(true)
       let _path = path.startsWith('/public') ? `${path.slice(7)}/` : path
       _path = path.startsWith('/shared-with-me') ? `${path.slice(15)}/` : _path
+
+      // todo(nc): this check is for a race condition in figuring out what the next type is
+      // can it be removed?
+      if(isWorkspace(_path)) return
+
       try {
         const [meta, url] = await Promise.all([await getMeta(_path), await getDownloadUrls(_path)])
         setState(prev => ({...prev, meta, url}))

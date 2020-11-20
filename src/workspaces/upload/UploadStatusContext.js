@@ -11,6 +11,7 @@ function UploadStatusProvider(props) {
   const [active, setActive] = useState({})
   const [complete, setComplete] = useState({})
   const [progress, setProgress] = useState(0)
+  const [inProgress, setInProgress] = useState([])
 
   const [promiseMapping, setPromiseMapping] = useState({})
 
@@ -33,6 +34,7 @@ function UploadStatusProvider(props) {
   const onStart = (obj) => {
     const {fullPath} = obj
     setActive(prev => ({...prev, [fullPath]: obj}))
+    setInProgress(prev => [...prev, obj])
   }
 
 
@@ -51,6 +53,10 @@ function UploadStatusProvider(props) {
     })
 
     setComplete(prev => ({...prev, [fullPath]: obj}))
+
+    // append again to force updates
+    setInProgress(prev => [...prev, obj])
+    setTimeout(() => setInProgress([]), 500)
   }
 
 
@@ -93,6 +99,11 @@ function UploadStatusProvider(props) {
 
 
   const removeUpload = (path) => {
+    setActive(prev => {
+      delete prev[path]
+      return prev
+    })
+
     setComplete(prev => {
       delete prev[path]
       return prev
@@ -112,7 +123,7 @@ function UploadStatusProvider(props) {
 
   return (
     <UploadStatusContext.Provider value={[
-      {progress, active, complete, cancelUpload, removeUpload, cancelAll}, uploadFiles
+      {progress, active, complete, inProgress, cancelUpload, removeUpload, cancelAll}, uploadFiles
     ]}>
       {props.children}
     </UploadStatusContext.Provider>

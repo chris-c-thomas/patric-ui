@@ -31,6 +31,11 @@ const getInfo = (key) => uploadTypes[key].description
 const getAcceptType = (key) => uploadTypes[key].formats.join(',')
 
 
+type File = {
+  name: string
+  size: number
+}
+
 
 type Props = {
   path: string
@@ -53,7 +58,7 @@ export default function UploadDialog(props: Props) {
   const [fileObjs, setFileObjs] = useState(null)
 
 
-  const updateFiles = (fileObjects) => {
+  const updateFiles = (fileObjects: File[]) => {
     const names = fileMetas.map(f => f.name)
     fileObjects = fileObjects.filter(f => !names.includes(f.name))
 
