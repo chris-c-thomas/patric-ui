@@ -41,14 +41,14 @@ const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
   if (['GenomeAssembly2'].includes(jobType)) {
     return [{
       icon: <ChartIcon />,
-      label: 'View report',
+      label: 'Report',
       url: `/files${getReportPath(objs)}`
     }]
 
   } else if (['GenomeAnnotation'].includes(jobType)) {
     return [{
       icon,
-      label: 'View genome',
+      label: 'Genome',
       url: `/genome/${getGenomeID(objs)}/overview`
     }]
 
@@ -61,8 +61,8 @@ const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
 
   } else if (['ComprehensiveGenomeAnalysis'].includes(jobType)) {
     return [
-      {icon: <ListIcon />, label: 'View genome', url: `/genome/${getGenomeID(objs)}/overview`},
-      {icon: <ChartIcon />, label: 'View genome report', url: `/files${getReportPath(objs)}`}
+      {icon: <ListIcon />, label: 'Genome', url: `/genome/${getGenomeID(objs)}/overview`},
+      {icon: <ChartIcon />, label: 'Genome report', url: `/files${getReportPath(objs)}`}
     ]
   }
 
