@@ -247,7 +247,7 @@ export default function Workspaces(props: Props) {
 
       </Main>
 
-      {showDetails &&
+      {showDetails && viewType != 'objectSelector' &&
         <WSDetailsSidebar
           selection={selected}
           onClose={() => setShowDetails(false)}
