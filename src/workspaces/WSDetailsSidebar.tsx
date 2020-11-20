@@ -87,7 +87,7 @@ export default function DetailsSidebar(props: Props) {
 
   return (
     <Slide direction="left" in={true} mountOnEnter unmountOnExit>
-      <Root className="meta-sidebar">
+      <Root>
         <Title className="flex align-items-center space-between">
           <div className="flex align-items-center">
             <div>

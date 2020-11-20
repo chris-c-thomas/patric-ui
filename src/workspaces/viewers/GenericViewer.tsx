@@ -14,6 +14,16 @@ import PhylogeneticTree from '../../views/viewers/PhylogeneticTree'
 
 const TOO_LARGE_THRESHOLD = 10000000 // ~10mb
 
+const viewableTypes = [
+  'txt', 'html', 'json', 'csv', 'diffexp_experiment',
+  'diffexp_expression', 'diffexp_mapping', 'diffexp_sample', 'pdf',
+  'diffexp_input_data', 'diffexp_input_metadata', 'svg', 'gif', 'png', 'jpg',
+
+  // new view types?
+  'contigs', 'feature_protein_fasta', 'genome'
+]
+
+
 
 const OverviewTable = ({data}) => {
   const {
@@ -40,7 +50,9 @@ const Viewer = ({meta, data, url}) => {
   const {type} = meta
 
   let view
-  if (imageTypes.includes(type))
+  if (type == 'unspecified')
+    view = <OverviewTable data={meta} />
+  else if (imageTypes.includes(type))
     view = <img src={url} />
   else if (type == 'html')
     view =
@@ -57,19 +69,23 @@ const Viewer = ({meta, data, url}) => {
         height="100%"
         frameBorder="0"
       />
-
-  else if (type == 'unspecified')
-    view = <OverviewTable data={meta} />
   else if (type == 'nwk')
     view = <PhylogeneticTree />
-
-  else
+  else if (['json', 'genome'].includes(type))
+    view = <pre>{JSON.stringify(data, null, 4)}</pre>
+  else if (viewableTypes.includes(type))
     view =
       <pre
         style={{fontSize: '.8em', background:'#ffffff'}}
         dangerouslySetInnerHTML={{__html: data}}
       >
       </pre>
+  else
+    view =
+      <div>
+        <OverviewTable data={meta} />
+        <p>Sorry, there is no viewer for objects of type <i>{type}</i> (but you can still download this file).</p>
+      </div>
 
   return view
 }

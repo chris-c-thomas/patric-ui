@@ -9,11 +9,9 @@ import { isSignedIn } from '../../api/auth'
 
 import { Section } from './FormLayout'
 
-
-// import urlMapping from '../../jobs/url-mapping'
-const p3Url = 'https://alpha.bv-brc.org'
-
-
+// just for testing:
+import config from '../../config'
+const p3Url = config.p3URL
 const getP3Url = (name) => `${p3Url}/app/${name}`
 
 

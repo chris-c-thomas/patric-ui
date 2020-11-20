@@ -27,7 +27,9 @@ export default function SignInDialog(props) {
       maxWidth="xs"
     >
       <DialogTitle>Sign In</DialogTitle>
-      <SignInForm />
+      <div style={{padding: 25}}>
+        <SignInForm />
+      </div>
     </Dialog>
   )
 }

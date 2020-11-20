@@ -1,4 +1,11 @@
 
+export const initialSelectedState = {
+  lastSelected: null,
+  ids: [],
+  objs: []
+}
+
+
 // handles selection of rows
 const selectedReducer = (state, action) => {
 
@@ -12,11 +19,7 @@ const selectedReducer = (state, action) => {
     }
 
   } else if (type == 'CLEAR') {
-    return {
-      lastSelected: null,
-      ids: [],
-      objs: []
-    }
+    return initialSelectedState
 
   } else if (type == 'SET' || state.lastSelected == null) {
     return {
@@ -43,6 +46,10 @@ const selectedReducer = (state, action) => {
     }
 
   } else if (type == 'CTRL_SET') {
+    // don't allow things to be re-added; clear instead
+    if (state.ids.includes(action.id))
+      return initialSelectedState
+
     return {
       ...state,
       lastSelected: action.id,

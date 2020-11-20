@@ -27,7 +27,7 @@ import TableSearch from './TableSearch'
 import ActionBtn from './ActionBtn'
 import downloadIcon from '../../assets/icons/download.svg'
 
-import selectedReducer from './selectedReducer'
+import selectedReducer, { initialSelectedState } from './selectedReducer'
 
 import useClickOutside from '../hooks/useClickOutside'
 
@@ -380,11 +380,8 @@ export default function TableComponent(props: Props) {
 
   // selected/checkbox state
   const [allSelected, setAllSelected] = useState<boolean>(false)
-  const [selected, dispatch] = useReducer(selectedReducer, {
-    lastSelected: null,
-    ids: [],
-    objs: [],
-  })
+  const [selected, dispatch] = useReducer(selectedReducer, initialSelectedState)
+
 
   // when rows change, add row ids
   useEffect(() => {

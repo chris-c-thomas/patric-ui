@@ -21,8 +21,6 @@ const getViewer = (view) => {
 }
 
 
-const placeHolder = (view) => <div>{view} goes here</div>
-
 
 export default function ViewRouter() {
   const {view} = useParams()

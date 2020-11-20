@@ -56,19 +56,16 @@ export default function SignInDialog(props: Props) {
   }
 
   return (
-    <Form onSubmit={handleSignIn} className="flex-column justify-center">
+    <Form onSubmit={handleSignIn} className="flex-column">
       {type == 'service' &&
         <Step active={true} completed={false}>
           <StepIcon icon={<div><LockIcon /></div>} />
           <StepLabel>Please sign in to use this service</StepLabel>
         </Step>
       }
-      <div>
-        <TextInput label="Username" value={user} onChange={val => setUser(val)} autoFocus/>
-      </div>
-      <div>
-        <TextInput label="Password" type="password" value={pass} onChange={val => setPass(val)}/>
-      </div>
+
+      <TextInput label="Username" value={user} onChange={val => setUser(val)} autoFocus/>
+      <TextInput label="Password" type="password" value={pass} onChange={val => setPass(val)}/>
 
       {isInvalid && <div>Invalid username and/or password</div>}
       {failMsg && <div>{failMsg}</div>}
@@ -90,14 +87,14 @@ export default function SignInDialog(props: Props) {
 
 const Form = styled.form`
   margin: 0 auto;
-  padding: 20px;
   max-width: 250px;
 
   button {
     margin: 20px 0;
   }
 
-  .MuiInputBase-root {
-    margin-bottom: 5px
+  .MuiTextField-root{
+    margin-top: 0 !important; // need to override form control
+    margin-bottom: 20px;
   }
 `

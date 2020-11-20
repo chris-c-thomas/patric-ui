@@ -10,11 +10,12 @@ import ErrorMsg from '../ErrorMsg'
 
 import Button from '@material-ui/core/Button'
 
-import ListIcon from '@material-ui/icons/ListRounded'
+import ListIcon from '@material-ui/icons/ListAltRounded'
 import StdOutIcon from '@material-ui/icons/FeaturedPlayList'
 import StdErrorIcon from '@material-ui/icons/WarningRounded'
-import ViewIcon from '@material-ui/icons/AssessmentRounded'
+import ChartIcon from '@material-ui/icons/AssessmentRounded'
 import TreeIcon from '@material-ui/icons/AccountTreeRounded'
+import CodeIcon from '@material-ui/icons/CodeRounded'
 
 import { WSObject } from 'api/workspace.d'
 
@@ -24,43 +25,48 @@ const encodePath = path => path.split('/')
 
 
 
-/**
- * takes object meta, returns appropriate viewer url
- * @param meta object meta
- */
-const getViewerURL = (meta: WSObject, objs: WSObject[]) => {
-  const {path, autoMeta} = meta
-  const jobType = autoMeta.app.id
-
-  let url
-  if (['CodonTree', 'PhylogeneticTree'].includes(jobType)) {
-    url = `/view/PhylogeneticTree?labelSearch=true&idType=genome_id&labelType=genome_name&wsTreeFolder=${encodePath(path)}`
-  } else if (['GenomeAnnotation'].includes(jobType)) {
-    url = `/genome/${getGenomeID(objs)}/overview`
-  } else if (['ComprehensiveGenomeAnalysis'].includes(jobType)) {
-    url = `/files${getReportPath(objs)}`
-  } else if (['GenomeAssembly2'].includes(jobType)) {
-    url = `/files${getReportPath(objs)}`
-  } else if (['ComprehensiveSARS2Analysis'].includes(jobType)) {
-    url = `/files${getReportPath(objs)}`
-  }
-
-  return url
+type ViewButton = {
+  icon: JSX.Element,
+  label: string,
+  url: string
 }
 
-
-const getViewBtn = (meta: WSObject) => {
-  const {autoMeta} = meta
+const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
+  const {autoMeta, path} = meta
   const jobType = autoMeta.app.id
 
-  let icon = <ViewIcon />, text = 'View'
-  if (['CodonTree', 'PhylogeneticTree'].includes(jobType))
-    icon = <TreeIcon />
-  else if (['GenomeAnnotation'].includes(jobType)) {
-    text = 'View genome'
+  // defaults
+  const icon = <ListIcon />, label = 'View'
+
+  if (['GenomeAssembly2'].includes(jobType)) {
+    return [{
+      icon: <ChartIcon />,
+      label: 'View report',
+      url: `/files${getReportPath(objs)}`
+    }]
+
+  } else if (['GenomeAnnotation'].includes(jobType)) {
+    return [{
+      icon,
+      label: 'View genome',
+      url: `/genome/${getGenomeID(objs)}/overview`
+    }]
+
+  } else if (['CodonTree', 'PhylogeneticTree'].includes(jobType)) {
+    return [{
+      icon: <TreeIcon />,
+      label,
+      url: `/view/PhylogeneticTree?labelSearch=true&idType=genome_id&labelType=genome_name&wsTreeFolder=${encodePath(path)}`
+    }]
+
+  } else if (['ComprehensiveGenomeAnalysis'].includes(jobType)) {
+    return [
+      {icon: <ListIcon />, label: 'View genome', url: `/genome/${getGenomeID(objs)}/overview`},
+      {icon: <ChartIcon />, label: 'View genome report', url: `/files${getReportPath(objs)}`}
+    ]
   }
 
-  return {icon, text: text || 'View'}
+  return []
 }
 
 
@@ -110,8 +116,7 @@ const JobResultOverview = (props: Props) => {
 
   const [meta, setMeta] = useState(null)
   const [autoMeta, setAutoMeta] = useState(null)
-  const [viewURL, setViewURL] = useState(null)
-  const [viewBtn, setViewBtn] = useState(null)
+  const [viewBtns, setViewBtns] = useState(null)
   const [error, setError] = useState(null)
 
   const [showDialog, setShowDialog] = useState(false)
@@ -121,8 +126,7 @@ const JobResultOverview = (props: Props) => {
       .then(obj => {
         setMeta(obj)
         setAutoMeta(obj.autoMeta)
-        setViewURL(getViewerURL(obj, wsObjects))
-        setViewBtn(getViewBtn(obj))
+        setViewBtns(getViewBtns(obj, wsObjects))
       })
       .catch(err => {
         const errMsg = err.response.data.error.data
@@ -139,30 +143,35 @@ const JobResultOverview = (props: Props) => {
       {autoMeta &&
         <div className="overview flex space-between">
 
-          <div className="flex align-items-center">
+          <div className="flex align-items-end">
             <OverviewTable data={autoMeta} />
 
-            {viewURL && viewBtn &&
-              <Button
-                component={Link}
-                to={viewURL}
-                startIcon={viewBtn.icon}
-                variant="outlined"
-                disableRipple
-              >
-                {viewBtn.text}
-              </Button>
+            {viewBtns &&
+              <ViewButtons>
+                {viewBtns.map(btn =>
+                  <Button
+                    component={Link}
+                    to={btn.url}
+                    startIcon={btn.icon}
+                    variant="outlined"
+                    disableRipple
+                    key={btn.label}
+                  >
+                    {btn.label}
+                  </Button>
+                )}
+              </ViewButtons>
             }
           </div>
 
 
-          <div className="actions flex align-items-center">
+          <div className="actions flex align-items-end">
             <div className="flex-column">
               <DevToolsTitle>Developer Tools</DevToolsTitle>
               <div>
                 <Button
                   onClick={() => setShowDialog(true)}
-                  startIcon={<ListIcon/>}
+                  startIcon={<CodeIcon />}
                   size="small"
                   disableRipple
                 >
@@ -209,7 +218,7 @@ const JobResultOverview = (props: Props) => {
 
 const Root = styled.div`
   .overview table {
-    margin-right: 100px;
+    min-width: 250px;
   }
 
   .actions .MuiButton-root {
@@ -221,6 +230,12 @@ const Root = styled.div`
     tr > td:first-child {
       font-weight: bold;
     }
+  }
+`
+
+const ViewButtons = styled.div`
+  .MuiButton-root {
+    margin: 10px 10px 0 0;
   }
 `
 

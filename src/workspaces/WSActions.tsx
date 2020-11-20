@@ -2,7 +2,6 @@
 import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 
-import Button from '@material-ui/core/Button'
 import ShareIcon from '@material-ui/icons/FolderSharedOutlined'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
 import LabelIcon from '@material-ui/icons/LocalOfferOutlined'
@@ -14,15 +13,9 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
 import {deleteObjects, omitSpecialFolders} from '../api/ws-api'
-
 import {WSObject} from '../api/workspace.d'
 
-
-
-const Btn = (props) =>
-  <Button size="small" variant="outlined" color="primary" disableRipple {...props}>
-    {props.children}
-  </Button>
+import {isWorkspace, Btn} from './WSUtils'
 
 
 type Props = {
@@ -45,7 +38,6 @@ const WSActions = (props: Props) => {
 
   const [notAllowedMsg, setNotAllowedMsg] = useState<string>(null)
 
-  console.log('path', path)
 
   useEffect(() => {
     setSelected(props.selected)
@@ -83,9 +75,11 @@ const WSActions = (props: Props) => {
     <Root>
       {shouldShowActions() &&
         <>
-          <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
-            Share
-          </Btn>
+          {isWorkspace(path) &&
+            <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
+              Share
+            </Btn>
+          }
 
           {selected.length == 1 &&
             <Btn startIcon={<RenameIcon />} onClick={() => implement()}>

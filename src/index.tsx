@@ -1,7 +1,7 @@
 
 
 import React, {lazy, Suspense} from 'react'
-import { BrowserRouter, Switch, Route, useParams} from 'react-router-dom'
+import { BrowserRouter, Switch, Route} from 'react-router-dom'
 import { render } from 'react-dom'
 import styled from 'styled-components'
 

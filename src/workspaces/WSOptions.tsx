@@ -14,15 +14,8 @@ import UploadDialog from './upload/UploadDialog'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
+import {isWorkspace, Btn} from './WSUtils'
 
-const Btn = (props) =>
-  <Button size="small" variant="outlined" color="primary" disableRipple {...props}>
-    {props.children}
-  </Button>
-
-
-const isWorkspace = path =>
-  (path.match(/\//g) || []).length == 1
 
 
 type DialogTypes = 'upload' | 'newFolder'
