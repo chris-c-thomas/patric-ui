@@ -27,7 +27,7 @@ import { JobStatusContext } from './JobStatusContext'
 
 import ErrorMsg from '../ErrorMsg'
 
-import urlMapping from './url-mapping'
+// import urlMapping from './url-mapping'
 
 
 const columns = [
@@ -41,8 +41,8 @@ const columns = [
     id: 'app',
     label: 'Service',
     format: val => {
-      const isAvail = Object.keys(urlMapping).indexOf(val) != -1
-      return isAvail ? <Link to={`/apps/${urlMapping[val]}`}>{val}</Link> : val
+      // const isAvail = Object.keys(urlMapping).indexOf(val) != -1
+      return <Link to={`/apps/${val}`}>{val}</Link>
     },
     width: '20%'
   },

@@ -64,6 +64,10 @@ const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
       {icon: <ListIcon />, label: 'Genome', url: `/genome/${getGenomeID(objs)}/overview`},
       {icon: <ChartIcon />, label: 'Genome report', url: `/files${getReportPath(objs)}`}
     ]
+  } else if (['ComprehensiveSARS2Analysis'].includes(jobType)) {
+    return [
+      {icon: <ChartIcon />, label: 'Genome report', url: `/files${getReportPath(objs)}`}
+    ]
   }
 
   return []
