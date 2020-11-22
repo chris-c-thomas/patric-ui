@@ -14,7 +14,8 @@ a, a.visited {
     color: #3a8cc2;
     text-decoration: none;
 }
-a:hover {
+
+a:not(.MuiButtonBase-root):hover {
     cursor: pointer;
     color: #215b81;
     text-decoration: underline;

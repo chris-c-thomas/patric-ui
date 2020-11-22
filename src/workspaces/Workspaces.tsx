@@ -103,7 +103,6 @@ export default function Workspaces(props: Props) {
 
         // determine file type so we can set the workspace view type if needed
         if (!['objectSelector', 'jobResult'].includes(viewType) && !isWorkspace(_path)) {
-          console.log('calling get', _path)
           const type = await WS.getType(_path)
 
           if (type != 'job_result' && type != 'folder') {
@@ -145,7 +144,7 @@ export default function Workspaces(props: Props) {
 
 
   // update workspace list whenever upload state on that folder changes too
-  useLayoutEffect(() => {
+  useEffect(() => {
     const paths = uploads.inProgress.map(obj => obj.path)
     if (paths.includes(path))
       updateList()

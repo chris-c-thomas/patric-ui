@@ -55,7 +55,7 @@ const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
   } else if (['CodonTree', 'PhylogeneticTree'].includes(jobType)) {
     return [{
       icon: <TreeIcon />,
-      label,
+      label: 'View tree',
       url: `/view/PhylogeneticTree?labelSearch=true&idType=genome_id&labelType=genome_name&wsTreeFolder=${encodePath(path)}`
     }]
 
@@ -99,10 +99,19 @@ const getReportPath = (objs: WSObject[]) => {
 const OverviewTable = ({data}) => {
   return (
     <table>
+      <thead>
+        <tr>
+          <th>Job ID</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr><td>Job ID</td><td>{data.id}</td></tr>
-        <tr><td>Start time</td><td>{isoToHumanDateTime(data.start_time * 1000)}</td></tr>
-        <tr><td>End time</td><td>{isoToHumanDateTime(data.end_time * 1000)}</td></tr>
+        <tr>
+          <td>{data.id.split('-')[0]}</td>
+          <td>{isoToHumanDateTime(data.start_time * 1000)}</td>
+          <td>{isoToHumanDateTime(data.end_time * 1000)}</td>
+        </tr>
       </tbody>
     </table>
   )
@@ -147,7 +156,7 @@ const JobResultOverview = (props: Props) => {
       {autoMeta &&
         <div className="overview flex space-between">
 
-          <div className="flex align-items-end">
+          <div className="flex-column align-items">
             <OverviewTable data={autoMeta} />
 
             {viewBtns &&
@@ -157,7 +166,8 @@ const JobResultOverview = (props: Props) => {
                     component={Link}
                     to={btn.url}
                     startIcon={btn.icon}
-                    variant="outlined"
+                    variant="contained"
+                    color="primary"
                     disableRipple
                     key={btn.label}
                   >
@@ -231,9 +241,8 @@ const Root = styled.div`
 
   table {
     font-size: 1em;
-    tr > td:first-child {
-      font-weight: bold;
-    }
+    th { text-align: left; }
+    td { padding-right: 10px; }
   }
 `
 
@@ -244,7 +253,6 @@ const ViewButtons = styled.div`
 `
 
 const DevToolsTitle = styled.div`
-  font-size: .8em;
   font-weight: bold;
   margin-bottom: 5px;
 `

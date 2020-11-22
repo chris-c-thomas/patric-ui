@@ -15,7 +15,7 @@ import Alert from '@material-ui/lab/Alert'
 import {deleteObjects, omitSpecialFolders} from '../api/ws-api'
 import {WSObject} from '../api/workspace.d'
 
-import {isWorkspace, Btn} from './WSUtils'
+import {isWorkspace, IconBtn} from './WSUtils'
 
 
 type Props = {
@@ -45,7 +45,7 @@ const WSActions = (props: Props) => {
 
 
   const implement = () => {
-    alert('Not implemented yet :(')
+    alert('Not implemented yet.  Coming soon.')
   }
 
   const openDeleteDialog = () => {
@@ -72,34 +72,24 @@ const WSActions = (props: Props) => {
 
 
   return (
-    <Root>
+    <>
       {shouldShowActions() &&
         <>
           {isWorkspace(path) &&
-            <Btn startIcon={<ShareIcon />} onClick={() => implement()}>
-              Share
-            </Btn>
+            <IconBtn title="Share workspace" icon={<ShareIcon />} onClick={() => implement()} />
           }
 
           {selected.length == 1 &&
-            <Btn startIcon={<RenameIcon />} onClick={() => implement()}>
-              Rename
-            </Btn>
+            <IconBtn title="Rename item" icon={<RenameIcon />} onClick={() => implement()} />
           }
 
-          <Btn startIcon={<CopyMoveIcon />} onClick={() => implement()}>
-            Move or Copy
-          </Btn>
+          <IconBtn title="Move or copy" icon={<CopyMoveIcon />} onClick={() => implement()} />
 
           {selected.length == 1 &&
-            <Btn startIcon={<LabelIcon />} onClick={() => implement()}>
-              Edit Type
-            </Btn>
+            <IconBtn title="Edit item type" icon={<LabelIcon />} onClick={() => implement()} />
           }
 
-          <Btn startIcon={<DeleteIcon />} onClick={openDeleteDialog} className="failed">
-            Delete
-          </Btn>
+          <IconBtn title="Delete" icon={<DeleteIcon />} className="failed"  onClick={openDeleteDialog} />
         </>
       }
 
@@ -133,7 +123,7 @@ const WSActions = (props: Props) => {
         </Snackbar>
       }
 
-    </Root>
+    </>
   )
 }
 

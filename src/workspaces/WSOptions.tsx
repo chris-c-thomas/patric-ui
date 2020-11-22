@@ -15,6 +15,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
 import {isWorkspace, Btn} from './WSUtils'
+import { WSObject } from 'api/workspace'
 
 
 
@@ -24,6 +25,7 @@ type Props = {
   path: string
   showHidden: boolean,
   viewType?: 'jobResult' | 'objectSelector' | 'file'
+  selected: WSObject[]
   onUpdateList: () => void
   onShowHidden: () => void
 }
@@ -33,6 +35,7 @@ const Options = (props: Props) => {
     path,
     viewType,
     showHidden,
+    selected,
     onUpdateList,
     onShowHidden
   } = props
@@ -55,14 +58,16 @@ const Options = (props: Props) => {
     <Root>
       {shouldShowOptions() &&
         <>
-          <Button
-            startIcon={showHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
-            onClick={onShowHidden}
-            size="small"
-            disableRipple
-          >
-            {showHidden ? 'Hide' : 'Show'} hidden
-          </Button>
+          {!selected.length &&
+            <Button
+              startIcon={showHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              onClick={onShowHidden}
+              size="small"
+              disableRipple
+            >
+              {showHidden ? 'Hide' : 'Show'} hidden
+            </Button>
+          }
 
           <Btn startIcon={<UploadIcon />} onClick={() => setDialog('upload')}>
             Upload

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import WSOptions from './WSOptions'
 import WSActions from './WSActions'
 
+import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -127,28 +128,30 @@ export default function ActionBar(props: Props) {
             <>{selected[0].name}<span> is selected</span></>
           }
           {selected.length > 1 &&
-            <span>{selected.length} items are selected</span>
+            <>{selected.length} items are selected</>
           }
         </FileName>
       }
 
       <div className="flex">
-        {showOptions() &&
-          <WSOptions
-            path={path}
-            {...props}
-          />
+        {showActions() &&
+          <>
+            <WSActions
+              path={path}
+              {...props}
+            />
+            <Divider orientation="vertical" flexItem style={{marginRight: 15}}/>
+          </>
         }
 
-        {showActions() &&
-          <WSActions
-            path={path}
-            {...props}
-          />
-        }
+        <WSOptions
+          path={path}
+          selected={selected}
+          {...props}
+        />
 
         {viewType != 'objectSelector' &&
-          <Tooltip title="show details">
+          <Tooltip title="show details" placement="top">
             <IconButton onClick={onShowDetails} size="small" color="primary" disableRipple>
               <InfoIcon />
             </IconButton>
