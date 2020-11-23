@@ -1,5 +1,5 @@
 
-import React, {useState, useEffect, MouseEvent} from 'react'
+import React, {useState, useEffect, MouseEvent, useLayoutEffect} from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -96,14 +96,13 @@ export default function ActionBar(props: Props) {
     setPath(props.path)
   }, [props.path])
 
-
-  useEffect(() => {
-    setSelected(props.selected)
-  }, [props.selected])
-
   useEffect(() => {
     setViewType(props.viewType)
   }, [props.viewType])
+
+  useLayoutEffect(() => {
+    setSelected(props.selected)
+  }, [props.selected])
 
 
   const showActions = () => (selected || []).length > 0

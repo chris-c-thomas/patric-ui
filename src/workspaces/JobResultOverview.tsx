@@ -20,10 +20,6 @@ import CodeIcon from '@material-ui/icons/CodeRounded'
 import { WSObject } from 'api/workspace.d'
 
 
-const encodePath = path => path.split('/')
-  .map((p, i) => i == 1 ? p : encodeURIComponent(p)).join('/')
-
-
 
 type ViewButton = {
   icon: JSX.Element,
@@ -32,7 +28,7 @@ type ViewButton = {
 }
 
 const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
-  const {autoMeta, path} = meta
+  const {autoMeta, encodedPath} = meta
   const jobType = autoMeta.app.id
 
   // defaults
@@ -56,7 +52,7 @@ const getViewBtns = (meta: WSObject, objs: WSObject[]) : ViewButton[] => {
     return [{
       icon: <TreeIcon />,
       label: 'View tree',
-      url: `/view/PhylogeneticTree?labelSearch=true&idType=genome_id&labelType=genome_name&wsTreeFolder=${encodePath(path)}`
+      url: `/view/PhylogeneticTree?labelSearch=true&idType=genome_id&labelType=genome_name&wsTreeFolder=${encodedPath}`
     }]
 
   } else if (['ComprehensiveGenomeAnalysis'].includes(jobType)) {
