@@ -96,7 +96,6 @@ export async function list(args: ListArgs) {
   }
 
   if (onlyPublic) {
-    console.log('onlypublic', onlyPublic)
     objects = objects.filter(obj => obj.isPublic)
   }
 
@@ -302,11 +301,7 @@ export function getUserCounts({user}) {
     `/${user}/home/Experiment Groups/`,
   ]
 
-  const params = {
-    'paths': paths
-  }
-
-  return rpc('ls', params)
+  return rpc('ls', {paths})
     .then(data => {
       return paths.reduce((accum, path) => {
         accum[path] = (path in data && data[path]).length || 0

@@ -15,18 +15,22 @@ a, a.visited {
     text-decoration: none;
 }
 
-a:not(.MuiButtonBase-root):hover {
+a:hover {
     cursor: pointer;
     color: #215b81;
     text-decoration: underline;
 }
 
-a[role="button"]:hover, a[role="tab"]:hover {
+a.MuiButton-contained:hover, a[role=tab]:hover {
     text-decoration: none;
 }
 
+a.MuiButton-contained:hover {
+    color: #fff;
+}
+
 a.no-style {
-    color: inherit;
+    color: initial;
     text-decoration: none;
 }
 
