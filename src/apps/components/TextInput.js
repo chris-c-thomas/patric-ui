@@ -36,11 +36,11 @@ export default function TextInput(props) {
 
   return (
     <div>
-      <InputLabel shrink htmlFor="custom-text-field">
+      <InputLabel shrink htmlFor={label}>
         {label}
       </InputLabel>
       <TextField
-        id="custom-text-field"
+        id={label}
         variant="outlined"
         type={type}
         value={val}

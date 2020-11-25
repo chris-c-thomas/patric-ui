@@ -3,7 +3,8 @@ import React, { useState, useReducer } from 'react'
 import {
   isSignedIn, getUser, SignInForm,
   AppHeader, SubmitBtns, AppStatus,
-  submitApp, config, Root, Section, Row, Step
+  submitApp, config, Root, Section, Row, Step,
+  useAppParams
 } from './common'
 
 import ObjectSelector from './components/object-selector/ObjectSelector'
@@ -40,6 +41,7 @@ const initialState = {
   // scientific_name: will end up being `${scientific_name} ${my_label}`
 }
 
+
 const reducer = (state, action) => {
   if (action == 'RESET')
     return initialState
@@ -50,6 +52,7 @@ const reducer = (state, action) => {
   }
 }
 
+
 const getValues = (form) => {
   let params = {...form}
   params.output_file = `${form.scientific_name} ${form.my_label}`
@@ -59,7 +62,8 @@ const getValues = (form) => {
 
 
 export default function Annotation() {
-  const [form, dispatch] = useReducer(reducer, initialState)
+  const json = useAppParams()
+  const [form, dispatch] = useReducer(reducer, {...initialState, ...json})
   const [status, setStatus] = useState<string>(null)
 
   const onSubmit = () => {

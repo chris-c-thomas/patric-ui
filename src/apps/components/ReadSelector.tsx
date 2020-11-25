@@ -16,7 +16,8 @@ import ObjectSelector from './object-selector/ObjectSelector'
 import SelectedTable from './SelectedTable'
 import TextInput from './TextInput'
 import AddButton from '../common/AddButton'
-import ArrowIcon from '@material-ui/icons/ArrowForwardRounded'
+import AddIcon from '@material-ui/icons/Add'
+//import ArrowIcon from '@material-ui/icons/ArrowForwardRounded'
 import Progress from '@material-ui/core/CircularProgress'
 
 import InputLabel from '@material-ui/core/InputLabel'
@@ -183,7 +184,6 @@ export default function ReadSelector(props: Props) {
             </InputLabel>
             <Row>
               <ObjectSelector
-                // noLabel
                 value={path1}
                 onChange={val => setPath1(val)}
                 type="reads"
@@ -193,7 +193,6 @@ export default function ReadSelector(props: Props) {
             </Row>
             <Row>
               <ObjectSelector
-                // noLabel
                 value={path2}
                 onChange={val => setPath2(val)}
                 type="reads"
@@ -208,14 +207,17 @@ export default function ReadSelector(props: Props) {
             }
           </Column>
 
-          {path1 && path2 && path1 !== path2 &&
-            <div className="align-self-center" >
-              <AddButton
-                onClick={() => onAdd('paired')}
-                endIcon={<ArrowIcon />}
-              />
-            </div>
-          }
+
+          <div className="align-self-center" >
+            <AddButton
+              onClick={() => onAdd('paired')}
+              startIcon={<AddIcon />}
+              endIcon={false}
+              disabled={!path1 || !path2 || path1 == path2 }
+              style={{marginTop: 12}}
+            />
+          </div>
+
         </Row>
 
         <Row>
@@ -233,22 +235,27 @@ export default function ReadSelector(props: Props) {
                 placeholder="Read file"
               />
 
-              {path &&
-                <div className="align-self-center" >
-                  <AddButton onClick={() => onAdd('single')}
-                    endIcon={<ArrowIcon />}
-                  />
-                </div>
-              }
+
+              <div className="align-self-end" >
+                <AddButton onClick={() => onAdd('single')}
+                  startIcon={<AddIcon />}
+                  endIcon={false}
+                  disabled={!path}
+                />
+              </div>
+
             </Row>
           </Column>
         </Row>
 
         <Row>
           <Column>
+            <InputLabel shrink>
+              SRA Run Accession
+            </InputLabel>
             <Row>
               <TextInput
-                label="SRA run accession"
+                noLabel
                 placeholder="SRR"
                 value={sraID}
                 onChange={handleSRAChange}
@@ -257,17 +264,17 @@ export default function ReadSelector(props: Props) {
                 style={{marginRight: 10}}
               />
 
-              {sraID &&
               <div className="align-self-center">
                 {validatingSRA ?
                   <Progress size="30" /> :
                   <AddButton
                     onClick={() => onAddSRA()}
-                    endIcon={<ArrowIcon />}
+                    startIcon={<AddIcon />}
+                    endIcon={false}
+                    disabled={!sraID}
                   />
                 }
               </div>
-              }
             </Row>
 
           </Column>

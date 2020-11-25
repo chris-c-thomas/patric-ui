@@ -82,6 +82,7 @@ export default function ObjectSelector(props: Props) {
       </InputLabel>
 
       <Autocomplete
+        id="taxon-id"
         autoComplete
         style={{ width: 150 }}
         getOptionLabel={option =>  option.taxon_id}

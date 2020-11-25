@@ -12,7 +12,6 @@ import ObjectSelectorDialog from './ObjectSelectorDialog'
 import * as WS from '../../../api/ws-api'
 import {getUser} from '../../../api/auth'
 
-import {WSObject} from '../../../api/workspace.d'
 
 
 const usageError = (propName, value) =>
@@ -34,6 +33,9 @@ const formatOptionLabel = (option, query: string) => {
     </div>
   )
 }
+
+
+const getName = (path: string) => path.slice(path.lastIndexOf('/')+1)
 
 
 type Props = {
@@ -76,8 +78,9 @@ export default function ObjectSelector(props: Props) {
     setPath(value)
   }, [value])
 
-
   useEffect(() => {
+    let active = true;
+
     (async () => {
       let path = `/${getUser(true)}/home`
 
@@ -89,18 +92,39 @@ export default function ObjectSelector(props: Props) {
         setError(err)
       }
 
+      if (!active) return
+
       setOptions(data)
       setLoading(false)
     })()
+
+
+    return () => {
+      active = false
+    }
   }, [type, showHidden])
 
+
+  const handleQuery = (evt) => {
+    setQuery(evt.target.value)
+
+    // on query remove selection
+    onChange(null)
+  }
+
+  const handleInputChange = (evt, val, reason) => {
+    if (reason != 'reset') return
+    onChange(null)
+  }
 
   const onDialogSelect = (path) => {
     onChange(path)
   }
 
+
   const handleOnChange = (evt, obj) => {
     onChange(obj ? obj.path : null)
+    setQuery('')
   }
 
 
@@ -114,15 +138,17 @@ export default function ObjectSelector(props: Props) {
         <Autocomplete
           autoComplete
           style={{ width: 350 }}
-          getOptionLabel={({path}) => path.slice(path.lastIndexOf('/')+1)}
+          getOptionLabel={({path}) => getName(path)}
           options={options}
-          value={path && {path}}
           getOptionSelected={option => option.path == path}
+          inputValue={path ? getName(path) : query}
+          onInputChange={handleInputChange}
+          value={path ? {path} : null}
           onChange={handleOnChange}
           renderInput={(params) => (
             <TextField
               {...params}
-              onChange={(evt) => setQuery(evt.target.value)}
+              onChange={handleQuery}
               size="small"
               variant="outlined"
               /*

@@ -8,7 +8,7 @@ import AddIcon from '@material-ui/icons/PlayCircleOutlineRounded'
 
 type Props = {
   onClick: () => void
-  disable?: boolean
+  disabled?: boolean
   [rest: string]: any
 }
 
