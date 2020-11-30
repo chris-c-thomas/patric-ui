@@ -9,7 +9,13 @@ const Root = styled.div`
   margin: 50px auto;
   padding: 20px 20px 10px 20px;
   border: 1px solid #ddd;
+
+  input::placeholder {
+    font-style: italic;
+    font-size: .9em;
+  }
 `
+
 
 const Row = styled.div`
   display: flex;
@@ -19,6 +25,7 @@ const Row = styled.div`
   ${props => props.noPad &&
     'margin-bottom: 0px !important;'}
 `
+
 
 const Column = styled.div`
   display: flex;
@@ -30,6 +37,7 @@ const Column = styled.div`
       'margin-bottom: 10px;'}
   }
 `
+
 
 const Section = styled.div`
   display: flex;
@@ -50,11 +58,13 @@ const Section = styled.div`
     'justify-content: space-between;'}
 `
 
+
 const TableTitle = styled.h5`
   margin: 0 0 10px 0;
   color: rgba(0, 0, 0, 0.87);
   font-weight: 500;
 `
+
 
 export {
   Root, Row, Section, Column,
