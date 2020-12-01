@@ -1,13 +1,13 @@
 import {WSObject} from '../api/workspace'
 
 
-type Spec = {
-  inputTypes: string[]
-}
 
 type InputSpec = {
-  [serviceName: string]: Spec
+  [serviceName: string]: {
+    inputTypes: string[]
+  }
 }
+
 
 export const inputSpec : InputSpec = {
   Assembly2: {
@@ -30,40 +30,35 @@ export const inputSpec : InputSpec = {
 
 export function getParams(selected: WSObject[], name: string) : object {
   const count = selected.length
-  const {path, type} = selected[0]
+  const {encodedPath, type} = selected[0]
 
   let params = {}
 
   if (['Assembly2'].includes(name)) {
     if (selected.length == 1) {
-      const [read] = selected.map(obj => obj.encodedPath)
-      params = {single_end_libs: [{read}]}
+      params = {single_end_libs: [{read: encodedPath}]}
     } else if (selected.length == 2) {
       const [read1, read2] = selected.map(obj => obj.encodedPath)
       params = {paired_end_libs: [{read1, read2}]}
     }
 
-  } else if (name == 'Annotation' && count == 1) {
-    params = {contigs: path}
+  } else if (['Annotation'].includes(name) && count == 1) {
+    params = {contigs: encodedPath}
 
   } else if (['PhylogeneticTree', 'GenomeAlignment'].includes(name) && count == 1) {
-    const [path] = selected.map(obj => obj.encodedPath)
-    params = {genome_groups: [path]}
+    params = {genome_groups: [encodedPath]}
 
   } else if (['ComprehensiveGenomeAnalysis'].includes(name)) {
     if (type == 'reads') {
       if (selected.length == 1) {
-        const [read] = selected.map(obj => obj.encodedPath)
-        params = {single_end_libs: [{read}], input_type: type}
+        params = {single_end_libs: [{read: encodedPath}], input_type: type}
       } else if (selected.length == 2) {
         const [read1, read2] = selected.map(obj => obj.encodedPath)
         params = {paired_end_libs: [{read1, read2}], input_type: type}
       }
-    } else if (type == 'contigs') {
-      if (selected.length == 1) {
-        const [contigs] = selected.map(obj => obj.encodedPath)
-        params = {contigs, input_type: type}
-      }
+    } else if (type == 'contigs' && selected.length == 1) {
+      const contigs = selected[0].encodedPath
+      params = {contigs, input_type: type}
     }
   }
 

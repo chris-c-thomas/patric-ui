@@ -38,7 +38,6 @@ const getRunnableApps = (selected: WSObject[]) : ServiceOpt[]  => {
   const apps = Object.keys(inputSpec)
     .filter(key => inputSpec[key].inputTypes.includes(type))
 
-
   // filter out anything that doesn't have params
   // and convert to options (with url)
   const options = apps
@@ -100,9 +99,6 @@ const WSActions = (props: Props) => {
     })
   }
 
-  const handleRunJob = (option) => {
-    selected[0].path
-  }
 
   const shouldShowActions = () =>
     viewType != 'objectSelector' &&
