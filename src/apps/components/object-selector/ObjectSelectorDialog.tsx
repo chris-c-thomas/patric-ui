@@ -124,6 +124,10 @@ const DialogRoot = styled(Dialog)`
   .MuiDialog-paperScrollPaper {
     display: block;
   }
+
+  .MuiDialogContent-root {
+    padding-top: 0;
+  }
 `
 
 const FolderBtn = styled(Button)`

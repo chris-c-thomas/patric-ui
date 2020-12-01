@@ -86,7 +86,7 @@ const Viewer = ({meta, data, url}) => {
     view =
       <div>
         <OverviewTable data={meta} />
-        <p>Sorry, there is no viewer for objects of type <i>{type}</i> (but you can still download this file).</p>
+        <p>Note: there is no viewer for objects of type <i>{type}</i>, but you can still download this file above.</p>
       </div>
 
   return view
@@ -97,7 +97,7 @@ type Props = {
 }
 
 
-const GenericViewer = (props: Props) => {
+export default function FileViewer(props: Props) {
   const {path} = props
 
   const [loading, setLoading] = useState<boolean>(false)
@@ -228,4 +228,4 @@ const Content = styled.div`
   max-height: calc(100% - 100px);
 `
 
-export default GenericViewer
+

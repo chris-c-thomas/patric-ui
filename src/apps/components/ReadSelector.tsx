@@ -7,7 +7,7 @@
  *
  */
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import styled from 'styled-components'
 
 import { parsePath } from '../../utils/paths'
@@ -25,6 +25,22 @@ import Tooltip from '@material-ui/core/Tooltip'
 import HelpIcon from '@material-ui/icons/HelpOutlineRounded'
 import FormHelperText from '@material-ui/core/FormHelperText'
 
+
+type PairedEndLib = {read1: string, read2: string}
+type SingleEndLib = {read: string}
+type SRRID = string
+
+type Reads = {
+  paired_end_libs: PairedEndLib[],
+  single_end_libs: SingleEndLib[]
+  srr_ids: SRRID[]
+}
+
+type TableRow = {
+  label: string,
+  type: 'paired' | 'single' | 'srr',
+  value: PairedEndLib | SingleEndLib | SRRID
+}[]
 
 
 const columns = [{
@@ -45,30 +61,73 @@ const columns = [{
 // { button: 'infoButton'} // todo: implement
 ]
 
-// todo(nc): define reads
+
+const getTableRow = (read: PairedEndLib | SingleEndLib | SRRID) : TableRow => {
+  if (typeof read == 'object' && 'read' in read )
+    return {
+      label: parsePath(read.read).name,
+      type: 'single',
+      value: read
+    }
+  else if (typeof read == 'object' && 'read1' in read && 'read2' in read)
+    return {
+      label: parsePath(read.read1).name + ', ' + parsePath(read.read2).name,
+      type: 'paired',
+      value: read
+    }
+  else if (typeof read == 'string')
+    return {
+      label: read,
+      type: 'srr',
+      value: read
+    }
+  else
+    throw 'getTableRow: Could not determine table row for selected read library table'
+}
+
+const getTableRows = (reads: Reads) => {
+  const {paired_end_libs = [], single_end_libs = [], srr_ids = []} = reads
+
+  return [
+    ...paired_end_libs,
+    ...single_end_libs,
+    ...srr_ids
+  ].map(read => getTableRow(read))
+}
+
+
+const getState = (tableRows: TableRow[]) : Reads => {
+  return {
+    paired_end_libs: tableRows.filter(row => row.type == 'paired').map(o => o.value),
+    single_end_libs: tableRows.filter(row => row.type == 'single').map(o => o.value),
+    srr_ids: tableRows.filter(row => row.type == 'srr').map(o => o.value)
+  }
+}
+
+
 type Props = {
   onChange: (object) => void
   advancedOptions?: boolean
-  reads?: object[]
+  reads: Reads
 }
-
 
 export default function ReadSelector(props: Props) {
   const { onChange, advancedOptions} = props
 
+  // data state
+  const [tableRows, setTableRows] = useState(getTableRows(props.reads))
+
   // currently selected path (for single reads)
-  const [path, setPath] = useState(null)
+  const [read, setRead] = useState(null)
 
   // currently selected paths (for single paired reads)
-  const [path1, setPath1] = useState(null)
-  const [path2, setPath2] = useState(null)
+  const [read1, setRead1] = useState(null)
+  const [read2, setRead2] = useState(null)
 
   // current SRA ID input
   const [sraID, setSraID] = useState('')
 
-  // list of selected reads
-  const [reads, setReads] = useState(props.reads)
-
+  // advanced options (todo: implement)
   const [advOpen, setAdvOpen] = useState(false)
 
   const [interleaved, setInterleaved] = useState('false')
@@ -80,45 +139,42 @@ export default function ReadSelector(props: Props) {
   const [sraError, setSRAError] = useState(null)
 
 
-  useEffect(() => {
-    setReads(props.reads)
-  }, [props.reads])
+  const table = useMemo(() => getTableRows(props.reads), [props.reads])
 
-  // two way binding on "reads"
   useEffect(() => {
-    onChange(reads)
-  }, [reads])
+    // optimization needed?
+    setTableRows(table)
+  }, [props.reads, table])
 
 
   function onAdd(type) {
     let row
     if (type == 'single') {
       row = {
-        type: 'single_end_libs',
-        label: parsePath(path).name,
-        value: {
-          read: path,
-          platform,
-          interleaved,
-          read_orientation_outward
-        }
+        read,
+        platform,
+        interleaved,
+        read_orientation_outward
       }
+
+      setRead(null)
     } else if (type == 'paired') {
       row = {
-        type: 'paired_end_libs',
-        label: parsePath(path1).name+ ', ' + parsePath(path2).name,
-        value: {
-          read1: path1,
-          read2: path2,
-          platform,
-          interleaved,
-          read_orientation_outward
-        }
+        read1,
+        read2,
+        platform,
+        interleaved,
+        read_orientation_outward
       }
+
+      setRead1(null)
+      setRead2(null)
+    } else {
+      throw 'Could not reconize read type'
     }
 
-    // add reads
-    setReads(prev => ([...prev, row]))
+    const newRows = [...tableRows, getTableRow(row)]
+    onChange(getState(newRows))
   }
 
 
@@ -148,7 +204,6 @@ export default function ReadSelector(props: Props) {
 
       const status = err.code == 'ECONNABORTED' ? 0 : err.response.status
       if (status >= 400 && status < 500) {
-        console.log('returning')
         setSRAError(`Your SRA ID ${sraID} is not valid`)
         return
       }
@@ -156,20 +211,20 @@ export default function ReadSelector(props: Props) {
       setSRAMsg(`Note: we could not validate your SRA ID, but it was still added`)
     }
 
-    const row = {
-      type: 'srr_ids',
-      label: sraID,
-      value: sraID
-    }
+    const newRows = [...tableRows, getTableRow(sraID)]
+    onChange(getState(newRows))
 
-    setReads(prev => ([...prev, row]))
     setValidatingSRA(false)
     setSraID('')
   }
 
 
   const onRemove = ({index}) => {
-    setReads(prev => prev.filter((_, i) => i != index))
+    setTableRows(prev => {
+      const newRows = prev.filter((_, i) => i != index)
+      onChange(getState(newRows))
+      return newRows
+    })
   }
 
 
@@ -184,8 +239,8 @@ export default function ReadSelector(props: Props) {
             </InputLabel>
             <Row>
               <ObjectSelector
-                value={path1}
-                onChange={val => setPath1(val)}
+                value={read1}
+                onChange={val => setRead1(val)}
                 type="reads"
                 dialogTitle="Select read file"
                 placeholder="Read file 1"
@@ -193,14 +248,14 @@ export default function ReadSelector(props: Props) {
             </Row>
             <Row>
               <ObjectSelector
-                value={path2}
-                onChange={val => setPath2(val)}
+                value={read2}
+                onChange={val => setRead2(val)}
                 type="reads"
                 dialogTitle="Select read file 2"
                 placeholder="Read file 2"
               />
             </Row>
-            {path1 && path2 && path1 == path2 &&
+            {read1 && read2 && read1 == read2 &&
               <FormHelperText error>
                 Paired-end read files can not be the same
               </FormHelperText>
@@ -213,7 +268,7 @@ export default function ReadSelector(props: Props) {
               onClick={() => onAdd('paired')}
               startIcon={<AddIcon />}
               endIcon={false}
-              disabled={!path1 || !path2 || path1 == path2 }
+              disabled={!read1 || !read2 || read1 == read2 }
               style={{marginTop: 12}}
             />
           </div>
@@ -228,8 +283,8 @@ export default function ReadSelector(props: Props) {
             <Row>
               <ObjectSelector
                 // noLabel
-                value={path}
-                onChange={val => setPath(val)}
+                value={read}
+                onChange={val => setRead(val)}
                 type="reads"
                 dialogTitle="Select (single) read file"
                 placeholder="Read file"
@@ -240,7 +295,7 @@ export default function ReadSelector(props: Props) {
                 <AddButton onClick={() => onAdd('single')}
                   startIcon={<AddIcon />}
                   endIcon={false}
-                  disabled={!path}
+                  disabled={!read}
                 />
               </div>
 
@@ -285,7 +340,7 @@ export default function ReadSelector(props: Props) {
       <TableContainer>
         <SelectedTable
           columns={columns}
-          rows={reads}
+          rows={tableRows}
           onRemove={onRemove}
           emptyNotice={<i>Place read files here using the fields to the left</i>}
         />

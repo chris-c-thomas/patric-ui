@@ -84,15 +84,6 @@ export default function ObjectSelector(props: Props) {
         </Tooltip>
       </InputLabel>
 
-      {/*
-      <Tooltip
-        title="Taxon must be specified at genus level or below to get the latest protein family predictions"
-        placement="right"
-      >
-        <HelpIcon color="primary" className="hover" style={{position: 'absolute', right: 20, top: -20, fontSize: 16}} />
-      </Tooltip>
-      */}
-
       <Autocomplete
         autoComplete
         style={{ width: 350, marginRight: 10 }}

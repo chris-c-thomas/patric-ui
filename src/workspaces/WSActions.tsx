@@ -1,6 +1,6 @@
 
 import React, {useState, useEffect} from 'react'
-import styled from 'styled-components'
+import {Link} from 'react-router-dom'
 
 import ShareIcon from '@material-ui/icons/FolderSharedOutlined'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
@@ -8,14 +8,49 @@ import LabelIcon from '@material-ui/icons/LocalOfferOutlined'
 import CopyMoveIcon from '@material-ui/icons/FileCopyOutlined'
 import RenameIcon from '@material-ui/icons/EditOutlined'
 
-import ConfirmDialog from './ConfirmDialog'
+import MenuItem from '@material-ui/core/MenuItem'
+import Divider from '@material-ui/core/Divider'
 import Snackbar from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
+import ConfirmDialog from './ConfirmDialog'
+
 import {deleteObjects, omitSpecialFolders} from '../api/ws-api'
 import {WSObject} from '../api/workspace.d'
+import {isWorkspace,IconBtn, RunJobMenu} from './WSUtils'
 
-import {isWorkspace, IconBtn} from './WSUtils'
+import {inputSpec, getParams} from './runServiceSpec'
+
+
+
+
+type ServiceOpt = {label: string, url: string}
+
+
+const getRunnableApps = (selected: WSObject[]) : ServiceOpt[]  => {
+  // all files must be the same type
+  if ([...new Set(selected.map(obj => obj.type))].length > 1)
+    return
+
+  const {type} = selected[0]
+
+  // get all possible apps
+  const apps = Object.keys(inputSpec)
+    .filter(key => inputSpec[key].inputTypes.includes(type))
+
+
+  // filter out anything that doesn't have params
+  // and convert to options (with url)
+  const options = apps
+    .filter(label => Object.keys(getParams(selected, label)).length)
+    .map(label => ({
+      label,
+      url: `/apps/${label}/?input=${JSON.stringify(getParams(selected, label))}`
+    }))
+
+  return options
+}
+
 
 
 type Props = {
@@ -65,6 +100,10 @@ const WSActions = (props: Props) => {
     })
   }
 
+  const handleRunJob = (option) => {
+    selected[0].path
+  }
+
   const shouldShowActions = () =>
     viewType != 'objectSelector' &&
     !path.startsWith('/public') &&
@@ -90,6 +129,29 @@ const WSActions = (props: Props) => {
           }
 
           <IconBtn title="Delete" icon={<DeleteIcon />} className="failed"  onClick={openDeleteDialog} />
+
+          <Divider orientation="vertical" flexItem style={{marginRight: 15}}/>
+
+          {selected.length <= 2 && getRunnableApps(selected)?.length > 0 &&
+            <>
+              <RunJobMenu>
+                {getRunnableApps(selected)
+                  .map(({label, url}) =>
+                    <MenuItem
+                      key={label}
+                      component={Link}
+                      to={url}
+                      style={{minWidth: 175}}
+                    >
+                      {label}
+                    </MenuItem>
+                  )
+                }
+              </RunJobMenu>
+
+              <Divider orientation="vertical" flexItem style={{marginRight: 15}}/>
+            </>
+          }
         </>
       }
 
@@ -128,9 +190,6 @@ const WSActions = (props: Props) => {
 }
 
 
-const Root = styled.div`
-
-`
 
 
 export default WSActions

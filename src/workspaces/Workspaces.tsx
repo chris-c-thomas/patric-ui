@@ -17,9 +17,9 @@ import ErrorMsg from '../ErrorMsg'
 
 import * as WS from '../api/ws-api'
 
-import './workspaces.scss'
-import GenericViewer from './viewers/GenericViewer'
+import FileViewer from './viewers/FileViewer'
 import { isWorkspace } from './WSUtils'
+import './workspaces.scss'
 
 
 const getJobResultDir = (path) => {
@@ -231,7 +231,7 @@ export default function Workspaces(props: Props) {
           {loading && <Progress className="card-progress" /> }
 
           {viewType =='file' ?
-            <GenericViewer path={path} /> :
+            <FileViewer path={path} /> :
             <FileList
               rows={rows}
               onSelect={handleSelect}

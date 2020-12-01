@@ -1,9 +1,10 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 
 import {
   isSignedIn, getUser, SignInForm,
   AppHeader, SubmitBtns, AppStatus,
-  submitApp, config, Root, Section, Row, Step
+  submitApp, config, Root, Section, Row, Step,
+  useAppParams
 } from './common'
 
 import GenomeTableSelector from './components/GenomeTableSelector'
@@ -11,6 +12,7 @@ import ObjectSelector from './components/object-selector/ObjectSelector'
 import WSFileName from './components/WSFileName'
 import TextInput from './components/TextInput'
 import Selector from './components/Selector'
+import { getObject } from '../api/ws-api'
 
 const appName = 'CodonTree'
 const userGuideURL = `${config.docsURL}/user_guides/services/phylogenetic_tree_building_service.html`
@@ -64,8 +66,19 @@ const reducer = (state, action) => {
 
 
 export default function PhylogeneticTree() {
-  const [form, dispatch] = useReducer(reducer, initialState)
+  const json = useAppParams()
+  const [form, dispatch] = useReducer(reducer, {...initialState, ...json})
   const [status, setStatus] = useState(null)
+
+
+  useEffect(() => {
+    (async () => {
+      if (!json) return
+      const {data} = await getObject(json.genome_groups[0])
+      const ids = data['id_list'].genome_id
+      dispatch({ type: 'ADD_GENOME_GROUP', val: ids })
+    })()
+  }, [json])
 
 
   const onSubmit = () => {

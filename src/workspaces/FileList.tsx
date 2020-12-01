@@ -48,6 +48,7 @@ const getColumns = (onNavigate, isObjSelector) => [
           to={url}
           onClick={evt => isObjSelector && onNavigate(evt, obj)}
           className="inline-flex align-items-center"
+          title={`type: ${obj.type}`}
         >
           {getIcon(obj)} {val}
         </Link>

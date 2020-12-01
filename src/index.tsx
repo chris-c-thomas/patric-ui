@@ -97,9 +97,9 @@ const App = () => {
                       <Route path="/hosts/:taxonID/:view" render={HostTabs} />
 
                       {/* service routes */}
-                      <Route path="/apps/Assembly2" exact component={lazy(() => import('./apps/Assembly2'))} />
-                      <Route path="/apps/Annotation" exact component={lazy(() => import('./apps/Annotation'))} />
-                      <Route path="/apps/ComprehensiveGenomeAnalysis" exact component={lazy(() => import('./apps/ComprehensiveGenomeAnalysis'))} />
+                      <Route path="/apps/Assembly2" component={lazy(() => import('./apps/Assembly2'))} />
+                      <Route path="/apps/Annotation" component={lazy(() => import('./apps/Annotation'))} />
+                      <Route path="/apps/ComprehensiveGenomeAnalysis" component={lazy(() => import('./apps/ComprehensiveGenomeAnalysis'))} />
                       <Route path="/apps/PhylogeneticTree" exact component={lazy(() => import('./apps/PhylogeneticTree'))} />
                       <Route path="/apps/Blast" exact component={lazy(() => import('./apps/Blast'))} />
                       <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />

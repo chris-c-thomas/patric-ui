@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import {useLocation, useHistory} from 'react-router-dom'
 import Button from '@material-ui/core/Button'
 
 import { Section } from './FormLayout'
@@ -17,7 +18,16 @@ type Props = {
 }
 
 export default function SubmitBtns(props: Props) {
-  const {disabled = false, status, onSubmit, onReset} = props
+  const {
+    disabled = false,
+    status,
+    onSubmit,
+    onReset
+  } = props
+
+  const params = new URLSearchParams(useLocation().search)
+  const history = useHistory()
+
 
   if (typeof disabled == 'undefined')
     throw usageError('disabled', disabled)
@@ -29,6 +39,14 @@ export default function SubmitBtns(props: Props) {
   useEffect(() => {
     setState(status)
   }, [status])
+
+
+  const handleReset = () => {
+    // ensure url is updated on reset
+    params.delete('input')
+    history.push({search: params.toString()})
+    onReset()
+  }
 
   return (
     <Section spaceBetween>
@@ -43,7 +61,7 @@ export default function SubmitBtns(props: Props) {
         {state == 'starting' ? 'Submitting...' : 'Submit'}
       </Button>
 
-      <Button onClick={onReset} disableRipple>
+      <Button onClick={handleReset} disableRipple>
         Reset
       </Button>
     </Section>

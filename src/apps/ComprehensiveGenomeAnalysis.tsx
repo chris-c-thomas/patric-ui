@@ -5,7 +5,8 @@ import React, { useState, useReducer } from 'react'
 import {
   isSignedIn, getUser, SignInForm,
   AppHeader, SubmitBtns, AppStatus,
-  submitApp, config, Root, Section, Row, Step
+  submitApp, config, Root, Section, Row, Step,
+  useAppParams
 } from './common'
 
 import ReadSelector from './components/ReadSelector'
@@ -30,26 +31,14 @@ const example = {
   domain: 'Bacteria',
   input_type: 'reads',
   paired_end_libs: [],
-  code: '11',
-  min_contig_len: 300,
-  reads: [{ // not sent to server
-    type: 'srr_ids',
-    label: 'SRR1955831',
-    value: 'SRR1955831'
-  }, {
-    type: 'srr_ids',
-    label: 'SRR1955832',
-    value: 'SRR1955832'
-  }, {
-    type: 'srr_ids',
-    label: 'SRR1955833',
-    value: 'SRR1955833'
-  }],
+  single_end_libs: [],
   srr_ids: [
     'SRR1955831',
     'SRR1955832',
     'SRR1955833'
   ],
+  code: '11',
+  min_contig_len: 300,
   trim: 'false',
   skip_indexing: '0',
   taxonomy_id: '1280',
@@ -67,7 +56,6 @@ const example = {
 const initialState = {
   input_type: 'reads',
   skip_indexing: true,
-  reads: [],  // not sent to server
   paired_end_libs: [],
   single_end_libs: [],
   srr_ids: [],
@@ -95,16 +83,9 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else if (action.field == 'reads') {
-    const {reads} = action
-    return {
-      ...state,
-      paired_end_libs: reads.filter(o => o.type == 'paired_end_libs').map(o => o.value),
-      single_end_libs: reads.filter(o => o.type == 'single_end_libs').map(o => o.value),
-      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value),
-      reads  // just to make validation easier (see isStep1Complete)
-    }
-  } else {
+  else if (action.field == 'reads')
+    return {...state, ...action.reads}
+  else {
     return {...state, [action.field]: action.val}
   }
 }
@@ -113,13 +94,13 @@ const getValues = (form) => {
   let params = {...form}
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
   params.output_file = `${form.scientific_name} ${form.my_label}`
-  delete params.reads
   return params
 }
 
 
 export default function SARSCoV2() {
-  const [form, dispatch] = useReducer(reducer, initialState)
+  const json = useAppParams()
+  const [form, dispatch] = useReducer(reducer, {...initialState, ...json})
   const [status, setStatus] = useState(null)
 
   const [advParams, setAdvParams] = useState(false)
@@ -134,8 +115,13 @@ export default function SARSCoV2() {
   }
 
 
+  const hasReads = () =>
+    form.paired_end_libs.length > 0 ||
+    form.single_end_libs.length > 0 ||
+    form.srr_ids.length > 0
+
   const isReadsComplete = () =>
-    (form.input_type == 'reads' && form.reads.length > 0) ||
+    (form.input_type == 'reads' && hasReads()) ||
     (form.input_type == 'contigs' && form.contigs)
 
   const isAnnotationStepComplete = () =>
@@ -169,7 +155,11 @@ export default function SARSCoV2() {
       {form.input_type == 'reads' &&
         <Section>
           <ReadSelector
-            reads={form.reads}
+            reads={{
+              paired_end_libs: form.paired_end_libs,
+              single_end_libs: form.single_end_libs,
+              srr_ids: form.srr_ids
+            }}
             onChange={reads => dispatch({field: 'reads', reads})}
           />
         </Section>

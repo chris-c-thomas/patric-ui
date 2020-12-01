@@ -430,7 +430,7 @@ export default function TableComponent(props: Props) {
 
   useClickOutside(tableRef, () => {
     dispatch({type: 'CLEAR'})
-  }, ['button', '.meta-sidebar'])
+  }, ['button', 'a', '.meta-sidebar'])
 
 
   const onChangePage = (event, newPage) => {

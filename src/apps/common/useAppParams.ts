@@ -6,7 +6,7 @@ export default function useAppParams() {
   const params = new URLSearchParams(location.search)
   const jsonStr = params.get('input')
 
-  const [value, setValue] = useState<object>(JSON.parse(jsonStr))
+  const [value, setValue] = useState<any>(JSON.parse(jsonStr))
 
   useEffect(() => {
     if (!jsonStr) return

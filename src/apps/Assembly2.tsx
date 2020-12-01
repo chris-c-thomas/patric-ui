@@ -3,7 +3,7 @@ import React, { useState, useReducer } from 'react'
 import {
   isSignedIn, getUser, SignInForm,
   AppHeader, SubmitBtns, AppStatus,
-  submitApp, config, Root, Section, Row, Step
+  submitApp, config, Root, Section, Row, Step, useAppParams
 } from './common'
 
 import ReadSelector from './components/ReadSelector'
@@ -19,17 +19,15 @@ const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
 
 
 const example = {
-  reads: [{
-    type: 'paired_end_libs',
-    label: 'SRR7796591_1.fastq.gz, SRR7796591_2.fastq.gz',
-    value: { // not sent to server
-      read1: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR779651/SRR7796591_1.fastq.gz',
-      read2: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR779651/SRR7796591_2.fastq.gz',
-      interleaved: 'false',
-      platform: 'infer',
-      read_orientation_outward: 'false'
-    }
+  paired_end_libs: [{
+    read1: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR779651/SRR7796591_1.fastq.gz',
+    read2: '/PATRIC@patricbrc.org/PATRIC Workshop/Assembly/SRR779651/SRR7796591_2.fastq.gz',
+    interleaved: 'false',
+    platform: 'infer',
+    read_orientation_outward: 'false'
   }],
+  single_end_libs: [],
+  srr_ids: [],
   recipe: 'auto',
   racon_iter: 2,
   pilon_iter: 2,
@@ -60,30 +58,23 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else if (action.field == 'reads') {
-    const {reads} = action
-    return {
-      ...state,
-      paired_end_libs: reads.filter(o => o.type == 'paired_end_libs').map(o => o.value),
-      single_end_libs: reads.filter(o => o.type == 'single_end_libs').map(o => o.value),
-      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value),
-      reads   // just for validation
-    }
-  } else {
+  else if (action.field == 'reads')
+    return {...state, ...action.reads}
+  else {
     return {...state, [action.field]: action.val}
   }
 }
 
 
 export default function Assembly() {
-  const [form, dispatch] = useReducer(reducer, initialState)
+  const json = useAppParams()
+  const [form, dispatch] = useReducer(reducer, {...initialState, ...json})
   const [status, setStatus] = useState(null)
 
   const [advParams, setAdvParams] = useState(false)
 
   const onSubmit = () => {
     const params = {...form}
-    delete params.reads
 
     setStatus('starting')
     submitApp(appName, params)
@@ -91,10 +82,12 @@ export default function Assembly() {
       .catch(error => setStatus(error))
   }
 
+  const isStep1Complete = () =>
+    form.paired_end_libs.length > 0 ||
+    form.single_end_libs.length > 0 ||
+    form.srr_ids.length > 0
 
-  const isStep1Complete = () => form.reads.length > 0
-
-  const isStep2Complete = () => form.reads.length > 0
+  const isStep2Complete = () => isStep1Complete()
 
   const isStep3Complete = () => !!form.output_path  && !!form.output_file
 
@@ -105,7 +98,11 @@ export default function Assembly() {
 
       <Section>
         <ReadSelector
-          reads={form.reads}
+          reads={{
+            paired_end_libs: form.paired_end_libs,
+            single_end_libs: form.single_end_libs,
+            srr_ids: form.srr_ids
+          }}
           onChange={reads => dispatch({field: 'reads', reads})}
           advancedOptions
         />

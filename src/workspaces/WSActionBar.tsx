@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 import WSOptions from './WSOptions'
 import WSActions from './WSActions'
 
-import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -107,10 +106,6 @@ export default function ActionBar(props: Props) {
 
   const showActions = () => (selected || []).length > 0
 
-  const showOptions = () =>
-    (!selected || selected.length == 0) && !['file'].includes(viewType)
-
-
 
   return (
     <Root className="flex align-items-center space-between">
@@ -139,7 +134,6 @@ export default function ActionBar(props: Props) {
               path={path}
               {...props}
             />
-            <Divider orientation="vertical" flexItem style={{marginRight: 15}}/>
           </>
         }
 
@@ -150,7 +144,7 @@ export default function ActionBar(props: Props) {
         />
 
         {viewType != 'objectSelector' &&
-          <Tooltip title="show details" placement="top">
+          <Tooltip title="Show details" placement="top">
             <IconButton onClick={onShowDetails} size="small" color="primary" disableRipple>
               <InfoIcon />
             </IconButton>

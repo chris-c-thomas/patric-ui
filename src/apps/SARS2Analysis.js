@@ -21,11 +21,8 @@ const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
 const example = {
   input_type: 'reads',
   skip_indexing: true,
-  reads: [{ // not sent to server
-    type: 'srr_ids',
-    label: 'ERR4208068',
-    value: 'ERR4208068'
-  }],
+  paired_end_libs: [],
+  single_end_libs: [],
   srr_ids: ['ERR4208068'],
   recipe: 'auto',
   domain: 'Viruses',
@@ -40,7 +37,6 @@ const example = {
 const initialState = {
   input_type: 'reads',
   skip_indexing: true,
-  reads: [],  // not sent to server
   paired_end_libs: [],
   single_end_libs: [],
   srr_ids: [],
@@ -61,16 +57,9 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else if (action.field == 'reads') {
-    const {reads} = action
-    return {
-      ...state,
-      paired_end_libs: reads.filter(o => o.type == 'paired_end_libs').map(o => o.value),
-      single_end_libs: reads.filter(o => o.type == 'single_end_libs').map(o => o.value),
-      srr_ids: reads.filter(o => o.type == 'srr_ids').map(o => o.value),
-      reads  // just to make validation easier (see isStep1Complete)
-    }
-  } else {
+  else if (action.field == 'reads')
+    return {...state, ...action.reads}
+  else {
     return {...state, [action.field]: action.val}
   }
 }
@@ -79,7 +68,6 @@ const getValues = (form) => {
   let params = {...form}
   params.scientific_name = `${form.scientific_name} ${form.my_label}`
   params.output_file = `${form.scientific_name} ${form.my_label}`
-  delete params.reads
   return params
 }
 
@@ -96,8 +84,13 @@ export default function SARSCoV2() {
       .catch(error => setStatus(error))
   }
 
+  const hasReads = () =>
+    form.paired_end_libs.length > 0 ||
+    form.single_end_libs.length > 0 ||
+    form.srr_ids.length > 0
+
   const isStep1Complete = () =>
-    (form.input_type == 'reads' && form.reads.length > 0) ||
+    (form.input_type == 'reads' && hasReads()) ||
     (form.input_type == 'contigs' && form.contigs)
 
 
@@ -130,7 +123,11 @@ export default function SARSCoV2() {
       {form.input_type == 'reads' &&
         <Section>
           <ReadSelector
-            reads={form.reads}
+            reads={{
+              paired_end_libs: form.paired_end_libs,
+              single_end_libs: form.single_end_libs,
+              srr_ids: form.srr_ids
+            }}
             onChange={reads => dispatch({field: 'reads', reads})}
           />
         </Section>

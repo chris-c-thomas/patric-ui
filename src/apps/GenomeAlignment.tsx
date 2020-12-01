@@ -1,15 +1,17 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 
 import {
   isSignedIn, getUser, SignInForm,
   AppHeader, SubmitBtns, AppStatus,
-  submitApp, config, Root, Section, Row, Step
+  submitApp, config, Root, Section, Row, Step,
+  useAppParams
 } from './common'
 
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import WSFileName from './components/WSFileName'
 import GenomeTableSelector from './components/GenomeTableSelector'
 import AdvancedButton from './components/AdvancedButton'
+import { getObject } from '../api/ws-api'
 
 const appName = 'GenomeAlignment'
 const userGuideURL =  `${config.docsURL}/user_guides/services/genome_alignment_service.html`
@@ -70,9 +72,20 @@ const reducer = (state, action) => {
 
 
 export default function GenomeAlignment() {
-  const [form, dispatch] = useReducer(reducer, initialState)
+  const json = useAppParams()
+  const [form, dispatch] = useReducer(reducer, {...initialState, ...json})
   const [status, setStatus] = useState(null)
   // const [advParams, setAdvParams] = useState(false)
+
+
+  useEffect(() => {
+    (async () => {
+      if (!json) return
+      const {data} = await getObject(json.genome_groups[0])
+      const ids = data['id_list'].genome_id
+      dispatch({ type: 'ADD_GENOME_GROUP', val: ids })
+    })()
+  }, [json])
 
 
   const onSubmit = () => {
@@ -81,7 +94,6 @@ export default function GenomeAlignment() {
       .then(() => setStatus('success'))
       .catch(error => setStatus(error))
   }
-
 
   const isStep1Complete = () => !!form.genome_ids.length
 
