@@ -29,7 +29,7 @@ const getColumns = (onNavigate, isObjSelector) => [
     format: (val, obj) => {
       if (isObjSelector && obj.type != 'folder' ) {
         return (
-          <span className="inline-flex align-items-center">
+          <span className="inline-flex align-items-center" title={`type: ${obj.type}`}>
             {getIcon(obj)} {val}
           </span>
         )

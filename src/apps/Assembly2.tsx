@@ -58,8 +58,6 @@ const reducer = (state, action) => {
     return initialState
   else if (action == 'EXAMPLE')
     return example
-  else if (action.field == 'reads')
-    return {...state, ...action.reads}
   else {
     return {...state, [action.field]: action.val}
   }
@@ -98,12 +96,10 @@ export default function Assembly() {
 
       <Section>
         <ReadSelector
-          reads={{
-            paired_end_libs: form.paired_end_libs,
-            single_end_libs: form.single_end_libs,
-            srr_ids: form.srr_ids
-          }}
-          onChange={reads => dispatch({field: 'reads', reads})}
+          paired_end_libs={form.paired_end_libs}
+          single_end_libs={form.single_end_libs}
+          srr_ids={form.srr_ids}
+          onChange={(field, val) => dispatch({field, val})}
           advancedOptions
         />
       </Section>
