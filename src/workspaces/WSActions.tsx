@@ -29,7 +29,7 @@ type ServiceOpt = {label: string, url: string}
 
 const getRunnableApps = (selected: WSObject[]) : ServiceOpt[]  => {
   // all files must be the same type
-  if ([...new Set(selected.map(obj => obj.type))].length > 1)
+  if (!selected.length || [...new Set(selected.map(obj => obj.type))].length > 1)
     return
 
   const {type} = selected[0]
