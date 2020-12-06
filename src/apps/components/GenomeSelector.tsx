@@ -10,7 +10,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Popover from '@material-ui/core/Popover'
 
 // import FilterIcon from '@material-ui/icons/FilterListOutlined'
-import filterIcon from '../../../assets/icons/filter.svg'
+import filterIcon from '../../../assets/icons/icon-filter.svg'
 import LockIcon from '@material-ui/icons/Lock'
 import Checkbox from '@material-ui/core/Checkbox'
 

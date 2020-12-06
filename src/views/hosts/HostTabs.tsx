@@ -69,9 +69,11 @@ export default function GenomeTabs() {
       </Tabs>
 
       <Content>
-        {view == tabs[0].view && <TabProvider>{tabs[0].Component}</TabProvider>}
-        {view == tabs[1].view && <TabProvider>{tabs[1].Component}</TabProvider>}
-        {view == tabs[2].view && <TabProvider>{tabs[2].Component}</TabProvider>}
+        <TabProvider>
+          {view == tabs[0].view && tabs[0].Component}
+          {view == tabs[1].view && tabs[1].Component}
+          {view == tabs[2].view && tabs[2].Component}
+        </TabProvider>
         {/*view == tabs[3].view && <PFContainer />*/}
         {
           tabs.map(obj => obj.view).indexOf(view) == -1 &&

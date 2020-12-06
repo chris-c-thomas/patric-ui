@@ -1,25 +1,45 @@
-/* eslint-disable react/display-name */
 import {useState, useEffect, useMemo} from 'react'
 
 
-const defaultSetings = {
+type StorageEntries = 'uiSettings'
+
+type defaultSettings = {
+  uiSettings: UISettings
+}
+
+type UISettings = {
+  showDetails: boolean
+  showFilters: boolean
+}
+
+type UISettingsKeys =
+  'showDetails' |
+  'showFilters' |
+  'showHiddenFiles'
+
+
+const defaultSettings = {
   uiSettings: {
-    showDetails: true
+    showDetails: false,
+    showFilters: true,
+    showHiddenFiles: false
   }
 }
 
 
-function useLocalStorage (storageKey, key) {
+
+function useLocalStorage (storageKey: StorageEntries, key: UISettingsKeys) {
 
   const initial = useMemo(() => {
     const jsonStr = localStorage.getItem(storageKey)
+    // todo: throw runtime error if defaults aren't there
 
     let init
     try {
-      init = jsonStr ? JSON.parse(jsonStr) : defaultSetings[storageKey]
+      init = jsonStr ? JSON.parse(jsonStr) : defaultSettings[storageKey]
     } catch (err) {
       console.warn('useLocalStorage: could not parse object.  Using default settings.')
-      init = defaultSetings[storageKey]
+      init = defaultSettings[storageKey]
     }
 
     return init

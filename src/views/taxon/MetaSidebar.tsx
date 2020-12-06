@@ -62,7 +62,8 @@ export default function MetaSidebar(props) {
 
 const Root = styled.div`
   background: #fff;
-  width: 350px;
+  width: 275px;
+  max-width: 275px;
   padding: 0 5px;
   border-left: 1px solid #c3c3c3;
   /*box-shadow: -2px 4px 5px 1px #f2f2f2;*/

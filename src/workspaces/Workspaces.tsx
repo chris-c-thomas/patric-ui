@@ -57,7 +57,7 @@ export default function Workspaces(props: Props) {
   const [uploads] = useContext(UploadStatusContext)
 
   const [showDetails, setShowDetails] = useLocalStorage('uiSettings', 'showDetails')
-  const [showHidden, setShowHidden] = useLocalStorage('uiSettings', 'workspaceShowHidden')
+  const [showHidden, setShowHidden] = useLocalStorage('uiSettings', 'showHiddenFiles')
 
   const [viewType, setViewType] = useState(props.viewType)
   const [selected, setSelected] = useState([])

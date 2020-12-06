@@ -28,7 +28,9 @@ function JobStatusProvider(props) {
     if (!isSignedIn()) return
 
     const timer = poll()
-    return () => timer.then(to => clearTimeout(to))
+    return () => {
+      timer.then(to => clearTimeout(to))
+    }
   }, [poll])
 
 

@@ -21,9 +21,10 @@ export const TaxonActionBar = (props) => {
   return (
     <Root>
       <Image src={props.title.includes('Genome') ? genomeIcon : taxonIcon} />
-      {props.title}
-      <TaxonCrumbs />
 
+      <b>{props.title}</b>
+
+      <TaxonCrumbs />
 
       <Tooltip
         title={<>Open guide <ExternalIcon style={{fontSize: 10}} /></>}

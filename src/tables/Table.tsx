@@ -14,12 +14,13 @@ import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import Tooltip from '@material-ui/core/Tooltip'
 import IconButton from '@material-ui/core/IconButton'
+import Divider from '@material-ui/core/Divider'
 
 import MoreIcon from '@material-ui/icons/MoreVert'
 import InfoIcon from '@material-ui/icons/InfoOutlined'
 import ArrowDown from '@material-ui/icons/ArrowDropDown'
 import ArrowUp from '@material-ui/icons/ArrowDropUp'
-import filterIcon from '../../assets/icons/filter.svg'
+import filterIcon from '../../assets/icons/icon-filter.svg'
 
 import ColumnMenu from './ColumnMenu'
 import Checkbox from '../forms/Checkbox'
@@ -504,7 +505,7 @@ export default function TableComponent(props: Props) {
       <CtrlContainer >
 
         { enableTableOptions && props.openFilters &&
-          <Tooltip title="Show filters">
+          <Tooltip title="Show filters" placement="top">
             <ActionBtn aria-label="filter" onClick={props.onOpenFilters}>
               <img src={filterIcon} />
               <div>Filters</div>
@@ -514,7 +515,7 @@ export default function TableComponent(props: Props) {
 
         {enableTableOptions &&
           <DownloadContainer>
-            <Tooltip title="View download options...">
+            <Tooltip title="View download options..." placement="top">
               <ActionBtn aria-label="download" >
                 <img src={downloadIcon} />
                 <div>Download</div>
@@ -561,6 +562,8 @@ export default function TableComponent(props: Props) {
           />
         }
 
+        <Divider orientation="vertical" flexItem style={{margin: '10px 5px'}} />
+
         {onColumnMenuChange &&
           <ColumnMenu
             options={props.columns} // all columns
@@ -569,7 +572,7 @@ export default function TableComponent(props: Props) {
         }
 
         {onShowDetails &&
-          <Tooltip title="Show/hide details">
+          <Tooltip title="Show/hide details" placement="top">
             <IconButton
               size="small"
               onClick={handleShowDetails}
@@ -653,6 +656,9 @@ const Pagination = styled(TablePagination)`
   & .MuiTablePagination-actions {
     user-select: none;
     margin: 0;
+  }
+  && .MuiToolbar-root {
+    padding-right: 0;
   }
 `
 

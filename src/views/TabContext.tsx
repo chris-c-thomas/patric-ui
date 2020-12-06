@@ -1,5 +1,5 @@
-import React, {useState, useEffect, createContext, useReducer} from 'react'
-import {useParams, useHistory, useLocation} from 'react-router-dom'
+import React, {useState, useEffect, createContext, useReducer, useMemo, useLayoutEffect} from 'react'
+import {useHistory, useLocation} from 'react-router-dom'
 
 import { listData, getGenomeIDs, getRepGenomeIDs } from '../api/data-api'
 
@@ -21,13 +21,53 @@ const isStateUpToDate = (filterStr, urlStr) =>
 const TabContext = createContext([null])
 
 
-const TabProvider = (props) => {
-  let {taxonID, genomeID} = useParams()
+// hook for fetching genome ids (for when not viewing genome core)
+function useGenomeIDs(core: string, taxonID: string) {
+  const [state, setState] = useState({core, taxonID})
+  const [genomeIDs, setGenomeIDs] = useState(null)
 
+
+  useEffect(() => {
+    setState({core, taxonID})
+  }, [core, taxonID])
+
+
+  useEffect(() => {
+    let active = true
+
+    async function fetchGenomeIDs() {
+      const {core, taxonID} = state
+
+      // if genome core, we don't have to fetch anything
+      if (!core || core == 'genome' || !taxonID) return
+
+      const genomeIDs = await getGenomeIDs(taxonID)
+
+      // if associated genomes ids is over MAX_GENOMES,
+      // get representative genomes instead
+      let ids = genomeIDs
+      if (ids.length > MAX_GENOMES) {
+        ids = await getRepGenomeIDs(taxonID)
+      }
+
+      if (active)
+        setGenomeIDs(ids)
+    }
+
+    fetchGenomeIDs()
+
+    return () => { active = false }
+  }, [state])
+
+  return genomeIDs
+}
+
+
+function TabProvider(props) {
   const history = useHistory()
   const location = useLocation()
 
-  const params = new URLSearchParams(location.search)
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search])
   const sort = params.get('sort') || '-score'
   const page = params.get('page') || 0
   const query = params.get('query') || ''
@@ -36,13 +76,18 @@ const TabProvider = (props) => {
 
   const [core, setCore] = useState(null)
   const [colIDs, setColIDs] = useState(null)
+  const [taxonID, setTaxonID] = useState(null)
+  const [genomeID, setGenomeID] = useState(null)
+
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState([])
   const [total, setTotal] = useState(null)
   const [error, setError] = useState(null)
 
-  // keep track of genomeIDs for facet filtering
-  const [genomeIDs, setGenomeIDs] = useState(null)
+
+  // keep track of genomeIDs to "join" on the genome core
+  const genomeIDs = useGenomeIDs(core, taxonID)
+
 
   const [filterState, dispatch] = useReducer(filterReducer, null, () => {
     const {byCategory, range} = parseQuery(filter)
@@ -68,7 +113,9 @@ const TabProvider = (props) => {
 
     // note: we don't want to escape parens and commas for rql
     history.push({search: unescape(params.toString())})
+
   }, [filterState.filterString])
+
 
 
   // effect for setting state on filter change
@@ -83,11 +130,17 @@ const TabProvider = (props) => {
     dispatch({type: 'SET', value: {byCategory, range, filterString}})
   }, [filter])
 
+
+
   // effect for fetching grid data
-  useEffect(() => {
-    (async function() {
-      // core may not be set yet
-      if (!core) return
+  useLayoutEffect(() => {
+    let active = true
+
+    async function fetch() {
+      // if core is not genome and we don't have genomeIDs yet,
+      // there's nothing to do
+      if (!core || (core !== 'genome' && !genomeIDs) || !taxonID)
+        return
 
       const params = {
         core,
@@ -104,29 +157,16 @@ const TabProvider = (props) => {
       if (core == 'genome') {
         params.eq = {taxon_lineage_ids: taxonID || genomeID}
 
-      // if core is not genome and we're in taxon view, get associated genome ids first
-      // Todo(nc): this should only happn on first request!
-      } else if (core !== 'genome' && !genomeID) {
-        const genomeIDs = await getGenomeIDs(taxonID)
-
-        // if associated genomes ids is over MAX_GENOMES,
-        // get representative genomes instead
-        if (genomeIDs.length > MAX_GENOMES) {
-          const repGenomeIDs = await getRepGenomeIDs(taxonID)
-          params.eq = {genome_id: repGenomeIDs}
-          setGenomeIDs(repGenomeIDs)
-        } else {
-          params.eq = {genome_id: genomeIDs}
-          setGenomeIDs(genomeIDs)
-        }
+      // if not looking at genome core, we'll need to filter on genomeIDs (rep genomeids if max is met)
+      } else if (genomeIDs) {
+        params.eq = {genome_id: genomeIDs}
 
       // if genomeID, filter to just that genome
       } else if (genomeID) {
         params.eq = {genome_id: genomeID}
       }
 
-      if (LOG)
-        console.log('fetching data for:', params)
+      if (LOG) console.log('fetching data for:', params)
 
       setError(null)
       setLoading(true)
@@ -134,26 +174,34 @@ const TabProvider = (props) => {
         let res = await listData(params)
         res = res.data.response
         let data = res.docs
+
+        if (!active) return
         setTotal(res.numFound)
         setData(data)
-
         setLoading(false)
       } catch(e) {
+        if (!active) return
         setLoading(false)
         setError(e)
       }
-    })()
-
-    return () => {
-      // cancel request!
     }
-  }, [core, taxonID, genomeID, sort, page, query, colIDs, limit, filterState.filterString])
+
+    setData([])
+    fetch()
+
+    return () => { active = false }
+  }, [
+    core, colIDs, taxonID, genomeID, sort, page, query, limit,
+    filterState.filterString, genomeIDs
+  ])
 
 
 
-  const init = (core, columnIDs) => {
+  const init = (core, columnIDs, taxonID, genomeID) => {
     setCore(core)
     setColIDs(columnIDs)
+    setTaxonID(taxonID)
+    setGenomeID(genomeID)
   }
 
   const onSort = (sortStr) => {

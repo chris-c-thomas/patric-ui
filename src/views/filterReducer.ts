@@ -14,7 +14,6 @@ const filterReducer = (state, action: Action) => {
   console.log('******called filterReducer', state, action)
 
   switch (action.type) {
-
   case 'SET': {
     const {byCategory, range, filterString} = action.value
 

@@ -111,15 +111,15 @@ const metaTableBody = (headerName, spec, data) => {
       <MetaHeader>
         <td colSpan={2}>{headerName}</td>
       </MetaHeader>
-      {
-        spec.map(o => data[o.id] ?
-          <tr key={o.id}>
-            <td style={{width: '45%'}}><b>{o.label}</b></td>
-            <td>{String(data[o.id]).split(',').join(', ')}</td>
-          </tr>
-          : <></>
-        )
-      }
+
+      {spec.map(o => data[o.id] ?
+        <tr key={o.id}>
+          <td style={{width: '45%'}}><b>{o.label}</b></td>
+          <td>{String(data[o.id]).split(',').join(', ')}</td>
+        </tr>
+        : <></>
+      )}
+
       {!spec.map(o => !!data[o.id]).filter(val => val).length  &&
         <tr className="muted text-center italic">
           <td colSpan={2}>none available</td>
@@ -167,10 +167,10 @@ export default function Overview(props) {
   const [error, setError] = useState(null)
   const [name, setName] = useState(null)
 
+
   useEffect(() => {
     const id = props.genomeID || genomeID
     if (!id) return
-
 
     getGenomeMeta(id)
       .then(meta => {
@@ -181,24 +181,26 @@ export default function Overview(props) {
       })
       .catch(e => setError(e))
 
-  }, [genomeID, props.genomeID])
+  }, [genomeID, props])
+
 
   useEffect(() => {
     const id = props.genomeID || genomeID
     if (!id) return
 
-    getTaxon(id.split('.')[0]).then(data => {
-      setName(data.lineage_names[data.lineage_names.length - 1] )
-    })
+    getTaxon(id.split('.')[0])
+      .then(data => {
+        setName(data.lineage_names[data.lineage_names.length - 1] )
+      })
   }, [genomeID, props.genomeID])
+
 
   return (
     <Root>
       {props.title != false &&
         <MetaTableTitle name={name}/>
       }
-      {
-        meta &&
+      {meta &&
         <MetaTable>
           <tbody>
             {Object.keys(metaSpec).map(headerName =>

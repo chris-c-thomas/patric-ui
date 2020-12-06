@@ -1,15 +1,11 @@
 /* eslint-disable react/display-name */
-import React, {useState, useEffect, useContext } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
-import FilterSidebar from '../../FilterSidebar'
-import Table from '../../../tables/Table'
-import ErrorMsg from '../../../ErrorMsg'
+import SolrGrid from '../../SolrGrid'
 import Actions from './Actions'
 
-import { Root, GridContainer, Progress} from '../TabLayout'
 import { getFilterSpec } from '../TabUtils'
-import { TabContext } from '../../TabContext'
 
 const core = 'sp_gene'
 
@@ -31,9 +27,11 @@ const columns = [
   { label: 'Classification', id: 'classification', sortable: false, hide: true},
   { label: 'Antibiotics Class', id: 'antibiotics_class', hide: true },
   { label: 'Antibiotics', id: 'antibiotics', sortable: false, hide: true },
-  { label: 'Pubmed', id: 'pmid', sortable: false, width: '8%',
+  { label: 'Pubmed', id: 'pmid', sortable: false, width: '12%',
     format: (val) => {
-      val
+      if (!val) return null
+      const str = val.join(', ')
+      return <a href={`https://pubmed.ncbi.nlm.nih.gov/?term=${str}`} target="_blank" rel="noreferrer">{str}</a>
     }
   },
   { label: 'Subject Coverage', id: 'subject_coverage', hide: true },
@@ -60,55 +58,14 @@ const columnIDs = _initialColumns.map(obj => obj.id)
 
 
 export default function SpecGenes() {
-  const [state] = useContext(TabContext)
-
-  const {
-    init, data, loading, error, onFacetFilter,
-    ...tableProps // see TabContext for rest of table params
-  } = state
-
-  const [showActions, setShowActions] = useState(false)
-  const [fullWidth, setFullWidth] = useState(false)
-
-  useEffect(() => {
-    init(core, columnIDs)
-  }, [init])
-
-  const onSelect = (rows) => {
-    setShowActions(!!rows.ids.length)
-  }
-
   return (
-    <Root>
-      <FilterSidebar
-        core={core}
-        filters={filters}
-        onChange={onFacetFilter}
-        collapsed={fullWidth}
-        onCollapse={val => setFullWidth(val)}
-      />
-
-      <GridContainer fullWidth={fullWidth}>
-        {loading && <Progress />}
-
-        {data && !error &&
-          <Table
-            columns={columns}
-            rows={data}
-            onSelect={onSelect}
-            checkboxes
-            pagination
-            enableTableOptions
-            openFilters={fullWidth}
-            onOpenFilters={() => setFullWidth(false)}
-            middleComponent={showActions && <Actions />}
-            {...tableProps}
-          />
-        }
-
-        {error && <ErrorMsg error={error} />}
-      </GridContainer>
-    </Root>
+    <SolrGrid
+      core={core}
+      columns={columns}
+      columnIDs={columnIDs}
+      filters={filters}
+      Actions={Actions}
+    />
   )
 }
 

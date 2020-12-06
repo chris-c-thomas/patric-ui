@@ -13,7 +13,7 @@ import Avatar from '@material-ui/core/Avatar'
 import AccountIcon from '@material-ui/icons/AccountCircle'
 import ExitIcon from '@material-ui/icons/ExitToApp'
 import SUIcon from '@material-ui/icons/SupervisedUserCircle'
-import MenuIcon from '@material-ui/icons/MenuRounded'
+// import MenuIcon from '@material-ui/icons/MenuRounded'
 import Divider from '@material-ui/core/Divider'
 // import Avatar from '@material-ui/core/Divider'
 

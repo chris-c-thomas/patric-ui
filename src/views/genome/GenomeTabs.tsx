@@ -107,18 +107,20 @@ export default function GenomeTabs() {
       </Tabs>
 
       <Content>
-        {view == tabs[0].view && tabs[0].Component}
-        {view == tabs[1].view && <TabProvider>{tabs[1].Component}</TabProvider>}
-        {view == tabs[2].view && <TabProvider>{tabs[2].Component}</TabProvider>}
-        {view == tabs[3].view && <TabProvider>{tabs[3].Component}</TabProvider>}
-        {view == tabs[4].view && <TabProvider>{tabs[4].Component}</TabProvider>}
-        {view == tabs[5].view && <TabProvider>{tabs[5].Component}</TabProvider>}
-        {view == tabs[6].view && <TabProvider>{tabs[6].Component}</TabProvider>}
-        {view == tabs[7].view && <TabProvider>{tabs[7].Component}</TabProvider>}
-        {view == tabs[8].view && <TabProvider>{tabs[8].Component}</TabProvider>}
-        {view == tabs[9].view && <TabProvider>{tabs[9].Component}</TabProvider>}
-        {view == tabs[10].view && placeHolder(view)}
-        {view == tabs[11].view && placeHolder(view)}
+        <TabProvider>
+          {view == tabs[0].view && tabs[0].Component}
+          {view == tabs[1].view && tabs[1].Component}
+          {view == tabs[2].view && tabs[2].Component}
+          {view == tabs[3].view && tabs[3].Component}
+          {view == tabs[4].view && tabs[4].Component}
+          {view == tabs[5].view && tabs[5].Component}
+          {view == tabs[6].view && tabs[6].Component}
+          {view == tabs[7].view && tabs[7].Component}
+          {view == tabs[8].view && tabs[8].Component}
+          {view == tabs[9].view && tabs[9].Component}
+          {view == tabs[10].view && placeHolder(view)}
+          {view == tabs[11].view && placeHolder(view)}
+        </TabProvider>
         {
           tabs.map(obj => obj.view).indexOf(view) == -1 &&
           <NotFound404 />

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { Link, useParams} from 'react-router-dom'
 
 import styled from 'styled-components'
@@ -19,12 +19,9 @@ import SpecialtyGenes from './specialty-genes/SpecGenes'
 import Pathways from './pathways/Pathways'
 import Subsystems from './subsystems/Subsystems'
 
-
-import { TabProvider } from '../TabContext'
-
-
 import NotFound404 from '../../404'
 
+import { TabProvider } from '../TabContext'
 
 const tabs = [{
   label: 'Overview',
@@ -99,9 +96,9 @@ const placeHolder = (view) => <div>{view} goes here</div>
 export default function GenomeTabs() {
   const {view} = useParams()
 
+
   return (
     <Root>
-
       <TaxonActionBar title="Taxon View"/>
 
       <Tabs
@@ -112,19 +109,20 @@ export default function GenomeTabs() {
         {TabButtons()}
       </Tabs>
 
-
       <Content>
-        {view == tabs[0].view && tabs[0].Component}
-        {view == tabs[1].view && <TabProvider>{tabs[1].Component}</TabProvider>}
-        {view == tabs[2].view && <TabProvider>{tabs[2].Component}</TabProvider>}
-        {view == tabs[3].view && <TabProvider>{tabs[3].Component}</TabProvider>}
-        {view == tabs[4].view && <TabProvider>{tabs[4].Component}</TabProvider>}
-        {view == tabs[5].view && <TabProvider>{tabs[5].Component}</TabProvider>}
-        {view == tabs[6].view && <TabProvider>{tabs[6].Component}</TabProvider>}
-        {view == tabs[7].view && <TabProvider>{tabs[7].Component}</TabProvider>}
-        {view == tabs[8].view && <TabProvider>{tabs[8].Component}</TabProvider>}
-        {view == tabs[9].view && placeHolder(view)}
-        {view == tabs[10].view && placeHolder(view)}
+        <TabProvider>
+          {view == tabs[0].view && tabs[0].Component}
+          {view == tabs[1].view && tabs[1].Component}
+          {view == tabs[2].view && tabs[2].Component}
+          {view == tabs[3].view && tabs[3].Component}
+          {view == tabs[4].view && tabs[4].Component}
+          {view == tabs[5].view && tabs[5].Component}
+          {view == tabs[6].view && tabs[6].Component}
+          {view == tabs[7].view && tabs[7].Component}
+          {view == tabs[8].view && tabs[8].Component}
+          {view == tabs[9].view && placeHolder(view)}
+          {view == tabs[10].view && placeHolder(view)}
+        </TabProvider>
         {
           tabs.map(obj => obj.view).indexOf(view) == -1 &&
           <NotFound404 />

@@ -64,7 +64,6 @@ const App = () => {
     <BrowserRouter>
 
       <ThemeProvider theme={theme}>
-
         <UploadStatusProvider>
           <JobStatusProvider>
 
@@ -114,8 +113,10 @@ const App = () => {
               </ErrorBoundary>
             </Root>
 
+
           </JobStatusProvider>
         </UploadStatusProvider>
+
 
       </ThemeProvider>
 

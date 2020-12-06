@@ -2,14 +2,15 @@
 import React, { useState } from 'react'
 import { fade, makeStyles } from '@material-ui/core/styles'
 import Popper from '@material-ui/core/Popper'
-import AddIcon from '@material-ui/icons/AddCircleRounded'
+import SettingsIcon from '@material-ui/icons/SettingsOutlined'
 import CloseIcon from '@material-ui/icons/Close'
 import DoneIcon from '@material-ui/icons/Done'
-import ChevronDown from '@material-ui/icons/ExpandMoreRounded'
+// import ChevronDown from '@material-ui/icons/ExpandMoreRounded'
 
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
+import Tooltip from '@material-ui/core/Tooltip'
 
 
 /* example options
@@ -23,24 +24,6 @@ const options = [
 */
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    fontSize: 13,
-    width: '100%',
-    textAlign: 'left',
-    paddingBottom: 8,
-    color: '#586069',
-    fontWeight: 600,
-    '&:hover,&:focus': {
-      color: '#0366d6',
-    },
-    '& span': {
-      width: '100%',
-    },
-    '& svg': {
-      width: 16,
-      height: 16,
-    },
-  },
   popper: {
     border: '1px solid rgba(27,31,35,.15)',
     boxShadow: '0 3px 12px rgba(27,31,35,.15)',
@@ -172,14 +155,15 @@ export default function ColumnMenu(props: Props) {
     <>
       {ButtonComponent ?
         React.cloneElement(ButtonComponent, {onClick: handleClick}) :
-        <Button
-          size="small"
-          variant="text"
-          onClick={handleClick}
-          disableRipple
-        >
-          <AddIcon fontSize="small" /> <ChevronDown fontSize="small" />
-        </Button>
+        <Tooltip title="Show/hide columns" placement="top">
+          <IconButton
+            size="small"
+            onClick={handleClick}
+            disableRipple
+          >
+            <SettingsIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       }
 
       <Popper
