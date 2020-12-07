@@ -538,31 +538,32 @@ export default function TableComponent(props: Props) {
         }
 
         {pagination &&
-          <Pagination
-            labelRowsPerPage={''}
-            rowsPerPageOptions={[rowsPerPage]}
-            component="div"
-            rowsPerPage={props.limit}
-            page={page}
+          <>
+            <Pagination
+              labelRowsPerPage={''}
+              rowsPerPageOptions={[rowsPerPage]}
+              component="div"
+              rowsPerPage={props.limit}
+              page={page}
 
-            backIconButtonProps={{
-              disableRipple: true,
-              'aria-label': 'previous page',
-              size: 'small',
-              style: {marginLeft: '2px'}
-            }}
-            nextIconButtonProps={{
-              disableRipple: true,
-              'aria-label': 'next page',
-              size: 'small'
-            }}
-            count={props.total || (rows && rows.length) || 0}
-            onChangePage={onChangePage}
-            // onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
+              backIconButtonProps={{
+                disableRipple: true,
+                'aria-label': 'previous page',
+                size: 'small',
+                style: {marginLeft: '2px'}
+              }}
+              nextIconButtonProps={{
+                disableRipple: true,
+                'aria-label': 'next page',
+                size: 'small'
+              }}
+              count={props.total || (rows && rows.length) || 0}
+              onChangePage={onChangePage}
+              // onChangeRowsPerPage={handleChangeRowsPerPage}
+            />
+            <Divider orientation="vertical" flexItem style={{margin: '10px 5px'}} />
+          </>
         }
-
-        <Divider orientation="vertical" flexItem style={{margin: '10px 5px'}} />
 
         {onColumnMenuChange &&
           <ColumnMenu
