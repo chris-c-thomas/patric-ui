@@ -42,7 +42,7 @@ export function uploadFile(
         path,
         name,
         size,
-        progress: parseInt((evt.loaded / evt.total) * 100)
+        progress: Math.floor((evt.loaded / evt.total) * 100)
       })
     })
 

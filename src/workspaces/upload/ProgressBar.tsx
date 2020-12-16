@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 
@@ -9,7 +9,13 @@ type Props = {
 }
 
 const ProgressBar = (props: Props) => {
-  const {value, showValue} = props
+  const {showValue} = props
+
+  const [value, setValue] = useState(props.value)
+
+  useEffect(() => {
+    setValue(props.value)
+  }, [props.value])
 
   return (
     <Root>
@@ -20,7 +26,6 @@ const ProgressBar = (props: Props) => {
       {showValue &&
         <Value>{value}%</Value>
       }
-
     </Root>
   )
 }
