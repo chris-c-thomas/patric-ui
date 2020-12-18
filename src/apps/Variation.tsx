@@ -10,8 +10,6 @@ import ReadSelector from './components/ReadSelector'
 import ObjectSelector from './components/object-selector/ObjectSelector'
 import GenomeSelector from './components/GenomeSelector'
 import Selector from './components/Selector'
-import TextInput from './components/TextInput'
-import AdvancedButton from './components/AdvancedButton'
 import WSFileName from './components/WSFileName'
 
 const appName = 'Variation'
@@ -31,9 +29,9 @@ const example = {
   srr_ids: [],
   mapper: 'BWA-mem',
   caller: 'FreeBayes',
-  reference_genome_id: "272631.5",
+  reference_genome_id: '272631.5',
   output_path: `/${getUser(true)}/home`,
-  output_file: "variation example"
+  output_file: '/variation example'
 }
 
 const initialState = {
@@ -63,7 +61,6 @@ export default function Variation() {
   const [form, dispatch] = useReducer(reducer, {...initialState, ...json})
   const [status, setStatus] = useState(null)
 
-  const [advParams, setAdvParams] = useState(false)
 
   const onSubmit = () => {
     const params = {...form}
@@ -73,6 +70,7 @@ export default function Variation() {
       .then(() => setStatus('success'))
       .catch(error => setStatus(error))
   }
+
 
   const isStep1Complete = () =>
     form.paired_end_libs.length > 0 ||

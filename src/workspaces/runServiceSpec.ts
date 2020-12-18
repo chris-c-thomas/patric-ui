@@ -24,6 +24,9 @@ export const inputSpec : InputSpec = {
   },
   ComprehensiveGenomeAnalysis: {
     inputTypes: ['reads', 'contigs']
+  },
+  Variation: {
+    inputTypes: ['reads']
   }
 }
 
@@ -34,7 +37,7 @@ export function getParams(selected: WSObject[], name: string) : object {
 
   let params = {}
 
-  if (['Assembly2'].includes(name)) {
+  if (['Assembly2', 'Variation'].includes(name)) {
     if (selected.length == 1) {
       params = {single_end_libs: [{read: encodedPath}]}
     } else if (selected.length == 2) {
