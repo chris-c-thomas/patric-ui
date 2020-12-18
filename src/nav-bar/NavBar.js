@@ -116,6 +116,7 @@ const bacteriaServices = [
   {label: 'Annotation', url: '/apps/Annotation'},
   {label: 'Comprehensive Genome Analysis', url: '/apps/ComprehensiveGenomeAnalysis'},
   {label: 'Phylogentic Tree', url: '/apps/PhylogeneticTree'},
+  {label: 'Variation Analysis', url: '/apps/Variation'},
   {label: 'GenomeAlignment', url: '/apps/GenomeAlignment'},
   // {label: 'BLAST', url: '/apps/blast'},
 ]
