@@ -177,7 +177,7 @@ export default function Variation() {
     <Root>
       <AppHeader
         title="Variation Analysis"
-        onUseExample={() => dispatch('EXAMPLE')}
+        // onUseExample={() => dispatch('EXAMPLE')}
         description={
           <>
             The Variation Analysis Service can be used to identify and annotate sequence variations.
