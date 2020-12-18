@@ -137,13 +137,17 @@ export function getGenomeMeta(genome_id) {
     .then(data => data[0])
 }
 
+const boostQuery = [
+  'taxon_rank:superkingdom^7000000', 'taxon_rank:phylum^6000000', 'taxon_rank:class^5000000',
+  'taxon_rank:order^4000000', 'taxon_rank:family^3000000', 'taxon_rank:genus^2000000',
+  'taxon_rank:species^1000000', 'taxon_rank:*'
+]
+
 // todo: replace with "Query"?
 export function queryTaxon({query, start = 0, limit = 25}) {
-  const q = `?q=((taxon_name:*${query}*)%20OR%20(taxon_name:${query}))%20AND%20` +
-    `(taxon_rank:(superkingdom)^7000000%20OR%20taxon_rank:(phylum)^6000000%20OR%20` +
-    `taxon_rank:(class)^5000000%20OR%20taxon_rank:(order)^4000000%20OR%20` +
-    `taxon_rank:(family)^3000000%20OR%20taxon_rank:(genus)^2000000%20OR%20` +
-    `taxon_rank:(species)^1000000%20OR%20taxon_rank:*)` +
+  const q =
+    `?q=((taxon_name:*${query}*)%20OR%20(taxon_name:${query}))%20AND%20` +
+    boostQuery.join('%20OR%20') +
     `&fl=taxon_name,taxon_id,taxon_rank,lineage_names&qf=taxon_name&${solrConfigStr}`
 
   const config = getSolrConfig({start, limit})
@@ -239,7 +243,6 @@ type StatsParams = {
 // /genome/select?q=public:true%20AND%20owner:PATRIC*&wt=json&stats=true&stats.field=genome_length&stats.field=patric_cds&stats.field=patric_cds&stats.facet=genus&rows=0
 export async function getStats(params: StatsParams) {
   const {core, field} = params
-
   throw 'getStats() is not implemented'
 }
 
@@ -295,6 +298,7 @@ export function queryGenomeNames(query?: string, filterString?: string) {
 }
 
 
+
 export function getPhyloData({taxonID, genomeID}) {
   if (!taxonID && !genomeID)
     throw 'getPhyloData() expects either a `taxonID` or `genomeID`'
@@ -305,6 +309,52 @@ export function getPhyloData({taxonID, genomeID}) {
     .then(res => res.data)
 }
 
+
+
+export function downloadTable(
+  core: string,
+  taxonID: string,
+  type: 'text/tsv' | 'text/csv' | 'application/vnd.openxmlformats',
+  primaryKey: string,
+  filterStr: string
+) {
+  const query = (filterStr ? filterStr : '') +
+    `eq(taxon_lineage_ids%2C${taxonID})%26sort(%2B${primaryKey})%26limit(25000)`
+
+
+  const params = new URLSearchParams()
+  params.append('rql', query)
+  return api.post(`/${core}/?http_accept=${type}&http_download=true`, params)
+}
+
+
+
+/*
+  var form = domConstruct.create('form', {
+    style: 'display: none;',
+    id: 'downloadForm',
+    enctype: 'application/x-www-form-urlencoded',
+    name: 'downloadForm',
+    method: 'post',
+    action: baseUrl
+  }, _self.domNode)
+
+  domConstruct.create('input', {
+    type: 'hidden',
+    value: encodeURIComponent(query),
+    name: 'rql'
+  }, form)
+  form.submit()
+
+    domConstruct.create('input', {
+    type: 'hidden',
+    value: encodeURIComponent(query),
+    name: 'rql'
+  }, form)
+  form.submit()
+
+
+*/
 
 
 /**

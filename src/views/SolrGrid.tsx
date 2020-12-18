@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useContext } from 'react'
+import styled from 'styled-components'
 import {useParams} from 'react-router-dom'
 
 import FilterSidebar from './FilterSidebar'
@@ -12,6 +13,11 @@ import MetaSidebar from './taxon/MetaSidebar'
 import { Root, GridContainer, Progress} from './taxon/TabLayout'
 
 import useLocalStorage from '../hooks/useLocalStorage'
+
+import DownloadBtn from './DownloadBtn'
+import {downloadTable} from '../api/data-api'
+
+
 
 
 type Props = {
@@ -31,11 +37,11 @@ export default function SolrGrid(props: Props) {
     Actions
   } = props
 
-  let {taxonID, genomeID} = useParams()
+  const {taxonID, genomeID} = useParams()
   const [state] = useContext(TabContext)
 
   const {
-    init, data, loading, error, onFacetFilter,
+    init, data, loading, error, onFacetFilter, filterState,
     ...tableProps // see TabContext for rest of table params
   } = state
 
@@ -47,8 +53,13 @@ export default function SolrGrid(props: Props) {
     init(core, columnIDs, taxonID, genomeID)
   }, [init, core, columnIDs, taxonID, genomeID])
 
-  const onSelect = (sel) => {
+
+  const handleSelect = (sel) => {
     setSelection(sel.objs.length ? sel.objs : null)
+  }
+
+  const handleDownload = (type) => {
+    downloadTable(core, taxonID, type, 'genome_id', filterState.filterString)
   }
 
   return (
@@ -69,13 +80,14 @@ export default function SolrGrid(props: Props) {
           <Table
             columns={columns}
             rows={data}
-            onSelect={onSelect}
+            onSelect={handleSelect}
             checkboxes
             pagination
             enableTableOptions
             openFilters={!showFilters}
             onOpenFilters={() => setShowFilters(!showFilters)}
-            middleComponent={selection && <Actions />}
+            rightComponent={<DownloadBtn onDownload={handleDownload} />}
+            middleComponent={selection && <Actions selection={selection} />}
             onShowDetails={() => setShowDetails(prev => !prev)}
             {...tableProps}
           />
@@ -93,3 +105,5 @@ export default function SolrGrid(props: Props) {
     </Root>
   )
 }
+
+

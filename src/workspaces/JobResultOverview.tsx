@@ -213,7 +213,7 @@ const JobResultOverview = (props: Props) => {
         <Dialog title="Job Parameters"
           primaryBtnText="close"
           maxWidth="lg"
-          content={<pre>{JSON.stringify(autoMeta.parameters, null, 4)}</pre>}
+          content={<code>{JSON.stringify(autoMeta.parameters, null, 4)}</code>}
           onClose={() => setShowDialog(false)}
           onPrimaryClick={() => setShowDialog(false)}
         />

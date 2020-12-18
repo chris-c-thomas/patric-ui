@@ -58,7 +58,6 @@ const columns = [{
 
 
 const getTableRow = (read: PairedEndLib | SingleEndLib | SRRID) : TableRow => {
-  console.log('read', read)
   if (typeof read == 'object' && 'read' in read )
     return {
       label: `${parsePath(read.read).name} (single)`,

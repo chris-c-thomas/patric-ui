@@ -57,13 +57,14 @@ function metaToObj(m) : WSObject {
 
 
 type ListArgs = {
-  path: string;
-  type?: string;
-  recursive?: boolean;
-  showHidden?: boolean;
-  includePermissions?: boolean;
+  path: string
+  type?: string
+  recursive?: boolean
+  showHidden?: boolean
+  onlyUserVisible?: boolean
   onlyPublic?: boolean
   onlySharedWithMe?: boolean
+  includePermissions?: boolean
 }
 
 export async function list(args: ListArgs) {
@@ -75,6 +76,7 @@ export async function list(args: ListArgs) {
     type,
     recursive = false,
     showHidden = false,
+    onlyUserVisible = false,
     includePermissions = true,
     onlyPublic = false,
     onlySharedWithMe = false
@@ -93,6 +95,10 @@ export async function list(args: ListArgs) {
 
   if (!showHidden) {
     objects = objects.filter(obj => obj.name.charAt(0) != '.')
+  }
+
+  if (onlyUserVisible) {
+    objects = objects.filter(obj => !obj.path.includes('/.'))
   }
 
   if (onlyPublic) {
@@ -313,7 +319,7 @@ export function getUserCounts({user}) {
 
 
 export async function create(
-  obj: WSObject,
+  obj: WSObject | {path, name, type, userMeta},
   createUploadNodes: boolean = false,
   overwrite: boolean = false,
   content: any = ''
@@ -322,8 +328,10 @@ export async function create(
     obj.path += '/'
   }
 
+  const {path, name, type, userMeta} = obj
+
   return rpc('create', {
-    objects: [[(obj.path + obj.name), (obj.type || 'unspecified'), obj.userMeta || {}, content]],
+    objects: [[(path + name), (type || 'unspecified'), userMeta || {}, content]],
     createUploadNodes,
     overwrite
   }).then((results) => {
@@ -333,6 +341,33 @@ export async function create(
       return metaToObj(results[0])
     }
   })
+}
+
+
+const _groupKeyMapping = {
+  genome_group: 'genome_id',
+  feature_group: 'feature_id',
+  experiment_group: 'eid'
+}
+
+export async function createGroup(
+  name: string,
+  path: string,
+  type: 'genome_group' | 'feature_group' | 'experiment_group',
+  ids: string[]
+) {
+
+  // remove duplicate ids ids, and create object with keys from above
+  const content = {
+    name,
+    id_list: {
+      [ _groupKeyMapping[type] ]: [...new Set(ids)]
+    }
+  }
+
+  const obj = {path, name, type, userMeta: {}}
+
+  return create(obj, false, false, content)
 }
 
 

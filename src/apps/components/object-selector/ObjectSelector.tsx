@@ -39,7 +39,8 @@ const getName = (path: string) => path.slice(path.lastIndexOf('/')+1)
 
 
 type Props = {
-  showHidden?: boolean
+  showHidden?: boolean       // show names with dots
+  onlyUserVisible?: boolean  // no dots in any parents
   dialogTitle: string | JSX.Element
   value: string // workspace path in this case
   label?: string
@@ -52,6 +53,7 @@ export default function ObjectSelector(props: Props) {
   const {
     type,
     showHidden,
+    onlyUserVisible,
     dialogTitle,
     label,
     value,
@@ -87,7 +89,7 @@ export default function ObjectSelector(props: Props) {
       let data
       try {
         setLoading(true)
-        data = await WS.list({path, type, recursive: true, showHidden})
+        data = await WS.list({path, type, recursive: true, showHidden, onlyUserVisible})
       } catch (err) {
         setError(err)
       }

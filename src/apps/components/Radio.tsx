@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
@@ -7,7 +7,17 @@ import FormControl from '@material-ui/core/FormControl'
 import FormLabel from '@material-ui/core/FormLabel'
 
 
-export default function RadioSelector(props) {
+
+type Props = {
+  options: {label: string, value: string}[]
+  value: string
+  legend?: string
+  row?: boolean  // display as row
+  onChange?: (value: string) => void
+}
+
+
+export default function RadioSelector(props: Props) {
   const {options, legend, value} = props
 
   if (!options)
@@ -16,11 +26,8 @@ export default function RadioSelector(props) {
     throw (`Radio component must have prop: value.  Was: ${value}`)
 
 
-  const [val, setVal] = useState(value || props.default)
-
   const handleChange = (evt) => {
     const val = evt.target.value
-    setVal(val)
 
     if (props.onChange)
       props.onChange(val)

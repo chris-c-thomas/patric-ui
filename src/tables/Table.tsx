@@ -26,9 +26,9 @@ import ColumnMenu from './ColumnMenu'
 import Checkbox from '../forms/Checkbox'
 import TableSearch from './TableSearch'
 import ActionBtn from './ActionBtn'
-import downloadIcon from '../../assets/icons/download.svg'
+// import downloadIcon from '../../assets/icons/download.svg'
 
-import selectedReducer, { initialSelectedState } from './selectedReducer'
+import selectedReducer, { SelectedState, initialSelectedState } from './selectedReducer'
 
 import useClickOutside from '../hooks/useClickOutside'
 
@@ -329,7 +329,7 @@ type Props = {
   onSearch?: (string) => void
   onSort?: (string) => void       // for ajax pagination
   onPage?: (number) => void       // for ajax pagination
-  onSelect?: (any) => void        // todo: define
+  onSelect?: (SelectedState) => void        // todo: define
   onDoubleClick?: (evt: MouseEvent, row: object) => void
   onColumnMenuChange?: (any) => void | boolean
   onShowDetails?: () => void      // useful for details sidebar
@@ -342,6 +342,7 @@ type Props = {
   disableRowSelect?: (row: object) => boolean
 
   middleComponent?: JSX.Element
+  rightComponent?: JSX.Element
 }
 
 
@@ -353,7 +354,8 @@ type Rows = Row[]
 export default function TableComponent(props: Props) {
   const {
     pagination, offsetHeight, checkboxes, emptyNotice,
-    middleComponent, onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
+    middleComponent, rightComponent,
+    onSearch, onSort, onSelect, onDoubleClick, onColumnMenuChange,
     enableTableOptions, stripes = true, onShowDetails,
     greyRow = () => false,
     disableRowSelect = () => false
@@ -408,10 +410,12 @@ export default function TableComponent(props: Props) {
 
   // listen to selected
   useEffect(() => {
-    if (onSelect) {
-      onSelect(selected)
-    }
-  }, [selected, onSelect])
+    console.log('selected', selected)
+    if (!onSelect) return
+    onSelect(selected)
+
+    // eslint-disable-next-line
+  }, [selected])
 
 
   // enable/disable userSelect durring ctrl/shift+click
@@ -431,7 +435,7 @@ export default function TableComponent(props: Props) {
 
   useClickOutside(tableRef, () => {
     dispatch({type: 'CLEAR'})
-  }, ['button', 'a', '.meta-sidebar'])
+  }, ['button', 'a', 'input', '.meta-sidebar', '.MuiDialog-container', '.MuiAutocomplete-popper'])
 
 
   const onChangePage = (event, newPage) => {
@@ -505,30 +509,22 @@ export default function TableComponent(props: Props) {
       <CtrlContainer >
 
         { enableTableOptions && props.openFilters &&
-          <Tooltip title="Show filters" placement="top">
-            <ActionBtn aria-label="filter" onClick={props.onOpenFilters}>
-              <img src={filterIcon} />
-              <div>Filters</div>
-            </ActionBtn>
-          </Tooltip>
-        }
-
-        {enableTableOptions &&
-          <DownloadContainer>
-            <Tooltip title="View download options..." placement="top">
-              <ActionBtn aria-label="download" >
-                <img src={downloadIcon} />
-                <div>Download</div>
+          <>
+            <Tooltip title="Show filters" placement="top">
+              <ActionBtn aria-label="filter" onClick={props.onOpenFilters}>
+                <img src={filterIcon} />
+                <div>Filters</div>
               </ActionBtn>
             </Tooltip>
-          </DownloadContainer>
+
+            <Divider orientation="vertical" flexItem style={{margin: '5px 10px 5px 0'}} />
+          </>
         }
 
         {onSearch &&
           <TableSearch
             search={props.search}
             onSearch={onSearch}
-            enableTableOptions={enableTableOptions}
             searchPlaceholder={props.searchPlaceholder}
           />
         }
@@ -549,13 +545,13 @@ export default function TableComponent(props: Props) {
               backIconButtonProps={{
                 disableRipple: true,
                 'aria-label': 'previous page',
-                size: 'small',
+                // size: 'small',
                 style: {marginLeft: '2px'}
               }}
               nextIconButtonProps={{
                 disableRipple: true,
                 'aria-label': 'next page',
-                size: 'small'
+                // size: 'small'
               }}
               count={props.total || (rows && rows.length) || 0}
               onChangePage={onChangePage}
@@ -565,11 +561,16 @@ export default function TableComponent(props: Props) {
           </>
         }
 
+
         {onColumnMenuChange &&
           <ColumnMenu
             options={props.columns} // all columns
             onChange={onColumnChange}
           />
+        }
+
+        {rightComponent &&
+          rightComponent
         }
 
         {onShowDetails &&
@@ -645,11 +646,6 @@ const CtrlContainer = styled.div`
   justify-content: left;
 `
 
-const DownloadContainer = styled.div`
-  margin-right: 10px;
-  padding-right: 5px;
-  border-right: 2px solid #f2f2f2;
-`
 
 const Pagination = styled(TablePagination)`
   flex: 1;
@@ -705,6 +701,12 @@ const Container = styled(TableContainer)`
   tr.MuiTableRow-root.Mui-selected:hover {
     background-color: #ecf4fb;
   }
+
+  /*
+  tr.MuiTableRow-root.Mui-selected td {
+    border-bottom: 1px solid #19f;
+  }
+  */
 
   ${props => !props.userselect ?
     'user-select: none;' : ''}

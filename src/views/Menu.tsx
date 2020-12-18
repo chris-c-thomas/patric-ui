@@ -10,33 +10,17 @@ import CaretIcon from '@material-ui/icons/ArrowDropDownRounded'
 
 
 
-export const isWorkspace = path =>
-  (path.match(/\//g) || []).length == 1
 
-
-
-export const Btn = (props) =>
-  <Button size="small" variant="outlined" color="primary" disableRipple {...props}>
-    {props.children}
-  </Button>
-
-
-export const IconBtn = ({title, ...props}) =>
-  <Tooltip placement="top" title={title || ''}>
-    <IconButton color="primary" disableRipple {...props}>
-      {props.icon}
-    </IconButton>
-  </Tooltip>
-
-
-
-
-
-type RunJobMenuProps = {
-  children: JSX.Element[]
+type Props = {
+  button?: JSX.Element
+  children: JSX.Element | JSX.Element[]
 }
 
-export const RunJobMenu = (props: RunJobMenuProps) => {
+export default function MenuComponent(props: Props) {
+  const {
+    button
+  } = props
+
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = (evt) => {
@@ -49,18 +33,16 @@ export const RunJobMenu = (props: RunJobMenuProps) => {
 
   return (
     <div>
-      <Btn
-        aria-controls="simple-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-        variant="contained"
-        startIcon={<ChartIcon/>}
-        endIcon={<CaretIcon/>}
-      >
-        Run Service
-      </Btn>
+      {button ? React.cloneElement(button, {onClick: handleClick})  :
+        <IconButton
+          aria-controls="menu"
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          Menu
+        </IconButton>
+      }
       <Menu
-        id="simple-menu"
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
@@ -80,7 +62,5 @@ export const RunJobMenu = (props: RunJobMenuProps) => {
     </div>
   )
 }
-
-
 
 

@@ -1,4 +1,20 @@
 
+
+export type SelectedState = {
+  lastSelected: number
+  ids: number[]
+  objs: any[]
+}
+
+
+export type Action = {
+  type: 'SELECT_ALL' | 'CLEAR' | 'SET' | 'SHIFT_SET' | 'CTRL_SET'
+  id?: number
+  rows?: any[]
+  obj?: any
+}
+
+
 export const initialSelectedState = {
   lastSelected: null,
   ids: [],
@@ -7,7 +23,7 @@ export const initialSelectedState = {
 
 
 // handles selection of rows
-const selectedReducer = (state, action) => {
+const selectedReducer = (state: SelectedState, action: Action) => {
 
   const {type} = action
 

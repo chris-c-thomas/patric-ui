@@ -133,7 +133,7 @@ function TabProvider(props) {
 
 
   // effect for fetching grid data
-  useLayoutEffect(() => {
+  useEffect(() => {
     let active = true
 
     async function fetch() {

@@ -33,6 +33,7 @@ let filters =  [
 filters = getFilterSpec(filters, columns)
 
 
+
 const _initialColumns = columns.filter(obj => !obj.hide)
 const columnIDs = _initialColumns.map(obj => obj.id)
 

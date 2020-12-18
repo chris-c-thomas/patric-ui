@@ -161,7 +161,7 @@ export default function ColumnMenu(props: Props) {
             onClick={handleClick}
             disableRipple
           >
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon  />
           </IconButton>
         </Tooltip>
       }
