@@ -15,8 +15,8 @@ import AdvancedButton from './components/AdvancedButton'
 import WSFileName from './components/WSFileName'
 
 const appName = 'Variation'
-const userGuideURL = `${config.docsURL}/user_guides/services/genome_assembly_service.html`
-const tutorialURL = `${config.docsURL}/tutorial/genome_assembly/assembly.html`
+const userGuideURL = `${config.docsURL}/user_guides/services/variation_analysis_service.html`
+const tutorialURL = `${config.docsURL}/tutorial/variation_analysis_service/variation_analysis_service.html`
 
 
 const example = {
