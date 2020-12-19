@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 
@@ -20,11 +20,11 @@ const ProgressBar = (props: Props) => {
   return (
     <Root>
       <Progress>
-        <Bar width={value} />
+        <Bar style={{width: value ? `${value}%` : 0}}/>
       </Progress>
 
       {showValue &&
-        <Value>{value}%</Value>
+        <div>{value}%</div>
       }
     </Root>
   )
@@ -45,12 +45,8 @@ const Progress = styled.div`
 
 const Bar = styled.div`
   height: 100%;
-  width: ${props => props.width ? `${props.width}%` : 0};
   background: #438ab9;
   border-radius: 2px 0 0 2px;
-`
-
-const Value = styled.div`
 `
 
 
