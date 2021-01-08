@@ -117,12 +117,23 @@ const bacteriaServices = [
   {label: 'Comprehensive Genome Analysis', url: '/apps/ComprehensiveGenomeAnalysis'},
   {label: 'Phylogentic Tree', url: '/apps/PhylogeneticTree'},
   {label: 'Variation Analysis', url: '/apps/Variation'},
-  {label: 'GenomeAlignment', url: '/apps/GenomeAlignment'},
+  {label: 'Tn-Seq Analysis', url: '/apps/Tnseq'},
+  {label: 'Genome Alignment', url: '/apps/GenomeAlignment'},
   // {label: 'BLAST', url: '/apps/blast'},
+]
+
+const metagenomicsServices = [
+  {label: 'Metagenomic Read Mapping', url: '/apps/MetagenomicReadMapping'},
+  {label: 'Metagenomic Binning', url: '/apps/MetagenomicBinning'},
+  {label: 'Taxonomic Classification', url: '/apps/TaxonomicClassification'},
 ]
 
 const viralServices = [
   {label: 'SARS-CoV-2 Assembly and Annotation', url: '/apps/ComprehensiveSARS2Analysis'}
+]
+
+const dataServices = [
+  {label: 'Fastq Utilities', url: '/apps/FastqUtil'}
 ]
 
 const getMiddle = data => Math.round(data.length / 2)
@@ -182,10 +193,14 @@ const PatricMenus = () => {
           <MenuSection>
             <MenuTitle>Bacterial Genomics</MenuTitle>
             <ServicesColumn data={bacteriaServices} />
+            <MenuTitle>Metagenomics</MenuTitle>
+            <ServicesColumn data={metagenomicsServices} />
           </MenuSection>
           <MenuSection>
             <MenuTitle>Viral Genomics</MenuTitle>
             <ServicesColumn data={viralServices} />
+            <MenuTitle>Data Services</MenuTitle>
+            <ServicesColumn data={dataServices} />
           </MenuSection>
         </DropDown>
       }/>

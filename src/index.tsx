@@ -102,7 +102,12 @@ const App = () => {
                       <Route path="/apps/PhylogeneticTree" exact component={lazy(() => import('./apps/PhylogeneticTree'))} />
                       <Route path="/apps/Blast" exact component={lazy(() => import('./apps/Blast'))} />
                       <Route path="/apps/Variation" component={lazy(() => import('./apps/Variation'))} />
+                      <Route path="/apps/Tnseq" component={lazy(() => import('./apps/Tnseq'))} />
                       <Route path="/apps/GenomeAlignment" exact component={lazy(() => import('./apps/GenomeAlignment'))} />
+                      <Route path="/apps/MetagenomicReadMapping" exact component={lazy(() => import('./apps/MetagenomicReadMapping'))} />
+                      <Route path="/apps/MetagenomicBinning" exact component={lazy(() => import('./apps/MetagenomicBinning'))} />
+                      <Route path="/apps/TaxonomicClassification" exact component={lazy(() => import('./apps/TaxonomicClassification'))} />
+                      <Route path="/apps/FastqUtil" exact component={lazy(() => import('./apps/FastqUtil'))} />
                       <Route path="/apps/ComprehensiveSARS2Analysis" exact component={lazy(() => import('./apps/SARS2Analysis'))} />
 
                       <Route path="/susignin" exact component={SUSignIn} />
